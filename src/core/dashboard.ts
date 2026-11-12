@@ -1,5 +1,5 @@
 import { addDays, daysBetween, startOfDay, startOfWeek } from './dates'
-import { accuracies, average, listBest, recordMode, recordsOfMode, type TimeUnit } from './records'
+import { accuracies, average, listBest, recordMode, recordsOfMode, type MissedWord, type TimeUnit } from './records'
 import type { SavedWordList } from './wordLists'
 
 type StoredRecord = SavedWordList['records'][number]
@@ -173,9 +173,16 @@ export type WeakList = { list: SavedWordList; words: WeakWord[] }
  * The words of a list missed in its latest WEAK_RUNS runs: most runs missed in first, then most mistakes, then the
  * list's order. Handwriting runs are left out (a word not written is not a word mistyped), and so are words no longer
  * in the list. A word that appears twice in the list is counted once, as the first.
+ *
+ * A finished practice of the weak words alone (`list.weakReview`) starts them again: the runs up to it no longer count,
+ * and it counts as one run with the words that went wrong in it. So a word typed right there is weak no longer, and one
+ * missed there stays.
  */
 export function weakWords(list: SavedWordList): WeakWord[] {
-  const runs = newestFirst(list.records.filter(record => recordMode(record) !== 'writing')).slice(0, WEAK_RUNS)
+  const review = list.weakReview
+  const since = review ? Date.parse(review.date) : -Infinity
+  const runs: { missed?: MissedWord[] }[] = newestFirst(list.records.filter(record => recordMode(record) !== 'writing' && timeOf(record) > since)).slice(0, WEAK_RUNS)
+  if (review) runs.push(review)
   const tally = new Map<string, { runs: number; count: number }>()
   for (const record of runs) {
     for (const missed of record.missed ?? []) {

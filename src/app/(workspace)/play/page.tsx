@@ -3,6 +3,7 @@ import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useWordLists } from "@/lib/useWordLists"
+import { setWeakReview } from "@/core/records"
 import PracticeScreen from "@/components/Practice/PracticeScreen"
 import StarterPacks from "@/components/Practice/StarterPacks"
 
@@ -22,9 +23,10 @@ function PlayWorkspace() {
   const params = useSearchParams()
   const listId = params.get('list')
   const weak = params.get('review') === 'weak'
-  const { lists, packs, devices, accountId, ready, error, addRecord } = useWordLists()
+  const { lists, packs, devices, accountId, ready, error, addRecord, update } = useWordLists()
   if (!ready) return <Loading />
   // Following a starter pack mounts the practice afresh, on the pack's first list.
   if (!packs.length) return <StarterPacks error={error} />
-  return <PracticeScreen key={`${accountId}:${weak}`} accountId={accountId ?? ""} devices={devices} wordLists={lists} packs={packs} listId={listId} weak={weak} error={error} addRecord={addRecord} />
+  return <PracticeScreen key={`${accountId}:${weak}`} accountId={accountId ?? ""} devices={devices} wordLists={lists} packs={packs} listId={listId} weak={weak} error={error} addRecord={addRecord}
+    saveWeakReview={(id, review) => update(current => setWeakReview(current, id, review))} />
 }

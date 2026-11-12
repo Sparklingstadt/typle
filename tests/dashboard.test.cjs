@@ -185,3 +185,20 @@ test('weak words count the latest ten normal and recall runs, by runs missed in,
   const other = { ...list('o', [run(25, [{ word: 'a', count: 1 }])]), words: words3 }
   assert.deepEqual(weakLists([other, list('none', [run(26, [])]), target]).map(item => item.list.id), ['w', 'o'])
 })
+
+test('a review of the weak words starts them again: words typed right there are weak no longer', () => {
+  const { weakWords } = require('../src/core/dashboard.ts')
+  const words3 = ['a', 'b', 'c'].map(input => ({ display: input, input, annotation: '' }))
+  const run = (day, missed) => record(`2026-09-${String(day).padStart(2, '0')}T01:00:00Z`, 10, { missed })
+  const records = [run(20, [{ word: 'a', count: 2 }, { word: 'b', count: 1 }]), run(21, [{ word: 'a', count: 1 }])]
+  const base = { ...list('w', records), words: words3 }
+  assert.deepEqual(weakWords(base).map(item => item.word.input), ['a', 'b'])
+  // a was missed again in the review, b was typed right.
+  const reviewed = { ...base, weakReview: { date: '2026-09-22T01:00:00Z', missed: [{ word: 'a', count: 1 }] } }
+  assert.deepEqual(weakWords(reviewed).map(({ word, runs, count }) => [word.input, runs, count]), [['a', 1, 1]])
+  assert.deepEqual(weakWords({ ...base, weakReview: { date: '2026-09-22T01:00:00Z' } }), [])
+  // A run after the review counts again.
+  const later = { ...reviewed, records: [...records, run(23, [{ word: 'c', count: 3 }])] }
+  // Both were missed in one run; c, with more mistakes, comes first.
+  assert.deepEqual(weakWords(later).map(({ word, runs, count }) => [word.input, runs, count]), [['c', 1, 3], ['a', 1, 1]])
+})

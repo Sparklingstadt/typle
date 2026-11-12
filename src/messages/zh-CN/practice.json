@@ -113,6 +113,7 @@
     "shareOnX": "分享到 X",
     "shareText": "我在 Typle 上用 {time} 秒、{accuracy}% 的正确率打完了“{name}”",
     "reviewNote": "复习打错的词不会记录。",
+    "reviewNoteWeak": "这次复习不会记录。没有打错的词不再算作薄弱单词。",
     "reviewing": "复习打错的 {count} 个词（不记录）",
     "missed": {
       "tile": "打错的词",

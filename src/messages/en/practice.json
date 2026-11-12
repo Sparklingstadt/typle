@@ -113,6 +113,7 @@
     "shareOnX": "Share on X",
     "shareText": "I typed “{name}” in {time} s with {accuracy}% accuracy on Typle",
     "reviewNote": "Reviews of missed words are not recorded.",
+    "reviewNoteWeak": "This review is not recorded. Words you typed without a mistake are no longer weak words.",
     "reviewing": "{count, plural, one {Reviewing # missed word (not recorded)} other {Reviewing # missed words (not recorded)}}",
     "missed": {
       "tile": "Missed words",
