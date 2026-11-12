@@ -19,6 +19,7 @@
 | [docs/release-workflow.md](docs/release-workflow.md) | PR から本番公開までの手順 |
 | [api-docs/](api-docs/src/README.md) | アプリの API の仕様（VuePress。`cd api-docs && npm ci && npm run docs:dev`） |
 | [docs/sentry.md](docs/sentry.md) | Sentry のエラー監視 |
+| [docs/save-metrics.md](docs/save-metrics.md) | 保存の時間と大きさの計測（`TYPLE_MEASURE_SAVES=1`） |
 | [docs/design/](docs/design) | 画面ごとのデザインレビュー |
 | [docs/roadmap.md](docs/roadmap.md) | これからの進め方（今・次・その先の順番と理由） |
 | [docs/refactoring-roadmap.md](docs/refactoring-roadmap.md) | リファクタリングのロードマップ（負債の棚卸しと直す順番） |
