@@ -5,6 +5,8 @@
 .next-production
 node_modules
 test-results
+# Claude Code's settings and the worktrees of its sessions, each a whole copy of the repository.
+.claude
 playwright-report
 server/cmd
 *_test.go
