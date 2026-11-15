@@ -64,7 +64,9 @@ export default function PracticeScreen({ wordLists, packs, listId, weak = false,
   const [asideOpen, setAsideOpen] = usePlayAsideOpen()
   const typingOptions = useTypingOptions()
   const [chosenMode, chooseRecall] = usePracticeMode()
-  const { list, review, selected, session, practiceDevice, practiceMode, composition, startComposition, endComposition, changeInput, record, saveState, input, word, finished, result, restart: restartPractice, retrySave, pause, resume, reveal } = usePractice(wordLists, addRecord, device, listId, chosenMode, weakReview(wordLists, listId, weak))
+  // usePractice reads it only when it mounts, so it is worked out once rather than on every keystroke.
+  const [initialReview] = useState(() => weakReview(wordLists, listId, weak))
+  const { list, review, selected, session, practiceDevice, practiceMode, composition, startComposition, endComposition, changeInput, record, saveState, input, word, finished, result, restart: restartPractice, retrySave, pause, resume, reveal } = usePractice(wordLists, addRecord, device, listId, chosenMode, initialReview)
   const [displayRun, setDisplayRun] = useState(0)
   // Typing or writing is decided when a list is chosen and on every restart; a run keeps its mode to the end.
   const [preferredWriting, setPreferredWriting] = useWritingMode()

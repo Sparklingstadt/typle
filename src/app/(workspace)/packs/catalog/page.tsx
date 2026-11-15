@@ -19,6 +19,7 @@ import { followOfficialPack, catalogEntries, type CatalogEntry } from "@/plugins
 import { OFFICIAL_PACK_PAGES } from "@/plugins/packs/pages"
 import { PageHeader, PageMain } from "@/components/ui/page-layout"
 import { CardList } from "@/components/ui/card"
+import { editPackPath } from "@/lib/routes"
 
 export default function Catalog() {
   const { ready, packs, lists, interests, error, updateLibrary, saving, storage } = useWordLists()
@@ -84,7 +85,7 @@ export default function Catalog() {
             {!entry.followed && full && <p className="text-[13px] text-muted-foreground">{t("full", { max: MAX_FOLLOWED_PACKS })}</p>}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            {owned && <Button asChild variant="outline"><Link href={`/edit?pack=${encodeURIComponent(owned.id)}`}
+            {owned && <Button asChild variant="outline"><Link href={editPackPath(owned.id)}
               ref={entry.catalogId === followedNow ? link => link?.focus() : undefined} onBlur={() => setFollowedNow(null)}>
               <SquareArrowOutUpRight aria-hidden="true" />{t("open")}<span className="sr-only"> {entry.pack.name}</span>
             </Link></Button>}

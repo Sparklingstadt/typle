@@ -10,6 +10,7 @@ import { useWordLists } from "@/lib/useWordLists"
 import { ownPacks } from "@/core/followedPacks"
 import { createPackFromLists } from "@/core/packEditing"
 import { randomId } from "@/core/randomId"
+import { editPackPath } from "@/lib/routes"
 
 // A pack is made of word lists already saved, which move into it; word lists themselves are made on /create.
 export default function CreatePack() {
@@ -34,7 +35,7 @@ export default function CreatePack() {
         const saved = await updateLibrary(library => createPackFromLists(library, fields, listIds, id))
         if (saved) {
           notify(t("packEditor.created", { name: fields.name.trim() }))
-          router.push(`/edit?pack=${encodeURIComponent(id)}`)
+          router.push(editPackPath(id))
         }
         return saved
       }} />}

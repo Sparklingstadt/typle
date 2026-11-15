@@ -264,6 +264,9 @@ export function secondsPerWord(record: StoredRecord) {
   return record.wordCount ? record.time / record.wordCount : null
 }
 
+/** Accuracy as every screen shows it: one decimal place. Records keep two. */
+export function roundAccuracy(accuracy: number) { return Math.round(accuracy * 10) / 10 }
+
 export function formatAccuracy(accuracy: number | undefined) {
-  return accuracy === undefined ? '—' : `${Math.round(accuracy * 10) / 10}%`
+  return accuracy === undefined ? '—' : `${roundAccuracy(accuracy)}%`
 }

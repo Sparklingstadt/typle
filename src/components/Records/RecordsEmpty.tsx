@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { EmptyState, EmptyStateIcon } from '@/components/ui/empty-state'
 import { usePracticeName } from '@/components/PracticeName'
 import type { SavedWordList } from '@/core/wordLists'
+import { practicePath } from '@/lib/routes'
 
 export function NoRecords() {
   const t = useTranslations('records.empty')
@@ -28,7 +29,7 @@ export function FilteredEmpty({ list, onClear }: { list?: SavedWordList; onClear
       <p className="text-sm text-muted-foreground">{t(unpractised ? 'filteredEmpty.listDescription' : 'filteredEmpty.description')}</p>
     </div>
     <div className="flex flex-wrap justify-center gap-2">
-      {list && <Button asChild><Link href={`/play?list=${encodeURIComponent(list.id)}`}><Keyboard aria-hidden="true" />{t('filteredEmpty.practiceList')}</Link></Button>}
+      {list && <Button asChild><Link href={practicePath(list.id)}><Keyboard aria-hidden="true" />{t('filteredEmpty.practiceList')}</Link></Button>}
       <Button variant="outline" onClick={onClear}>{t('filter.clear')}</Button>
     </div>
   </EmptyState>

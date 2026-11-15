@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import PracticeName, { usePracticeName } from "@/components/PracticeName"
 import { wordMeaning } from "@/core/landing"
 import type { WeakList } from "@/core/dashboard"
+import { practicePath } from "@/lib/routes"
 
 const SHOWN_WORDS = 6
 
@@ -35,7 +36,7 @@ export default function WeakWords({ items }: { items: WeakList[] }) {
         {rest > 0 && <p className="text-[13px] text-muted-foreground">{t("more", { count: rest })}</p>}
         <div>
           <Button asChild variant="outline">
-            <Link href={`/play?list=${encodeURIComponent(list.id)}&review=weak`} aria-label={t("practiceList", { name: practiceName(list), count: words.length })}>
+            <Link href={practicePath(list.id, { review: 'weak' })} aria-label={t("practiceList", { name: practiceName(list), count: words.length })}>
               <ListRestart aria-hidden="true" />{t("practice", { count: words.length })}
             </Link>
           </Button>

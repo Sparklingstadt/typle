@@ -16,6 +16,7 @@ import WordTable from '@/components/Words/WordTable'
 import { useListChoosers } from '@/lib/useListChoosers'
 import type { SavedWordList } from '@/core/wordLists'
 import type { WordPack } from '@/core/wordPacks'
+import { editListPath, practicePath } from '@/lib/routes'
 
 // `?list=<id>` keeps the chosen list in the URL, so it can be reloaded or opened from elsewhere. Without it the first
 // list is shown, as on the practice screen.
@@ -95,8 +96,8 @@ export default function WordsView({ lists, packs }: { lists: SavedWordList[]; pa
                 </div>
               </DialogContent>
             </Dialog>
-            <Button size="lg" asChild><Link href={`/play?list=${encodeURIComponent(list.id)}`} aria-label={t('practiceList', { name: practiceName(list) })}><Keyboard aria-hidden="true" />{t('practice')}</Link></Button>
-            <Button variant="outline" size="lg" asChild><Link href={`/edit?list=${encodeURIComponent(list.id)}`} aria-label={t('editList', { name: practiceName(list) })}><Pencil aria-hidden="true" />{t('edit')}</Link></Button>
+            <Button size="lg" asChild><Link href={practicePath(list.id)} aria-label={t('practiceList', { name: practiceName(list) })}><Keyboard aria-hidden="true" />{t('practice')}</Link></Button>
+            <Button variant="outline" size="lg" asChild><Link href={editListPath(list.id)} aria-label={t('editList', { name: practiceName(list) })}><Pencil aria-hidden="true" />{t('edit')}</Link></Button>
           </div>
         </div>
         <WordTable list={list} />

@@ -9,7 +9,7 @@ import Kbd from '@/components/Practice/Kbd'
 import MissedWords from '@/components/Practice/MissedWords'
 import type { PracticeDevice } from '@/core/devices'
 import type { WordMistake } from '@/core/typing'
-import { compareRun, type PracticeMode, type PracticeRecord } from '@/core/records'
+import { compareRun, type PracticeMode, type PracticeRecord, roundAccuracy } from '@/core/records'
 import { sharedName, toSharedQuery, xIntentUrl } from '@/core/sharedResult'
 import type { SavedWordList } from '@/core/wordLists'
 import { cn } from '@/lib/utils'
@@ -52,18 +52,18 @@ export default function PracticeResult({ listName, words, mistakes = [], review 
   // A review is compared with nothing; the line under the tiles says it is not recorded.
   const note = review ? '' : compared.kind === 'behind'
     ? compared.previous.accuracy === undefined ? t('behindNoAccuracy', { time: compared.previous.time.toFixed(2) })
-      : t('behind', { time: compared.previous.time.toFixed(2), accuracy: compared.previous.accuracy })
+      : t('behind', { time: compared.previous.time.toFixed(2), accuracy: roundAccuracy(compared.previous.accuracy) })
     : compared.kind === 'best' ? (compared.difference < 0 ? t('faster', { seconds: (-compared.difference).toFixed(2) }) : t('bestByAccuracy'))
     : compared.kind === 'firstAtCount' ? t('firstAtCount', { count: wordCount }) : t('firstForList')
   const tiles = [
     { term: t('time'), value: result.time.toFixed(2), unit: t('seconds'), note, good: best, icon: faster },
-    { term: t('accuracy'), value: String(result.accuracy), unit: '%', note: t(writing ? 'mistakesWords' : 'mistakes', { count: result.mistakes }) },
+    { term: t('accuracy'), value: String(roundAccuracy(result.accuracy)), unit: '%', note: t(writing ? 'mistakesWords' : 'mistakes', { count: result.mistakes }) },
     { term: t('speed'), value: speed === null ? '—' : String(speed), unit: t(writing ? 'wordSpeedUnit' : 'speedUnit'), note: t(writing ? 'correctWords' : 'correct', { count: correct }) },
     { term: t('missed.tile'), value: String(missed.length), unit: t('missed.of', { count: wordCount }), note: format.device(device), device: true },
   ]
   // The result screen only renders in the browser, after a run, so the page's own origin is at hand.
   const shared = toSharedQuery({ name: listName, time: result.time, accuracy: result.accuracy, speed, words: wordCount, mode })
-  const shareText = `${t('shareText', { name: sharedName(listName), time: result.time.toFixed(2), accuracy: result.accuracy })} #Typle`
+  const shareText = `${t('shareText', { name: sharedName(listName), time: result.time.toFixed(2), accuracy: roundAccuracy(result.accuracy) })} #Typle`
   const shareHref = typeof window === 'undefined' ? undefined : xIntentUrl(shareText, `${window.location.origin}/result?${shared}`)
   return <section aria-label={t('label')} className="flex flex-1 flex-col gap-4 px-4 pt-5 pb-5 sm:gap-5 sm:px-6 sm:pt-7 sm:pb-6">
     <div className="flex flex-wrap items-center gap-3">

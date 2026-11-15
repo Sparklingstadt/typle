@@ -15,6 +15,7 @@ import { formatAccuracy, lastPracticedAt, recordsOfMode, type PracticeMode, type
 import { listRanking, RANKING_TOP, rankingStats } from '@/core/rankings'
 import type { SavedWordList } from '@/core/wordLists'
 import { cn } from '@/lib/utils'
+import { practicePath } from '@/lib/routes'
 
 // Remount per list (key) so "show all" and "include other word counts" start closed for each list.
 export default function RankingDetail({ list, devices, device, deviceName, order, mode, now, onBack, onShowAllDevices }: {
@@ -36,7 +37,7 @@ export default function RankingDetail({ list, devices, device, deviceName, order
   const { ranked, best } = ranking
   // Counts and the empty state follow the chosen mode, like the ranked list beside them.
   const modeRecords = recordsOfMode(list.records, mode)
-  const practice = `/play?list=${encodeURIComponent(list.id)}`
+  const practice = practicePath(list.id)
   const lastPracticed = lastPracticedAt(modeRecords)
 
   return <div className="flex flex-col gap-5 p-4 sm:p-6">

@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { useFormat } from '@/i18n/useFormat'
-import { bestRecords } from '@/core/records'
+import { bestRecords, formatAccuracy } from '@/core/records'
 import type { SavedWordList } from '@/core/wordLists'
 
 export default function PracticeBestRecords({ records, highlightId }: { records: SavedWordList['records']; highlightId?: string }) {
@@ -18,7 +18,7 @@ export default function PracticeBestRecords({ records, highlightId }: { records:
             <span className={cn('grid size-[22px] place-items-center rounded-full bg-muted text-xs font-bold text-muted-foreground', index === 0 && 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300')}>{index + 1}</span>
           </th>
           <td className="py-2 pr-3 font-medium whitespace-nowrap">{t('seconds', { time: record.time.toFixed(2) })}</td>
-          <td className="py-2 pr-3 whitespace-nowrap">{record.accuracy === undefined ? t('noAccuracy') : `${record.accuracy}%`}</td>
+          <td className="py-2 pr-3 whitespace-nowrap">{record.accuracy === undefined ? t('noAccuracy') : formatAccuracy(record.accuracy)}</td>
           <td className="w-full max-w-0 py-2 pr-2">
             <span className="flex items-center gap-2">
               <span className="truncate text-xs text-muted-foreground">{format.device(record.device)}</span>

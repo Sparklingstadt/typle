@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Gauge, Target, Timer, X } from 'lucide-react'
 import type { PracticeMode } from '@/core/records'
 import { elapsedTime, typingSpeed, type TypingSession } from '@/core/typing'
+import { roundAccuracy } from '@/core/records'
 
 // Ticks only while a session is running, for the live elapsed time and speed.
 function useNow(active: boolean) {
@@ -33,7 +34,7 @@ export default function LiveStats({ session, accuracy, mode = 'normal' }: { sess
   const stats = [
     { icon: Timer, term: t('elapsed'), value: formatClock(elapsed) },
     { icon: Gauge, term: t('speed'), value: speed === null ? '—' : String(speed), unit: t(mode === 'writing' ? 'wordSpeedUnit' : 'speedUnit') },
-    { icon: Target, term: t('accuracy'), value: session.attempts ? `${Math.round(accuracy * 10) / 10}%` : '—' },
+    { icon: Target, term: t('accuracy'), value: session.attempts ? `${roundAccuracy(accuracy)}%` : '—' },
     { icon: X, term: t('mistakes'), value: String(session.mistakes) },
   ]
   return <dl aria-label={t('label')} className="mx-4 mb-4 grid grid-cols-4 rounded-xl border bg-muted/40 px-1 py-2.5 text-center sm:mx-6 sm:mb-5 sm:px-2 sm:py-3">

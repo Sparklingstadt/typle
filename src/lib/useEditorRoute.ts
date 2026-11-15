@@ -1,6 +1,7 @@
 "use client"
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { SavedWordList } from "@/core/wordLists"
+import { editListPath } from "@/lib/routes"
 
 // `/edit?list=<id>` opens the editor, so other screens can link to it and the browser's back button returns to the lists.
 // The editor stays open while it has unsaved changes: going back asks first, like キャンセル.
@@ -25,7 +26,7 @@ export function useEditorRoute(urlId: string | null) {
     restored.current = cancelRequest
     if (!openId || urlId === openId) return
     pushed.current = true
-    window.history.pushState(null, '', `/edit?list=${encodeURIComponent(openId)}`)
+    window.history.pushState(null, '', editListPath(openId))
   }, [cancelRequest, openId, urlId])
 
   // Back on the lists: where the editor was opened from, with the row that was changed in view.
@@ -44,7 +45,7 @@ export function useEditorRoute(urlId: string | null) {
     pushed.current = true
     setDirty(false)
     setOpenId(list.id)
-    window.history.pushState(null, '', `/edit?list=${encodeURIComponent(list.id)}`)
+    window.history.pushState(null, '', editListPath(list.id))
     window.scrollTo({ top: 0 })
   }
 

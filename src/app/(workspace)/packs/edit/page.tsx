@@ -16,6 +16,7 @@ import { copyPack } from "@/core/packFile"
 import { randomId } from "@/core/randomId"
 import { MAX_LISTS, ownListCount } from "@/core/listOverview"
 import { reorderPackLists, updatePack } from "@/core/packEditing"
+import { editPackPath } from "@/lib/routes"
 
 export default function EditPack() {
   const common = useTranslations("common")
@@ -36,7 +37,7 @@ function Editor() {
   const id = params.get("pack")
   const pack = packs.find(item => item.id === id)
   if (!ready) return <p>{common("loading")}</p>
-  const back = id ? `/edit?pack=${encodeURIComponent(id)}` : "/edit"
+  const back = id ? editPackPath(id) : "/edit"
   if (!pack) return <Notice link={{ href: "/edit", label: t("page.title") }}>{errors("packDeleted")}</Notice>
   // A followed pack has no form: it can be duplicated into a pack of one's own or unfollowed.
   if (isFollowed(pack)) {
@@ -50,7 +51,7 @@ function Editor() {
         name = next.packs.find(item => item.id === ids.pack)?.name ?? ""
         return next
       })
-      if (saved) { notify(t("page.created", { name })); router.push(`/edit?pack=${encodeURIComponent(ids.pack)}`) }
+      if (saved) { notify(t("page.created", { name })); router.push(editPackPath(ids.pack)) }
     }
     return <section className="space-y-4">
       <h1 className="text-2xl font-bold [overflow-wrap:anywhere]">{pack.name}</h1>
