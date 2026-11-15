@@ -1,5 +1,5 @@
 "use client"
-import { useCallback, useState } from 'react'
+import { useStoredChoice } from '@/lib/useStoredChoice'
 
 // Whether a list marked for writing is practised by typing or by handwriting. Remembered per browser; typing by default,
 // and only `writing` is written (as the recall switch does in practiceMode.ts).
@@ -7,20 +7,12 @@ export const WRITING_MODE_KEY = 'typle-r:writing-mode'
 
 export type WritingChoice = 'normal' | 'writing'
 
-function read(): WritingChoice {
-  try { return localStorage.getItem(WRITING_MODE_KEY) === 'writing' ? 'writing' : 'normal' } catch { return 'normal' }
-}
+const readMode = (text: string | null): WritingChoice => text === 'writing' ? 'writing' : 'normal'
+const storedMode = (mode: WritingChoice) => mode === 'writing' ? 'writing' : null
 
+// Not synced across tabs, as before.
 export function useWritingMode() {
-  const [mode, setMode] = useState<WritingChoice>(read)
-  const choose = useCallback((next: WritingChoice) => {
-    setMode(next)
-    try {
-      if (next === 'writing') localStorage.setItem(WRITING_MODE_KEY, 'writing')
-      else localStorage.removeItem(WRITING_MODE_KEY)
-    } catch { /* The choice still holds for this visit when browser storage is unavailable. */ }
-  }, [])
-  return [mode, choose] as const
+  return useStoredChoice(WRITING_MODE_KEY, readMode, storedMode, false)
 }
 
 // A list without the mark is always typed, whatever was chosen before.
@@ -34,16 +26,9 @@ export const WRITING_INPUT_KEY = 'typle-r:writing-input'
 
 export type WritingInput = 'pad' | 'field'
 
+const readInput = (text: string | null): WritingInput => text === 'field' ? 'field' : 'pad'
+const storedInput = (input: WritingInput) => input === 'field' ? 'field' : null
+
 export function useWritingInput() {
-  const [input, setInput] = useState<WritingInput>(() => {
-    try { return localStorage.getItem(WRITING_INPUT_KEY) === 'field' ? 'field' : 'pad' } catch { return 'pad' }
-  })
-  const choose = useCallback((next: WritingInput) => {
-    setInput(next)
-    try {
-      if (next === 'field') localStorage.setItem(WRITING_INPUT_KEY, 'field')
-      else localStorage.removeItem(WRITING_INPUT_KEY)
-    } catch { /* The choice still holds for this visit when browser storage is unavailable. */ }
-  }, [])
-  return [input, choose] as const
+  return useStoredChoice(WRITING_INPUT_KEY, readInput, storedInput, false)
 }
