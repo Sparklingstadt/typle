@@ -118,7 +118,7 @@ Next.js のアプリは1つで、`src` を層に分けています。依存は�
 
 保存先を増やすときは `WorkspaceStore` を実装したプラグインを `src/plugins/storage` に追加し、`workspaceStore` で選びます。ファイル形式を増やすときは `WordFormat` を実装して `src/plugins/formats/index.ts` の一覧に加えると、取り込みの拡張子判定と `accept` に反映されます。どちらも画面のコードは変わりません。
 
-バックエンド（`server/`）はNext.jsとは独立したGoのコードで、モジュールはリポジトリ直下の `go.mod` です。`internal/store` が DB を読み書きし、`internal/workspace` がアプリの `decodeLists`・`decodeDevices` と同じ規則で検証します。標準ライブラリ以外の主な依存は、PostgreSQLのドライバー（pgx）、名前を日本語の照合で並べる `golang.org/x/text`、エラー報告の `sentry-go`、GraphQL の gqlgen です。
+バックエンド（`server/`）はNext.jsとは独立したGoのコードで、モジュールはリポジトリ直下の `go.mod` です。`internal/store` が DB を読み書きし、`internal/workspace` がアプリの `decodeLists`・`decodeDevices` と同じ規則で検証します。標準ライブラリ以外の主な依存は、PostgreSQLのドライバー（pgx）、名前を日本語の照合で並べる `golang.org/x/text`、エラー報告の `sentry-go` です。
 
 Next.js の `/api` は使いません。
 
