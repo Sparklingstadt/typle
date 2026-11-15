@@ -23,7 +23,13 @@
 
 - **#11 iPad・Mac** — Web は v2.41.1 で GraphQL から REST へ戻りました（`src/core/api.ts`）。iPad・Mac 版も 11/13 に REST へ戻りました。`/api/graphql` は、11/6〜11/13 の GraphQL を使う版がまだ手元に残っているかもしれないので残しています。その版が使われなくなったら、`server/internal/web/graphql.go`・`server/internal/web/graph`・gqlgen の依存・`api-docs/src/app/graphql.md` を消します。
 
-メジャーの依存の更新（ESLint 10・TypeScript 7・`@types/node` 26・`cn` 0.5）は、1つずつ別の PR にします。範囲内の依存の更新は月に1回、1つの PR にまとめます。
+メジャーの依存の更新は、1つずつ別の PR にします。範囲内の依存の更新は月に1回、1つの PR にまとめます（最後は v2.42.17、2026-11-16）。`cn` 0.5 は v2.42.18 で上げました。残りは、次の理由で止めています。
+
+| 依存 | 止めている理由 | 上げられるようになる条件 |
+|---|---|---|
+| ESLint 10 | `eslint-config-next` が同梱する `eslint-plugin-import`・`eslint-plugin-jsx-a11y`・`eslint-plugin-react` の peer が eslint 9 まで。lint は通るが、npm が peer を上書きしないと入らない | 3つのプラグイン（または `eslint-config-next`）が eslint 10 に対応する |
+| TypeScript 7 | パッケージが JavaScript の API（`ts.transpileModule`）を出さなくなった。単体テストを読み込む `tests/register.cjs` と typescript-eslint がこの API を使う | `tests/register.cjs` を別の読み込み方に変え、typescript-eslint が TypeScript 7 に対応する |
+| `@types/node` 26 | 実行環境が Node.js 24（`package.json` の `engines`） | Node.js 26 に移る |
 
 ## 進め方の約束
 
