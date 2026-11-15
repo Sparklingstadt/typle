@@ -1,5 +1,6 @@
 "use client"
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { api } from '@/core/api'
 
 export type SessionUser = { id: string; name: string; image: string | null }
 type SessionData = { user: SessionUser } | null
@@ -149,16 +150,14 @@ export function signIn(provider: Provider = 'github'): void {
  * refused.
  */
 export async function signOutEverywhere(): Promise<void> {
-  const response = await fetch('/api/auth/signout?everywhere=1', { method: 'POST' })
-  if (!response.ok) throw new Error('sign out everywhere failed')
+  await api('/api/auth/signout?everywhere=1', { method: 'POST' })
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
   location.assign('/home')
 }
 
 /** Signs out and goes home. Rejects, and stays on the page signed in, when the sign-out request fails or is refused. */
 export async function signOut(): Promise<void> {
-  const response = await fetch('/api/auth/signout', { method: 'POST' })
-  if (!response.ok) throw new Error('sign out failed')
+  await api('/api/auth/signout', { method: 'POST' })
   // A full page load, so nothing from the signed-in session stays in memory.
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
   location.assign('/home')

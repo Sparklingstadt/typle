@@ -1,10 +1,10 @@
 "use client"
 import { useEffect, useRef, useState } from 'react'
-import type { PracticeDevice } from '../core/devices'
-import type { SavedWordList } from '../core/wordLists'
+import type { PracticeDevice } from '@/core/devices'
+import type { SavedWordList } from '@/core/wordLists'
 import type { RecordSave } from './useWordLists'
-import { sessionResult, type TypingSession } from '../core/typing'
-import { judgeWriting, normalizeWriting, skipWord, startWriting } from '../core/writing'
+import { sessionResult, type TypingSession } from '@/core/typing'
+import { judgeWriting, normalizeWriting, skipWord, startWriting } from '@/core/writing'
 import { useRecordSaving } from './useRecordSaving'
 import { useTypingOptions } from './inputSettings'
 
@@ -39,12 +39,17 @@ export function useWritingPractice(list: SavedWordList, addRecord: RecordSave, d
     update(next)
   }
 
-  // Writing starts the clock; only text outside composition is judged, and a mismatch is not a mistake yet.
+  // The first text written, in the field or on the pad, starts the clock.
+  function started(text: string, now: number) {
+    return text && session.startedAt === null ? startWriting(session, now) : session
+  }
+
+  // Only text outside composition is judged, and a mismatch is not a mistake yet.
   function enter(text: string, judge: boolean) {
     if (completed()) return
     const now = Date.now()
-    const started = text && session.startedAt === null ? startWriting(session, now) : session
-    apply(judge ? judgeWriting(started, words, [text], now, language, typingOptions, false) : started)
+    const begun = started(text, now)
+    apply(judge ? judgeWriting(begun, words, [text], now, language, typingOptions, false) : begun)
   }
 
   function change(text: string, isComposing = false) {
@@ -86,9 +91,8 @@ export function useWritingPractice(list: SavedWordList, addRecord: RecordSave, d
   function write(text: string, explicit: boolean) {
     if (completed()) return
     const now = Date.now()
-    const started = text && session.startedAt === null ? startWriting(session, now) : session
     setValue(text)
-    const next = judgeWriting(started, words, [text], now, language, typingOptions, explicit)
+    const next = judgeWriting(started(text, now), words, [text], now, language, typingOptions, explicit)
     if (next.mistakes > session.mistakes && next.index === session.index) setRead(normalizeWriting(text, language))
     apply(next)
   }

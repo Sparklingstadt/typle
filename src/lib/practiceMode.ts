@@ -1,6 +1,6 @@
 "use client"
 import { useCallback, useEffect, useState } from 'react'
-import type { PracticeMode } from '../core/records'
+import type { PracticeMode } from '@/core/records'
 
 // How the practice screen asks for the words: normal shows the answer, recall hides it. Remembered per browser and
 // synced across tabs; only `recall` is written, so normal is the default.

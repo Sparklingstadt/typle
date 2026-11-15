@@ -1,6 +1,6 @@
 "use client"
 import { useSyncExternalStore } from 'react'
-import type { TypingOptions } from '../core/typing'
+import type { TypingOptions } from '@/core/typing'
 
 // How practice matches typed characters, remembered per browser; every option is off by default.
 // simpleSpecial: Latin input stands for accented Latin and Russian Cyrillic letters. ignoreCase: upper and lower case count as the same.

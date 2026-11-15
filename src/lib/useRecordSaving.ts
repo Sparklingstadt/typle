@@ -1,11 +1,11 @@
 "use client"
-import { randomId } from "../core/randomId"
+import { randomId } from "@/core/randomId"
 import { useRef, useState } from 'react'
-import type { PracticeDevice } from '../core/devices'
-import type { SavedWordList } from '../core/wordLists'
+import type { PracticeDevice } from '@/core/devices'
+import type { SavedWordList } from '@/core/wordLists'
 import type { RecordSave } from './useWordLists'
-import { makeRecord, type PracticeMode, type PracticeRecord } from '../core/records'
-import { newSession, pauseSession, resumeSession, type TypingSession } from '../core/typing'
+import { makeRecord, type PracticeMode, type PracticeRecord } from '@/core/records'
+import { newSession, pauseSession, resumeSession, type TypingSession } from '@/core/typing'
 
 export type SaveState = 'idle' | 'saving' | 'saved' | 'failed'
 
