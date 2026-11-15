@@ -1,5 +1,6 @@
 import { DAY_MS } from './dates'
-import { accuracies, average, comparableRecords, lastPracticedAt, matchesDevice, rankRecords, recordsOfMode, type PracticeMode, type RankOrder } from './records'
+import { accuracies, average, comparableRecords, lastPracticedAt, rankRecords, recordsOfMode, type PracticeMode, type RankOrder } from './records'
+import { matchesDevice } from './recordHistory'
 import type { SavedWordList } from './wordLists'
 
 type StoredRecord = SavedWordList['records'][number]
