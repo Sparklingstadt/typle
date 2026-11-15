@@ -9,7 +9,7 @@ export function selectedDeviceKey(accountId: string) {
 }
 
 /** The stored choice: a device id, '' for 未選択, or null when this browser has not chosen yet. */
-export function useSelectedDevice(accountId: string) {
+function useSelectedDevice(accountId: string) {
   const key = selectedDeviceKey(accountId)
   const [id, setId] = useState<string | null>(() => {
     try { return localStorage.getItem(key) } catch { return null }

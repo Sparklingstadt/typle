@@ -3,7 +3,7 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { listOverviews, sortOverviews, matchesQuery, wordPreview, currentRecordCount, copyName, duplicateList, MAX_LISTS } = require('../src/core/listOverview.ts')
 
-const words = (...texts) => texts.map(text => ({ display: text, input: text.toLowerCase(), annotation: '' }))
+const { words } = require('./helpers.cjs')
 const record = (date, wordCount) => ({ time: 5, date, ...(wordCount ? { wordCount } : {}) })
 const lists = () => [
   { id: 'a', name: 'Test 10', createdAt: '2024/09/22 10:00', words: words('あ', 'い'), records: [record('2026-09-20T10:00:00Z', 2), record('2026-09-28T10:00:00Z', 2)] },

@@ -5,10 +5,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { applyChange, decodeDocument } = require('../src/core/workspaceDocument.ts')
 const { readGuestWorkspace, writeGuestWorkspace, GUEST_STORAGE_KEY } = require('../src/plugins/storage/guest.ts')
-function storage() {
-  const values = new Map()
-  return { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) }
-}
+const { storage } = require('./helpers.cjs')
 const list = { id: 'l', name: 'Local', createdAt: '2026-10-01', words: [{ display: 'a', input: 'a', annotation: '' }], records: [{ time: 1, date: '2026-10-01' }] }
 const named = (id, name, extra = {}) => ({ ...list, id, name, ...extra })
 const main = { id: 'default', name: 'メイン' }
