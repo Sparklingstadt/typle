@@ -3,6 +3,9 @@ import { decodeInterests } from './interests'
 import { decodeLists, MAX_CATEGORY, MAX_GROUP, MAX_LEVEL, MAX_SAVED_LEVELS, MAX_TAG, MAX_TAGS, type SavedWordList } from './wordLists'
 import { decodePacks, validateLibrary } from './wordPacks'
 import type { WorkspaceChange } from './workspaceDocument'
+import { MAX_LIST_NAME } from './listOverview'
+import { MAX_RECORDS } from './records'
+import { MAX_ANNOTATION, MAX_WORD_TEXT, MAX_WORDS } from './wordDraft'
 
 export const MAX_WORKSPACE_BYTES = 1024 * 1024
 
@@ -11,10 +14,10 @@ export const MAX_WORKSPACE_BYTES = 1024 * 1024
 // validateLibrary refuses more than one.
 export function validateLists(value: unknown): SavedWordList[] {
   const lists = decodeLists(JSON.stringify({ version: 1, lists: value }))
-  if (lists.some(list => list.words.length > 1000 || list.records.length > 10000 || list.name.length > 200 ||
+  if (lists.some(list => list.words.length > MAX_WORDS || list.records.length > MAX_RECORDS || list.name.length > MAX_LIST_NAME ||
     (list.category?.length ?? 0) > MAX_CATEGORY || (list.tags?.length ?? 0) > MAX_TAGS || list.tags?.some(tag => tag.length > MAX_TAG) ||
     (list.group?.length ?? 0) > MAX_GROUP || (list.levels?.length ?? 0) > MAX_SAVED_LEVELS || list.levels?.some(level => level.length > MAX_LEVEL) ||
-    list.words.some(word => word.input.length > 1000 || word.display.length > 1000 || word.annotation.length > 2000))) {
+    list.words.some(word => word.input.length > MAX_WORD_TEXT || word.display.length > MAX_WORD_TEXT || word.annotation.length > MAX_ANNOTATION))) {
     throw new Error('Workspace too large')
   }
   return lists
