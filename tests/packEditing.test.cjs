@@ -6,7 +6,7 @@ const { packOverviews, sortPacks, visibleListRows, loneListPack, storedLibrary, 
 const { duplicateList, MAX_LISTS } = require('../src/core/listOverview.ts')
 const { saveList } = require('../src/core/wordLists.ts')
 
-const words = (...texts) => texts.map(text => ({ display: text, input: text.toLowerCase(), annotation: '' }))
+const { words } = require('./helpers.cjs')
 const stamp = '2026-10-01T00:00:00.000Z'
 const list = (id, name, packId, extra = {}) => ({ id, name, packId, words: words('ls'), records: [], createdAt: stamp, ...extra })
 const library = () => ({

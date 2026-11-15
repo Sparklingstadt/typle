@@ -11,7 +11,7 @@ const dir = path.join(__dirname, 'fixtures/pack-file')
 const fixtures = fs.readdirSync(dir).filter(name => name.endsWith('.json')).map(name => [name, JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8'))])
 const stamp = '2026-10-01T00:00:00.000Z'
 const now = new Date('2026-10-26T00:00:00Z')
-const words = (...texts) => texts.map(text => ({ display: text, input: text.toLowerCase(), annotation: '' }))
+const { words } = require('./helpers.cjs')
 const file = (lists, pack = { name: 'Imported' }) => ({ format: 'typle-pack', version: 1, pack, lists })
 const library = () => ({
   packs: [
