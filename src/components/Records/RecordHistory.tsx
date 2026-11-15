@@ -20,6 +20,7 @@ import { useDayHeading } from '@/lib/useDayHeading'
 import { useRecordFilter } from '@/lib/useRecordFilter'
 import type { Workspace } from '@/lib/useWordLists'
 import { cn } from '@/lib/utils'
+import { focusAfterRemoval } from '@/lib/focusAfterRemoval'
 
 const PAGE_SIZE = 50
 
@@ -67,11 +68,7 @@ export default function RecordHistory({ failed, lists, packs, saving, deleteReco
 
   // After a deletion, focus the delete button that took the removed row's place so the next record can be removed too.
   function focusAfterDelete(event: Event) {
-    event.preventDefault()
-    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-delete-record]')
-    const target = deleted.current ? buttons[Math.min(deleting.position, buttons.length - 1)] : buttons[deleting.position]
-    if (target) target.focus()
-    else document.getElementById('record-count')?.focus()
+    focusAfterRemoval(event, '[data-delete-record]', deleting.position, deleted.current, ['record-count'])
   }
 
   // After a failed load no records does not mean none were practised, so the error stands alone.
