@@ -11,7 +11,7 @@ import PracticeName, { usePracticeName } from '@/components/PracticeName'
 import { useFormat } from '@/i18n/useFormat'
 import type { PracticeDevice } from '@/core/devices'
 import { speedScale } from '@/core/dashboard'
-import { formatAccuracy, recordsOfMode, type PracticeMode, type RankOrder } from '@/core/records'
+import { formatAccuracy, lastPracticedAt, recordsOfMode, type PracticeMode, type RankOrder } from '@/core/records'
 import { listRanking, RANKING_TOP, rankingStats } from '@/core/rankings'
 import type { SavedWordList } from '@/core/wordLists'
 import { cn } from '@/lib/utils'
@@ -37,7 +37,7 @@ export default function RankingDetail({ list, devices, device, deviceName, order
   // Counts and the empty state follow the chosen mode, like the ranked list beside them.
   const modeRecords = recordsOfMode(list.records, mode)
   const practice = `/play?list=${encodeURIComponent(list.id)}`
-  const lastPracticed = modeRecords.reduce((latest, record) => Math.max(latest, Date.parse(record.date)), 0)
+  const lastPracticed = lastPracticedAt(modeRecords)
 
   return <div className="flex flex-col gap-5 p-4 sm:p-6">
     <Button variant="ghost" size="sm" className="-ml-2 self-start xl:hidden" onClick={onBack}><ArrowLeft aria-hidden="true" />{t('detail.back')}</Button>
@@ -46,7 +46,7 @@ export default function RankingDetail({ list, devices, device, deviceName, order
         <h2 id="ranking-title" tabIndex={-1} className="text-xl font-bold outline-none [overflow-wrap:anywhere]"><PracticeName list={list} /></h2>
         <p className="flex flex-wrap items-center gap-x-2 text-[13px] text-muted-foreground tabular-nums">
           <span>{t('detail.words', { count: list.words.length })}</span><span aria-hidden="true">·</span><span>{t('detail.records', { count: modeRecords.length })}</span>
-          {lastPracticed > 0 && <><span aria-hidden="true">·</span><span>{t('detail.lastPracticed', { day: format.day(new Date(lastPracticed), now) })}</span></>}
+          {lastPracticed !== null && <><span aria-hidden="true">·</span><span>{t('detail.lastPracticed', { day: format.day(new Date(lastPracticed), now) })}</span></>}
         </p>
       </div>
       <div className="flex w-full gap-2 sm:w-auto">

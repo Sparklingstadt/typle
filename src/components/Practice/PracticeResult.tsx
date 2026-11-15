@@ -9,27 +9,12 @@ import Kbd from '@/components/Practice/Kbd'
 import MissedWords from '@/components/Practice/MissedWords'
 import type { PracticeDevice } from '@/core/devices'
 import type { WordMistake } from '@/core/typing'
-import { bestRecords, recordsOfMode, type PracticeMode, type PracticeRecord } from '@/core/records'
+import { compareRun, type PracticeMode, type PracticeRecord } from '@/core/records'
 import { sharedName, toSharedQuery, xIntentUrl } from '@/core/sharedResult'
 import type { SavedWordList } from '@/core/wordLists'
 import { cn } from '@/lib/utils'
 import { useFormat } from '@/i18n/useFormat'
-
-type SaveState = 'idle' | 'saving' | 'saved' | 'failed'
-type Comparison = { rank: number } & ({ kind: 'firstAtCount' | 'firstForList' } | { kind: 'best'; difference: number } | { kind: 'behind'; previous: SavedWordList['records'][number] })
-
-// Ranks use the same order as the best records (accuracy first, then time), so only rank 1 is shown as an improvement.
-// Like ベスト記録, only runs at this word count are compared: a run from before the list was edited is a different task.
-// Only runs of the practised mode are compared, so a recall or handwriting run is never measured against normal runs.
-function comparison(record: PracticeRecord | null, allRecords: SavedWordList['records'], wordCount: number, saveState: SaveState, mode: PracticeMode): Comparison {
-  const records = recordsOfMode(allRecords, mode)
-  const ranked = bestRecords(records.filter(item => item.wordCount === wordCount), Infinity)
-  const rank = record && saveState === 'saved' ? ranked.findIndex(item => item.id === record.id) + 1 : 0
-  const previous = ranked.find(item => item.id !== record?.id)
-  if (!previous) return { rank, kind: records.some(item => item.id !== record?.id) ? 'firstAtCount' : 'firstForList' }
-  if (rank === 1 && record) return { rank, kind: 'best', difference: record.time - previous.time }
-  return { rank, kind: 'behind', previous }
-}
+import type { SaveState } from '@/lib/useRecordSaving'
 
 export default function PracticeResult({ listName, words, mistakes = [], review = false, result, correct, speed, device, record, records, mode = 'normal', saveState, onRestart, onReview, onRetry, onChooseList }: {
   listName: string
@@ -60,7 +45,7 @@ export default function PracticeResult({ listName, words, mistakes = [], review 
   const format = useFormat()
   const wordCount = words.length
   const missed = mistakes.filter(mistake => words[mistake.index]).map(mistake => words[mistake.index])
-  const compared = comparison(record, records, wordCount, saveState, mode)
+  const compared = compareRun(record, records, wordCount, saveState === 'saved', mode)
   const { rank } = compared
   const best = !review && compared.kind === 'best'
   const faster = best && compared.kind === 'best' && compared.difference < 0

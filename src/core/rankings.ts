@@ -1,9 +1,9 @@
-import { comparableRecords, matchesDevice, rankRecords, recordsOfMode, type PracticeMode, type RankOrder } from './records'
+import { DAY_MS } from './dates'
+import { accuracies, average, comparableRecords, lastPracticedAt, matchesDevice, rankRecords, recordsOfMode, type PracticeMode, type RankOrder } from './records'
 import type { SavedWordList } from './wordLists'
 
 type StoredRecord = SavedWordList['records'][number]
 
-const DAY_MS = 24 * 60 * 60 * 1000
 export const RANKING_TOP = 5
 // A best set within this many days is marked as improved in the list.
 export const IMPROVED_DAYS = 7
@@ -34,14 +34,14 @@ export function listRanking(list: SavedWordList, { device = null, order = 'accur
   const ranked = rankRecords(includeOthers ? records : comparableRecords(list, records, mode), order)
   const counts = new Map<number | null, number>()
   for (const record of others) counts.set(record.wordCount ?? null, (counts.get(record.wordCount ?? null) ?? 0) + 1)
-  const last = records.reduce((latest, record) => Math.max(latest, Date.parse(record.date)), 0)
+  const last = lastPracticedAt(records)
   const best = ranked[0]
   const bestTime = best ? Date.parse(best.date) : 0
   return {
     list, records, ranked, others, fallback, best,
     otherCounts: [...counts].map(([wordCount, count]) => ({ wordCount, count }))
       .sort((a, b) => (b.wordCount ?? -1) - (a.wordCount ?? -1)),
-    lastPracticed: last ? new Date(last) : null,
+    lastPracticed: last === null ? null : new Date(last),
     improved: !!best && now.getTime() - bestTime < IMPROVED_DAYS * DAY_MS && ranked.some(record => Date.parse(record.date) < bestTime),
   }
 }
@@ -60,11 +60,11 @@ export function sortRankings(rankings: ListRanking[], sort: ListSort, locale = '
 export function rankingStats(ranked: StoredRecord[]) {
   const byDate = [...ranked].sort((a, b) => Date.parse(a.date) - Date.parse(b.date))
   const recent = byDate.slice(-RECENT_RUNS)
-  const accuracies = recent.flatMap(record => record.accuracy === undefined ? [] : [record.accuracy])
+  const recentAccuracies = accuracies(recent)
   return {
     recentCount: recent.length,
-    recentTime: recent.length ? recent.reduce((total, record) => total + record.time, 0) / recent.length : null,
-    recentAccuracy: accuracies.length ? accuracies.reduce((total, accuracy) => total + accuracy, 0) / accuracies.length : null,
+    recentTime: recent.length ? average(recent.map(record => record.time)) : null,
+    recentAccuracy: recentAccuracies.length ? average(recentAccuracies) : null,
     points: byDate.slice(-TREND_POINTS).map(record => ({ date: record.date, value: record.time })),
   }
 }
