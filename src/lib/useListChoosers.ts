@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useLocale } from 'next-intl'
 import { listLabels } from '@/core/listOverview'
-import { packOverviews } from '@/core/packEditing'
+import { packOverviews } from '@/core/packOverview'
 import { packsByRecentPractice } from '@/core/packPractice'
 import { matchingPacks } from '@/core/practiceView'
 import type { SavedWordList } from '@/core/wordLists'

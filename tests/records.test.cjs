@@ -23,7 +23,8 @@ test('completed records survive reload and editing; retry never duplicates', () 
   assert.throws(() => makeRecord(newSession(), [{ input: 'a' }], 'incomplete'))
 })
 
-const { recordRows, filterRows, groupByDay, recordTimeParts, secondsPerWord, formatAccuracy, NO_DEVICE } = require('../src/core/records.ts')
+const { recordTimeParts, secondsPerWord, formatAccuracy } = require('../src/core/records.ts')
+const { recordRows, filterRows, groupByDay, NO_DEVICE } = require('../src/core/recordHistory.ts')
 const mac = { id: 'mac', name: 'MacBook Air', layout: 'JIS' }
 // Local-time dates, so day grouping does not depend on the machine's time zone.
 const at = (day, hour) => new Date(2026, 8, day, hour).toISOString()

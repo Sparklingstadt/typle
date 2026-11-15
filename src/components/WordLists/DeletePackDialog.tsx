@@ -3,7 +3,7 @@ import { useRef } from "react"
 import { useTranslations } from "next-intl"
 import DeleteConfirmation from "@/components/DeleteConfirmation"
 import { focusAfterRemoval } from "@/lib/focusAfterRemoval"
-import type { PackOverview } from "@/core/packEditing"
+import type { PackOverview } from "@/core/packOverview"
 import type { WordPack } from "@/core/wordPacks"
 
 export default function DeletePackDialog({ state, shared, onOpenChange, onDelete }: {
