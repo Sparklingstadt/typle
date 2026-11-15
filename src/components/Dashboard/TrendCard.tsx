@@ -5,11 +5,12 @@ import { useTranslations } from "next-intl"
 import { Keyboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DeltaText, changeDelta, pointDifference, secondsDifference, type T } from "@/components/Dashboard/Delta"
-import { practiceHref } from "@/components/Dashboard/NextLists"
 import TrendChart from "@/components/Dashboard/TrendChart"
 import PracticeName, { usePracticeName } from "@/components/PracticeName"
 import { useFormat } from "@/i18n/useFormat"
 import { accuracyScale, speedScale, type ListTrend, type Scale, type Trend } from "@/core/dashboard"
+import { practicePath } from "@/lib/routes"
+import { formatAccuracy } from "@/core/records"
 
 function Metric({ title, trend, scale, withUnit, lowerIsBetter, describe }: {
   title: string
@@ -47,12 +48,12 @@ export default function TrendCard({ trend, now }: { trend: ListTrend; now: Date 
     </header>
     {trend.count < 2 ? <>
       <p className="text-sm text-muted-foreground">{t('trends.needTwo')}</p>
-      <Button asChild variant="outline" className="self-start"><Link href={practiceHref(list)} aria-label={t('trends.practiceList', { name: practiceName(list) })}><Keyboard aria-hidden="true" />{t('trends.practice')}</Link></Button>
+      <Button asChild variant="outline" className="self-start"><Link href={practicePath(list.id)} aria-label={t('trends.practiceList', { name: practiceName(list) })}><Keyboard aria-hidden="true" />{t('trends.practice')}</Link></Button>
     </> : <>
       <Metric title={t('trends.speed')} trend={trend.speed} scale={speed.length > 1 ? speedScale(speed) : null} withUnit={value => t('trends.seconds', { value: value.toFixed(2) })} lowerIsBetter describe={secondsDifference} />
       <Metric title={t('trends.accuracy')} trend={trend.accuracy} scale={accuracy.length > 1 ? accuracyScale(accuracy) : null} withUnit={value => t('trends.percent', { value: value.toFixed(1) })} lowerIsBetter={false} describe={pointDifference} />
       <p className="border-t pt-3 text-[13px] text-muted-foreground">
-        {t('trends.best', { accuracy: best.accuracy === undefined ? t('trends.notRecorded') : `${best.accuracy}%`, time: best.time.toFixed(2), day: format.day(new Date(best.date), now) })}
+        {t('trends.best', { accuracy: best.accuracy === undefined ? t('trends.notRecorded') : formatAccuracy(best.accuracy), time: best.time.toFixed(2), day: format.day(new Date(best.date), now) })}
       </p>
     </>}
   </article>

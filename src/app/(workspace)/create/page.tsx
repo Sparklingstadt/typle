@@ -8,6 +8,7 @@ import { useSaveNotification } from "@/components/SaveNotification"
 import { useWordLists } from "@/lib/useWordLists"
 import { ownPacks } from "@/core/followedPacks"
 import { saveListInPack } from "@/core/packEditing"
+import { editPackPath } from "@/lib/routes"
 
 export default function Create() {
   const common = useTranslations('common')
@@ -38,7 +39,7 @@ function Editor() {
       })
       if (saved) {
         notify(t('page.created', { name: list.name.trim() }))
-        router.push(target ? `/edit?pack=${encodeURIComponent(target)}` : '/edit')
+        router.push(target ? editPackPath(target) : '/edit')
       }
       return saved
     }} />

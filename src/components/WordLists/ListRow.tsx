@@ -8,6 +8,7 @@ import { useFormat } from '@/i18n/useFormat'
 import { wordPreview, type ListOverview } from '@/core/listOverview'
 import { cn } from '@/lib/utils'
 import ListLabels from './ListLabels'
+import { practicePath } from '@/lib/routes'
 
 const svgClass = '[&_svg]:shrink-0 [&_svg]:text-muted-foreground'
 
@@ -58,7 +59,7 @@ export default function ListRow({ item, now, highlight, disabled, canCopy, readO
     </div>
     <div className="-mr-2 flex items-center gap-1 sm:mr-0">
       <Button asChild variant="ghost" size="lg" className="hidden h-10 px-3 text-muted-foreground sm:inline-flex" title={t('practice')}>
-        <Link href={`/play?list=${id}`} aria-label={t('practiceList', { name: list.name })}><Keyboard aria-hidden="true" />{t('practice')}</Link>
+        <Link href={practicePath(list.id)} aria-label={t('practiceList', { name: list.name })}><Keyboard aria-hidden="true" />{t('practice')}</Link>
       </Button>
       {!readOnly && <Button data-edit variant="outline" size="lg" className="size-10 px-0 sm:w-auto sm:px-3" disabled={disabled} onClick={onEdit} aria-label={t('editList', { name: list.name })} title={t('edit')}>
         <Pencil aria-hidden="true" /><span className="hidden sm:inline">{t('edit')}</span>
@@ -71,7 +72,7 @@ export default function ListRow({ item, now, highlight, disabled, canCopy, readO
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" sideOffset={4} className="min-w-56">
           <DropdownMenuItem asChild className={cn(svgClass, 'sm:hidden')}>
-            <Link href={`/play?list=${id}`}><Keyboard aria-hidden="true" />{t('practiceThis')}</Link>
+            <Link href={practicePath(list.id)}><Keyboard aria-hidden="true" />{t('practiceThis')}</Link>
           </DropdownMenuItem>
           {practiceCount > 0 && <>
             <DropdownMenuItem asChild className={svgClass}>

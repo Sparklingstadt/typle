@@ -10,6 +10,7 @@ import type { PackOverview } from '@/core/packEditing'
 import { cn } from '@/lib/utils'
 import ListLabels from './ListLabels'
 import { usePracticeText } from './ListRow'
+import { practicePath } from '@/lib/routes'
 
 const svgClass = '[&_svg]:shrink-0 [&_svg]:text-muted-foreground'
 
@@ -89,7 +90,7 @@ export default function PackRow({ item, now, open, onToggle, highlight, disabled
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={4} className="min-w-56">
             {practiceId && <DropdownMenuItem asChild className={svgClass}>
-              <Link href={`/play?list=${encodeURIComponent(practiceId)}`}><Keyboard aria-hidden="true" />{t('practice')}</Link>
+              <Link href={practicePath(practiceId)}><Keyboard aria-hidden="true" />{t('practice')}</Link>
             </DropdownMenuItem>}
             {!followed && <DropdownMenuItem className={svgClass} disabled={disabled} onSelect={onEditPack}><Pencil aria-hidden="true" />{t('edit')}</DropdownMenuItem>}
             {!followed && onAddList && <DropdownMenuItem className={svgClass} disabled={disabled} onSelect={onAddList}><ListPlus aria-hidden="true" />{t('addList')}</DropdownMenuItem>}

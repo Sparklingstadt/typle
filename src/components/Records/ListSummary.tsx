@@ -7,6 +7,7 @@ import { formatAccuracy, lastPracticedAt, listBest, PRACTICE_MODES } from '@/cor
 import type { SavedWordList } from '@/core/wordLists'
 import PracticeName from '@/components/PracticeName'
 import { RecordTime } from '@/components/Records/RecordRow'
+import { practicePath } from '@/lib/routes'
 
 // Shown while one list is selected: how that list is going, and the way back to practising it. Modes are never compared,
 // so the best is shown for each mode the list has records of.
@@ -35,7 +36,7 @@ export default function ListSummary({ list, now }: { list: SavedWordList; now: D
     </div>}
     <div className="flex flex-wrap gap-2">
       <Button asChild variant="outline" className="grow sm:grow-0"><Link href={`/rankings?list=${encodeURIComponent(list.id)}`}>{t('rankings')}</Link></Button>
-      <Button asChild className="grow sm:grow-0"><Link href={`/play?list=${encodeURIComponent(list.id)}`}><Keyboard aria-hidden="true" />{t('practice')}</Link></Button>
+      <Button asChild className="grow sm:grow-0"><Link href={practicePath(list.id)}><Keyboard aria-hidden="true" />{t('practice')}</Link></Button>
     </div>
   </section>
 }

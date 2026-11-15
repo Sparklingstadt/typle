@@ -8,9 +8,7 @@ import type { T } from "@/components/Dashboard/Delta"
 import PracticeName, { usePracticeName } from "@/components/PracticeName"
 import { useFormat } from "@/i18n/useFormat"
 import type { NextList } from "@/core/dashboard"
-import type { SavedWordList } from "@/core/wordLists"
-
-export function practiceHref(list: SavedWordList) { return `/play?list=${encodeURIComponent(list.id)}` }
+import { practicePath } from "@/lib/routes"
 
 function reasonBadge(t: T, { reason }: NextList) {
   if (reason.kind === 'new') return { icon: Sparkles, text: t('next.new') }
@@ -33,7 +31,7 @@ export default function NextLists({ items, now }: { items: NextList[]; now: Date
         </div>
         <Badge variant="outline" className="col-span-2 justify-self-start md:col-span-1"><Icon aria-hidden="true" />{text}</Badge>
         <Button asChild variant="outline" className="col-start-2 row-start-1 md:col-start-3">
-          <Link href={practiceHref(item.list)} aria-label={t('next.practiceList', { name: practiceName(item.list) })}>{t('next.practice')}</Link>
+          <Link href={practicePath(item.list.id)} aria-label={t('next.practiceList', { name: practiceName(item.list) })}>{t('next.practice')}</Link>
         </Button>
       </li>
     })}
