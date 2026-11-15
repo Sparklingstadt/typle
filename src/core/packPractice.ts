@@ -1,5 +1,5 @@
 import { levelName } from './listOverview'
-import type { PackOverview } from './packEditing'
+import type { PackOverview } from './packOverview'
 import type { SavedWordList } from './wordLists'
 
 /** Packs by most recent practice (newest `lastPracticed` first). Packs never practiced come last, in saved order. */

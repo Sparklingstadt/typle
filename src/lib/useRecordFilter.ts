@@ -1,5 +1,5 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import type { RecordFilter } from '@/core/records'
+import type { RecordFilter } from '@/core/recordHistory'
 
 // `?pack=<id>&list=<id>&device=<id>` keeps the filter in the URL, so the practice result and the dashboard can link to one list's history.
 export function useRecordFilter(): [RecordFilter, (next: RecordFilter) => void] {

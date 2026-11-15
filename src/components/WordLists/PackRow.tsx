@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { ChevronRight, Copy, Download, EyeOff, History, Keyboard, Library, ListPlus, MoreHorizontal, Pencil, Share2, Trash2, UserMinus } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import type { PackOverview } from '@/core/packEditing'
+import type { PackOverview } from '@/core/packOverview'
 import { cn } from '@/lib/utils'
 import ListLabels from './ListLabels'
 import { usePracticeText } from './ListRow'
