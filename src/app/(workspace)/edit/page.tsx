@@ -22,6 +22,7 @@ import { loneListPack, saveListInPack } from "@/core/packEditing"
 import PageStorageBadge from "@/components/PageStorageBadge"
 import type { WorkspaceLocation } from "@/core/workspaceStore"
 import { PageHeader, PageMain } from "@/components/ui/page-layout"
+import { editPackPath } from "@/lib/routes"
 
 export default function Edit() {
   const workspace = useWordLists()
@@ -71,7 +72,7 @@ function WordLists({ workspace }: { workspace: Workspace }) {
   const editingPack = editing ? packs.find(pack => pack.id === editing.packId) : undefined
   // The lists of a followed pack are not edited: the notice replaces the editor, with the way back.
   if (openId && editing && editingPack && isFollowed(editingPack)) {
-    return <Notice link={{ href: `/edit?pack=${encodeURIComponent(editingPack.id)}`, label: t('title') }}>{errors('packFollowed')}</Notice>
+    return <Notice link={{ href: editPackPath(editingPack.id), label: t('title') }}>{errors('packFollowed')}</Notice>
   }
   if (openId && editing) return <WordListEditor key={editing.id} title={t('editTitle')} initial={editing} packs={ownPacks(packs)} packId={editing.packId ?? null} error={error} errorKey={errorKey}
     lonePackName={lonePack?.name}

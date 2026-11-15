@@ -14,6 +14,7 @@ import { importPackFile, type PackFile } from '@/core/packFile'
 import { randomId } from '@/core/randomId'
 import { useErrorText } from '@/i18n/useErrorText'
 import { useWordLists } from '@/lib/useWordLists'
+import { editPackPath } from '@/lib/routes'
 
 export default function SharedPackView({ id, file }: { id: string; file: PackFile }) {
   const t = useTranslations('wordLists')
@@ -38,7 +39,7 @@ export default function SharedPackView({ id, file }: { id: string; file: PackFil
       if (await updateLibrary(library => importPackFile(library, file, ids))) {
         // Counts the add for the gallery; the server decides whether the share is listed. Not awaited, and a failure is not shown.
         api(withQuery('/api/gallery/added', { id }), { method: 'POST', keepalive: true }).catch(() => {})
-        router.push(`/edit?pack=${encodeURIComponent(ids.pack)}`)
+        router.push(editPackPath(ids.pack))
       }
     } catch (reason) {
       setFailure(errorText(reason, t('sharedPage.addFailed')))

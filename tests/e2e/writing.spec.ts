@@ -51,7 +51,7 @@ test('wrong word counts a mistake on Enter', async ({ page }) => {
   await field(page).fill('dog')
   const result = page.getByLabel('練習結果', { exact: true })
   await expect(result).toContainText('Handwriting')
-  await expect(result).toContainText('66.67%')
+  await expect(result).toContainText('66.7%')
   await expect(result).toContainText('練習記録を保存しました。')
 })
 

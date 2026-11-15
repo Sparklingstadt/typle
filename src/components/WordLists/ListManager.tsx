@@ -26,6 +26,7 @@ import { isFollowed } from "@/core/followedPacks"
 import { deletePack, loneListPack, matchesPackQuery, packOverviews, sortPacks, visibleListRows, type PackOverview } from "@/core/packEditing"
 import type { SavedWordList } from "@/core/wordLists"
 import { CardList } from "@/components/ui/card"
+import { packSettingsPath } from "@/lib/routes"
 
 export default function ListManager({ lists, packs, saving, highlight, highlightPack, update, updateLibrary, notify, onShowPack, openPacks, onOpenPacksChange, onEdit, onHighlight }: {
   lists: SavedWordList[]
@@ -124,7 +125,7 @@ export default function ListManager({ lists, packs, saving, highlight, highlight
             else next.add(pack.id)
             onOpenPacksChange(next)
           }}
-          onEditPack={() => router.push(`/packs/edit?pack=${encodeURIComponent(pack.id)}`)}
+          onEditPack={() => router.push(packSettingsPath(pack.id))}
           onAddList={full ? undefined : () => router.push(`/create?pack=${encodeURIComponent(pack.id)}`)}
           onCopy={own + item.lists.length > MAX_LISTS ? undefined : () => copyPackOf(item)} onExport={() => exportPack(item)}
           onShare={canShare ? () => setSharing({ id: pack.id, name: pack.name }) : undefined} shared={shares.has(pack.id)} listed={shares.get(pack.id)?.listed} hidden={shares.get(pack.id)?.hidden}

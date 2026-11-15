@@ -5,9 +5,10 @@ import { Keyboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import PracticeName, { usePracticeName } from "@/components/PracticeName"
-import { practiceHref } from "@/components/Dashboard/NextLists"
 import { useFormat } from "@/i18n/useFormat"
 import type { ContinueList } from "@/core/dashboard"
+import { practicePath } from "@/lib/routes"
+import { formatAccuracy } from "@/core/records"
 
 const SAMPLE_WORDS = 3
 
@@ -24,7 +25,7 @@ export default function ContinueCard({ item, now }: { item: ContinueList; now: D
       <h2 id="continue-name" className="text-2xl font-bold break-words"><PracticeName list={list} /></h2>
       <p className="text-sm text-muted-foreground">
         {t("meta", { count: list.words.length, day: format.day(lastPracticed, now) })}
-        {best && <> · {t("best", { accuracy: best.accuracy === undefined ? t("notRecorded") : `${best.accuracy}%`, time: best.time.toFixed(2) })}</>}
+        {best && <> · {t("best", { accuracy: best.accuracy === undefined ? t("notRecorded") : formatAccuracy(best.accuracy), time: best.time.toFixed(2) })}</>}
       </p>
     </div>
     <ul aria-label={t("samples")} className="flex flex-wrap items-center gap-2">
@@ -33,7 +34,7 @@ export default function ContinueCard({ item, now }: { item: ContinueList; now: D
     </ul>
     <div className="flex flex-wrap items-center gap-3">
       <Button asChild size="lg">
-        <Link href={practiceHref(list)} aria-label={t("practiceList", { name: practiceName(list) })}><Keyboard aria-hidden="true" />{t("practice")}</Link>
+        <Link href={practicePath(list.id)} aria-label={t("practiceList", { name: practiceName(list) })}><Keyboard aria-hidden="true" />{t("practice")}</Link>
       </Button>
       <Button asChild variant="link"><Link href="/edit">{t("other")}</Link></Button>
     </div>
