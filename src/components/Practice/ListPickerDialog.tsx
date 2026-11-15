@@ -2,7 +2,7 @@
 import { useTranslations } from "next-intl"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import type { Labels } from "@/core/listOverview"
-import type { PackOverview } from "@/core/packEditing"
+import type { PackOverview } from "@/core/packOverview"
 import type { PracticeMode } from "@/core/records"
 import { SearchField } from "@/components/ui/search-field"
 import CategorySelect from "@/components/Practice/CategorySelect"

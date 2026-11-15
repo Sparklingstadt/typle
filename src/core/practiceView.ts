@@ -1,5 +1,5 @@
 import { matchesFilter } from './listOverview'
-import { matchesPackQuery, type PackOverview } from './packEditing'
+import { matchesPackQuery, type PackOverview } from './packOverview'
 import type { PracticeMode } from './records'
 import type { Word } from './wordDraft'
 
