@@ -3,6 +3,9 @@ import type { SavedWordList, WritingLanguage } from "./wordLists"
 export type Word = SavedWordList["words"][number]
 export type DraftWord = Word & { key: string }
 export const MAX_WORDS = 1000
+// The longest text a word may have to type or show (input, display), and the longest annotation, in UTF-16 code units.
+export const MAX_WORD_TEXT = 1000
+export const MAX_ANNOTATION = 2000
 export const emptyWord = (): Word => ({ display: "", input: "", annotation: "", input_type: "word" })
 // An input equal to the display is shown as empty; saving uses the display for empty inputs.
 export const normalizeWord = (word: Word): Word => ({ ...word, input: word.input === word.display ? "" : word.input, input_type: word.input_type ?? "word" })
