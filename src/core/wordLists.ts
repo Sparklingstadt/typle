@@ -10,7 +10,7 @@ export const isInputType = (value: unknown): value is InputType =>
 export const WRITING_LANGUAGES = ['en', 'ja', 'zh-Hans', 'zh-Hant', 'ko', 'fr', 'de', 'es', 'ru', 'cs'] as const
 export type WritingLanguage = typeof WRITING_LANGUAGES[number]
 
-export const isWritingLanguage = (value: unknown): value is WritingLanguage =>
+const isWritingLanguage = (value: unknown): value is WritingLanguage =>
   (WRITING_LANGUAGES as readonly unknown[]).includes(value)
 
 /** A valid mark: an object whose only key is a known language. */

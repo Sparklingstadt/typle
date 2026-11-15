@@ -13,7 +13,7 @@ import { MAX_CATEGORY, MAX_TAG, MAX_TAGS, normalizeLabels } from '@/core/wordLis
 const separators = /[,、，]/
 
 /** The tags with `text` added: the separated parts, trimmed, unless already there in any case, up to MAX_TAGS. */
-export function addTags(tags: string[], text: string) {
+function addTags(tags: string[], text: string) {
   return (normalizeLabels({ tags: [...tags, ...text.split(separators)] }).tags ?? []).slice(0, MAX_TAGS)
 }
 
