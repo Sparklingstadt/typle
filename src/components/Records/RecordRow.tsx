@@ -5,7 +5,8 @@ import { useFormat } from '@/i18n/useFormat'
 import { LOW_ACCURACY } from '@/core/dashboard'
 import { usePracticeName } from '@/components/PracticeName'
 import { levelName } from '@/core/listOverview'
-import { formatAccuracy, secondsPerWord, type RecordRow as Row } from '@/core/records'
+import { formatAccuracy, secondsPerWord } from '@/core/records'
+import type { RecordRow as Row } from '@/core/recordHistory'
 import { cn } from '@/lib/utils'
 
 // Shared by the column labels and the rows so the numbers line up under their headings.

@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { packOverviews } = require('../src/core/packEditing.ts')
+const { packOverviews } = require('../src/core/packOverview.ts')
 const { packsByRecentPractice, packChoices, practiceName } = require('../src/core/packPractice.ts')
 
 const stamp = '2026-10-01T00:00:00.000Z'

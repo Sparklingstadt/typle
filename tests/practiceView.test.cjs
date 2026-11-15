@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { matchingPacks, upcomingWords, oneLineDisplay, isParagraphWord, currentMode } = require('../src/core/practiceView.ts')
-const { packOverviews } = require('../src/core/packEditing.ts')
+const { packOverviews } = require('../src/core/packOverview.ts')
 
 const word = (display, input_type = 'word') => ({ display, input: display, annotation: '', input_type })
 const texts = (...items) => items.map(text => ({ display: text, input: text.toLowerCase(), annotation: '' }))
