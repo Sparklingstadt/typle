@@ -4,6 +4,7 @@ import { settle, trimLevels } from './packEditing'
 import { MAX_CATEGORY, MAX_LEVEL, MAX_SAVED_LEVELS, MAX_TAG, MAX_TAGS, isInputType, isWritingMark, normalizeLabels, validateList, type SavedWordList } from './wordLists'
 import { MAX_PACK_DESCRIPTION, MAX_PACK_NAME, nameKey, separateLevels, type Library, type WordPack } from './wordPacks'
 import { fit, unique } from './workspaceDocument'
+import { MAX_ANNOTATION, MAX_WORD_TEXT, MAX_WORDS } from './wordDraft'
 
 /**
  * A pack as a file (`<pack name>.typle-pack.json`), to hand to another account. It holds no records, ids, dates or
@@ -98,12 +99,7 @@ function checkRoom(library: Library, count: number, followed = false) {
   } else if (ownListCount(library) + count > MAX_LISTS) throw new AppError('listLimit', { max: MAX_LISTS })
 }
 
-// The limits a save enforces on sizes (see validateLibrary and validateLists), checked on the file as it was read.
-const MAX_WORDS = 1000
-const MAX_INPUT = 1000
-const MAX_DISPLAY = 1000
-const MAX_ANNOTATION = 2000
-
+// The limits a save enforces on sizes (see validateLibrary and validateLists) are checked on the file as it was read.
 function checkSizes(file: PackFile) {
   const { name, description, category, tags } = file.pack
   const labels = normalizeLabels({ category, tags })
@@ -112,7 +108,7 @@ function checkSizes(file: PackFile) {
     file.lists.some(item => {
       const levels = (item.levels ?? []).map(level => level.trim()).filter(Boolean)
       return item.name.length > MAX_LIST_NAME || item.words.length > MAX_WORDS || levels.length > MAX_SAVED_LEVELS || levels.some(level => level.length > MAX_LEVEL) ||
-        item.words.some(word => word.input.length > MAX_INPUT || word.display.length > MAX_DISPLAY || word.annotation.length > MAX_ANNOTATION)
+        item.words.some(word => word.input.length > MAX_WORD_TEXT || word.display.length > MAX_WORD_TEXT || word.annotation.length > MAX_ANNOTATION)
     })
   if (tooLarge) throw new AppError('invalidPackFile')
 }

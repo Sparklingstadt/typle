@@ -4,6 +4,7 @@ import { DEFAULT_DEVICE_ID, defaultDevice, isDevice, type PracticeDevice } from 
 import type { SavedWordList } from "./wordLists"
 import { sessionResult, TypingSession } from "./typing"
 import { startOfDay } from "./dates"
+import { MAX_WORD_TEXT } from "./wordDraft"
 
 export type TimeUnit = "hours" | "minutes" | "seconds"
 
@@ -30,14 +31,15 @@ export type MissedWord = { word: string; count: number }
 
 /** The most words a record keeps as missed, so that 10000 records of a list stay small. */
 export const MAX_MISSED_WORDS = 20
-// As the longest word a list may have (MaxWordText in server/internal/workspace).
-const MAX_MISSED_WORD = 1000
 
-/** Whether `value` is a record's `missed`: up to MAX_MISSED_WORDS words, each a non-empty text and a count of 1 or more. */
+/**
+ * Whether `value` is a record's `missed`: up to MAX_MISSED_WORDS words, each a non-empty text no longer than a list's
+ * words (MAX_WORD_TEXT) and a count of 1 or more.
+ */
 export function isMissedWords(value: unknown): value is MissedWord[] {
   return Array.isArray(value) && value.length <= MAX_MISSED_WORDS && value.every(item => item !== null && typeof item === 'object' &&
     Object.keys(item).every(key => key === 'word' || key === 'count') &&
-    typeof item.word === 'string' && item.word.length > 0 && item.word.length <= MAX_MISSED_WORD &&
+    typeof item.word === 'string' && item.word.length > 0 && item.word.length <= MAX_WORD_TEXT &&
     Number.isSafeInteger(item.count) && item.count >= 1)
 }
 
@@ -72,7 +74,7 @@ export function makeRecord(session: TypingSession, words: { input: string }[], i
 }
 
 export const MAX_RECORDS = 10000
-const MAX_RECORD_ID = 100
+export const MAX_RECORD_ID = 100
 // The built-in device's name in the app's base language, as Go saves it (defaultDeviceName in server/internal/workspace);
 // screens show it by its id.
 const DEFAULT_DEVICE_NAME = baseFormat.defaultDevice
