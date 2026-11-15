@@ -3,6 +3,7 @@ import baseFormat from "../messages/ja/format.json"
 import { DEFAULT_DEVICE_ID, defaultDevice, isDevice, type PracticeDevice } from "./devices"
 import type { SavedWordList } from "./wordLists"
 import { sessionResult, TypingSession } from "./typing"
+import { startOfDay } from "./dates"
 
 export type TimeUnit = "hours" | "minutes" | "seconds"
 
@@ -136,10 +137,18 @@ export function recentRecords(lists: SavedWordList[]) {
     .sort((a, b) => Date.parse(b.record.date) - Date.parse(a.record.date))
 }
 
+/** The time of the newest of the records, in milliseconds, or null without a record. Dates that do not parse are skipped. */
+export function lastPracticedAt(records: Pick<StoredRecord, 'date'>[]): number | null {
+  const dates = records.map(record => Date.parse(record.date)).filter(Number.isFinite)
+  return dates.length ? Math.max(...dates) : null
+}
+
+export function average(values: number[]) { return values.reduce((total, value) => total + value, 0) / values.length }
+export function accuracies(records: StoredRecord[]) { return records.flatMap(record => record.accuracy === undefined ? [] : [record.accuracy]) }
+
 // For choosing a list to practise: lists practised most recently first, then the rest in their saved order.
 export function byRecentPractice<T extends Pick<SavedWordList, 'records'>>(lists: T[]) {
-  const last = (list: T) => Math.max(-Infinity, ...list.records.map(record => Date.parse(record.date)).filter(Number.isFinite))
-  return lists.map((list, index) => ({ list, index, last: last(list) }))
+  return lists.map((list, index) => ({ list, index, last: lastPracticedAt(list.records) ?? -Infinity }))
     .sort((a, b) => (b.last === a.last ? 0 : b.last > a.last ? 1 : -1) || a.index - b.index)
     .map(item => item.list)
 }
@@ -155,6 +164,25 @@ export function rankRecords(records: StoredRecord[], order: RankOrder = 'accurac
 
 export function bestRecords(records: StoredRecord[], limit = 5, order: RankOrder = 'accuracy') {
   return rankRecords(records, order).slice(0, limit)
+}
+
+export type RunComparison = { rank: number } & ({ kind: 'firstAtCount' | 'firstForList' } | { kind: 'best'; difference: number } | { kind: 'behind'; previous: StoredRecord })
+
+/**
+ * How a finished run compares with the list's other runs, for the practice result. Ranks use the same order as the best
+ * records (accuracy first, then time), so only rank 1 is shown as an improvement. Like ベスト記録, only runs at this
+ * word count are compared: a run from before the list was edited is a different task. Only runs of the practised mode
+ * are compared, so a recall or handwriting run is never measured against normal runs. The run has a rank only once it
+ * is saved.
+ */
+export function compareRun(record: PracticeRecord | null, allRecords: StoredRecord[], wordCount: number, saved: boolean, mode: PracticeMode): RunComparison {
+  const records = recordsOfMode(allRecords, mode)
+  const ranked = bestRecords(records.filter(item => item.wordCount === wordCount), Infinity)
+  const rank = record && saved ? ranked.findIndex(item => item.id === record.id) + 1 : 0
+  const previous = ranked.find(item => item.id !== record?.id)
+  if (!previous) return { rank, kind: records.some(item => item.id !== record?.id) ? 'firstAtCount' : 'firstForList' }
+  if (rank === 1 && record) return { rank, kind: 'best', difference: record.time - previous.time }
+  return { rank, kind: 'behind', previous }
 }
 
 // Editing a list changes the task, so only runs at its current word count are compared. Records without a word
@@ -215,8 +243,7 @@ export function deviceOptions(records: StoredRecord[]) {
 export function groupByDay(rows: RecordRow[]) {
   const groups: { day: Date; rows: RecordRow[]; seconds: number }[] = []
   for (const row of rows) {
-    const date = new Date(row.record.date)
-    const day = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+    const day = startOfDay(new Date(row.record.date))
     const last = groups[groups.length - 1]
     if (last && last.day.getTime() === day.getTime()) { last.rows.push(row); last.seconds += row.record.time }
     else groups.push({ day, rows: [row], seconds: row.record.time })

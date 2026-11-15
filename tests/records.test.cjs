@@ -243,3 +243,25 @@ test('a finished run keeps its missed words by their text, most mistakes first, 
   assert.equal(isMissedWords([{ word: 'a', count: 1.5 }]), false)
   assert.throws(() => decodeLists(JSON.stringify({ version: 1, lists: [{ ...list, records: [{ time: 1, date: '2026-09-06T00:00:00Z', missed: [{ word: 'a' }] }] }] })), { key: 'savedDataCorrupted' })
 })
+
+const { compareRun, lastPracticedAt } = require('../src/core/records.ts')
+
+test('lastPracticedAt is the newest parsable date, or null without one', () => {
+  assert.equal(lastPracticedAt([]), null)
+  assert.equal(lastPracticedAt([{ date: 'not a date' }]), null)
+  assert.equal(lastPracticedAt([{ date: '2026-09-01T00:00:00Z' }, { date: '2026-09-03T00:00:00Z' }, { date: 'bad' }]), Date.parse('2026-09-03T00:00:00Z'))
+})
+
+test('compareRun ranks a saved run among runs of its mode at the same word count', () => {
+  const run = (id, time, extra = {}) => ({ id, time, accuracy: 100, wordCount: 2, date: '2026-09-01T00:00:00Z', ...extra })
+  const record = run('new', 3)
+  assert.deepEqual(compareRun(record, [record], 2, true, 'normal'), { rank: 1, kind: 'firstForList' })
+  assert.deepEqual(compareRun(record, [record, run('old', 5, { wordCount: 3 })], 2, true, 'normal'), { rank: 1, kind: 'firstAtCount' })
+  assert.deepEqual(compareRun(record, [record, run('old', 5)], 2, true, 'normal'), { rank: 1, kind: 'best', difference: -2 })
+  const faster = run('old', 1)
+  assert.deepEqual(compareRun(record, [record, faster], 2, true, 'normal'), { rank: 2, kind: 'behind', previous: faster })
+  // Not saved yet: no rank, so even a faster run is not called the best.
+  assert.deepEqual(compareRun(record, [record, run('old', 5)], 2, false, 'normal'), { rank: 0, kind: 'behind', previous: run('old', 5) })
+  // A recall run is never compared with normal runs.
+  assert.deepEqual(compareRun(record, [record, run('recall', 1, { mode: 'recall' })], 2, true, 'normal'), { rank: 1, kind: 'firstForList' })
+})

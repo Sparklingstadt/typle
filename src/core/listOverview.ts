@@ -1,5 +1,5 @@
 import { AppError } from './appError'
-import { recordsOfMode } from './records'
+import { lastPracticedAt, recordsOfMode } from './records'
 import type { SavedWordList } from './wordLists'
 import type { Library } from './wordPacks'
 
@@ -34,8 +34,7 @@ export const LIST_ORDERS: ListOrder[] = ['added', 'practiced', 'name', 'words']
 
 export function listOverviews(lists: SavedWordList[]): ListOverview[] {
   return lists.map((list, position) => {
-    const dates = list.records.map(record => Date.parse(record.date)).filter(Number.isFinite)
-    return { list, position, practiceCount: list.records.length, lastPracticed: dates.length ? Math.max(...dates) : null }
+    return { list, position, practiceCount: list.records.length, lastPracticed: lastPracticedAt(list.records) }
   })
 }
 

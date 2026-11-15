@@ -1,4 +1,5 @@
-import { listBest, recordMode, recordsOfMode, type TimeUnit } from './records'
+import { addDays, daysBetween, startOfDay, startOfWeek } from './dates'
+import { accuracies, average, listBest, recordMode, recordsOfMode, type TimeUnit } from './records'
 import type { SavedWordList } from './wordLists'
 
 type StoredRecord = SavedWordList['records'][number]
@@ -6,25 +7,9 @@ type StoredRecord = SavedWordList['records'][number]
 export const STALE_DAYS = 3
 export const LOW_ACCURACY = 90
 const TREND_POINTS = 20
-const DAY_MS = 24 * 60 * 60 * 1000
-
-// Records store UTC timestamps; every day and week boundary here follows the viewer's local calendar.
-export function startOfDay(date: Date) { return new Date(date.getFullYear(), date.getMonth(), date.getDate()) }
-export function addDays(date: Date, days: number) {
-  const next = new Date(date)
-  next.setDate(next.getDate() + days)
-  return next
-}
-export function startOfWeek(date: Date) {
-  const day = startOfDay(date)
-  return addDays(day, -((day.getDay() + 6) % 7))
-}
 function dayKey(date: Date) { return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}` }
-function daysBetween(from: Date, to: Date) { return Math.round((startOfDay(to).getTime() - startOfDay(from).getTime()) / DAY_MS) }
 function timeOf(record: StoredRecord) { return Date.parse(record.date) }
 function newestFirst(records: StoredRecord[]) { return [...records].sort((a, b) => timeOf(b) - timeOf(a)) }
-function average(values: number[]) { return values.reduce((total, value) => total + value, 0) / values.length }
-function accuracies(records: StoredRecord[]) { return records.flatMap(record => record.accuracy === undefined ? [] : [record.accuracy]) }
 
 export type Change = { recent: number; recentCount: number; previous: number; previousCount: number }
 function change(newest: number[], recentCount: number, previousCount: number): Change | null {
