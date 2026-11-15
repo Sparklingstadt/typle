@@ -53,7 +53,7 @@ export function collapseLevels(list: SavedWordList): SavedWordList {
 }
 
 /** Several levels as collapseLevels joins them into one, or undefined when none is left. */
-export function joinLevels(levels: string[]) {
+function joinLevels(levels: string[]) {
   return bare(fit(levels.map(bare).filter(Boolean).join('・'), '', MAX_LEVEL)) || undefined
 }
 
