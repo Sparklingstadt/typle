@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useRef, type RefObject } from 'react'
-import type { PracticeMode } from '../core/records'
+import type { PracticeMode } from '@/core/records'
 import type { WritingChoice } from './writingMode'
 
 export function usePracticeFocus({ mode, finished, input, showResume, writingChoice }: {

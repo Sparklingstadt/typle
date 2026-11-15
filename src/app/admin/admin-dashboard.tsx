@@ -70,8 +70,7 @@ export default function AdminDashboard() {
   async function signOut() {
     setSignOutFailed(false)
     try {
-      const response = await fetch('/api/auth/admin/signout', { method: 'POST' })
-      if (!response.ok) throw new Error('admin sign-out failed')
+      await api('/api/auth/admin/signout', { method: 'POST' })
       setState({ kind: 'signedOut' })
     } catch { setSignOutFailed(true) }
   }

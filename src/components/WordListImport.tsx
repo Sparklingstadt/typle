@@ -6,9 +6,9 @@ import { ErrorAlert } from "./ui/alert"
 import { Button } from "./ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { useErrorText } from "@/i18n/useErrorText"
-import { AppError } from "../core/appError"
-import { MAX_IMPORT_BYTES, type Word } from "../core/wordFormat"
-import { importAccept, importFormat } from "../plugins/formats"
+import { AppError } from "@/core/appError"
+import { MAX_IMPORT_BYTES, type Word } from "@/core/wordFormat"
+import { importAccept, importFormat } from "@/plugins/formats"
 
 type Words = Word[]
 export type ImportMode = "append" | "replace"

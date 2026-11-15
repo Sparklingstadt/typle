@@ -1,10 +1,10 @@
 "use client"
 import { useEffect, useRef, useState } from 'react'
-import type { PracticeDevice } from '../core/devices'
-import type { SavedWordList } from '../core/wordLists'
+import type { PracticeDevice } from '@/core/devices'
+import type { SavedWordList } from '@/core/wordLists'
 import type { RecordSave } from './useWordLists'
-import { sessionResult, revealAnswer, typeInput } from '../core/typing'
-import type { PracticeMode } from '../core/records'
+import { sessionResult, revealAnswer, typeInput } from '@/core/typing'
+import type { PracticeMode } from '@/core/records'
 import { useRecordSaving } from './useRecordSaving'
 import { useTypingOptions } from './inputSettings'
 

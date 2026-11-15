@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from '@/lib/session'
+import { api } from '@/core/api'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 
@@ -13,8 +14,7 @@ export default function LocalLoginForm() {
   return <form action={async () => {
     setError('')
     try {
-      const response = await fetch('/api/auth/local', { method: 'POST' })
-      if (!response.ok) throw new Error('local login failed')
+      await api('/api/auth/local', { method: 'POST' })
       // A session that could not be read keeps the one before, which is not this sign-in.
       if (!await update()) throw new Error('local login did not sign in')
       router.push('/play')

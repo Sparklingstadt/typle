@@ -1,7 +1,7 @@
 "use client"
 import type { InferenceSession, Tensor } from 'onnxruntime-web'
-import { inkBounds, inkLayout, LINE_HEIGHT, lineTensor, readHandwriting, recognitionClasses, type InkStroke } from '../core/handwriting'
-import type { WritingLanguage } from '../core/wordLists'
+import { inkBounds, inkLayout, LINE_HEIGHT, lineTensor, readHandwriting, recognitionClasses, type InkStroke } from '@/core/handwriting'
+import type { WritingLanguage } from '@/core/wordLists'
 
 // Reads the handwriting pad's strokes in the browser, with no service and no OS input: onnxruntime-web runs a PaddleOCR
 // recognition model served from public/handwriting (see the README there). The runtime and the model are only fetched

@@ -1,5 +1,5 @@
 "use client"
-import { randomId } from "../core/randomId"
+import { randomId } from "@/core/randomId"
 import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react"
 import { useTranslations } from "next-intl"
 import { ChevronLeft } from "lucide-react"
