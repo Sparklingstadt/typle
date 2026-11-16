@@ -2,7 +2,7 @@
 
 Typle 本体（Web版と iPad・Mac・Android・Windows 版）が使う、アプリ自身のバックエンドです。v2.46.10 から、すべてのパスを Next.js の Route Handler（`src/app/api`・`src/server`）が答えます。v2.47.0 で消した Go のバックエンド（`server/`）と同じ答えを返します（違いは設計書 `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md` の「移した後も Go と違うところ」）。
 
-Web版は v2.41.1 から、ワークスペース・記録・共有・ギャラリー・管理画面を下の REST のパスで読み書きします（v2.14.0〜v2.41.0 は GraphQL）。iPad・Mac 版も 11/13 に REST へ戻りました。GraphQL（`POST /api/graphql`）は v2.43.0 で消しました。
+Web版は v2.41.1 から、ワークスペース・記録・共有・ギャラリーを下の REST のパスで読み書きします（v2.14.0〜v2.41.0 は GraphQL）。iPad・Mac 版も 11/13 に REST へ戻りました。GraphQL（`POST /api/graphql`）は v2.43.0 で消しました。
 
 ## エンドポイント
 
@@ -27,11 +27,6 @@ Web版は v2.41.1 から、ワークスペース・記録・共有・ギャラ�
 | [`POST /api/auth/token`](./auth.md#post-api-auth-token) | — | アプリのログインのコードをトークンに換える |
 | [`POST /api/auth/signout`](./auth.md#post-api-auth-signout) | — | ログアウト |
 | [`POST /api/auth/local`](./auth.md#post-api-auth-local) | — | 開発用のログイン（有効なときだけ） |
-| [`POST /api/auth/admin/signout`](./admin.md#post-api-auth-admin-signout) | — | 管理画面からログアウト |
-| [`GET /api/admin/dashboard`](./admin.md#get-api-admin-dashboard) | 管理者 | 管理画面の集計 |
-| [`GET /api/admin/users`](./admin.md#get-api-admin-users) | 管理者 | ユーザーの一覧 |
-| [`GET /api/admin/gallery`](./admin.md#get-api-admin-gallery) | 管理者 | ギャラリーのパックと通報 |
-| [`POST /api/admin/gallery/hide`・`unhide`](./admin.md#post-api-admin-gallery-hide・post-api-admin-gallery-unhide) | 管理者 | パックを非公開にする・戻す |
 
 ## 共通事項
 
@@ -79,4 +74,4 @@ Cookie で書き込むリクエストは、`Origin` がアプリの origin（`AU
 
 | 場所 | 内容 |
 |---|---|
-| `src/app/api`・`src/server` | Next.js の Route Handler。すべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/core/records.ts`、管理画面は `src/server/admin.ts`、ログインの始まりと戻りは `src/server/signin.ts`・`github.ts`・`ffpf.ts`） |
+| `src/app/api`・`src/server` | Next.js の Route Handler。すべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/core/records.ts`、ログインの始まりと戻りは `src/server/signin.ts`・`github.ts`・`ffpf.ts`） |

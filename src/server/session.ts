@@ -55,33 +55,6 @@ export function openSession(key: Buffer, value: string, now: number = Date.now()
   return { sub, name, image, issuedAt: iat as number, expires: exp as number }
 }
 
-/**
- * The administrator signed in to /admin: the FFPF ID account's verified email and its sub (without "ffpf:"), as the
- * Go backend sealed it (session.Keys.SealAdmin) at the end of a login to the dashboard (sealAdmin since v2.46.10). Times are Unix seconds.
- */
-export type Admin = { email: string, sub: string, issuedAt: number, expires: number }
-
-/** An FFPF ID sub as the administrator's cookie holds it. */
-const FFPF_SUB = /^[a-z0-9]{1,64}$/
-
-/** The administrator's cookie: __Host- over HTTPS, as the login cookie. */
-export function adminCookieName(secure: boolean): string {
-  return secure ? '__Host-typle-admin' : 'typle-admin'
-}
-
-/**
- * The administrator in value if it was sealed with the admin key, has not expired at now, and names an FFPF ID account:
- * an email and a sub. Whether that account is still an administrator is for the caller to ask (src/server/admin.ts).
- */
-export function openAdmin(key: Buffer, value: string, now: number = Date.now() / 1000): Admin | null {
-  const claims = openClaims(key, value)
-  if (!claims) return null
-  const { email, sub, iat, exp } = claims
-  if (typeof email !== 'string' || typeof sub !== 'string' || !Number.isInteger(iat) || !Number.isInteger(exp)) return null
-  if (!(now < (exp as number)) || email === '' || !FFPF_SUB.test(sub)) return null
-  return { email, sub, issuedAt: iat as number, expires: exp as number }
-}
-
 /** How long a login lasts: a session is never sealed again, and ends this long after the login. */
 export const SESSION_MAX_AGE = 30 * 24 * 3600
 
@@ -145,28 +118,14 @@ export function sealCode(key: Buffer, code: AppCode): string {
   return seal(key, { sub: code.sub, name: code.name, image: code.image, challenge: code.challenge, exp: code.expires })
 }
 
-/** How long an administrator's session of /admin lasts. It is never renewed: the administrator signs in again. */
-export const ADMIN_MAX_AGE = 12 * 3600
-
-/** An administrator's session that starts at now (whole seconds). */
-export function newAdmin(email: string, sub: string, now: number = Date.now() / 1000): Admin {
-  const issuedAt = Math.floor(now)
-  return { email, sub, issuedAt, expires: issuedAt + ADMIN_MAX_AGE }
-}
-
-/** The administrator's cookie of admin, sealed with the admin key. */
-export function sealAdmin(key: Buffer, admin: Admin): string {
-  return seal(key, { email: admin.email, sub: admin.sub, iat: admin.issuedAt, exp: admin.expires })
-}
-
 /**
  * A login in progress, as the OAuth cookie (typle-oauth) holds it between /api/auth/signin and the callback: the state
  * and the PKCE verifier, where to go afterwards, and when it ends (Unix seconds). challenge is an app's own PKCE challenge
- * when an app started the login, admin a login to /admin, provider "ffpf" for FFPF ID ("" for GitHub), and nonce the
- * OpenID Connect nonce of an FFPF ID login.
+ * when an app started the login, provider "ffpf" for FFPF ID ("" for GitHub), and nonce the OpenID Connect nonce of an
+ * FFPF ID login.
  */
 export type PendingLogin = {
-  state: string, verifier: string, returnTo: string, challenge: string, admin: boolean, provider: string, nonce: string, expires: number,
+  state: string, verifier: string, returnTo: string, challenge: string, provider: string, nonce: string, expires: number,
 }
 
 /** How long a login may take between leaving for GitHub or FFPF ID and coming back. */
@@ -175,15 +134,14 @@ export const OAUTH_MAX_AGE = 600
 export const OAUTH_COOKIE = 'typle-oauth'
 
 /**
- * The OAuth cookie of pending, sealed with the OAuth key. challenge, admin, provider and nonce are left out when empty or
- * false, as the Go backend left them out, so that the cookie of a browser's GitHub login keeps its old form.
+ * The OAuth cookie of pending, sealed with the OAuth key. challenge, provider and nonce are left out when empty, as the
+ * Go backend left them out, so that the cookie of a browser's GitHub login keeps its old form.
  */
 export function sealOAuth(key: Buffer, pending: PendingLogin): string {
   const claims: Record<string, string | number | boolean> = {
     state: pending.state, verifier: pending.verifier, returnTo: pending.returnTo, exp: pending.expires,
   }
   if (pending.challenge) claims.challenge = pending.challenge
-  if (pending.admin) claims.admin = true
   if (pending.provider) claims.provider = pending.provider
   if (pending.nonce) claims.nonce = pending.nonce
   return seal(key, claims)
@@ -191,7 +149,8 @@ export function sealOAuth(key: Buffer, pending: PendingLogin): string {
 
 /**
  * The login in progress in value if it was sealed with the OAuth key and has not expired at now. As Go's json.Unmarshal
- * read it: a field that is absent or null is empty, and one of another type makes the cookie unreadable.
+ * read it: a field that is absent or null is empty, and one of another type makes the cookie unreadable. The admin claim
+ * of a login to the dashboard, which was removed in v2.48.0, is not read: such a login ends as an ordinary one.
  */
 export function openOAuth(key: Buffer, value: string, now: number = Date.now() / 1000): PendingLogin | null {
   const claims = openClaims(key, value)
@@ -201,11 +160,10 @@ export function openOAuth(key: Buffer, value: string, now: number = Date.now() /
     return field === undefined || field === null ? '' : typeof field === 'string' ? field : null
   }
   const [state, verifier, returnTo, challenge, provider, nonce] = ['state', 'verifier', 'returnTo', 'challenge', 'provider', 'nonce'].map(text)
-  const { admin, exp } = claims
+  const { exp } = claims
   if (state === null || verifier === null || returnTo === null || challenge === null || provider === null || nonce === null) return null
-  if (admin !== undefined && admin !== null && typeof admin !== 'boolean') return null
   if (exp !== undefined && exp !== null && !Number.isInteger(exp)) return null
   const expires = typeof exp === 'number' ? exp : 0
   if (!(now < expires)) return null
-  return { state, verifier, returnTo, challenge, admin: admin === true, provider, nonce, expires }
+  return { state, verifier, returnTo, challenge, provider, nonce, expires }
 }

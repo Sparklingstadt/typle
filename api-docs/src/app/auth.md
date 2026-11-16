@@ -6,7 +6,6 @@
 
 - Web版：`/api/auth/signin` → GitHub か FFPF ID → `/api/auth/callback/*` → セッションの Cookie を発行して `returnTo` へ戻る。
 - アプリ（iPad・Mac・Android・Windows）：`/api/auth/signin?client=…&code_challenge=…` → GitHub か FFPF ID → `/api/auth/callback/*` → `typle-r://login?code=<コード>` → アプリが `POST /api/auth/token` でコードと verifier をトークンに換える。
-- 管理画面：`/api/auth/signin?admin=1` → FFPF ID → `/api/auth/callback/ffpf` → 管理者の Cookie を発行して `/admin` へ戻る（[管理画面](./admin.md)）。
 
 ## `GET /api/auth/signin`
 
@@ -15,7 +14,8 @@
 | `provider` | `github`（既定）か `ffpf` |
 | `returnTo` | ログイン後に戻るアプリ内のパス（既定 `/home`）。サイト内のパスでなければ既定にする |
 | `client`・`code_challenge` | アプリのログイン。`client` は `ipad`・`macos`・`android`・`windows`（Android 版・Windows 版はアーカイブ済みですが、受け付けます）、`code_challenge` はアプリが作った S256 のチャレンジ（43文字） |
-| `admin=1` | 管理画面のログイン。`provider` によらず FFPF ID を通り、必ず `/admin` に戻る |
+
+管理画面のログイン（`admin=1`）は v2.48.0 でなくしました。今は `admin` を読まず、ほかのクエリのとおりのログインになります。
 
 ログインの途中の状態（state・verifier・戻り先など）を署名した Cookie `typle-oauth`（`Path=/api/auth`、10分）に入れ、GitHub か FFPF ID へリダイレクト（`302`）します。そのログイン方法の設定がなければ `503 authUnavailable` です。
 
@@ -25,7 +25,6 @@
 
 - Web版：セッションの Cookie を発行します。
 - アプリ：Cookie は発行せず、`typle-r://login?code=<コード>`（失敗は `typle-r://login?error=loginFailed`）へ戻ります。コードは2分で切れます。
-- 管理画面：`typle_admins` に登録されたアカウントなら管理者の Cookie を発行して `/admin` へ、そうでなければ `/admin?error=adminForbidden`、DB に聞けなければ `/admin?error=adminUnavailable` へ戻ります。アプリにはログインしません。
 
 ## `POST /api/auth/token`
 

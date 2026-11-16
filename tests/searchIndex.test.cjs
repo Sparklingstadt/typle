@@ -20,11 +20,11 @@ test('a path or trailing slash on the site URL does not leak into the entries', 
   assert.equal(robotsRules(`${site}/`).sitemap, `${site}/sitemap.xml`)
 })
 
-test('robots.txt keeps crawlers out of admin, the development login and the backend', () => {
+test('robots.txt keeps crawlers out of the development login and the backend', () => {
   const robots = robotsRules(site)
   assert.equal(robots.rules.userAgent, '*')
   assert.equal(robots.rules.allow, '/')
-  assert.deepEqual(robots.rules.disallow, ['/admin', '/local-login', '/api/'])
+  assert.deepEqual(robots.rules.disallow, ['/local-login', '/api/'])
   assert.equal(robots.sitemap, `${site}/sitemap.xml`)
   assert.equal(robots.host, site)
 })

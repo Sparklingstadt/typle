@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { openSession, sessionCookieName, openAdmin, adminCookieName, sealSession, openCode, challengeOf, openOAuth, sealOAuth, sealAdmin, newAdmin, sealCode, newCode } = require('../src/server/session.ts')
+const { openSession, sessionCookieName, sealSession, openCode, challengeOf, openOAuth, sealOAuth, sealCode, newCode } = require('../src/server/session.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 
 // The cookies and tokens were sealed by the Go backend (session.Keys.Seal and SealApp), so a login made by either side
@@ -47,25 +47,6 @@ test('the cookie is __Host- over HTTPS', () => {
   assert.equal(readLoginSettings({ AUTH_SECRET: 's', AUTH_URL: 'http://127.0.0.1:3101' }).secure, false)
 })
 
-// The administrator's cookie of /admin, sealed by the Go backend (session.Keys.SealAdmin): it opens only under the admin
-// key, before it expires, with an email and an FFPF ID sub.
-const admins = require('./fixtures/admin-cookies.json')
-const adminSettings = readLoginSettings({ AUTH_SECRET: admins.secret, AUTH_URL: 'https://typle.example' })
-
-test('the Go backend\'s administrator cookies open as they did there', () => {
-  for (const { note, value, admin } of admins.cookies) {
-    const opened = openAdmin(adminSettings.adminKey, value, admins.now)
-    assert.deepEqual(opened && { email: opened.email, sub: opened.sub, iat: opened.issuedAt, exp: opened.expires }, admin && { email: admin.email, sub: admin.sub, iat: admin.iat, exp: admin.exp }, note)
-  }
-  // The login keys do not open it.
-  assert.equal(openSession(adminSettings.sessionKey, admins.cookies[0].value, admins.now), null)
-})
-
-test('the administrator cookie is __Host- over HTTPS', () => {
-  assert.equal(adminCookieName(true), '__Host-typle-admin')
-  assert.equal(adminCookieName(false), 'typle-admin')
-})
-
 // The login cookies, app tokens and app codes the Go backend sealed at a fixed time (tests/fixtures/auth-answers.json):
 // TS seals the same bytes, so that what the Go backend issued before v2.47.0 still opens.
 const auth = require('./fixtures/auth-answers.json')
@@ -91,26 +72,32 @@ test('an app code opens as the Go backend opened it', () => {
   assert.equal(openCode(authSettings.sessionKey, auth.values.code, auth.now), null)
 })
 
-// The login in progress (the OAuth cookie), the administrator's cookie and the app code, as the Go backend sealed them at a
+// The login in progress (the OAuth cookie) and the app code, as the Go backend sealed them at a
 // fixed time (tests/fixtures/signin-answers.json): TS opens Go's and seals the same bytes, so that a login one side starts
 // the other finishes, as during a rollback.
 const signin = require('./fixtures/signin-answers.json')
 const signinSettings = readLoginSettings({ AUTH_SECRET: 'typle-fixture-secret', AUTH_URL: 'https://typle.example' })
 const pendingExp = signin.now + 600
 const pendingLogins = {
-  gh: { state: 'state-1', verifier: 'verifier-1', returnTo: '/lists?x=1&y=<2>', challenge: '', admin: false, provider: '', nonce: '', expires: pendingExp },
-  ghApp: { state: 'state-1', verifier: 'verifier-1', returnTo: '/lists', challenge: signin.challenge, admin: false, provider: '', nonce: '', expires: pendingExp },
-  ghUtf: { state: 'state-1', verifier: 'verifier-1', returnTo: '/ほげ?q=a b', challenge: '', admin: false, provider: '', nonce: '', expires: pendingExp },
-  ghAdmin: { state: 'state-1', verifier: 'verifier-1', returnTo: '/admin', challenge: '', admin: true, provider: '', nonce: '', expires: pendingExp },
-  ff: { state: 'state-1', verifier: 'verifier-1', returnTo: '/play', challenge: '', admin: false, provider: 'ffpf', nonce: 'nonce-1', expires: pendingExp },
-  ffApp: { state: 'state-1', verifier: 'verifier-1', returnTo: '/play', challenge: signin.challenge, admin: false, provider: 'ffpf', nonce: 'nonce-1', expires: pendingExp },
-  ffAdmin: { state: 'state-1', verifier: 'verifier-1', returnTo: '/admin', challenge: '', admin: true, provider: 'ffpf', nonce: 'nonce-1', expires: pendingExp },
+  gh: { state: 'state-1', verifier: 'verifier-1', returnTo: '/lists?x=1&y=<2>', challenge: '', provider: '', nonce: '', expires: pendingExp },
+  ghApp: { state: 'state-1', verifier: 'verifier-1', returnTo: '/lists', challenge: signin.challenge, provider: '', nonce: '', expires: pendingExp },
+  ghUtf: { state: 'state-1', verifier: 'verifier-1', returnTo: '/ほげ?q=a b', challenge: '', provider: '', nonce: '', expires: pendingExp },
+  ff: { state: 'state-1', verifier: 'verifier-1', returnTo: '/play', challenge: '', provider: 'ffpf', nonce: 'nonce-1', expires: pendingExp },
+  ffApp: { state: 'state-1', verifier: 'verifier-1', returnTo: '/play', challenge: signin.challenge, provider: 'ffpf', nonce: 'nonce-1', expires: pendingExp },
+}
+// The logins to the dashboard (removed in v2.48.0) open as ordinary ones: their admin claim is not read.
+const dashboardLogins = {
+  ghAdmin: { state: 'state-1', verifier: 'verifier-1', returnTo: '/admin', challenge: '', provider: '', nonce: '', expires: pendingExp },
+  ffAdmin: { state: 'state-1', verifier: 'verifier-1', returnTo: '/admin', challenge: '', provider: 'ffpf', nonce: 'nonce-1', expires: pendingExp },
 }
 
 test('the Go backend\'s OAuth cookies open, and TS seals the same bytes', () => {
   for (const [name, pending] of Object.entries(pendingLogins)) {
     assert.deepEqual(openOAuth(signinSettings.oauthKey, signin.values[name], signin.now), pending, name)
     assert.equal(sealOAuth(signinSettings.oauthKey, pending), signin.values[name], name)
+  }
+  for (const [name, pending] of Object.entries(dashboardLogins)) {
+    assert.deepEqual(openOAuth(signinSettings.oauthKey, signin.values[name], signin.now), pending, name)
   }
   assert.equal(openOAuth(signinSettings.oauthKey, signin.values.ghOld, signin.now), null)
   assert.equal(openOAuth(signinSettings.oauthKey, signin.values.gh, pendingExp), null)
@@ -126,19 +113,15 @@ test('an OAuth cookie of the wrong types does not open; absent and null fields a
   }
   const exp = signin.now + 10
   assert.deepEqual(openOAuth(signinSettings.oauthKey, sealRaw(`{"state":"s","exp":${exp},"nonce":null,"admin":null}`), signin.now),
-    { state: 's', verifier: '', returnTo: '', challenge: '', admin: false, provider: '', nonce: '', expires: exp })
-  for (const json of [`{"state":1,"exp":${exp}}`, `{"admin":"true","exp":${exp}}`, `{"exp":"${exp}"}`, '{"state":"s"}', `[${exp}]`]) {
+    { state: 's', verifier: '', returnTo: '', challenge: '', provider: '', nonce: '', expires: exp })
+  for (const json of [`{"state":1,"exp":${exp}}`, `{"exp":"${exp}"}`, '{"state":"s"}', `[${exp}]`]) {
     assert.equal(openOAuth(signinSettings.oauthKey, sealRaw(json), signin.now), null, json)
   }
 })
 
 const answerOf = note => signin.answers[signin.requests.findIndex(q => q.note === note)]
 
-test('the administrator\'s cookie and the app code are sealed with the same bytes as the Go backend\'s', () => {
-  const adminCookie = answerOf('admin').setCookie.find(c => c.startsWith('typle-admin=')).split(';')[0].slice('typle-admin='.length)
-  assert.equal(sealAdmin(signinSettings.adminKey, newAdmin('zz-admin@example.com', 'zzadmin1', signin.now + 0.9)), adminCookie)
-  assert.deepEqual(openAdmin(signinSettings.adminKey, adminCookie, signin.now),
-    { email: 'zz-admin@example.com', sub: 'zzadmin1', issuedAt: signin.now, expires: signin.now + 12 * 3600 })
+test('the app code is sealed with the same bytes as the Go backend\'s', () => {
   const code = new URL(answerOf('github app').location).searchParams.get('code')
   assert.equal(sealCode(signinSettings.codeKey, newCode('github:583231', 'The Octocat', 'https://avatars.example/u/583231?v=4', signin.challenge, signin.now + 0.9)), code)
   assert.equal(openCode(signinSettings.codeKey, code, signin.now).expires, signin.now + 120)

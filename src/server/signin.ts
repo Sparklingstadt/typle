@@ -1,7 +1,5 @@
 import { randomBytes, timingSafeEqual } from 'node:crypto'
-import type { Pool } from 'pg'
 import { cookieValue } from './account'
-import { isAdmin } from './admin'
 import { cookieHeader } from './auth'
 import { exchangeFfpfCode, ffpfAuthorizeUrl, FfpfError, type FfpfUser, type JwksCache } from './ffpf'
 import { exchangeGitHubCode, githubAuthorizeUrl, githubUser } from './github'
@@ -9,15 +7,15 @@ import { encodeValues, parseQuery, safeReturnTo, trimSpace, DEFAULT_RETURN_TO } 
 import { reportFailure } from './report'
 import { methodNotAllowed, refuse } from './response'
 import {
-  adminCookieName, ADMIN_MAX_AGE, challengeOf, newAdmin, newCode, newSession, OAUTH_COOKIE, OAUTH_MAX_AGE, openOAuth, sealAdmin, sealCode,
-  sealOAuth, sealSession, SESSION_MAX_AGE, sessionCookieName, type PendingLogin,
+  challengeOf, newCode, newSession, OAUTH_COOKIE, OAUTH_MAX_AGE, openOAuth, sealCode, sealOAuth, sealSession, SESSION_MAX_AGE,
+  sessionCookieName, type PendingLogin,
 } from './session'
 import { readLoginSettings, type LoginSettings } from './settings'
 
 // The login itself: /api/auth/signin sends the browser to GitHub or FFPF ID, and the provider sends it back to
 // /api/auth/callback/github or /api/auth/callback/ffpf, which signs it in. A login an app (iPad, Mac, Android, Windows)
-// starts ends at typle-r://login with a code the app trades for its token (/api/auth/token), and a login to the
-// administrator's dashboard (admin=1) ends with the administrator's cookie. As the Go backend answered them.
+// starts ends at typle-r://login with a code the app trades for its token (/api/auth/token). As the Go backend answered
+// them, without the login to the administrator's dashboard (admin=1), which was removed in v2.48.0.
 
 export type LoginPath = 'signin' | 'github' | 'ffpf'
 type Provider = 'github' | 'ffpf'
@@ -31,11 +29,6 @@ const APP_RETURN = 'typle-r://login'
 const APP_CLIENTS = new Set(['ipad', 'macos', 'android', 'windows'])
 /** An S256 code challenge (RFC 7636): 43 base64url characters. */
 const PKCE_CHALLENGE = /^[A-Za-z0-9_-]{43}$/
-const ADMIN_PAGE = '/admin'
-/** Where a login of an account that is not an administrator ends: the page says so. */
-const ADMIN_REFUSED = '/admin?error=adminForbidden'
-/** Where a login to the dashboard ends when typle_admins could not be asked. */
-const ADMIN_UNAVAILABLE = '/admin?error=adminUnavailable'
 
 /** 32 random bytes, as a state, a PKCE verifier or a nonce is made. */
 const random = () => randomBytes(32).toString('base64url')
@@ -75,22 +68,21 @@ function queryOf(request: Request): (key: string) => string {
 /**
  * GET /api/auth/signin: sends the browser to GitHub, or with provider=ffpf to FFPF ID, with a state and a PKCE challenge
  * (and for FFPF ID a nonce), and keeps them, the verifier and where to return to in the OAuth cookie. With client=ipad,
- * macos, android or windows and the app's own S256 code_challenge, the login is that app's. With admin=1 the login is to
- * the dashboard: always through FFPF ID, and always back to /admin.
+ * macos, android or windows and the app's own S256 code_challenge, the login is that app's. admin=1, which asked for a
+ * login to the removed dashboard, is not read.
  */
 function signin(request: Request, login: LoginSettings, now: number): Response {
   const get = queryOf(request)
-  const admin = get('admin') === '1'
-  const provider: Provider = admin || get('provider') === 'ffpf' ? 'ffpf' : 'github'
+  const provider: Provider = get('provider') === 'ffpf' ? 'ffpf' : 'github'
   if (!ready(login, provider)) return unavailable(request, provider)
-  const returnTo = admin ? ADMIN_PAGE : safeReturnTo(get('returnTo'))
+  const returnTo = safeReturnTo(get('returnTo'))
   let challenge = ''
-  if (!admin && APP_CLIENTS.has(get('client'))) {
+  if (APP_CLIENTS.has(get('client'))) {
     challenge = get('code_challenge')
     if (!PKCE_CHALLENGE.test(challenge)) return goTo(toApp('error', 'loginFailed'))
   }
   const pending: PendingLogin = {
-    state: random(), verifier: random(), returnTo, challenge, admin, provider: provider === 'ffpf' ? 'ffpf' : '', nonce: '',
+    state: random(), verifier: random(), returnTo, challenge, provider: provider === 'ffpf' ? 'ffpf' : '', nonce: '',
     expires: Math.floor(now) + OAUTH_MAX_AGE,
   }
   let location: string
@@ -118,16 +110,14 @@ type SignedIn = { sub: string, name: string, image: string }
  * GET /api/auth/callback/github and /api/auth/callback/ffpf: where the provider sends the browser back to. Whatever
  * happens, the OAuth cookie is spent and the browser goes back to the page it left, signed in only if everything checked
  * out: the cookie was started for this provider, its state matches, and the provider vouches for the account. A login an
- * app started goes back to the app, with a code or loginFailed, and no cookie. A login to the dashboard can only be one
- * through FFPF ID; one that comes back to GitHub's callback goes back to the dashboard with adminForbidden.
+ * app started goes back to the app, with a code or loginFailed, and no cookie.
  */
-async function callback(provider: Provider, request: Request, open: () => Pool, login: LoginSettings, now: number, jwks?: JwksCache): Promise<Response> {
+async function callback(provider: Provider, request: Request, login: LoginSettings, now: number, jwks?: JwksCache): Promise<Response> {
   if (!ready(login, provider)) return unavailable(request, provider)
   const cookies = [oauthCookie(login, '', 0)]
   const value = cookieValue(request, OAUTH_COOKIE)
   const pending = value === null ? null : openOAuth(login.oauthKey, value, now)
   const returnTo = pending ? safeReturnTo(pending.returnTo) : DEFAULT_RETURN_TO
-  if (pending?.admin && provider !== 'ffpf') return goTo(ADMIN_REFUSED, cookies)
   const fail = () => goTo(pending?.challenge ? toApp('error', 'loginFailed') : returnTo, cookies)
   const get = queryOf(request)
   const state = get('state')
@@ -145,7 +135,6 @@ async function callback(provider: Provider, request: Request, open: () => Pool, 
       if (!(error instanceof FfpfError && error.kind === 'rejected')) reportFailure(request, error, 'auth.callback')
       return fail()
     }
-    if (pending.admin) return finishAdmin(request, open, login, ffpfUser, cookies, now)
     user = { sub: `ffpf:${ffpfUser.sub}`, name: trimSpace(ffpfUser.name), image: '' }
   } else {
     try {
@@ -167,34 +156,14 @@ async function callback(provider: Provider, request: Request, open: () => Pool, 
 }
 
 /**
- * Ends a login to the dashboard through FFPF ID: the administrator's cookie if typle_admins lets the account in,
- * adminForbidden otherwise, or adminUnavailable when the database does not answer. It never sets the session cookie, so
- * a login to the dashboard does not sign in to the app.
- */
-async function finishAdmin(request: Request, open: () => Pool, login: LoginSettings, user: FfpfUser, cookies: string[], now: number): Promise<Response> {
-  const email = user.email.toLowerCase()
-  let allowed: boolean
-  try {
-    allowed = await isAdmin(open(), email, user.sub)
-  } catch (error) {
-    reportFailure(request, error, 'admin.check')
-    return goTo(ADMIN_UNAVAILABLE, cookies)
-  }
-  if (!allowed) return goTo(ADMIN_REFUSED, cookies)
-  const value = sealAdmin(login.adminKey, newAdmin(email, user.sub, now))
-  cookies.push(dropRelogin(login), cookieHeader(adminCookieName(login.secure), value, '/', ADMIN_MAX_AGE, 'Strict', login.secure))
-  return goTo(ADMIN_PAGE, cookies)
-}
-
-/**
  * Answers path of the login: the settings first (503 authUnavailable without them), then the method (GET only: the
  * login steps set cookies and call the providers, which a HEAD must not do), then whether the provider is configured.
  */
-export async function answerLogin(path: LoginPath, request: Request, open: () => Pool,
+export async function answerLogin(path: LoginPath, request: Request,
   settings: () => LoginSettings | null = readLoginSettings, clock: () => number = () => Date.now() / 1000, jwks?: JwksCache): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (request.method !== 'GET') return methodNotAllowed(['GET'])
   const now = clock()
-  return path === 'signin' ? signin(request, login, now) : callback(path, request, open, login, now, jwks)
+  return path === 'signin' ? signin(request, login, now) : callback(path, request, login, now, jwks)
 }

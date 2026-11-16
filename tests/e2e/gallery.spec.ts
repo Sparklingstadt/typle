@@ -134,7 +134,7 @@ test('a pack that is not in the gallery is not listed and its add is not counted
 
 const reports = (shareId: string) => withDatabase(pool => pool.query('SELECT reason FROM typle_gallery_reports WHERE share_id = $1', [shareId]))
 
-test('a guest reports a pack in the gallery and an administrator sees it', async ({ page, browser }) => {
+test('a guest reports a pack in the gallery and the report is kept', async ({ page, browser }) => {
   const id = await share(page, true)
   const guest = await browser.newContext({ baseURL: origin })
   try {

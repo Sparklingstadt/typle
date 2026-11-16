@@ -16,8 +16,7 @@ test('vercel.json and next.config.mjs forward nothing', () => {
 
 // The paths the apps (Web, iPad, Mac, Android, Windows) call.
 const nextRoutes = ['/api/health', '/api/gallery', '/api/gallery/categories', '/api/gallery/added', '/api/gallery/reports', '/api/shared', '/api/shares', '/api/workspace', '/api/workspace/records',
-  '/api/admin/dashboard', '/api/admin/users', '/api/admin/gallery', '/api/admin/gallery/hide', '/api/admin/gallery/unhide',
-  '/api/auth/session', '/api/auth/token', '/api/auth/signout', '/api/auth/local', '/api/auth/admin/signout',
+  '/api/auth/session', '/api/auth/token', '/api/auth/signout', '/api/auth/local',
   '/api/auth/signin', '/api/auth/callback/github', '/api/auth/callback/ffpf']
 
 test('every path of the API is a Route Handler', () => {

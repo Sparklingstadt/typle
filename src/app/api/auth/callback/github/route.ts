@@ -1,10 +1,9 @@
-import { pool } from '../../../../../server/database'
 import { answerLogin } from '../../../../../server/signin'
 
 // GET /api/auth/callback/github: where GitHub sends the browser back to. Every method comes here, so that the 405 (and its Allow) and the order of the checks are
 // answerLogin's, as the Go backend answered them.
 
-const answer = (request: Request) => answerLogin('github', request, pool)
+const answer = (request: Request) => answerLogin('github', request)
 
 export const GET = answer
 export const HEAD = answer

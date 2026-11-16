@@ -2,23 +2,20 @@ require('./register.cjs')
 const { test, before, after } = require('node:test')
 const assert = require('node:assert/strict')
 const http = require('node:http')
-const { createPool } = require('../src/server/database.ts')
 const { answerLogin } = require('../src/server/signin.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 const { openOAuth, challengeOf } = require('../src/server/session.ts')
 const { newJwksCache } = require('../src/server/ffpf.ts')
 
-// /api/auth/signin and the callbacks, against a real database as npm run verify runs it (`TYPLE_TEST_DATABASE_URL=…
-// npm test`) and the providers GitHub and FFPF ID played at 127.0.0.1:38917. The answers, and the requests the providers
-// got, are the Go backend's at the same fixed time (tests/fixtures/signin-answers.json): the cookies, codes and
-// redirects byte for byte, and the random state, verifier and nonce of a signin by what they open to.
-const url = process.env.TYPLE_TEST_DATABASE_URL
-const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
-const db = url ? createPool(url) : null
-const open = () => db
+// /api/auth/signin and the callbacks, with the providers GitHub and FFPF ID played at 127.0.0.1:38917. The answers, and
+// the requests the providers got, are the Go backend's at the same fixed time (tests/fixtures/signin-answers.json): the
+// cookies, codes and redirects byte for byte, and the random state, verifier and nonce of a signin by what they open to.
 const fixture = require('./fixtures/signin-answers.json')
 const PROVIDER = '127.0.0.1:38917'
-const cleanAdmins = () => db.query(`DELETE FROM typle_admins WHERE email LIKE 'zz-%@example.com'`)
+// The logins to the administrator's dashboard of the Go run: the dashboard was removed in v2.48.0, and these answer
+// otherwise now (the tests at the end).
+const DASHBOARD_CASES = new Set(['admin, whatever else', 'admin not configured', 'admin at github', 'admin at github, other state',
+  'admin', 'admin again', 'not an admin', 'admin refused by ffpf'])
 
 /** The provider's exchanges the current request is expected to make, and the requests it made. */
 let expected = []
@@ -43,16 +40,8 @@ before(async () => {
     })
   })
   await new Promise(resolve => server.listen(38917, '127.0.0.1', resolve))
-  if (!db) return
-  await cleanAdmins()
-  await db.query(`INSERT INTO typle_admins (email) VALUES ('zz-admin@example.com')`)
 })
-after(async () => {
-  server?.close()
-  if (!db) return
-  await cleanAdmins()
-  await db.end()
-})
+after(() => { server?.close() })
 
 /** The settings of a configuration of the fixture, with GitHub's endpoints at the played provider as in the Go run. */
 function settingsOf(config) {
@@ -82,16 +71,17 @@ async function reported(answer) {
   }
 }
 
-test('the Route Handlers answer as the Go backend did, and ask the providers what it asked', database, async () => {
+test('the Route Handlers answer as the Go backend did, and ask the providers what it asked', async () => {
   // One FFPF ID client for the whole run, as one Vercel instance keeps one: the JWKS is fetched once, as in the Go run.
   const jwks = newJwksCache()
   for (const [n, q] of fixture.requests.entries()) {
+    if (DASHBOARD_CASES.has(q.note)) continue
     const want = fixture.answers[n]
     expected = want.provider
     got = []
     const login = settingsOf(q.config)
     const { response, operations } = await reported(() =>
-      answerLogin(paths[q.path.split('?')[0]], requestOf(q), open, () => login, () => fixture.now, jwks))
+      answerLogin(paths[q.path.split('?')[0]], requestOf(q), () => login, () => fixture.now, jwks))
     assert.equal(response.status, want.status, q.note)
     for (const header of ['allow', 'cache-control', 'vary', 'content-type']) assert.equal(response.headers.get(header) ?? undefined, want[header], `${q.note}: ${header}`)
     let location = response.headers.get('Location')
@@ -106,7 +96,8 @@ test('the Route Handlers answer as the Go backend did, and ask the providers wha
       location = location.replaceAll(pending.state, 'STATE').replaceAll(challengeOf(pending.verifier), 'CHALLENGE')
       if (pending.nonce) location = location.replaceAll(pending.nonce, 'NONCE')
       setCookie = setCookie.with(at, 'typle-oauth=OAUTH;' + setCookie[at].split(';').slice(1).join(';'))
-      assert.deepEqual({ returnTo: pending.returnTo, challenge: pending.challenge, admin: pending.admin, provider: pending.provider, nonce: pending.nonce !== '', exp: pending.expires }, want.oauth, q.note)
+      const { admin: _admin, ...oauth } = want.oauth
+      assert.deepEqual({ returnTo: pending.returnTo, challenge: pending.challenge, provider: pending.provider, nonce: pending.nonce !== '', exp: pending.expires }, oauth, q.note)
     }
     // The Go backend sent a Location that is not ASCII as raw UTF-8, which Vercel re-encodes wrongly; it is percent-encoded
     // instead, which a browser follows to the same page (the spec's differences).
@@ -116,41 +107,57 @@ test('the Route Handlers answer as the Go backend did, and ask the providers wha
     assert.deepEqual(got, want.provider.map(exchange => exchange.request), q.note)
     assert.deepEqual(operations, want.reports, q.note)
   }
-  const { rows } = await db.query(`SELECT email, ffpf_sub FROM typle_admins WHERE email LIKE 'zz-%@example.com' ORDER BY email`)
-  assert.deepEqual(rows.map(row => ({ email: row.email, ffpfSub: row.ffpf_sub })), fixture.adminsAfter)
-})
-
-test('a login to the dashboard when typle_admins cannot be asked ends at adminUnavailable, and is reported', async () => {
-  const q = fixture.requests.find(r => r.note === 'admin')
-  const exchanges = fixture.answers[fixture.requests.indexOf(q)].provider
-  for (const opener of [() => { throw new Error('no database') }, () => ({ query: async () => { throw new Error('down') } })]) {
-    // The JWKS is fetched again for a fresh cache, as in the first FFPF ID login of the Go run.
-    const ffpfFirst = fixture.answers[fixture.requests.findIndex(r => r.note === 'ffpf success')].provider
-    expected = [exchanges[0], ffpfFirst[1]]
-    got = []
-    const { response, operations } = await reported(() =>
-      answerLogin('ffpf', requestOf(q), opener, () => settingsOf('http'), () => fixture.now, newJwksCache()))
-    assert.equal(response.status, 302)
-    assert.equal(response.headers.get('Location'), '/admin?error=adminUnavailable')
-    assert.deepEqual(response.headers.getSetCookie(), ['typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax'])
-    assert.deepEqual(operations, ['admin.check'])
-  }
 })
 
 test('a returnTo that is not ASCII goes back percent-encoded, as Vercel would otherwise mangle it', async () => {
   const { sealOAuth } = require('../src/server/session.ts')
   const login = settingsOf('https')
   const now = fixture.now
-  const pending = { state: 's', verifier: 'v', returnTo: '/ほげ?q=a b&r=%E3%81%BB#é', challenge: '', admin: false, provider: '', nonce: '', expires: now + 600 }
+  const pending = { state: 's', verifier: 'v', returnTo: '/ほげ?q=a b&r=%E3%81%BB#é', challenge: '', provider: '', nonce: '', expires: now + 600 }
   const request = new Request('https://typle.example/api/auth/callback/github?state=other', { headers: { Cookie: `typle-oauth=${sealOAuth(login.oauthKey, pending)}` } })
-  const response = await answerLogin('github', request, open, () => login, () => now)
+  const response = await answerLogin('github', request, () => login, () => now)
   assert.equal(response.headers.get('Location'), '/%E3%81%BB%E3%81%92?q=a b&r=%E3%81%BB#%C3%A9')
 })
 
 test('without the login settings every path is 503 authUnavailable', async () => {
   for (const path of Object.values(paths)) {
-    const response = await answerLogin(path, new Request('http://127.0.0.1:3101/api/auth/signin'), open, () => null, () => fixture.now)
+    const response = await answerLogin(path, new Request('http://127.0.0.1:3101/api/auth/signin'), () => null, () => fixture.now)
     assert.equal(response.status, 503, path)
     assert.equal(await response.text(), '{"error":"authUnavailable"}\n', path)
+  }
+})
+
+const caseOf = note => {
+  const n = fixture.requests.findIndex(r => r.note === note)
+  return { q: fixture.requests[n], want: fixture.answers[n] }
+}
+
+test('admin=1 is not read any more: the login is the one the rest of the query asks for', async () => {
+  const { q } = caseOf('admin, whatever else')
+  const login = settingsOf(q.config)
+  const response = await answerLogin('signin', requestOf(q), () => login, () => fixture.now)
+  assert.equal(response.status, 302)
+  assert.ok(response.headers.get('Location').startsWith('https://github.com/login/oauth/authorize?'))
+  const value = response.headers.getSetCookie().find(c => c.startsWith('typle-oauth=')).split(';')[0].slice('typle-oauth='.length)
+  const pending = openOAuth(login.oauthKey, value, fixture.now)
+  assert.deepEqual({ returnTo: pending.returnTo, challenge: pending.challenge, provider: pending.provider }, { returnTo: '/lists', challenge: fixture.challenge, provider: '' })
+  assert.equal('admin' in pending, false)
+})
+
+test('a login the old version started for the dashboard ends as an ordinary login, back to where it was to return', async () => {
+  const ffpfFirst = caseOf('ffpf success').want.provider
+  for (const [note, path, exchanges] of [
+    ['admin', 'ffpf', [caseOf('admin').want.provider[0], ffpfFirst[1]]],
+    ['admin at github', 'github', caseOf('github success').want.provider],
+  ]) {
+    const { q } = caseOf(note)
+    expected = exchanges
+    got = []
+    const { response } = await reported(() => answerLogin(path, requestOf(q), () => settingsOf(q.config), () => fixture.now, newJwksCache()))
+    assert.equal(response.status, 302, note)
+    assert.equal(response.headers.get('Location'), '/admin', note)
+    const cookies = response.headers.getSetCookie().map(c => c.split('=')[0])
+    assert.ok(cookies.includes('typle-session'), `${note}: ${cookies}`)
+    assert.ok(!cookies.includes('typle-admin'), note)
   }
 })

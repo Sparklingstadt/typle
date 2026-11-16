@@ -24,8 +24,8 @@ export const INDEXED_PATHS: readonly { path: string; changeFrequency: SitemapEnt
   { path: '/about', changeFrequency: 'monthly', priority: 0.5 },
 ]
 
-// The admin screen, the development login and the backend have nothing for a search result.
-export const DISALLOWED_PATHS: readonly string[] = ['/admin', '/local-login', '/api/']
+// The development login and the backend have nothing for a search result.
+export const DISALLOWED_PATHS: readonly string[] = ['/local-login', '/api/']
 
 function siteOrigin(siteUrl: string): string {
   return new URL(siteUrl).origin
