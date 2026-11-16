@@ -18,7 +18,7 @@ GitHubログインは任意です。ログイン時は従来のアカウント�
 
 - 文言はICU MessageFormatです。件数は `{count, plural, ...}` で各言語の複数形に合わせます。アポストロフィはICUの特殊文字のため、`’` を使います。
 - 日本語のファイルが基準で、型（`src/i18n/next-intl.d.ts`）にもなります。キーを追加したら6言語すべてに追加してください。
-- `src/core` と `src/plugins` は言語に依存しません。エラーは `AppError`（`src/core/appError.ts`）で `errors` のキーを返し、画面は `useErrorText` で表示します。日付・所要時間・端末名は `useFormat`（`src/i18n/useFormat.ts`）で整形します。
+- `src/core` は言語に依存しません。エラーは `AppError`（`src/core/appError.ts`）で `errors` のキーを返し、画面は `useErrorText` で表示します。日付・所要時間・端末名は `useFormat`（`src/i18n/useFormat.ts`）で整形します。
 - `tests/i18n.test.cjs` が、全言語のキーとプレースホルダーの一致、ICUの構文、`src` に日本語の文言が直接書かれていないことを確認します。
 
 ## 入力（/input）
@@ -57,7 +57,7 @@ sitemap.xml では `/` の優先度を一番高くしています。
 
 パックを1つも持っていないとき、`/play` は練習の代わりに、始めるための公式パックを3つ並べます（v2.39.0 から。それまでは「まだパックがありません」の1行だけでした）。
 
-- 並べるパック：英語：基礎・中級、Linuxコマンド：基本、中国語：HSK5級レベル単語の順。1つ目を主ボタンにします。並びは `src/plugins/packs/starters.ts` の `STARTER_CATALOG_IDS` で、どれも公式パックにあることを `tests/packCatalog.test.cjs` で確かめます
+- 並べるパック：英語：基礎・中級、Linuxコマンド：基本、中国語：HSK5級レベル単語の順。1つ目を主ボタンにします。並びは `src/core/packs/starters.ts` の `STARTER_CATALOG_IDS` で、どれも公式パックにあることを `tests/packCatalog.test.cjs` で確かめます
 - 各カード：パック名、リスト数と語数、最初のリストの名前と最初の3語、「このパックで始める」
 - 「このパックで始める」：公式パックのページの「このパックで練習する」と同じ処理（`src/lib/useOfficialPackStart.ts`）で、パックをフォローし、最初のリストで練習を始めます
 - 下に「ほかの公式パックを見る」（`/packs/catalog`）と「自分のパックを作る」（`/packs/create`）
@@ -237,7 +237,7 @@ Open GraphとXの大きな画像カードに対応しています。共通画像
 
 - 中身：パック名・カテゴリとタグ・説明・リスト数と語数、「このパックで練習する」、リストごとの全部の言葉（打つ言葉と意味・補足）、公式パックの一覧へのリンク
 - 「このパックで練習する」：まだフォローしていなければフォローし、最初のリストで `/play` を開きます。フォロー済みならそのまま開きます。フォローできる数（`MAX_FOLLOWED_PACKS`）に達しているときは押せず、理由を出します
-- ページを持つパックと説明文は `src/plugins/packs/pages.json` に手で書きます（`slug`・`catalogId`・`description`）。説明はパックの中身に合わせて書き、40〜160字にします。`slug` は英小文字・数字・ハイフンで、`/packs` のほかのページ（`catalog`・`create`・`edit`）と重ならないようにします。どれも `tests/officialPackPages.test.cjs` で確かめます
+- ページを持つパックと説明文は `src/core/packs/pages.json` に手で書きます（`slug`・`catalogId`・`description`）。説明はパックの中身に合わせて書き、40〜160字にします。`slug` は英小文字・数字・ハイフンで、`/packs` のほかのページ（`catalog`・`create`・`edit`）と重ならないようにします。どれも `tests/officialPackPages.test.cjs` で確かめます
 - 同じ単語をレベル別に分けただけのパック（`arch-linux-commands-by-level` など）は、`pages.json` の `canonical` に元のパックのページを書きます。そのページの canonical は元のページを指し、sitemap.xml には載せません。どの公式パックにもページがあることも、テストで確かめます
 - sitemap.xml に `canonical` のないパックのページを全部載せ（優先度0.7）、公式パックの一覧（`/packs/catalog`）の各パックにも「詳しく見る」のリンクを出します
 - 一覧にないスラッグは404です

@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { api, ApiError, withQuery } = require('../src/core/api.ts')
-const { addRecord, deleteRecord } = require('../src/plugins/storage/cloud/client.ts')
+const { addRecord, deleteRecord } = require('../src/lib/storage/cloud.ts')
 const { WorkspaceError } = require('../src/core/workspaceStore.ts')
 
 test('api reads with GET, sends a body as JSON and resolves with the answer', async t => {

@@ -201,7 +201,7 @@ test('tidyLevels, saveListInPack and createPack refuse more than one level, as t
 })
 
 test('the official library has no lists out of reach in its packs', () => {
-  const { officialLibrary: initialLibrary } = require('../src/plugins/packs/index.ts')
+  const { officialLibrary: initialLibrary } = require('../src/core/packs/index.ts')
   const path = item => item.levels?.length ? item.levels : [item.name]
   for (const pack of initialLibrary.packs) {
     const paths = initialLibrary.lists.filter(item => item.packId === pack.id).map(path)

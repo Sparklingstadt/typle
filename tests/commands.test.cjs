@@ -1,14 +1,14 @@
 require('./register.cjs')
 const test = require('node:test')
 const assert = require('node:assert/strict')
-const commands = require('../src/plugins/packs/commands/index.ts').default
+const commands = require('../src/core/packs/commands/index.ts').default
 const { decodeLists, validateList } = require('../src/core/wordLists.ts')
 
 test('the split command lists follow the shared manifest without missing or duplicate files', () => {
   const fs = require('node:fs')
   const path = require('node:path')
-  const directory = path.join(__dirname, '../src/plugins/packs/commands')
-  const names = require('../src/plugins/packs/commands/manifest.json')
+  const directory = path.join(__dirname, '../src/core/packs/commands')
+  const names = require('../src/core/packs/commands/manifest.json')
   assert.equal(new Set(names).size, names.length)
   assert.deepEqual(fs.readdirSync(directory).filter(name => name.endsWith('.json') && name !== 'manifest.json').sort(), [...names].sort())
   assert.deepEqual(commands, names.map(name => JSON.parse(fs.readFileSync(path.join(directory, name), 'utf8'))))
@@ -60,7 +60,7 @@ const sorted = list => [...list].sort((a, b) => a.input < b.input ? -1 : a.input
 const leveled = ['typescript-syntax', 'hono-methods', 'php-syntax', 'rails-methods', 'express-methods', 'oracle-plsql-syntax', 'sql-server-tsql-syntax']
 
 test('Go has one official pack with only its three difficulty lists', () => {
-  const { officialLibrary } = require('../src/plugins/packs/index.ts')
+  const { officialLibrary } = require('../src/core/packs/index.ts')
   const packs = officialLibrary.packs.filter(pack => pack.name.startsWith('Go構文'))
   assert.equal(packs.length, 1)
   assert.equal(packs[0].name, 'Go構文')
@@ -71,7 +71,7 @@ test('Go has one official pack with only its three difficulty lists', () => {
 })
 
 test('PostgreSQL error codes have one official pack of three lists that type the condition names', () => {
-  const { officialLibrary } = require('../src/plugins/packs/index.ts')
+  const { officialLibrary } = require('../src/core/packs/index.ts')
   const pack = officialLibrary.packs.find(item => item.name === 'PostgreSQLエラーコード')
   assert.ok(pack)
   assert.equal(pack.category, 'プログラミング')
@@ -91,8 +91,8 @@ test('PostgreSQL error codes have one official pack of three lists that type the
 
 test('the initial lists decode in Typle with their own ids and names', () => {
   const lists = decodeLists(JSON.stringify({ version: 1, lists: commands }))
-  assert.deepEqual(require('../src/plugins/packs/samples.json'), [])
-  assert.deepEqual(require('../src/plugins/packs/countries.json'), [])
+  assert.deepEqual(require('../src/core/packs/samples.json'), [])
+  assert.deepEqual(require('../src/core/packs/countries.json'), [])
   assert.deepEqual(sources.map(id => [id, commands.filter(list => source(list.id) === id).map(list => list.words.length)]), [
     ['8f3cf116-1f9f-4579-a071-e600094b104d', [90]], ['ef974a4b-3c7a-4eeb-9979-6721a0a1c81a', [46]], ['d6a056c2-9f2b-48ba-b4e6-1d851cc45f41', [35]],
     ['04450fbe-2974-417c-9350-39802a5c650c', [140]], ['d3638812-0c0a-4f37-a413-d17404344c32', [76]], ['3099bf52-7790-49b0-841d-5230d7d3dd68', [131]],
@@ -170,7 +170,7 @@ test('the initial lists decode in Typle with their own ids and names', () => {
     ['chinese-hsk6-handwriting-25-words-4', [15]], ['chinese-hsk6-handwriting-25-words-5', [15]], ['chinese-hsk6-handwriting-25-words-6', [15]],
   ])
   assert.equal(lists.length, commands.length)
-  const { initialLists } = require('../src/plugins/packs/index.ts')
+  const { initialLists } = require('../src/core/packs/index.ts')
   assert.deepEqual(initialLists, commands)
   for (const list of lists) validateList(list, initialLists.filter(other => other.id !== list.id))
   assert.ok(lists.every(list => list.records.length === 0))
@@ -184,7 +184,7 @@ test('a list kept both whole and in parts holds the same words in each', () => {
 
 test('a list split into parts has the fewest parts of at most 40, from the easiest words to type to the hardest', () => {
   // The lists of v0.75.0 are split into at least three levels. A list kept whole beside its parts is left out.
-  const { initialLists } = require('../src/plugins/packs/index.ts')
+  const { initialLists } = require('../src/core/packs/index.ts')
   // A symbol or a Japanese character counts as two letters. The first word introduces the list, so it opens 初級.
   const score = word => [...word.input.toLowerCase()].reduce((sum, c) => sum + (/[a-z0-9 ]/.test(c) ? 1 : 2), 0)
   const labels = { 2: ['初級', '上級'], 3: ['初級', '中級', '上級'], 4: ['初級', '中級1', '中級2', '上級'], 5: ['初級1', '初級2', '中級', '上級1', '上級2'] }

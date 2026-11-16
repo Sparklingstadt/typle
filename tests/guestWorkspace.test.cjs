@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { normalizeLibrary } = require('../src/core/wordPacks.ts')
-const { readGuestWorkspace, writeGuestWorkspace, addGuestRecord, deleteGuestRecord, GUEST_STORAGE_KEY } = require('../src/plugins/storage/guest.ts')
+const { readGuestWorkspace, writeGuestWorkspace, addGuestRecord, deleteGuestRecord, GUEST_STORAGE_KEY } = require('../src/lib/storage/guest.ts')
 const { storage } = require('./helpers.cjs')
 const list = { id: 'l', name: 'Local', packId: 'pack-l', createdAt: '2026-09-27', words: [{ display: 'a', input: 'a', annotation: '' }], records: [{ time: 1, date: '2026-09-27' }] }
 const pack = { id: 'pack-l', name: 'Local', createdAt: '2026-09-27' }
@@ -41,9 +41,9 @@ test('quota and oversized writes retain the previous data', () => {
   assert.equal(store.getItem(GUEST_STORAGE_KEY), before)
 })
 test('each account uses its own store, says where it saves, and only the guest store follows other tabs', () => {
-  const { workspaceStore } = require('../src/plugins/storage/index.ts')
-  const { guestStore } = require('../src/plugins/storage/guest.ts')
-  const { cloudStore } = require('../src/plugins/storage/cloud/client.ts')
+  const { workspaceStore } = require('../src/lib/storage/index.ts')
+  const { guestStore } = require('../src/lib/storage/guest.ts')
+  const { cloudStore } = require('../src/lib/storage/cloud.ts')
   assert.equal(workspaceStore('guest:local'), guestStore)
   assert.equal(workspaceStore('github:1'), cloudStore)
   assert.equal(guestStore.location, 'browser')
@@ -87,13 +87,13 @@ test('lists saved without packs are each put in a pack of their own, and lists t
 })
 
 test('the guest starts with no packs', () => {
-  const { initialLibrary } = require('../src/plugins/packs/index.ts')
+  const { initialLibrary } = require('../src/core/packs/index.ts')
   assert.deepEqual(initialLibrary, { packs: [], lists: [] })
   assert.deepEqual([readGuestWorkspace(storage()).packs, readGuestWorkspace(storage()).lists], [[], []])
 })
 
 test('reading guest data removes copies of official packs but keeps the guest\'s own packs', () => {
-  const { officialPacks } = require('../src/plugins/packs/catalog.ts')
+  const { officialPacks } = require('../src/core/packs/catalog.ts')
   const [entry] = officialPacks()
   const copy = { ...entry.pack, id: 'copy', origin: { catalogId: entry.catalogId, version: 1 } }
   const copyList = { ...entry.lists[0], id: 'copy-l', packId: 'copy' }
@@ -105,7 +105,7 @@ test('reading guest data removes copies of official packs but keeps the guest\'s
 })
 
 test('followed packs read back as the official words, and a read does not save them', () => {
-  const { officialPacks, followOfficialPack } = require('../src/plugins/packs/catalog.ts')
+  const { officialPacks, followOfficialPack } = require('../src/core/packs/catalog.ts')
   const [entry] = officialPacks()
   const store = storage()
   const initial = readGuestWorkspace(store)
@@ -171,7 +171,7 @@ test('a guest run is deleted without a revision, and deleting it again changes n
 })
 
 test('the guest saves followed packs without their words, and reads them back with them', () => {
-  const { officialPacks, followOfficialPack } = require('../src/plugins/packs/catalog.ts')
+  const { officialPacks, followOfficialPack } = require('../src/core/packs/catalog.ts')
   const store = storage()
   const entry = officialPacks()[0]
   const library = followOfficialPack({ packs: [], lists: [] }, entry.catalogId, { pack: 'f', lists: entry.lists.map((_, i) => `f-${i}`) })

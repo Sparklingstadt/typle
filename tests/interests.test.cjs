@@ -72,6 +72,6 @@ test('the default interests are every option, as the fixture Go also reads has t
   const defaults = require('../src/core/interests.ts').DEFAULT_INTERESTS
   assert.deepEqual(defaults, INTEREST_OPTIONS.flatMap(option => [option.id, ...option.children.map(child => child.id)]))
   assert.deepEqual(defaults, require('./fixtures/default-interests.json'))
-  const { officialPacks } = require('../src/plugins/packs/catalog.ts')
+  const { officialPacks } = require('../src/core/packs/catalog.ts')
   for (const entry of officialPacks()) assert.ok(matchesInterests(entry.pack, [...defaults]), entry.pack.name)
 })

@@ -3,9 +3,9 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { validateLibrary, convertLibrary } = require('../src/core/wordPacks.ts')
 const { deletePack } = require('../src/core/packEditing.ts')
-const { officialPacks, catalogEntries, followOfficialPack, applyCatalogChoices } = require('../src/plugins/packs/catalog.ts')
+const { officialPacks, catalogEntries, followOfficialPack, applyCatalogChoices } = require('../src/core/packs/catalog.ts')
 const { MAX_FOLLOWED_PACKS, MAX_LISTS } = require('../src/core/listOverview.ts')
-const { initialLibrary, officialLibrary, initialLists } = require('../src/plugins/packs/index.ts')
+const { initialLibrary, officialLibrary, initialLists } = require('../src/core/packs/index.ts')
 
 const OFFICIAL_FIRST_TWO = ['pack-8f3cf116-1f9f-4579-a071-e600094b104d', 'pack-ef974a4b-3c7a-4eeb-9979-6721a0a1c81a']
 const now = new Date('2026-10-26T00:00:00Z')
@@ -106,7 +106,7 @@ test('applyCatalogChoices follows the packs switched on and unfollows the follow
 })
 
 test('the starter packs of /play are official packs with words, in their order', () => {
-  const { STARTER_CATALOG_IDS, starterPacks } = require('../src/plugins/packs/starters.ts')
+  const { STARTER_CATALOG_IDS, starterPacks } = require('../src/core/packs/starters.ts')
   const starters = starterPacks()
   assert.deepEqual(starters.map(entry => entry.catalogId), [...STARTER_CATALOG_IDS])
   assert.equal(new Set(STARTER_CATALOG_IDS).size, STARTER_CATALOG_IDS.length)

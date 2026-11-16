@@ -97,7 +97,7 @@ test('decodeLists keeps a list origin of the right shape and drops the others', 
 
 test('followed packs are saved without their words, and following the catalog gives them back', () => {
   const { withoutFollowedWords } = require('../src/core/followedPacks.ts')
-  const { officialPacks, followOfficialPack } = require('../src/plugins/packs/catalog.ts')
+  const { officialPacks, followOfficialPack } = require('../src/core/packs/catalog.ts')
   const own = { id: 'mine', name: 'Mine', packId: 'p', createdAt: '2026-10-01', words: [{ display: 'a', input: 'a', annotation: '' }], records: [] }
   const entry = officialPacks()[0]
   const ids = { pack: 'f', lists: entry.lists.map((_, i) => `f-${i}`) }
