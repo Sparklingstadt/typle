@@ -1,0 +1,1168 @@
+{
+  "answers": [
+    {
+      "status": 401,
+      "setCookie": [],
+      "body": {
+        "error": "adminRequired"
+      },
+      "reports": []
+    },
+    {
+      "status": 401,
+      "setCookie": [],
+      "body": {
+        "error": "adminRequired"
+      },
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [
+        "typle-admin=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict"
+      ],
+      "body": {
+        "error": "adminForbidden"
+      },
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [
+        "typle-admin=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict"
+      ],
+      "body": {
+        "error": "adminForbidden"
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "admin": {
+          "email": "admin-\u003ct\u003e@example.com",
+          "sub": "cadmin"
+        },
+        "overview": {
+          "activeDay": "\u003ccount\u003e",
+          "activeMonth": "\u003ccount\u003e",
+          "activeWeek": "\u003ccount\u003e",
+          "admins": [
+            {
+              "createdAt": "\u003ctime\u003e",
+              "email": "admin-\u003ct\u003e@example.com",
+              "ffpfSub": "cadmin",
+              "lastSeenAt": "\u003ctime\u003e"
+            },
+            {
+              "createdAt": "\u003ctime\u003e",
+              "email": "bound-\u003ct\u003e@example.com",
+              "ffpfSub": "someone",
+              "lastSeenAt": null
+            }
+          ],
+          "recentShares": [
+            {
+              "id": "\u003cmany\u003e",
+              "name": "Many",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003cnewer\u003e",
+              "name": "Newer",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003colder\u003e",
+              "name": "Older",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003clistedNew\u003e",
+              "name": "Listed new",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003chidden\u003e",
+              "name": "Hidden",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003chiddenOnly\u003e",
+              "name": "Hidden only",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003clinkOnly\u003e",
+              "name": "Link only",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            }
+          ],
+          "sharedPacks": "\u003ccount\u003e",
+          "workspaces": "\u003ccount\u003e"
+        }
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "admin": {
+          "email": "ADMIN-\u003ct\u003e@Example.com",
+          "sub": "cadmin"
+        },
+        "overview": {
+          "activeDay": "\u003ccount\u003e",
+          "activeMonth": "\u003ccount\u003e",
+          "activeWeek": "\u003ccount\u003e",
+          "admins": [
+            {
+              "createdAt": "\u003ctime\u003e",
+              "email": "admin-\u003ct\u003e@example.com",
+              "ffpfSub": "cadmin",
+              "lastSeenAt": "\u003ctime\u003e"
+            },
+            {
+              "createdAt": "\u003ctime\u003e",
+              "email": "bound-\u003ct\u003e@example.com",
+              "ffpfSub": "someone",
+              "lastSeenAt": null
+            }
+          ],
+          "recentShares": [
+            {
+              "id": "\u003cmany\u003e",
+              "name": "Many",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003cnewer\u003e",
+              "name": "Newer",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003colder\u003e",
+              "name": "Older",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003clistedNew\u003e",
+              "name": "Listed new",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003chidden\u003e",
+              "name": "Hidden",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003chiddenOnly\u003e",
+              "name": "Hidden only",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003clinkOnly\u003e",
+              "name": "Link only",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            }
+          ],
+          "sharedPacks": "\u003ccount\u003e",
+          "workspaces": "\u003ccount\u003e"
+        }
+      },
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [
+        "typle-admin=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict"
+      ],
+      "body": {
+        "error": "adminForbidden"
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "admin": {
+          "email": "admin-\u003ct\u003e@example.com",
+          "sub": "cadmin"
+        },
+        "overview": {
+          "activeDay": "\u003ccount\u003e",
+          "activeMonth": "\u003ccount\u003e",
+          "activeWeek": "\u003ccount\u003e",
+          "admins": [
+            {
+              "createdAt": "\u003ctime\u003e",
+              "email": "admin-\u003ct\u003e@example.com",
+              "ffpfSub": "cadmin",
+              "lastSeenAt": "\u003ctime\u003e"
+            },
+            {
+              "createdAt": "\u003ctime\u003e",
+              "email": "bound-\u003ct\u003e@example.com",
+              "ffpfSub": "someone",
+              "lastSeenAt": null
+            }
+          ],
+          "recentShares": [
+            {
+              "id": "\u003cmany\u003e",
+              "name": "Many",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003cnewer\u003e",
+              "name": "Newer",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003colder\u003e",
+              "name": "Older",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003clistedNew\u003e",
+              "name": "Listed new",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003chidden\u003e",
+              "name": "Hidden",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003chiddenOnly\u003e",
+              "name": "Hidden only",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            },
+            {
+              "id": "\u003clinkOnly\u003e",
+              "name": "Link only",
+              "ownerId": "\u003cowner\u003e",
+              "updatedAt": "\u003ctime\u003e"
+            }
+          ],
+          "sharedPacks": "\u003ccount\u003e",
+          "workspaces": "\u003ccount\u003e"
+        }
+      },
+      "reports": []
+    },
+    {
+      "status": 405,
+      "allow": "GET, HEAD",
+      "setCookie": [],
+      "body": {
+        "error": "methodNotAllowed"
+      },
+      "reports": []
+    },
+    {
+      "status": 405,
+      "allow": "GET, HEAD",
+      "setCookie": [],
+      "body": {
+        "error": "methodNotAllowed"
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "page": 0,
+        "pageSize": 50,
+        "total": "\u003ccount\u003e",
+        "users": [
+          {
+            "devices": 1,
+            "lists": 2,
+            "ownerId": "\u003cowner\u003e",
+            "packs": 0,
+            "revision": 4,
+            "shares": 7,
+            "updatedAt": "\u003ctime\u003e"
+          },
+          {
+            "devices": 0,
+            "lists": 0,
+            "ownerId": "\u003cother\u003e",
+            "packs": 2,
+            "revision": 9,
+            "shares": 0,
+            "updatedAt": "\u003ctime\u003e"
+          }
+        ]
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "page": 0,
+        "pageSize": 50,
+        "total": "\u003ccount\u003e",
+        "users": [
+          {
+            "devices": 1,
+            "lists": 2,
+            "ownerId": "\u003cowner\u003e",
+            "packs": 0,
+            "revision": 4,
+            "shares": 7,
+            "updatedAt": "\u003ctime\u003e"
+          },
+          {
+            "devices": 0,
+            "lists": 0,
+            "ownerId": "\u003cother\u003e",
+            "packs": 2,
+            "revision": 9,
+            "shares": 0,
+            "updatedAt": "\u003ctime\u003e"
+          }
+        ]
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "page": 0,
+        "pageSize": 50,
+        "total": "\u003ccount\u003e",
+        "users": [
+          {
+            "devices": 1,
+            "lists": 2,
+            "ownerId": "\u003cowner\u003e",
+            "packs": 0,
+            "revision": 4,
+            "shares": 7,
+            "updatedAt": "\u003ctime\u003e"
+          },
+          {
+            "devices": 0,
+            "lists": 0,
+            "ownerId": "\u003cother\u003e",
+            "packs": 2,
+            "revision": 9,
+            "shares": 0,
+            "updatedAt": "\u003ctime\u003e"
+          }
+        ]
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "page": 1,
+        "pageSize": 50,
+        "total": "\u003ccount\u003e",
+        "users": []
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "page": 10000,
+        "pageSize": 50,
+        "total": "\u003ccount\u003e",
+        "users": []
+      },
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": {
+        "error": "invalidPage"
+      },
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": {
+        "error": "invalidPage"
+      },
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": {
+        "error": "invalidPage"
+      },
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": {
+        "error": "invalidPage"
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "page": 7,
+        "pageSize": 50,
+        "total": "\u003ccount\u003e",
+        "users": []
+      },
+      "reports": []
+    },
+    {
+      "status": 401,
+      "setCookie": [],
+      "body": {
+        "error": "adminRequired"
+      },
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "packs": [
+          {
+            "added": 3,
+            "category": "cat",
+            "hiddenAt": null,
+            "id": "\u003cmany\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Many",
+            "reasons": {
+              "inappropriate": 1,
+              "spam": 2
+            },
+            "reports": 3
+          },
+          {
+            "added": 0,
+            "hiddenAt": null,
+            "id": "\u003cnewer\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Newer",
+            "reasons": {
+              "other": 1,
+              "spam": 1
+            },
+            "reports": 2
+          },
+          {
+            "added": 1,
+            "category": "cat",
+            "hiddenAt": null,
+            "id": "\u003colder\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Older",
+            "reasons": {
+              "other": 1,
+              "spam": 1
+            },
+            "reports": 2
+          },
+          {
+            "added": 0,
+            "hiddenAt": "\u003ctime\u003e",
+            "id": "\u003chiddenOnly\u003e",
+            "listedAt": null,
+            "name": "Hidden only",
+            "reasons": {
+              "spam": 1
+            },
+            "reports": 1
+          },
+          {
+            "added": 0,
+            "category": "cat",
+            "hiddenAt": "\u003ctime\u003e",
+            "id": "\u003chidden\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Hidden",
+            "reasons": {
+              "spam": 1
+            },
+            "reports": 1
+          },
+          {
+            "added": 0,
+            "category": "cat",
+            "hiddenAt": null,
+            "id": "\u003clistedNew\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Listed new",
+            "reasons": {
+              "spam": 1
+            },
+            "reports": 1
+          }
+        ]
+      },
+      "reports": []
+    },
+    {
+      "status": 401,
+      "setCookie": [],
+      "body": {
+        "error": "adminRequired"
+      },
+      "reports": []
+    },
+    {
+      "status": 405,
+      "allow": "POST",
+      "setCookie": [],
+      "body": {
+        "error": "methodNotAllowed"
+      },
+      "reports": []
+    },
+    {
+      "status": 401,
+      "setCookie": [],
+      "body": {
+        "error": "adminRequired"
+      },
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [],
+      "body": {
+        "error": "forbiddenRequest"
+      },
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [],
+      "body": {
+        "error": "forbiddenRequest"
+      },
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [],
+      "body": {
+        "error": "forbiddenRequest"
+      },
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": {
+        "error": "invalidRequest"
+      },
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": {
+        "error": "invalidRequest"
+      },
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": {
+        "error": "invalidRequest"
+      },
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": {
+        "error": "invalidRequest"
+      },
+      "reports": []
+    },
+    {
+      "status": 404,
+      "setCookie": [],
+      "body": {
+        "error": "sharedPackNotFound"
+      },
+      "reports": []
+    },
+    {
+      "status": 404,
+      "setCookie": [],
+      "body": {
+        "error": "sharedPackNotFound"
+      },
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [],
+      "body": null,
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [],
+      "body": null,
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [],
+      "body": null,
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [],
+      "body": null,
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": {
+        "packs": [
+          {
+            "added": 3,
+            "category": "cat",
+            "hiddenAt": "\u003ctime\u003e",
+            "id": "\u003cmany\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Many",
+            "reasons": {
+              "inappropriate": 1,
+              "spam": 2
+            },
+            "reports": 3
+          },
+          {
+            "added": 0,
+            "hiddenAt": null,
+            "id": "\u003cnewer\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Newer",
+            "reasons": {
+              "other": 1,
+              "spam": 1
+            },
+            "reports": 2
+          },
+          {
+            "added": 1,
+            "category": "cat",
+            "hiddenAt": null,
+            "id": "\u003colder\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Older",
+            "reasons": {
+              "other": 1,
+              "spam": 1
+            },
+            "reports": 2
+          },
+          {
+            "added": 0,
+            "category": "cat",
+            "hiddenAt": "\u003ctime\u003e",
+            "id": "\u003chidden\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Hidden",
+            "reasons": {
+              "spam": 1
+            },
+            "reports": 1
+          },
+          {
+            "added": 0,
+            "category": "cat",
+            "hiddenAt": null,
+            "id": "\u003clistedNew\u003e",
+            "listedAt": "\u003ctime\u003e",
+            "name": "Listed new",
+            "reasons": {
+              "spam": 1
+            },
+            "reports": 1
+          }
+        ]
+      },
+      "reports": []
+    }
+  ],
+  "comment": "The Go backend's answers to /api/admin/* (server/internal/web/admin.go) on a real database, seeded as below with times relative to now (seconds). Counts over the whole database and rows not seeded here are left out; ids are \u003ckey\u003e of the seeded share, times \u003ctime\u003e. tests/apiAdmin.test.cjs replays them against the Route Handlers.",
+  "cookies": {
+    "admin": "admin-\u003ct\u003e@example.com cadmin",
+    "adminUpper": "ADMIN-\u003ct\u003e@Example.com cadmin",
+    "bound": "bound-\u003ct\u003e@example.com cadmin",
+    "expired": "admin-\u003ct\u003e@example.com cadmin -13h",
+    "nobody": "nobody-\u003ct\u003e@example.com cadmin",
+    "otherSub": "admin-\u003ct\u003e@example.com cother"
+  },
+  "origin": "http://localhost:3000",
+  "requests": [
+    {
+      "note": "no cookie",
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "cookie": ""
+    },
+    {
+      "note": "expired cookie",
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "cookie": "expired"
+    },
+    {
+      "note": "an account not in typle_admins",
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "cookie": "nobody"
+    },
+    {
+      "note": "a row bound to another sub",
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "cookie": "bound"
+    },
+    {
+      "note": "the dashboard, binding the sub",
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "cookie": "admin"
+    },
+    {
+      "note": "the email in another case",
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "cookie": "adminUpper"
+    },
+    {
+      "note": "another sub after binding",
+      "method": "GET",
+      "path": "/api/admin/dashboard",
+      "cookie": "otherSub"
+    },
+    {
+      "note": "HEAD of the dashboard",
+      "method": "HEAD",
+      "path": "/api/admin/dashboard",
+      "cookie": "admin"
+    },
+    {
+      "note": "POST to the dashboard",
+      "method": "POST",
+      "path": "/api/admin/dashboard",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{}"
+    },
+    {
+      "note": "OPTIONS of the users",
+      "method": "OPTIONS",
+      "path": "/api/admin/users",
+      "cookie": "admin"
+    },
+    {
+      "note": "users without a page",
+      "method": "GET",
+      "path": "/api/admin/users",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page 0",
+      "method": "GET",
+      "path": "/api/admin/users?page=0",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page +0",
+      "method": "GET",
+      "path": "/api/admin/users?page=%2B0",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page 1",
+      "method": "GET",
+      "path": "/api/admin/users?page=1",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page 10000",
+      "method": "GET",
+      "path": "/api/admin/users?page=10000",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page 10001",
+      "method": "GET",
+      "path": "/api/admin/users?page=10001",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page -1",
+      "method": "GET",
+      "path": "/api/admin/users?page=-1",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page 1.5",
+      "method": "GET",
+      "path": "/api/admin/users?page=1.5",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page abc",
+      "method": "GET",
+      "path": "/api/admin/users?page=abc",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page 007",
+      "method": "GET",
+      "path": "/api/admin/users?page=007",
+      "cookie": "admin"
+    },
+    {
+      "note": "users page without cookie",
+      "method": "GET",
+      "path": "/api/admin/users?page=abc",
+      "cookie": ""
+    },
+    {
+      "note": "the gallery",
+      "method": "GET",
+      "path": "/api/admin/gallery",
+      "cookie": "admin"
+    },
+    {
+      "note": "the gallery without cookie",
+      "method": "GET",
+      "path": "/api/admin/gallery",
+      "cookie": ""
+    },
+    {
+      "note": "GET of hide",
+      "method": "GET",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin"
+    },
+    {
+      "note": "hide without cookie",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":\"\u003cmany\u003e\"}"
+    },
+    {
+      "note": "hide from another site",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "https://evil.example",
+      "contentType": "application/json",
+      "body": "{\"id\":\"\u003cmany\u003e\"}"
+    },
+    {
+      "note": "hide without origin",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "contentType": "application/json",
+      "body": "{\"id\":\"\u003cmany\u003e\"}"
+    },
+    {
+      "note": "hide as text",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "text/plain",
+      "body": "{\"id\":\"\u003cmany\u003e\"}"
+    },
+    {
+      "note": "hide without a body",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json"
+    },
+    {
+      "note": "hide with an extra member",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":\"\u003cmany\u003e\",\"x\":1}"
+    },
+    {
+      "note": "hide with an empty id",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":\"\"}"
+    },
+    {
+      "note": "hide with a number id",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":1}"
+    },
+    {
+      "note": "hide a non-UUID",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":\"nope\"}"
+    },
+    {
+      "note": "hide an unknown UUID",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":\"00000000-0000-4000-8000-000000000000\"}"
+    },
+    {
+      "note": "hide many",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":\"\u003cmany\u003e\"}"
+    },
+    {
+      "note": "hide hidden again",
+      "method": "POST",
+      "path": "/api/admin/gallery/hide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":\"\u003chidden\u003e\"}"
+    },
+    {
+      "note": "unhide hiddenOnly",
+      "method": "POST",
+      "path": "/api/admin/gallery/unhide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":\"\u003chiddenOnly\u003e\"}"
+    },
+    {
+      "note": "unhide linkOnly",
+      "method": "POST",
+      "path": "/api/admin/gallery/unhide",
+      "cookie": "admin",
+      "origin": "http://localhost:3000",
+      "contentType": "application/json",
+      "body": "{\"id\":\"\u003clinkOnly\u003e\"}"
+    },
+    {
+      "note": "the gallery after",
+      "method": "GET",
+      "path": "/api/admin/gallery",
+      "cookie": "admin"
+    }
+  ],
+  "secret": "typle-fixture-secret",
+  "seed": {
+    "admins": [
+      {
+        "email": "admin-\u003ct\u003e@example.com",
+        "sub": null
+      },
+      {
+        "email": "bound-\u003ct\u003e@example.com",
+        "sub": "someone"
+      }
+    ],
+    "reports": [
+      {
+        "share": "many",
+        "reason": "spam",
+        "atOffset": -5400
+      },
+      {
+        "share": "many",
+        "reason": "spam",
+        "atOffset": -4800
+      },
+      {
+        "share": "many",
+        "reason": "inappropriate",
+        "atOffset": -4200
+      },
+      {
+        "share": "newer",
+        "reason": "other",
+        "atOffset": -6000
+      },
+      {
+        "share": "newer",
+        "reason": "spam",
+        "atOffset": -3900
+      },
+      {
+        "share": "older",
+        "reason": "other",
+        "atOffset": -6600
+      },
+      {
+        "share": "older",
+        "reason": "spam",
+        "atOffset": -3960
+      },
+      {
+        "share": "listedNew",
+        "reason": "spam",
+        "atOffset": -7200
+      },
+      {
+        "share": "hidden",
+        "reason": "spam",
+        "atOffset": -7200
+      },
+      {
+        "share": "hiddenOnly",
+        "reason": "spam",
+        "atOffset": -7200
+      }
+    ],
+    "shares": [
+      {
+        "key": "many",
+        "name": "Many",
+        "category": "cat",
+        "added": 3,
+        "listedOffset": -3600,
+        "hiddenOffset": null,
+        "updatedOffset": 7000
+      },
+      {
+        "key": "newer",
+        "name": "Newer",
+        "category": "",
+        "added": 0,
+        "listedOffset": -18000,
+        "hiddenOffset": null,
+        "updatedOffset": 6900
+      },
+      {
+        "key": "older",
+        "name": "Older",
+        "category": "cat",
+        "added": 1,
+        "listedOffset": -14400,
+        "hiddenOffset": null,
+        "updatedOffset": 6800
+      },
+      {
+        "key": "listedNew",
+        "name": "Listed new",
+        "category": "cat",
+        "added": 0,
+        "listedOffset": -7200,
+        "hiddenOffset": null,
+        "updatedOffset": 6700
+      },
+      {
+        "key": "hidden",
+        "name": "Hidden",
+        "category": "cat",
+        "added": 0,
+        "listedOffset": -10800,
+        "hiddenOffset": -60,
+        "updatedOffset": 6600
+      },
+      {
+        "key": "hiddenOnly",
+        "name": "Hidden only",
+        "category": "",
+        "added": 0,
+        "listedOffset": null,
+        "hiddenOffset": -60,
+        "updatedOffset": 6500
+      },
+      {
+        "key": "linkOnly",
+        "name": "Link only",
+        "category": "cat",
+        "added": 0,
+        "listedOffset": null,
+        "hiddenOffset": null,
+        "updatedOffset": 6400
+      }
+    ],
+    "workspaces": {
+      "\u003cother\u003e": {
+        "lists": "[]",
+        "packs": "[{\"id\":\"p\"},{\"id\":\"q\"}]",
+        "devices": "[]",
+        "revision": 9,
+        "updatedOffset": 7100
+      },
+      "\u003cowner\u003e": {
+        "lists": "[{\"id\":\"a\"},{\"id\":\"b\"}]",
+        "packs": null,
+        "devices": "[{\"id\":\"d\"}]",
+        "revision": 4,
+        "updatedOffset": 7200
+      }
+    }
+  }
+}

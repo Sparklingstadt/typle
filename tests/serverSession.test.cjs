@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { openSession, sessionCookieName } = require('../src/server/session.ts')
+const { openSession, sessionCookieName, openAdmin, adminCookieName } = require('../src/server/session.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 
 // The cookies and tokens were sealed by the Go backend (session.Keys.Seal and SealApp), so a login made by either side
@@ -45,4 +45,23 @@ test('the cookie is __Host- over HTTPS', () => {
   assert.equal(sessionCookieName(false), 'typle-session')
   assert.equal(settings.secure, true)
   assert.equal(readLoginSettings({ AUTH_SECRET: 's', AUTH_URL: 'http://127.0.0.1:3101' }).secure, false)
+})
+
+// The administrator's cookie of /admin, sealed by the Go backend (session.Keys.SealAdmin): it opens only under the admin
+// key, before it expires, with an email and an FFPF ID sub.
+const admins = require('./fixtures/admin-cookies.json')
+const adminSettings = readLoginSettings({ AUTH_SECRET: admins.secret, AUTH_URL: 'https://typle.example' })
+
+test('the Go backend\'s administrator cookies open as they did there', () => {
+  for (const { note, value, admin } of admins.cookies) {
+    const opened = openAdmin(adminSettings.adminKey, value, admins.now)
+    assert.deepEqual(opened && { email: opened.email, sub: opened.sub, iat: opened.issuedAt, exp: opened.expires }, admin && { email: admin.email, sub: admin.sub, iat: admin.iat, exp: admin.exp }, note)
+  }
+  // The login keys do not open it.
+  assert.equal(openSession(adminSettings.sessionKey, admins.cookies[0].value, admins.now), null)
+})
+
+test('the administrator cookie is __Host- over HTTPS', () => {
+  assert.equal(adminCookieName(true), '__Host-typle-admin')
+  assert.equal(adminCookieName(false), 'typle-admin')
 })

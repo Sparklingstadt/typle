@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { API, apiError, endpointOf } from './api'
 
-// The dashboard's own login and figures come from /api/admin/dashboard (server/internal/web/admin.go), whose cookie and typle_admins check are covered by the Go tests; here the page is
+// The dashboard's own login and figures come from /api/admin/dashboard (src/server/admin.ts), whose cookie and typle_admins check are covered by tests/apiAdmin.test.cjs; here the page is
 // checked against its answers.
 
 test('without the administrator cookie the dashboard offers the FFPF ID login', async ({ page, request }) => {

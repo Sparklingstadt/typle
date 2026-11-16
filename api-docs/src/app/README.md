@@ -1,6 +1,6 @@
 # 概要と共通事項
 
-Typle 本体（Web版と iPad・Mac・Android・Windows 版）が使う、アプリ自身のバックエンドです。Go の `server/internal/web` で、本番では Vercel の Go の関数（リポジトリ直下の `api/index.go` → `server/vercel`）として動きます。手元では `server/cmd/typle-web`（既定 `127.0.0.1:8081`）で起動し、`npm run dev` と E2E が使います。
+Typle 本体（Web版と iPad・Mac・Android・Windows 版）が使う、アプリ自身のバックエンドです。Go から Next.js の Route Handler（`src/app/api`・`src/server`）へ移しているところで、v2.46.8 からは `/api/auth/*` だけが Go の `server/internal/web` です。Go は本番では Vercel の Go の関数（リポジトリ直下の `api/index.go` → `server/vercel`）として動き、手元では `server/cmd/typle-web`（既定 `127.0.0.1:8081`）で起動して `npm run dev` と E2E が使います。
 
 Web版は v2.41.1 から、ワークスペース・記録・共有・ギャラリー・管理画面を下の REST のパスで読み書きします（v2.14.0〜v2.41.0 は GraphQL）。iPad・Mac 版も 11/13 に REST へ戻りました。GraphQL（`POST /api/graphql`）は v2.43.0 で消しました。
 
@@ -79,11 +79,11 @@ Cookie で書き込むリクエストは、`Origin` がアプリの origin（`AU
 
 | 場所 | 内容 |
 |---|---|
-| `api/index.go` | Vercel の Go の関数（1つだけ）。`vercel.json` の `rewrites` がバックエンドのパスをすべてここへ送り、`server/vercel` が元のパスで振り分ける |
+| `src/app/api`・`src/server` | Next.js の Route Handler。`/api/auth/*` 以外のすべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/core/records.ts`、管理画面は `src/server/admin.ts`） |
+| `api/index.go` | Vercel の Go の関数（1つだけ）。`vercel.json` の `rewrites` が `/api/auth/*` をここへ送り、`server/vercel` が元のパスで振り分ける |
 | `server/vercel` | 環境変数から `internal/web` を組み立てる。`/api/auth` はセッションの応答が DB を待たないよう、DB を開かずに組み立てる |
 | `server/cmd/typle-web` | 手元でこの API を起動するコマンド |
-| `server/internal/web` | HTTPハンドラー（`web.go` がパスの一覧） |
+| `server/internal/web` | ログインの HTTPハンドラー（`web.go` がパスの一覧） |
 | `server/internal/session` | Cookie・トークン・ログイン途中の状態の署名 |
 | `server/internal/auth` | GitHub の OAuth と FFPF ID のクライアント |
 | `server/internal/store` | `typle_workspaces`・`typle_records`・`typle_shared_packs`・`typle_admins` などの読み書き |
-| `src/server/workspace.ts`（`answerRecords`）・`src/core/records.ts` | 記録の追加・削除 |

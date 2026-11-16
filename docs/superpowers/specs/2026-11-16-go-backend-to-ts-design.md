@@ -71,8 +71,8 @@
    Go と TS が同じ Cookie を互いに読めることを、両方を動かすテストで確かめる。
 5. `/api/shares`。
 6. `/api/workspace`・`/api/workspace/records`（`revision` による保存、409、`typle_save_metrics` の記録）。
-7. 管理画面 `/api/admin/*`・`/api/auth/admin/signout`。
-8. ログインの流れ：`/api/auth/signin`・`callback/github`・`callback/ffpf`・`session`・`token`・`signout`・`local`。
+7. 管理画面 `/api/admin/*`（`/api/auth/admin/signout` は `/api/auth/*` の転送をまとめて外せる段階8に回した）。
+8. ログインの流れ：`/api/auth/admin/signout`・`/api/auth/signin`・`callback/github`・`callback/ffpf`・`session`・`token`・`signout`・`local`。
    iPad／Mac のトークンの流れ（PKCE）を含む。
 9. 片付け：`server/`・`api/index.go`・`go.mod`・`go.sum`・`vercel.json` の `rewrites`・`next.config.mjs` の
    `beforeFiles`、`scripts/dev.cjs` の Go の起動、`scripts/verify.cjs` の Go の検査、Go と TS の照合だけのための
@@ -108,6 +108,10 @@ Go と TS が互いに読む Cookie・トークンの形も変えない（どち
 - 名前の照合：同じ件数の分類の並びは `Intl.Collator('ja')` で、Go の `golang.org/x/text/collate` とは長音記号「ー」などで
   順が違う。Go の `CompareNames` 自身がアプリの `Intl.Collator('ja')` に合わせるためのものだったので、こちらを正とする。
 - JSON の文字のエスケープ：Go は `<`・`>`・`&`・U+2028・U+2029 を `\u003c` などと書いた。TS は `JSON.stringify` のまま書く。
+- 時刻の細かさ（段階2・4・7）：Go はマイクロ秒まで書いた（`2026-11-16T08:44:48.123456Z`）。TS は `Date#toISOString()` のミリ秒まで。
+  画面とアプリは `Date` で読むので同じ時刻になる。
+- Vercel での確かめる順（段階7で分かったこと）：Go は設定や DB がないとき、メソッドを見る前に 503 を返した。Route Handler は
+  ファイルが出していないメソッドに先に 405 を返す。アプリが送るメソッドでは同じ答え。
 
 ### 段階6の前に洗い出した違いと、持ち主の決定（2026-11-16）
 

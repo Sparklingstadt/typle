@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { ApiError, api } from '@/core/api'
 
-// The packs of /api/admin/gallery (server/internal/web/admin.go, server/internal/store/gallery.go), the most reported first.
+// The packs of /api/admin/gallery (src/server/admin.ts), the most reported first.
 type Pack = {
   id: string
   name: string
