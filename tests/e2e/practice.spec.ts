@@ -3,9 +3,9 @@ import { openPacks } from './packRows'
 import { guestWorkspace } from './guestData'
 const key = 'typle-r:guest-workspace:v1'
 async function importWords(page: import('@playwright/test').Page, files: Parameters<import('@playwright/test').Locator['setInputFiles']>[0]) {
-  await page.getByRole('button', { name: 'CSV・TSVを読み込む', exact: true }).click()
-  const dialog = page.getByRole('dialog', { name: 'CSV・TSVから読み込む' })
-  await dialog.getByLabel('CSV・TSVファイルを選択', { exact: true }).setInputFiles(files)
+  await page.getByRole('button', { name: 'CSVを読み込む', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'CSVから読み込む' })
+  await dialog.getByLabel('CSVファイルを選択', { exact: true }).setInputFiles(files)
   await dialog.getByRole('button', { name: /語を追加$|語で置き換える$/ }).click()
   await expect(dialog).toHaveCount(0)
 }
@@ -460,37 +460,37 @@ test('save and delete notifications stack and animate before being dismissed', a
   await expect(deleted).toHaveCount(0, { timeout: 8000 })
 })
 
-for (const format of ['csv', 'tsv'] as const) {
-  test(`${format} import validates, previews, appends and persists words`, async ({ page }) => {
-    await seed(page, [])
-    await page.goto('/create')
-    await page.getByRole('button', { name: 'CSV・TSVを読み込む', exact: true }).click()
-    const dialog = page.getByRole('dialog', { name: 'CSV・TSVから読み込む' })
-    const file = dialog.getByLabel('CSV・TSVファイルを選択', { exact: true })
-    await file.setInputFiles({ name: 'bad.csv', mimeType: 'text/csv', buffer: Buffer.from('input,display\na,') })
-    await expect(dialog.getByRole('alert')).toContainText('input と display は必須')
-    await expect(dialog.getByRole('button', { name: /語を追加$/ })).toHaveCount(0)
-    const text = format === 'csv' ? 'input,display,annotation\r\nJapan,"日本,Japan","国名 ""country"""' : 'input\tdisplay\nJapan\t日本'
-    await file.setInputFiles({ name: `Imported.${format}`, mimeType: 'text/plain', buffer: Buffer.from(text) })
-    await expect(dialog.getByRole('table', { name: '読み込む単語のプレビュー' })).toContainText(format === 'csv' ? '日本,Japan' : '日本')
-    await dialog.getByRole('button', { name: '1語を追加', exact: true }).click()
-    await expect(page.getByRole('status').filter({ hasText: '1語を読み込みました' })).toBeVisible()
-    await expect(page.getByRole('textbox', { name: '単語リスト名', exact: true })).toHaveValue('Imported')
-    await expect(page.getByRole('textbox', { name: '入力する文字 1', exact: true })).toHaveValue('Japan')
-    await importWords(page, { name: 'more.tsv', mimeType: 'text/plain', buffer: Buffer.from('display\tinput\nフランス\tFrance') })
-    await expect(page.getByRole('status').filter({ hasText: '1語を追加しました' })).toBeVisible()
-    await expect(page.getByRole('textbox', { name: '入力する文字 2', exact: true })).toHaveValue('France')
-    await page.getByRole('button', { name: '保存', exact: true }).click()
-    await expect(page).toHaveURL(/\/edit\?pack=/)
-    await page.reload()
-    await openPacks(page)
-    await page.getByRole('button', { name: 'Imported を編集', exact: true }).click()
-    await expect(page.getByRole('textbox', { name: '表示する単語 1', exact: true })).toHaveValue(format === 'csv' ? '日本,Japan' : '日本')
-    await expect(page.getByRole('textbox', { name: '表示する単語 2', exact: true })).toHaveValue('フランス')
-    await expect(page.getByRole('textbox', { name: '入力する文字 1', exact: true })).toHaveValue('Japan')
-    await expect(page.getByRole('textbox', { name: '補足 1', exact: true })).toHaveValue(format === 'csv' ? '国名 "country"' : '')
-  })
-}
+test('csv import validates, previews, appends and persists words', async ({ page }) => {
+  await seed(page, [])
+  await page.goto('/create')
+  await page.getByRole('button', { name: 'CSVを読み込む', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'CSVから読み込む' })
+  const file = dialog.getByLabel('CSVファイルを選択', { exact: true })
+  await file.setInputFiles({ name: 'bad.csv', mimeType: 'text/csv', buffer: Buffer.from('input,display\na,') })
+  await expect(dialog.getByRole('alert')).toContainText('input と display は必須')
+  await expect(dialog.getByRole('button', { name: /語を追加$/ })).toHaveCount(0)
+  // A TSV is no longer read (v2.44.0).
+  await file.setInputFiles({ name: 'words.tsv', mimeType: 'text/plain', buffer: Buffer.from('input\tdisplay\nJapan\t日本') })
+  await expect(dialog.getByRole('alert')).toContainText('CSVファイルを選択してください')
+  await file.setInputFiles({ name: 'Imported.csv', mimeType: 'text/plain', buffer: Buffer.from('input,display,annotation\r\nJapan,"日本,Japan","国名 ""country"""') })
+  await expect(dialog.getByRole('table', { name: '読み込む単語のプレビュー' })).toContainText('日本,Japan')
+  await dialog.getByRole('button', { name: '1語を追加', exact: true }).click()
+  await expect(page.getByRole('status').filter({ hasText: '1語を読み込みました' })).toBeVisible()
+  await expect(page.getByRole('textbox', { name: '単語リスト名', exact: true })).toHaveValue('Imported')
+  await expect(page.getByRole('textbox', { name: '入力する文字 1', exact: true })).toHaveValue('Japan')
+  await importWords(page, { name: 'more.csv', mimeType: 'text/plain', buffer: Buffer.from('display,input\nフランス,France') })
+  await expect(page.getByRole('status').filter({ hasText: '1語を追加しました' })).toBeVisible()
+  await expect(page.getByRole('textbox', { name: '入力する文字 2', exact: true })).toHaveValue('France')
+  await page.getByRole('button', { name: '保存', exact: true }).click()
+  await expect(page).toHaveURL(/\/edit\?pack=/)
+  await page.reload()
+  await openPacks(page)
+  await page.getByRole('button', { name: 'Imported を編集', exact: true }).click()
+  await expect(page.getByRole('textbox', { name: '表示する単語 1', exact: true })).toHaveValue('日本,Japan')
+  await expect(page.getByRole('textbox', { name: '表示する単語 2', exact: true })).toHaveValue('フランス')
+  await expect(page.getByRole('textbox', { name: '入力する文字 1', exact: true })).toHaveValue('Japan')
+  await expect(page.getByRole('textbox', { name: '補足 1', exact: true })).toHaveValue('国名 "country"')
+})
 
 for (const theme of ['light', 'dark']) {
   test(`typing, annotations, editor and deletion dialog remain usable in ${theme} theme`, async ({ page }, testInfo) => {

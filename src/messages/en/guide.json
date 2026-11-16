@@ -23,7 +23,7 @@
     },
     "create": {
       "title": "Make your own pack",
-      "text": "Choose word lists you already have and put them together in a pack. Word lists can be created on their own, and imported from CSV or TSV files.",
+      "text": "Choose word lists you already have and put them together in a pack. Word lists can be created on their own, and imported from CSV files.",
       "action": "Create a pack"
     },
     "review": {
@@ -136,8 +136,8 @@
       "p3": "Duplicating copies only the words, not the practice history. The same applies when you duplicate a pack."
     },
     "csv": {
-      "title": "CSV and TSV files",
-      "p1": "While editing a list, choose a file with “Import CSV/TSV”. After reviewing its contents, you can add the words to the end of the current ones or replace them.",
+      "title": "CSV files",
+      "p1": "While editing a list, choose a file with “Import CSV”. After reviewing its contents, you can add the words to the end of the current ones or replace them.",
       "p2": "The first row holds the column names. input (characters to type) and display (word to display) are required; annotation (note) is optional. You can import UTF-8 files of up to 1 MiB and 1,000 words.",
       "p3": "“Export CSV” writes each word’s input, display text, and note to a UTF-8 CSV file (practice history is not included). Exported files can be imported as they are.",
       "exampleLabel": "Example CSV file",

@@ -29,7 +29,7 @@
     "countFiltered": "{shown} of {total}",
     "count": "{total, plural, one {# pack} other {# packs}}",
     "noMatch": "No packs match “{query}”. Searches pack names, list names, categories, tags and words.",
-    "csvNote": "CSV export saves the words, what to type, and notes (practice history is not included). Use it with “Import CSV/TSV” on the create and edit screens.",
+    "csvNote": "CSV export saves the words, what to type, and notes (practice history is not included). Use it with “Import CSV” on the create and edit screens.",
     "importFile": "Import from file"
   },
   "delete": {
@@ -78,7 +78,7 @@
   "empty": {
     "title": "No word lists yet",
     "packTitle": "No word packs yet",
-    "description": "Add the words you want to practice and the text to type as the answer. You can also import them from a CSV or TSV file.",
+    "description": "Add the words you want to practice and the text to type as the answer. You can also import them from a CSV file.",
     "packDescription": "No packs yet. Follow an official pack or create a new one.",
     "catalogLink": "Follow an official pack"
   },
@@ -219,10 +219,10 @@
     "inputTypeCode": "Code"
   },
   "import": {
-    "open": "Import CSV/TSV",
-    "title": "Import from CSV/TSV",
+    "open": "Import CSV",
+    "title": "Import from CSV",
     "description": "The first row contains column names. input and display are required; annotation and input_type are optional. input_type is command, code or word. Columns may be in any order.",
-    "fileLabel": "Choose a CSV or TSV file",
+    "fileLabel": "Choose a CSV file",
     "readFailed": "Could not read the file.",
     "addFailed": "Could not add the words.",
     "bytes": "{value} B",
@@ -241,7 +241,7 @@
     "replaceHint": "The {existing, plural, one {# word} other {# words}} already entered will be removed.",
     "drop": "Drop a file here",
     "choose": "Choose file",
-    "limits": "CSV / TSV · UTF-8 · up to 1 MiB · up to 1,000 words per list",
+    "limits": "CSV · UTF-8 · up to 1 MiB · up to 1,000 words per list",
     "example": "Example",
     "sample": "display,input,annotation\nApple,apple,fruit\nNew York,new york,",
     "loadedStatus": "Loaded {count, plural, one {# word} other {# words}}.",

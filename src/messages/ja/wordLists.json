@@ -29,7 +29,7 @@
     "countFiltered": "{shown}パック / 全{total}パック",
     "count": "{total}パック",
     "noMatch": "「{query}」に一致するパックはありません。パック名・リスト名・カテゴリ・タグ・単語から探します。",
-    "csvNote": "CSVエクスポートは表示する単語・入力する文字・補足を保存します（練習記録は含みません）。作成・編集画面の「CSV・TSVを読み込む」で使えます。",
+    "csvNote": "CSVエクスポートは表示する単語・入力する文字・補足を保存します（練習記録は含みません）。作成・編集画面の「CSVを読み込む」で使えます。",
     "importFile": "ファイルから取り込む"
   },
   "delete": {
@@ -78,7 +78,7 @@
   "empty": {
     "title": "単語リストはまだありません",
     "packTitle": "単語パックはまだありません",
-    "description": "練習したい単語と、正解として入力する文字を登録します。CSV・TSVファイルから読み込むこともできます。",
+    "description": "練習したい単語と、正解として入力する文字を登録します。CSVファイルから読み込むこともできます。",
     "packDescription": "まだパックがありません。公式パックをフォローするか、新しいパックを作りましょう",
     "catalogLink": "公式パックをフォローする"
   },
@@ -219,10 +219,10 @@
     "inputTypeCode": "コード"
   },
   "import": {
-    "open": "CSV・TSVを読み込む",
-    "title": "CSV・TSVから読み込む",
+    "open": "CSVを読み込む",
+    "title": "CSVから読み込む",
     "description": "1行目は列名です。input と display は必須、annotation と input_type は省略できます。input_type は command・code・word のいずれかです。列の順番は自由です。",
-    "fileLabel": "CSV・TSVファイルを選択",
+    "fileLabel": "CSVファイルを選択",
     "readFailed": "ファイルを読み込めませんでした。",
     "addFailed": "単語を追加できませんでした。",
     "bytes": "{value} B",
@@ -241,7 +241,7 @@
     "replaceHint": "入力済みの{existing}語は削除されます。",
     "drop": "ファイルをここにドロップ",
     "choose": "ファイルを選択",
-    "limits": "CSV / TSV・UTF-8・1 MiB以内・1リスト1,000語まで",
+    "limits": "CSV・UTF-8・1 MiB以内・1リスト1,000語まで",
     "example": "書式の例",
     "sample": "display,input,annotation\n日本,nihon,にほん\nアメリカ,amerika,",
     "loadedStatus": "{count}語を読み込みました。",

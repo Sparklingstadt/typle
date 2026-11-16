@@ -7,20 +7,19 @@ import { Button } from "./ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { useErrorText } from "@/i18n/useErrorText"
 import { AppError } from "@/core/appError"
-import { IMPORT_ACCEPT, MAX_IMPORT_BYTES, importDelimiter, parseWordFile, type Word } from "@/core/wordFormat"
+import { IMPORT_ACCEPT, MAX_IMPORT_BYTES, isWordCsv, parseWordCsv, type Word } from "@/core/wordFormat"
 
 type Words = Word[]
 export type ImportMode = "append" | "replace"
 type Parsed = { name: string; size: number; words: Words }
 
 async function readWordFile(file: File): Promise<Parsed> {
-  const delimiter = importDelimiter(file.name)
-  if (!delimiter) throw new AppError("importFileType")
+  if (!isWordCsv(file.name)) throw new AppError("importFileType")
   if (file.size > MAX_IMPORT_BYTES) throw new AppError("importTooLarge")
   let text: string
   try { text = new TextDecoder("utf-8", { fatal: true }).decode(await file.arrayBuffer()) }
   catch { throw new AppError("importFileEncoding") }
-  return { name: file.name, size: file.size, words: parseWordFile(text, delimiter) }
+  return { name: file.name, size: file.size, words: parseWordCsv(text) }
 }
 
 export default function WordListImport({ onImport, disabled, existingCount }: {
@@ -62,7 +61,7 @@ export default function WordListImport({ onImport, disabled, existingCount }: {
   function confirm() {
     if (!parsed) return
     try {
-      onImport(parsed.words, parsed.name.replace(/\.(csv|tsv)$/i, "").slice(0, 200), existingCount ? mode : "append")
+      onImport(parsed.words, parsed.name.replace(/\.csv$/i, "").slice(0, 200), existingCount ? mode : "append")
       setOpen(false)
       reset()
     } catch (cause) { setError(errorText(cause, t("addFailed"))) }

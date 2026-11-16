@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { IMPORT_ACCEPT, encodeWordCsv, importDelimiter, parseWordFile, wordFilename } = require('../src/core/wordFormat.ts')
+const { IMPORT_ACCEPT, encodeWordCsv, isWordCsv, parseWordCsv, wordFilename } = require('../src/core/wordFormat.ts')
 const wordCsvFilename = name => wordFilename(name, 'csv')
 
 test('exported CSV round-trips Unicode, exact whitespace, duplicates, quotes and newlines', () => {
@@ -13,7 +13,7 @@ test('exported CSV round-trips Unicode, exact whitespace, duplicates, quotes and
   const original = structuredClone(words)
   const csv = encodeWordCsv(words)
   assert.ok(csv.startsWith('\ufeffinput,display,annotation\r\n'))
-  assert.deepEqual(parseWordFile(csv, ','), original)
+  assert.deepEqual(parseWordCsv(csv), original)
   assert.deepEqual(words, original)
 })
 
@@ -26,12 +26,12 @@ test('filenames retain readable names and remove path and reserved characters', 
 })
 
 test('files are read by their extension, in any case, and other files are refused', () => {
-  assert.equal(importDelimiter('words.csv'), ',')
-  assert.equal(importDelimiter('Words.TSV'), '\t')
-  assert.equal(importDelimiter('words.txt'), undefined)
-  assert.equal(IMPORT_ACCEPT, '.csv,.tsv')
-  assert.deepEqual(parseWordFile('input\tdisplay\nzi\t字', importDelimiter('words.tsv')), [{ input: 'zi', display: '字', annotation: '' }])
-  assert.equal(wordFilename('中国語', 'tsv'), '中国語.tsv')
+  assert.equal(isWordCsv('words.csv'), true)
+  assert.equal(isWordCsv('Words.CSV'), true)
+  assert.equal(isWordCsv('words.tsv'), false)
+  assert.equal(isWordCsv('words.txt'), false)
+  assert.equal(IMPORT_ACCEPT, '.csv')
+  assert.equal(wordFilename('中国語', 'typle-pack.json'), '中国語.typle-pack.json')
 })
 
 test('CSV round-trips explicit input types mixed with legacy words without adding defaults', () => {
@@ -43,6 +43,6 @@ test('CSV round-trips explicit input types mixed with legacy words without addin
   ]
   const csv = encodeWordCsv(words)
   assert.ok(csv.startsWith('\ufeffinput,display,annotation,input_type\r\n'))
-  assert.deepEqual(parseWordFile(csv, ','), words)
+  assert.deepEqual(parseWordCsv(csv), words)
   assert.throws(() => encodeWordCsv([{ ...words[0], input_type: null }]), { key: 'savedDataCorrupted' })
 })

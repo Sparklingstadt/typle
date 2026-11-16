@@ -29,7 +29,7 @@
     "title": "What you can do",
     "own": {
       "title": "Practice with your own word lists",
-      "text": "Add the words you want to learn and practice them. The word shown and the characters typed can differ, and you can import from CSV or TSV files."
+      "text": "Add the words you want to learn and practice them. The word shown and the characters typed can differ, and you can import from CSV files."
     },
     "recall": {
       "title": "Type from memory",
