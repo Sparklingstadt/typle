@@ -1,0 +1,55 @@
+import { createHash } from 'node:crypto'
+
+// Practice records are kept in typle_records, one row each, rather than in their lists (the Go backend's
+// server/internal/store/records.go, docs/superpowers/specs/2026-10-29-record-table.md). A workspace whose records_split
+// is false still has them in its lists, as saved before the table existed: the first save of its lists moves them.
+// Reads put the records back in their lists, so the app sees lists with their records, as before.
+
+/**
+ * value as Go's strconv.FormatFloat(value, 'g', -1, 64) writes it: the shortest digits, in exponent form (two digits at
+ * least, with a sign) when the exponent is below -4 or 6 and above, and plain otherwise.
+ */
+export function goFloat(value: number): string {
+  if (value === 0) return Object.is(value, -0) ? '-0' : '0'
+  const sign = value < 0 ? '-' : ''
+  const magnitude = Math.abs(value)
+  // toExponential() without digits gives the shortest digits that read back as the same number.
+  const [mantissa, exponentText] = magnitude.toExponential().split('e')
+  const exponent = Number(exponentText)
+  if (exponent < -4 || exponent >= 6) {
+    return `${sign}${mantissa}e${exponent < 0 ? '-' : '+'}${String(Math.abs(exponent)).padStart(2, '0')}`
+  }
+  // In this range String() writes the same shortest digits without an exponent.
+  return sign + String(magnitude)
+}
+
+/**
+ * The id a record saved without one is given, and one with the id of an earlier record of its list: the same record
+ * gets the same id however often its list is saved or moved.
+ */
+export function legacyId(listId: string, position: number, record: { date: string, time: number }): string {
+  const sum = createHash('sha256').update(`${listId}\0${position}\0${record.date}\0${goFloat(record.time)}`).digest('hex')
+  return `legacy-${sum.slice(0, 20)}`
+}
+
+/** A record as typle_records keeps it: data is the record as its list held it, with its id; position its place. */
+export type RecordRow = { listId: string, recordId: string, position: number, at: Date, data: string }
+
+type ListWithRecords = { id: string, records: { id?: string, time: number, date: string }[] }
+
+/**
+ * The records of the lists as rows, every record given an id that keeps it apart from the rest of its list (legacyId),
+ * in place, as the Go backend's recordRows does.
+ */
+export function recordRows(lists: ListWithRecords[]): RecordRow[] {
+  const rows: RecordRow[] = []
+  for (const list of lists) {
+    const seen = new Set<string>()
+    list.records.forEach((record, position) => {
+      if (!record.id || seen.has(record.id)) record.id = legacyId(list.id, position, record)
+      seen.add(record.id)
+      rows.push({ listId: list.id, recordId: record.id, position, at: new Date(Date.parse(record.date)), data: JSON.stringify(record) })
+    })
+  }
+  return rows
+}
