@@ -104,7 +104,13 @@ async function putShare(db: Pool, owner: string, packId: string, listed: boolean
  * null for anything else ("listed": null too).
  */
 async function readShareBody(request: Request): Promise<{ packId: string, listed: boolean | undefined } | null> {
-  const body = await request.arrayBuffer()
+  let body: ArrayBuffer
+  try {
+    body = await request.arrayBuffer()
+  } catch {
+    // A stream that breaks off is a body that cannot be read, as the Go backend answered it.
+    return null
+  }
   if (body.byteLength === 0 || body.byteLength > MAX_SHARE_BODY_BYTES) return null
   let fields: unknown
   try {

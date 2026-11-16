@@ -160,3 +160,14 @@ test('the route answers other methods with 405', async () => {
     assert.equal(response.headers.get('allow'), 'GET, HEAD, PUT, DELETE', method)
   }
 })
+
+// The cases of Go's TestReadShareBody that the others do not cover: a body past 4096 bytes, and a stream that breaks.
+test('a body that is too large or breaks off is refused as a bad one', database, async () => {
+  const user = await account()
+  const large = JSON.stringify({ packId: 'p'.repeat(4096) })
+  await expectError(await answerShares(browser(user, 'PUT', { body: large }), open, withSettings), 400, 'invalidWorkspace')
+  const broken = new ReadableStream({ start(controller) { controller.enqueue(new TextEncoder().encode('{"packId":')); controller.error(new Error('broken')) } })
+  const request = new Request(`${origin}/api/shares`, { method: 'PUT', body: broken, duplex: 'half',
+    headers: { Cookie: user.cookie, Origin: origin, 'Content-Type': 'application/json' } })
+  await expectError(await answerShares(request, open, withSettings), 400, 'invalidWorkspace')
+})
