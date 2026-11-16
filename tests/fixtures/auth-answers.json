@@ -1,0 +1,846 @@
+{
+  "answers": [
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":null,\"providers\":[]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":null,\"providers\":[\"github\",\"ffpf\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":{\"id\":\"github:9100000001\",\"name\":\"Alice\",\"image\":\"https://avatars.example/u/1\"},\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":{\"id\":\"github:9100000002\",\"name\":\"\\u003cb\\u0026o\\u003e\\u2028b\\u2029 😀\",\"image\":null},\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":{\"id\":\"github:9100000001\",\"name\":\"Alice\",\"image\":\"https://avatars.example/u/1\"},\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [
+        "typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":{\"id\":\"github:9100000001\",\"name\":\"Alice\",\"image\":\"https://avatars.example/u/1\"},\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 405,
+      "allow": "GET, HEAD",
+      "setCookie": [],
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":{\"id\":\"github:9100000001\",\"name\":\"Alice\",\"image\":\"https://avatars.example/u/1\"},\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [
+        "__Host-typle-session=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax"
+      ],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"token\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiaWF0IjoxNzkwMDAwMTAwLCJleHAiOjE3OTI1OTIxMDB9.nksDRvtFfeeUm-8BjrS1NNcQN7GdMPPTNB-vKc5-qCg\",\"user\":{\"id\":\"github:9100000001\",\"name\":\"Alice\",\"image\":\"https://avatars.example/u/1\"}}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"token\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMiIsIm5hbWUiOiI8YiZvPlx1MjAyOGJcdTIwMjkg8J-YgCIsImltYWdlIjoiIiwiaWF0IjoxNzkwMDAwMTAwLCJleHAiOjE3OTI1OTIxMDB9.T07P_vbhqx3oYpn9wdnUK6pjMKi697Tdth9oadEdVWc\",\"user\":{\"id\":\"github:9100000002\",\"name\":\"\\u003cb\\u0026o\\u003e\\u2028b\\u2029 😀\",\"image\":null}}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"token\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiaWF0IjoxNzkwMDAwMTAwLCJleHAiOjE3OTI1OTIxMDB9.nksDRvtFfeeUm-8BjrS1NNcQN7GdMPPTNB-vKc5-qCg\",\"user\":{\"id\":\"github:9100000001\",\"name\":\"Alice\",\"image\":\"https://avatars.example/u/1\"}}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"token\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiaWF0IjoxNzkwMDAwMTAwLCJleHAiOjE3OTI1OTIxMDB9.nksDRvtFfeeUm-8BjrS1NNcQN7GdMPPTNB-vKc5-qCg\",\"user\":{\"id\":\"github:9100000001\",\"name\":\"Alice\",\"image\":\"https://avatars.example/u/1\"}}\n",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"token\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiaWF0IjoxNzkwMDAwMTAwLCJleHAiOjE3OTI1OTIxMDB9.nksDRvtFfeeUm-8BjrS1NNcQN7GdMPPTNB-vKc5-qCg\",\"user\":{\"id\":\"github:9100000001\",\"name\":\"Alice\",\"image\":\"https://avatars.example/u/1\"}}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 400,
+      "setCookie": [],
+      "body": "{\"error\":\"loginFailed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 405,
+      "allow": "POST",
+      "setCookie": [],
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [],
+      "body": "{\"error\":\"forbiddenRequest\"}\n",
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [
+        "typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-ffpf-relogin=1; Path=/api/auth; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "body": "",
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [
+        "typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-ffpf-relogin=1; Path=/api/auth; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "body": "",
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [],
+      "body": "{\"error\":\"forbiddenRequest\"}\n",
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [
+        "typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-ffpf-relogin=1; Path=/api/auth; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "body": "",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [
+        "typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [],
+      "body": "",
+      "reports": []
+    },
+    {
+      "status": 200,
+      "setCookie": [],
+      "body": "{\"user\":null,\"providers\":[\"github\"]}\n",
+      "reports": []
+    },
+    {
+      "status": 401,
+      "setCookie": [],
+      "body": "{\"error\":\"loginRequired\"}\n",
+      "reports": []
+    },
+    {
+      "status": 401,
+      "setCookie": [
+        "typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "body": "{\"error\":\"loginRequired\"}\n",
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [],
+      "body": "{\"error\":\"forbiddenRequest\"}\n",
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [],
+      "body": "{\"error\":\"forbiddenRequest\"}\n",
+      "reports": []
+    },
+    {
+      "status": 405,
+      "allow": "POST",
+      "setCookie": [],
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [
+        "__Host-typle-session=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax",
+        "typle-ffpf-relogin=1; Path=/api/auth; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax"
+      ],
+      "body": "",
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [
+        "typle-session=eyJzdWIiOiJnaXRodWI6MCIsIm5hbWUiOiLjg63jg7zjgqvjg6vnt7Tnv5LnlKgiLCJpbWFnZSI6IiIsImlhdCI6MTc5MDAwMDEwMCwiZXhwIjoxNzkyNTkyMTAwfQ.ybigLutbZa5j1-X0YK19p6JQuyHo4vbNZyCUMS-Xyyc; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "body": "",
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [],
+      "body": "{\"error\":\"forbiddenRequest\"}\n",
+      "reports": []
+    },
+    {
+      "status": 405,
+      "allow": "POST",
+      "setCookie": [],
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 404,
+      "setCookie": [],
+      "body": "{\"error\":\"notFound\"}\n",
+      "reports": []
+    },
+    {
+      "status": 404,
+      "setCookie": [],
+      "body": "{\"error\":\"notFound\"}\n",
+      "reports": []
+    },
+    {
+      "status": 403,
+      "setCookie": [],
+      "body": "{\"error\":\"forbiddenRequest\"}\n",
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [
+        "typle-admin=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict",
+        "typle-ffpf-relogin=1; Path=/api/auth; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "body": "",
+      "reports": []
+    },
+    {
+      "status": 405,
+      "allow": "POST",
+      "setCookie": [],
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "reports": []
+    },
+    {
+      "status": 204,
+      "setCookie": [
+        "__Host-typle-admin=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict",
+        "typle-ffpf-relogin=1; Path=/api/auth; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax"
+      ],
+      "body": "",
+      "reports": []
+    }
+  ],
+  "comment": "The Go backend's answers to /api/auth/session, token, signout, local and admin/signout (server/internal/web) at a fixed time (now, Unix seconds), on a real database where github:9100000003 signed out of every device just before. tests/apiAuth.test.cjs replays them against the Route Handlers. values are the cookies, tokens and app codes Go sealed with the secret, sent by name.",
+  "env": {
+    "ffpf": {
+      "AUTH_GITHUB_ID": "id",
+      "AUTH_GITHUB_SECRET": "secret",
+      "AUTH_SECRET": "typle-fixture-secret",
+      "AUTH_URL": "http://127.0.0.1:3101",
+      "FFPF_ID_CLIENT_ID": "cid",
+      "FFPF_ID_CLIENT_SECRET": "cs",
+      "FFPF_ID_ISSUER": "https://id.example"
+    },
+    "http": {
+      "AUTH_GITHUB_ID": "id",
+      "AUTH_GITHUB_SECRET": "secret",
+      "AUTH_SECRET": "typle-fixture-secret",
+      "AUTH_URL": "http://127.0.0.1:3101"
+    },
+    "https": {
+      "AUTH_GITHUB_ID": "id",
+      "AUTH_GITHUB_SECRET": "secret",
+      "AUTH_SECRET": "typle-fixture-secret",
+      "AUTH_URL": "https://typle.example"
+    },
+    "local": {
+      "AUTH_GITHUB_ID": "id",
+      "AUTH_GITHUB_SECRET": "secret",
+      "AUTH_SECRET": "typle-fixture-secret",
+      "AUTH_URL": "http://127.0.0.1:3101",
+      "LOCAL_DEVELOPMENT_LOGIN": "1"
+    },
+    "none": {
+      "AUTH_SECRET": "typle-fixture-secret",
+      "AUTH_URL": "http://127.0.0.1:3101"
+    }
+  },
+  "now": 1790000100,
+  "requests": [
+    {
+      "note": "no login",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session"
+    },
+    {
+      "note": "no provider configured",
+      "config": "none",
+      "method": "GET",
+      "path": "/api/auth/session"
+    },
+    {
+      "note": "GitHub and FFPF ID",
+      "config": "ffpf",
+      "method": "GET",
+      "path": "/api/auth/session"
+    },
+    {
+      "note": "a cookie with an image",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "cookie": "alice"
+    },
+    {
+      "note": "a name with escapes and no image",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "cookie": "bob"
+    },
+    {
+      "note": "an expired cookie",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "cookie": "expired"
+    },
+    {
+      "note": "an app token",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "authorization": "Bearer alice-app"
+    },
+    {
+      "note": "a Basic header",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "authorization": "Basic x"
+    },
+    {
+      "note": "a token with a space",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "authorization": "Bearer a b"
+    },
+    {
+      "note": "a bad token beside a good cookie",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "cookie": "alice",
+      "authorization": "Bearer bad"
+    },
+    {
+      "note": "a revoked cookie",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "cookie": "carol"
+    },
+    {
+      "note": "a revoked token",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "authorization": "Bearer carol-app"
+    },
+    {
+      "note": "HEAD",
+      "config": "http",
+      "method": "HEAD",
+      "path": "/api/auth/session",
+      "cookie": "alice"
+    },
+    {
+      "note": "POST to the session",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/session",
+      "origin": true,
+      "body": "{}"
+    },
+    {
+      "note": "over HTTPS",
+      "config": "https",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "cookie": "alice"
+    },
+    {
+      "note": "a revoked cookie over HTTPS",
+      "config": "https",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "cookie": "carol"
+    },
+    {
+      "note": "a token for the code",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.dMjK14Fjeq5mis9z0C-kU_Am5PkS-BfqI-zKaXCjMWs\",\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\"}"
+    },
+    {
+      "note": "another verifier",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.dMjK14Fjeq5mis9z0C-kU_Am5PkS-BfqI-zKaXCjMWs\",\"verifier\":\"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww\"}"
+    },
+    {
+      "note": "an expired code",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDEwMH0.yWndAHogTEHIPIC0CoLWEToY8O_cMJZBoh-ZPrU2xQw\",\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\"}"
+    },
+    {
+      "note": "a short verifier",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.dMjK14Fjeq5mis9z0C-kU_Am5PkS-BfqI-zKaXCjMWs\",\"verifier\":\"abc\"}"
+    },
+    {
+      "note": "a code of another kind of account",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJ4OjEiLCJuYW1lIjoiQWxpY2UiLCJpbWFnZSI6IiIsImNoYWxsZW5nZSI6InJzQS1KeTVlRDI0SVhFallUdDg0S3hLbURIdS1LaXYyOGJWSDdKVUE0MDAiLCJleHAiOjE3OTAwMDAxNjB9.IyyICXIEQiQr9X2gSvOv11mk3cwreP_DCfZNkUDBYeE\",\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\"}"
+    },
+    {
+      "note": "a code without a challenge",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiIiwiY2hhbGxlbmdlIjoiIiwiZXhwIjoxNzkwMDAwMTYwfQ.0x-528nNTxd8Vo1weXYTJgfvnXnJXcIT7XL_TGAXX6g\",\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\"}"
+    },
+    {
+      "note": "a name with escapes",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMiIsIm5hbWUiOiI8YiZvPlx1MjAyOGJcdTIwMjkg8J-YgCIsImltYWdlIjoiIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.POz1Pr2irvG415Oc-JyHJZlohQvGZ-t-joyUG9EoCFM\",\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\"}"
+    },
+    {
+      "note": "a session cookie as the code",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiaWF0IjoxNzkwMDAwMDAwLCJleHAiOjE3OTI1OTIwMDB9.mYl0JShmJtc0bxwc0iobhn-S-arzT7QgjUXOrJCp84k\",\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\"}"
+    },
+    {
+      "note": "not JSON",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "code"
+    },
+    {
+      "note": "an array",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "[]"
+    },
+    {
+      "note": "null",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "null"
+    },
+    {
+      "note": "no body",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token"
+    },
+    {
+      "note": "keys in another case",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"Code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.dMjK14Fjeq5mis9z0C-kU_Am5PkS-BfqI-zKaXCjMWs\",\"VERIFIER\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\"}"
+    },
+    {
+      "note": "other members",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.dMjK14Fjeq5mis9z0C-kU_Am5PkS-BfqI-zKaXCjMWs\",\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\",\"x\":[1]}"
+    },
+    {
+      "note": "a repeated member, the last winning",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"x\",\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\",\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.dMjK14Fjeq5mis9z0C-kU_Am5PkS-BfqI-zKaXCjMWs\"}"
+    },
+    {
+      "note": "a null member",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.dMjK14Fjeq5mis9z0C-kU_Am5PkS-BfqI-zKaXCjMWs\",\"verifier\":null}"
+    },
+    {
+      "note": "a number code",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":1,\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\"}"
+    },
+    {
+      "note": "a body over 4096 bytes",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/token",
+      "body": "{\"code\":\"eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.dMjK14Fjeq5mis9z0C-kU_Am5PkS-BfqI-zKaXCjMWs\",\"verifier\":\"vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~\",\"pad\":\"pppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"}"
+    },
+    {
+      "note": "GET of the token",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/token"
+    },
+    {
+      "note": "sign out without the Origin",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout",
+      "cookie": "alice"
+    },
+    {
+      "note": "sign out",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout",
+      "cookie": "alice",
+      "origin": true
+    },
+    {
+      "note": "sign out signed out",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout",
+      "origin": true
+    },
+    {
+      "note": "an app signing out of this device",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout",
+      "authorization": "Bearer alice-app"
+    },
+    {
+      "note": "sign out everywhere",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout?everywhere=1",
+      "cookie": "dave",
+      "origin": true
+    },
+    {
+      "note": "the session after signing out everywhere",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "cookie": "dave"
+    },
+    {
+      "note": "an app signing out everywhere",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout?everywhere=1",
+      "authorization": "Bearer erin-app"
+    },
+    {
+      "note": "the app after signing out everywhere",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/session",
+      "authorization": "Bearer erin-app"
+    },
+    {
+      "note": "sign out everywhere signed out",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout?everywhere=1",
+      "origin": true
+    },
+    {
+      "note": "sign out everywhere revoked",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout?everywhere=1",
+      "cookie": "carol",
+      "origin": true
+    },
+    {
+      "note": "sign out everywhere from another site",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout?everywhere=1",
+      "cookie": "alice"
+    },
+    {
+      "note": "everywhere=0",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signout?everywhere=0",
+      "authorization": "Bearer alice-app"
+    },
+    {
+      "note": "GET of the signout",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signout"
+    },
+    {
+      "note": "sign out over HTTPS",
+      "config": "https",
+      "method": "POST",
+      "path": "/api/auth/signout",
+      "cookie": "alice",
+      "origin": true
+    },
+    {
+      "note": "the local login",
+      "config": "local",
+      "method": "POST",
+      "path": "/api/auth/local",
+      "origin": true
+    },
+    {
+      "note": "the local login from another site",
+      "config": "local",
+      "method": "POST",
+      "path": "/api/auth/local"
+    },
+    {
+      "note": "GET of the local login",
+      "config": "local",
+      "method": "GET",
+      "path": "/api/auth/local"
+    },
+    {
+      "note": "the local login turned off",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/local",
+      "origin": true
+    },
+    {
+      "note": "GET of the local login turned off",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/local"
+    },
+    {
+      "note": "the admin signout without the Origin",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/admin/signout"
+    },
+    {
+      "note": "the admin signout",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/admin/signout",
+      "origin": true
+    },
+    {
+      "note": "GET of the admin signout",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/admin/signout"
+    },
+    {
+      "note": "the admin signout over HTTPS",
+      "config": "https",
+      "method": "POST",
+      "path": "/api/auth/admin/signout",
+      "origin": true
+    }
+  ],
+  "revokedAfter": [
+    "ffpf:zzerin",
+    "github:9100000003",
+    "github:9100000004"
+  ],
+  "secret": "typle-fixture-secret",
+  "values": {
+    "alice": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiaWF0IjoxNzkwMDAwMDAwLCJleHAiOjE3OTI1OTIwMDB9.mYl0JShmJtc0bxwc0iobhn-S-arzT7QgjUXOrJCp84k",
+    "alice-app": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiaWF0IjoxNzkwMDAwMDAwLCJleHAiOjE3OTI1OTIwMDB9.dR139PNH1qjeMH_hU6a5M5Z7d0o53CEfbYp1JPAFkSk",
+    "bob": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMiIsIm5hbWUiOiI8YiZvPlx1MjAyOGJcdTIwMjkg8J-YgCIsImltYWdlIjoiIiwiaWF0IjoxNzkwMDAwMDAwLCJleHAiOjE3OTI1OTIwMDB9.C7AGJldk7_KNH-mVg2nQA4uNVY3LG7pwrHAtP1xKr6Q",
+    "carol": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMyIsIm5hbWUiOiJDYXJvbCIsImltYWdlIjoiIiwiaWF0IjoxNzkwMDAwMDAwLCJleHAiOjE3OTI1OTIwMDB9.R5lfGIqGH--u6aMvKCZ6JmXkkAP1th7qWnINqrL1Ayo",
+    "carol-app": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMyIsIm5hbWUiOiJDYXJvbCIsImltYWdlIjoiIiwiaWF0IjoxNzkwMDAwMDAwLCJleHAiOjE3OTI1OTIwMDB9.tMGYNgYPgDERprSLOcv-6j2NpbaYuLpMq9Ml9Rxkync",
+    "code": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiaHR0cHM6Ly9hdmF0YXJzLmV4YW1wbGUvdS8xIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.dMjK14Fjeq5mis9z0C-kU_Am5PkS-BfqI-zKaXCjMWs",
+    "code-badsub": "eyJzdWIiOiJ4OjEiLCJuYW1lIjoiQWxpY2UiLCJpbWFnZSI6IiIsImNoYWxsZW5nZSI6InJzQS1KeTVlRDI0SVhFallUdDg0S3hLbURIdS1LaXYyOGJWSDdKVUE0MDAiLCJleHAiOjE3OTAwMDAxNjB9.IyyICXIEQiQr9X2gSvOv11mk3cwreP_DCfZNkUDBYeE",
+    "code-bob": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMiIsIm5hbWUiOiI8YiZvPlx1MjAyOGJcdTIwMjkg8J-YgCIsImltYWdlIjoiIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDE2MH0.POz1Pr2irvG415Oc-JyHJZlohQvGZ-t-joyUG9EoCFM",
+    "code-expired": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiIiwiY2hhbGxlbmdlIjoicnNBLUp5NWVEMjRJWEVqWVR0ODRLeEttREh1LUtpdjI4YlZIN0pVQTQwMCIsImV4cCI6MTc5MDAwMDEwMH0.yWndAHogTEHIPIC0CoLWEToY8O_cMJZBoh-ZPrU2xQw",
+    "code-nochallenge": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiIiwiY2hhbGxlbmdlIjoiIiwiZXhwIjoxNzkwMDAwMTYwfQ.0x-528nNTxd8Vo1weXYTJgfvnXnJXcIT7XL_TGAXX6g",
+    "dave": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwNCIsIm5hbWUiOiJEYXZlIiwiaW1hZ2UiOiIiLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6MTc5MjU5MjAwMH0.9EcALeGy96JaJlArw6dVTOQgQSgDq6L34VeiT8EgaAI",
+    "erin-app": "eyJzdWIiOiJmZnBmOnp6ZXJpbiIsIm5hbWUiOiJFcmluIiwiaW1hZ2UiOiIiLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6MTc5MjU5MjAwMH0._7HP6UOur1ffeLk7qRMPmBjK8sfD6LmHMzX57INUTPA",
+    "expired": "eyJzdWIiOiJnaXRodWI6OTEwMDAwMDAwMSIsIm5hbWUiOiJBbGljZSIsImltYWdlIjoiIiwiaWF0IjoxNzg3MzIxNzAwLCJleHAiOjE3ODk5MTM3MDB9.ds3dBIL9vFQFijGb5kfvufDNOYXMF7rThe4tdt2SqLM"
+  },
+  "verifier": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-._~"
+}

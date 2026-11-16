@@ -21,3 +21,25 @@ test('the settings need a secret and an http or https AUTH_URL', () => {
     assert.equal(readLoginSettings(env), null, JSON.stringify(env))
   }
 })
+
+// The logins the session offers, and the local login of development, as the Go backend judged them (web.FromEnv).
+test('the providers are the logins whose settings are all there, GitHub first', () => {
+  const base = { AUTH_SECRET: 's', AUTH_URL: 'https://typle.example' }
+  assert.deepEqual(readLoginSettings(base).providers, [])
+  assert.deepEqual(readLoginSettings({ ...base, AUTH_GITHUB_ID: 'i' }).providers, [])
+  assert.deepEqual(readLoginSettings({ ...base, AUTH_GITHUB_ID: 'i', AUTH_GITHUB_SECRET: 's' }).providers, ['github'])
+  const ffpf = { FFPF_ID_ISSUER: 'https://id.example', FFPF_ID_CLIENT_ID: 'c', FFPF_ID_CLIENT_SECRET: 's' }
+  assert.deepEqual(readLoginSettings({ ...base, ...ffpf }).providers, ['ffpf'])
+  assert.deepEqual(readLoginSettings({ ...base, ...ffpf, FFPF_ID_CLIENT_SECRET: '' }).providers, [])
+  assert.deepEqual(readLoginSettings({ ...base, ...ffpf, AUTH_GITHUB_ID: 'i', AUTH_GITHUB_SECRET: 's' }).providers, ['github', 'ffpf'])
+})
+
+test('the local login is on only for plain http to this machine, never on Vercel', () => {
+  const on = (env) => readLoginSettings({ AUTH_SECRET: 's', LOCAL_DEVELOPMENT_LOGIN: '1', ...env }).localLogin
+  for (const url of ['http://localhost:3000', 'http://127.0.0.1:3101', 'http://[::1]:3000', 'http://LOCALHOST']) assert.equal(on({ AUTH_URL: url }), true, url)
+  for (const url of ['https://localhost:3000', 'http://typle.example', 'http://192.168.1.2:3000', 'http://8.8.8.8']) assert.equal(on({ AUTH_URL: url }), false, url)
+  assert.equal(on({ AUTH_URL: 'http://192.168.1.2:3000', LOCAL_DEVELOPMENT_LAN_HOST: '192.168.1.2' }), true)
+  assert.equal(on({ AUTH_URL: 'http://8.8.8.8', LOCAL_DEVELOPMENT_LAN_HOST: '8.8.8.8' }), false)
+  assert.equal(on({ AUTH_URL: 'http://127.0.0.1:3101', VERCEL: '1' }), false)
+  assert.equal(on({ AUTH_URL: 'http://127.0.0.1:3101', LOCAL_DEVELOPMENT_LOGIN: '0' }), false)
+})

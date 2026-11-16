@@ -34,8 +34,17 @@ export function currentUser(request: Request, settings: LoginSettings, now: numb
   return cookie === null ? null : openSession(settings.sessionKey, cookie, now)
 }
 
+/** When the owner last signed out of every device, or null when they never did. */
+export async function readRevokedAt(db: Pick<Pool, 'query'>, owner: string): Promise<Date | null> {
+  const { rows } = await db.query<{ revoked_at: Date }>('SELECT revoked_at FROM typle_session_revocations WHERE owner_id = $1', [owner])
+  return rows[0]?.revoked_at ?? null
+}
+
+/** Whether signing out of every device at revokedAt revoked user: a login in that very second counts too (whole seconds). */
+export const revokedBy = (user: Session, revokedAt: Date | null) => !!revokedAt && user.issuedAt * 1000 <= revokedAt.getTime()
+
 /** The answer that removes the login cookie of a browser whose login was revoked. */
-function dropCookie(response: Response, settings: LoginSettings): Response {
+export function dropCookie(response: Response, settings: LoginSettings): Response {
   const secure = settings.secure ? '; Secure' : ''
   response.headers.append('Set-Cookie', `${sessionCookieName(settings.secure)}=; Path=/; Max-Age=0; HttpOnly${secure}; SameSite=Lax`)
   return response
@@ -52,15 +61,12 @@ export async function signedIn(request: Request, db: Pool | null, settings: Logi
   let revokedAt: Date | null
   try {
     if (!db) throw new Error('no database to check the session against')
-    const { rows } = await db.query<{ revoked_at: Date }>(
-      'SELECT revoked_at FROM typle_session_revocations WHERE owner_id = $1', [user.sub])
-    revokedAt = rows[0]?.revoked_at ?? null
+    revokedAt = await readRevokedAt(db, user.sub)
   } catch (error) {
     reportFailure(request, error, 'session.check')
     return { refusal: refuse(503, 'databaseUnavailable') }
   }
-  // A login in the very second of the revocation counts as revoked too: issuedAt is in whole seconds.
-  if (revokedAt && user.issuedAt * 1000 <= revokedAt.getTime()) {
+  if (revokedBy(user, revokedAt)) {
     const refusal = refuse(401, 'loginRequired')
     return { refusal: request.headers.get('Authorization') ? refusal : dropCookie(refusal, settings) }
   }

@@ -16,6 +16,12 @@ export type LoginSettings = {
   appKey: Buffer,
   /** The key of the administrator's cookie of /admin. */
   adminKey: Buffer,
+  /** The key of the code a login an app started ends with, which the app trades for its token. */
+  codeKey: Buffer,
+  /** The logins that are configured, in the order the screen lists them. */
+  providers: ('github' | 'ffpf')[],
+  /** Whether POST /api/auth/local, the made-up login for development on this machine, is on. */
+  localLogin: boolean,
   /** Whether AUTH_URL is HTTPS, which names the login cookie __Host-. */
   secure: boolean,
 }
@@ -25,6 +31,7 @@ const RATE_LIMIT_INFO = 'typle gallery-rate-limit v1'
 const SESSION_INFO = 'typle session v1'
 const APP_INFO = 'typle app session v1'
 const ADMIN_INFO = 'typle admin v2'
+const CODE_INFO = 'typle app code v1'
 
 /** A key of 32 bytes derived from AUTH_SECRET for one kind of value. */
 const deriveKey = (secret: string, info: string) => Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), info, 32))
@@ -52,6 +59,12 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
     sessionKey: deriveKey(secret, SESSION_INFO),
     appKey: deriveKey(secret, APP_INFO),
     adminKey: deriveKey(secret, ADMIN_INFO),
+    codeKey: deriveKey(secret, CODE_INFO),
+    providers: [
+      ...(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET ? ['github' as const] : []),
+      ...(env.FFPF_ID_ISSUER && env.FFPF_ID_CLIENT_ID && env.FFPF_ID_CLIENT_SECRET ? ['ffpf' as const] : []),
+    ],
+    localLogin: env.VERCEL !== '1' && localLoginAllowed(env, base),
     secure: base.protocol === 'https:',
   }
 }
@@ -59,4 +72,21 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
 /** The hash the rate limit counts a client by: the first bytes of the HMAC-SHA256 of its IP. The IP is never kept. */
 export function clientMac(key: Buffer, ip: string): Buffer {
   return createHmac('sha256', key).update(ip).digest().subarray(0, CLIENT_MAC_SIZE)
+}
+
+/**
+ * Whether the local login may be on: LOCAL_DEVELOPMENT_LOGIN is 1 and AUTH_URL is plain http to this machine, a
+ * loopback name or address, or a private IPv4 address that LOCAL_DEVELOPMENT_LAN_HOST names exactly. As the Go backend
+ * judged it (localLoginAllowed), and never on Vercel. Unlike the page's localDevelopmentEnabled it does not ask for
+ * NODE_ENV=development, so that the end-to-end tests' production build can use it.
+ */
+function localLoginAllowed(env: Record<string, string | undefined>, base: URL): boolean {
+  if (env.LOCAL_DEVELOPMENT_LOGIN !== '1' || base.protocol !== 'http:') return false
+  const host = base.hostname.toLowerCase()
+  if (host === 'localhost' || host === '127.0.0.1' || host === '[::1]') return true
+  const octets = host.split('.')
+  if (octets.length !== 4 || !octets.every(octet => /^(0|[1-9]\d{0,2})$/.test(octet) && Number(octet) <= 255)) return false
+  const [a, b] = octets.map(Number)
+  const isPrivate = a === 10 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168)
+  return isPrivate && env.LOCAL_DEVELOPMENT_LAN_HOST === host
 }

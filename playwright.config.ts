@@ -24,9 +24,8 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   use: { baseURL: 'http://127.0.0.1:3101', trace: 'retain-on-failure' },
   reporter: [['list']],
-  // The app's backend is the Go server; Next.js serves the pages and /api/health (a Route Handler), and (next.config.mjs
-  // rewrites) forwards /api/workspace, /api/auth/* and the other backend paths to it at TYPLE_WEB_URL (default
-  // http://127.0.0.1:8081).
+  // Next.js serves the pages and the API (Route Handlers), and (next.config.mjs rewrites) forwards the paths still on the
+  // Go server, /api/auth/signin and the login callbacks, to it at TYPLE_WEB_URL (default http://127.0.0.1:8081).
   webServer: [
     {
       // go run compiles first, which can take a while on a cold cache.
@@ -38,13 +37,19 @@ export default defineConfig({
         AUTH_GITHUB_SECRET: 'e2e',
         ...(process.env.DATABASE_URL ? { DATABASE_URL: process.env.DATABASE_URL } : {}),
       },
-      // The session answers 200 without the database, so the server is up once it does.
-      url: 'http://127.0.0.1:8081/api/auth/session',
+      // The sign-in answers (302 to GitHub) without the database, so the server is up once it does.
+      url: 'http://127.0.0.1:8081/api/auth/signin',
       reuseExistingServer: false,
       timeout: 180000,
     },
     {
-      env: { AUTH_SECRET: 'typle-e2e-only-not-a-production-secret-32-bytes', AUTH_URL: 'http://127.0.0.1:3101' },
+      env: {
+        AUTH_SECRET: 'typle-e2e-only-not-a-production-secret-32-bytes',
+        AUTH_URL: 'http://127.0.0.1:3101',
+        // The session lists GitHub as a login, as the Go backend did with these.
+        AUTH_GITHUB_ID: 'e2e',
+        AUTH_GITHUB_SECRET: 'e2e',
+      },
       command: 'node node_modules/next/dist/bin/next start -p 3101 -H 127.0.0.1',
       url: 'http://127.0.0.1:3101',
       reuseExistingServer: false,

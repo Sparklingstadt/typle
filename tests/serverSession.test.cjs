@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { openSession, sessionCookieName, openAdmin, adminCookieName } = require('../src/server/session.ts')
+const { openSession, sessionCookieName, openAdmin, adminCookieName, sealSession, openCode, challengeOf } = require('../src/server/session.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 
 // The cookies and tokens were sealed by the Go backend (session.Keys.Seal and SealApp), so a login made by either side
@@ -64,4 +64,29 @@ test('the Go backend\'s administrator cookies open as they did there', () => {
 test('the administrator cookie is __Host- over HTTPS', () => {
   assert.equal(adminCookieName(true), '__Host-typle-admin')
   assert.equal(adminCookieName(false), 'typle-admin')
+})
+
+// The login cookies, app tokens and app codes the Go backend sealed at a fixed time (tests/fixtures/auth-answers.json):
+// TS seals the same bytes, so that what either side issues the other reads until the Go backend is gone.
+const auth = require('./fixtures/auth-answers.json')
+const authSettings = readLoginSettings({ AUTH_SECRET: auth.secret, AUTH_URL: 'https://typle.example' })
+const login = auth.now - 100
+const MONTH = 30 * 24 * 3600
+
+test('a session is sealed with the same bytes as the Go backend\'s', () => {
+  const alice = { sub: 'github:9100000001', name: 'Alice', image: 'https://avatars.example/u/1', issuedAt: login, expires: login + MONTH }
+  assert.equal(sealSession(authSettings.sessionKey, alice), auth.values.alice)
+  assert.equal(sealSession(authSettings.appKey, alice), auth.values['alice-app'])
+  const bob = { sub: 'github:9100000002', name: '<b&o> b  😀', image: '', issuedAt: login, expires: login + MONTH }
+  assert.equal(sealSession(authSettings.sessionKey, bob), auth.values.bob)
+  assert.deepEqual(openSession(authSettings.sessionKey, auth.values.bob, auth.now), bob)
+})
+
+test('an app code opens as the Go backend opened it', () => {
+  const code = openCode(authSettings.codeKey, auth.values.code, auth.now)
+  assert.deepEqual(code && { sub: code.sub, name: code.name, image: code.image, challenge: code.challenge },
+    { sub: 'github:9100000001', name: 'Alice', image: 'https://avatars.example/u/1', challenge: challengeOf(auth.verifier) })
+  for (const name of ['code-expired', 'code-badsub', 'code-nochallenge']) assert.equal(openCode(authSettings.codeKey, auth.values[name], auth.now), null, name)
+  assert.equal(openCode(authSettings.codeKey, auth.values.alice, auth.now), null)
+  assert.equal(openCode(authSettings.sessionKey, auth.values.code, auth.now), null)
 })

@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from 'node:crypto'
+import { createHash, createHmac, timingSafeEqual } from 'node:crypto'
 
 // The login session, as the Go backend seals it (server/internal/session): base64url(JSON) + "." +
 // base64url(HMAC-SHA256 of that text), without padding, under a key derived from AUTH_SECRET (src/server/settings.ts).
@@ -80,4 +80,54 @@ export function openAdmin(key: Buffer, value: string, now: number = Date.now() /
   if (typeof email !== 'string' || typeof sub !== 'string' || !Number.isInteger(iat) || !Number.isInteger(exp)) return null
   if (!(now < (exp as number)) || email === '' || !FFPF_SUB.test(sub)) return null
   return { email, sub, issuedAt: iat as number, expires: exp as number }
+}
+
+/** How long a login lasts: a session is never sealed again, and ends this long after the login. */
+export const SESSION_MAX_AGE = 30 * 24 * 3600
+
+/**
+ * The JSON of claims as the Go backend signs it (session.encode): JSON.stringify, with U+2028 and U+2029 written
+ * escaped as Go's encoder writes them. The keys must be given in the order of Go's wire struct.
+ */
+function encodeClaims(claims: Record<string, string | number>): string {
+  return JSON.stringify(claims).replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
+}
+
+/** value sealed with key: base64url(JSON) + "." + base64url(HMAC-SHA256 of that text), as the Go backend seals it. */
+function seal(key: Buffer, claims: Record<string, string | number>): string {
+  const payload = Buffer.from(encodeClaims(claims)).toString('base64url')
+  return `${payload}.${createHmac('sha256', key).update(payload).digest('base64url')}`
+}
+
+/** The login cookie (with the session key) or an app's token (with the app key) of session. */
+export function sealSession(key: Buffer, session: Session): string {
+  return seal(key, { sub: session.sub, name: session.name, image: session.image, iat: session.issuedAt, exp: session.expires })
+}
+
+/** A session that starts at now (whole seconds) and lasts SESSION_MAX_AGE. */
+export function newSession(sub: string, name: string, image: string, now: number = Date.now() / 1000): Session {
+  const issuedAt = Math.floor(now)
+  return { sub, name, image, issuedAt, expires: issuedAt + SESSION_MAX_AGE }
+}
+
+/**
+ * The end of a login an app (iPad, Mac, Android, Windows) started: who signed in, for the app that holds the verifier of
+ * challenge. The Go backend seals it at the end of the login (/api/auth/callback/*), and the app trades it for a token.
+ */
+export type AppCode = { sub: string, name: string, image: string, challenge: string, expires: number }
+
+/** The app code in value if it was sealed with key, has not expired at now, is for an account, and has a challenge. */
+export function openCode(key: Buffer, value: string, now: number = Date.now() / 1000): AppCode | null {
+  const claims = openClaims(key, value)
+  if (!claims) return null
+  const { sub, name, image, challenge, exp } = claims
+  if (typeof sub !== 'string' || typeof name !== 'string' || typeof image !== 'string' || typeof challenge !== 'string' ||
+    !Number.isInteger(exp)) return null
+  if (!(now < (exp as number)) || !ACCOUNT_SUB.test(sub) || challenge === '') return null
+  return { sub, name, image, challenge, expires: exp as number }
+}
+
+/** The S256 code challenge of a PKCE verifier. */
+export function challengeOf(verifier: string): string {
+  return createHash('sha256').update(verifier).digest('base64url')
 }
