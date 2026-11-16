@@ -39,7 +39,7 @@ export default defineUserConfig({
       '/app/': [
         {
           text: 'アプリのAPI（/api/*）',
-          children: ['/app/', '/app/workspace.md', '/app/shares.md', '/app/auth.md', '/app/admin.md', '/app/graphql.md', '/app/validation.md'],
+          children: ['/app/', '/app/workspace.md', '/app/shares.md', '/app/auth.md', '/app/admin.md', '/app/validation.md'],
         },
       ],
       '/openapi': [
