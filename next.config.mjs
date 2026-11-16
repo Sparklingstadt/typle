@@ -23,10 +23,10 @@ const nextConfig = (phase) => withNextIntl({
   headers: () => [{ source: '/:path*', headers: securityHeaders }],
   // Locally the Go backend (npm run dev starts it) answers these paths; on Vercel the one Go function api/index.go
   // does, which vercel.json rewrites the same paths to (tests/backendPaths.test.cjs keeps the two lists alike). The
-  // paths moved to Route Handlers (src/app/api: /api/health, /api/gallery and the paths below it, /api/shared and /api/shares) are in neither list.
+  // paths moved to Route Handlers (src/app/api: /api/health, /api/gallery and the paths below it, /api/shared, /api/shares and /api/workspace) are in neither list.
   // beforeFiles wins over the app's own routes.
   rewrites: async () => process.env.VERCEL === '1' ? [] : {
-    beforeFiles: ['/api/workspace', '/api/workspace/records', '/api/auth/:path*', '/api/admin/:path*'].map(source => ({ source, destination: `${typleWebUrl}${source}` })),
+    beforeFiles: ['/api/workspace/records', '/api/auth/:path*', '/api/admin/:path*'].map(source => ({ source, destination: `${typleWebUrl}${source}` })),
     afterFiles: [],
     fallback: [],
   },
