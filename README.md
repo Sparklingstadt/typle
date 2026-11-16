@@ -113,7 +113,7 @@ Next.js のアプリは1つで、`src` を層に分けています。依存は�
 
 | 層 | 場所 | 内容 |
 |---|---|---|
-| サーバー | `src/server`・`src/app/api` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ギャラリーの読み取り（`gallery.ts`）・共有パックの読み取り（`shared.ts`）。Go のバックエンドから1つずつ移しているところで、今は `/api/health`・`GET /api/gallery`・`GET /api/gallery/categories`・`GET /api/shared` です。ギャラリーと `/api/shared` の応答は、エラーも含めてすべて `X-Robots-Tag: noindex` です（[設計](docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md)）。`src/core` を使えますが、画面と `src/core` からは import しません |
+| サーバー | `src/server`・`src/app/api` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ギャラリーの読み取り（`gallery.ts`）と書き込み（`galleryWrites.ts`。ログインの設定 `settings.ts`、要求の確認 `request.ts`、IP ごとの回数制限 `rateLimit.ts`）・共有パックの読み取り（`shared.ts`）。Go のバックエンドから1つずつ移しているところで、今は `/api/health`・`/api/gallery` とその下のすべて・`GET /api/shared` です。ギャラリーと `/api/shared` の応答は、エラーも含めてすべて `X-Robots-Tag: noindex` です（[設計](docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md)）。`src/core` を使えますが、画面と `src/core` からは import しません |
 | 画面 | `src/app`・`src/components`・`src/i18n`・`src/lib` | ページ、UI、多言語化、React のフック。`useWordLists` は React の状態とブラウザーのイベント（フォーカス・他タブの変更）だけを受け持ち、読み込み・保存は core の `createWorkspaceSession` に任せます。保存先は `src/lib/storage` で、`cloud.ts`（Goのバックエンドが提供する `/api/workspace`）と `guest.ts`（LocalStorage）を `workspaceStore(accountId)` がアカウントに応じて選びます |
 | core | `src/core` | React・Next.js・ブラウザーAPIに依存しない TypeScript。単語リスト・入力判定・記録・集計・ワークスペースのモデルと検証、保存先の型 `WorkspaceStore`（`workspaceStore.ts`、保存場所 `location` を含む）、ワークスペースの読み込み・保存 `createWorkspaceSession`（`workspaceSession.ts`。アカウントの切り替え後に届いた結果の破棄、保存の直列化、409での再読み込み、古いクラウド読み込みの無視）、単語ファイルの CSV の読み書き（`wordFormat.ts`。TSV の読み込みは v2.44.0 でやめました）。`packs/` は公式パック（v0.85.0 から sparklingstadt アカウントの67リストのコピーで、`commands/` に1リスト1ファイルで保存しています。それまではサンプル、国名193か国、コマンドと構文の25種類を初級・中級・上級に分けた85リスト）とそのカタログです |
 
@@ -121,14 +121,14 @@ v2.43.2 まであったプラグインの層（`src/plugins`）と、ファイ�
 
 バックエンド（`server/`）はNext.jsとは独立したGoのコードで、モジュールはリポジトリ直下の `go.mod` です。`internal/store` が DB を読み書きし、`internal/workspace` がアプリの `decodeLists`・`decodeDevices` と同じ規則で検証します。標準ライブラリ以外の主な依存は、PostgreSQLのドライバー（pgx）、名前を日本語の照合で並べる `golang.org/x/text`、エラー報告の `sentry-go` です。
 
-Next.js の Route Handler に移したパス（今は `/api/health`・`/api/gallery`・`/api/gallery/categories`・`/api/shared`）は Go から外し、`vercel.json` と `next.config.mjs` の転送にも載せません。
+Next.js の Route Handler に移したパス（今は `/api/health`・`/api/gallery` とその下のすべて・`/api/shared`）は Go から外し、`vercel.json` と `next.config.mjs` の転送にも載せません。
 
 | 場所 | 内容 |
 |---|---|
-| `server/internal/web` | GitHub ログイン（`/api/auth/session`・`signin`・`signout`（`?everywhere=1` ですべての端末から）・`callback/github`、アプリ用の `token`）、`/api/workspace`（読み込みと、`revision` による保存）、`/api/shares`、単語パックのギャラリーの書き込み（`/api/gallery/added`・`/api/gallery/reports`。ログイン不要で、すべての応答に `X-Robots-Tag: noindex`）を1つの `http.Handler` にまとめます。通報と追加数の連打は、IP ごとの回数制限で抑えます（「ギャラリーのレート制限」を参照）。すべての応答に、`next.config.mjs` と同じ4つのセキュリティヘッダー（`Content-Security-Policy`・`X-Frame-Options`・`X-Content-Type-Options`・`Referrer-Policy`）を付けます。ローカル開発のログイン（`POST /api/auth/local`）もここにあり、`typle-web` でだけ有効です |
+| `server/internal/web` | GitHub ログイン（`/api/auth/session`・`signin`・`signout`（`?everywhere=1` ですべての端末から）・`callback/github`、アプリ用の `token`）、`/api/workspace`（読み込みと、`revision` による保存）、`/api/shares` を1つの `http.Handler` にまとめます。すべての応答に、`next.config.mjs` と同じ4つのセキュリティヘッダー（`Content-Security-Policy`・`X-Frame-Options`・`X-Content-Type-Options`・`Referrer-Policy`）を付けます。ローカル開発のログイン（`POST /api/auth/local`）もここにあり、`typle-web` でだけ有効です |
 | `server/internal/session` | ログインの Cookie（`HttpOnly`・`SameSite=Lax`・ログインから30日で失効・延長なし）と、iPad・Android・Windows のログインのコード・トークンの署名と検証です。値は `AUTH_SECRET` から導いた鍵（種類ごとに別）で HMAC-SHA256 署名します。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です |
 | `server/internal/auth` | ログインの GitHub OAuth クライアント（認可コードと PKCE）と FFPF ID のクライアントです |
-| `server/vercel` | `web` のハンドラーを Vercel の Go の関数として呼ぶ橋渡しです。リポジトリ直下の `api/index.go`（Vercel の Go の関数は1つだけで、`vercel.json` の `rewrites` がバックエンドのパスをすべてここへ送ります）がこれを呼びます。`POST /api/gallery/added` と `POST /api/gallery/reports` は `Origin` を確かめるため、`/api/shares` と同じく設定がなければ 503（`authUnavailable`）を返します。`/api/workspace` は、ログインの設定がなければ DB を開かずに 503（`authUnavailable`）を返します |
+| `server/vercel` | `web` のハンドラーを Vercel の Go の関数として呼ぶ橋渡しです。リポジトリ直下の `api/index.go`（Vercel の Go の関数は1つだけで、`vercel.json` の `rewrites` がバックエンドのパスをすべてここへ送ります）がこれを呼びます。`/api/shares` と `/api/workspace` は、ログインの設定がなければ DB を開かずに 503（`authUnavailable`）を返します |
 | `server/cmd/typle-web` | `web` のハンドラーを手元で起動します（既定 `127.0.0.1:8081`）。`npm run dev` と E2E が使います |
 | `server/internal/serve` | `typle-web` の待受です。止めるとき（SIGINT・SIGTERM）は、処理中のリクエストが終わるまで最大5秒待ってから DB を閉じます |
 
@@ -175,7 +175,7 @@ Go の関数（`api/index.go`）も同じ環境変数を読むため、Vercel �
 
 ### ギャラリーのレート制限
 
-ログインなしで書き込める2つのAPIは、Go のコードで IP ごとに回数を制限します。
+ログインなしで書き込める2つのAPIは、Next.js の Route Handler（`src/server/rateLimit.ts`）で IP ごとに回数を制限します。
 
 | 対象のパス（`POST`） | 上限 | 単位 | 超えたとき |
 |---|---|---|---|
@@ -183,9 +183,9 @@ Go の関数（`api/index.go`）も同じ環境変数を読むため、Vercel �
 | `/api/gallery/added` | 1分あたり60リクエスト | クライアントのIPごと | 同上。追加数は変えません |
 
 - 数える窓は1分ごとの固定窓で、回数は DB の `typle_gallery_hits` に持ちます（関数のインスタンスをまたいで数えるため）。`Origin` や `Content-Type`、本文が不正で先に断る要求は数えません。アプリのトークン付きの要求も同じく IP で数えます。
-- DB に保存するのは IP そのものではなく、`AUTH_SECRET` から専用に導いた鍵での IP の HMAC-SHA256（先頭16バイト）です。10分より古い行は、次の回数の更新のときに消します。通報とは結び付けず、数えるためにだけ使います。
+- DB に保存するのは IP そのものではなく、`AUTH_SECRET` から専用に導いた鍵での IP の HMAC-SHA256（先頭16バイト）です。値は v2.46.3 までの Go と同じです（`tests/fixtures/client-mac.json`）。10分より古い行は、次の回数の更新のときに消します。通報とは結び付けず、数えるためにだけ使います。
 - 数えられなかったとき（DB の失敗）は、制限なしで通さず `503 databaseUnavailable` にします。
-- IP の決め方：Vercel の関数（`server/vercel` が組み立てるとき）では、`X-Vercel-Forwarded-For`、`X-Forwarded-For`、`X-Real-Ip` の順に、最初の値（カンマ区切りの先頭）が IP アドレスとして読めるものを使います。読めるものがなければ、共通の「不明」のクライアントとして数え（制限は外れません）、Sentry に `gallery.limit.ip` を報告します。Vercel 以外（ローカルの `typle-web` やテスト）では、クライアントが自由に書ける転送ヘッダーを無視し、接続元のアドレスのホスト部分だけを使います。
+- IP の決め方：Vercel 上（`VERCEL=1`）では、`X-Vercel-Forwarded-For`、`X-Forwarded-For`、`X-Real-Ip` の順に、最初の値（カンマ区切りの先頭）が IP アドレスとして読めるものを使います。読めるものがなければ、共通の「不明」のクライアントとして数え（制限は外れません）、Sentry に `gallery.limit.ip` を報告します。Vercel 以外（`npm run dev` や E2E）では、クライアントが自由に書ける転送ヘッダーを信じず、すべての要求を1つのクライアント（`local`）として数えます。
 - Vercel Firewall の Rate Limiting は、現在のプランでは使えません（設定しようとすると 402 になります）。そのため、この制限はコードで行います。
 
 ### FFPF ID でのログインの設定

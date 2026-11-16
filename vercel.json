@@ -13,8 +13,6 @@
     { "source": "/api/workspace", "destination": "/api/index" },
     { "source": "/api/workspace/records", "destination": "/api/index" },
     { "source": "/api/shares", "destination": "/api/index" },
-    { "source": "/api/gallery/added", "destination": "/api/index" },
-    { "source": "/api/gallery/reports", "destination": "/api/index" },
     { "source": "/api/auth/:path*", "destination": "/api/index" },
     { "source": "/api/admin/:path*", "destination": "/api/index" }
   ]

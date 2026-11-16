@@ -7,7 +7,7 @@ import { notForSearch, refuse } from './response'
 // needs no cookie, but it is not kept, so that a link that is stopped is gone at once.
 
 /** Whether id is a UUID as the links are written: 8-4-4-4-12 hexadecimal digits. */
-const isLinkId = (id: string) => /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id)
+export const isLinkId = (id: string) => /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id)
 
 /**
  * The text of a stored shared pack as the Go backend wrote it (PackFile.Encode): read with decodePackFile, then written
