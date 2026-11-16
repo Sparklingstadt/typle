@@ -1,6 +1,6 @@
 # 概要と共通事項
 
-Typle 本体（Web版と iPad・Mac・Android・Windows 版）が使う、アプリ自身のバックエンドです。Go から Next.js の Route Handler（`src/app/api`・`src/server`）へ移しているところで、v2.46.9 からは `/api/auth/signin` とコールバック（`/api/auth/callback/*`）だけが Go の `server/internal/web` です。Go は本番では Vercel の Go の関数（リポジトリ直下の `api/index.go` → `server/vercel`）として動き、手元では `server/cmd/typle-web`（既定 `127.0.0.1:8081`）で起動して `npm run dev` と E2E が使います。
+Typle 本体（Web版と iPad・Mac・Android・Windows 版）が使う、アプリ自身のバックエンドです。v2.46.10 から、すべてのパスを Next.js の Route Handler（`src/app/api`・`src/server`）が答えます。以前の Go のバックエンド（`server/`）と同じ答えを返します（違いは設計書 `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md` の「移した後も Go と違うところ」）。
 
 Web版は v2.41.1 から、ワークスペース・記録・共有・ギャラリー・管理画面を下の REST のパスで読み書きします（v2.14.0〜v2.41.0 は GraphQL）。iPad・Mac 版も 11/13 に REST へ戻りました。GraphQL（`POST /api/graphql`）は v2.43.0 で消しました。
 
@@ -37,7 +37,7 @@ Web版は v2.41.1 から、ワークスペース・記録・共有・ギャラ�
 
 - 本文はJSON（`Content-Type: application/json; charset=utf-8`）で、`Cache-Control: private, no-store`・`Vary: Cookie` を付けます。`/api/shared`・`/api/gallery`・`/api/gallery/categories`・`/api/gallery/added`・`/api/gallery/reports` は `Cache-Control: no-store` で、`X-Robots-Tag: noindex` も付けます。
 - エラーは `{ "error": "<キー>" }` です。キーはアプリの `errors` のメッセージのキーで、画面が利用者の言語で表示します。
-- すべての応答に `Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; object-src 'none'`・`X-Frame-Options: DENY`・`X-Content-Type-Options: nosniff`・`Referrer-Policy: strict-origin-when-cross-origin` を付けます（Vercel では `next.config.mjs` のヘッダーが Go の関数に届かないため）。
+- すべての応答に `Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; object-src 'none'`・`X-Frame-Options: DENY`・`X-Content-Type-Options: nosniff`・`Referrer-Policy: strict-origin-when-cross-origin` を付けます（`next.config.mjs`）。
 - `HEAD` は `GET` と同じに答えます（本文なし）。
 
 ### エラー
@@ -79,11 +79,4 @@ Cookie で書き込むリクエストは、`Origin` がアプリの origin（`AU
 
 | 場所 | 内容 |
 |---|---|
-| `src/app/api`・`src/server` | Next.js の Route Handler。`/api/auth/signin`・`callback/*` 以外のすべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/core/records.ts`、管理画面は `src/server/admin.ts`） |
-| `api/index.go` | Vercel の Go の関数（1つだけ）。`vercel.json` の `rewrites` が `/api/auth/signin` と `/api/auth/callback/*` をここへ送り、`server/vercel` が元のパスで振り分ける |
-| `server/vercel` | 環境変数から `internal/web` を組み立てる。ログインの始まりと戻りは、管理者の確認のときだけ DB を開く |
-| `server/cmd/typle-web` | 手元でこの API を起動するコマンド |
-| `server/internal/web` | ログインの始まりと戻りの HTTPハンドラー（`web.go` がパスの一覧） |
-| `server/internal/session` | Cookie・トークン・ログイン途中の状態の署名 |
-| `server/internal/auth` | GitHub の OAuth と FFPF ID のクライアント |
-| `server/internal/store` | `typle_workspaces`・`typle_records`・`typle_shared_packs`・`typle_admins` などの読み書き |
+| `src/app/api`・`src/server` | Next.js の Route Handler。すべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/core/records.ts`、管理画面は `src/server/admin.ts`、ログインの始まりと戻りは `src/server/signin.ts`・`github.ts`・`ffpf.ts`） |

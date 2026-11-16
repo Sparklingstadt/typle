@@ -57,7 +57,7 @@ export function openSession(key: Buffer, value: string, now: number = Date.now()
 
 /**
  * The administrator signed in to /admin: the FFPF ID account's verified email and its sub (without "ffpf:"), as the
- * Go backend seals it (session.Keys.SealAdmin) at the end of a login to the dashboard. Times are Unix seconds.
+ * Go backend sealed it (session.Keys.SealAdmin) at the end of a login to the dashboard (sealAdmin since v2.46.10). Times are Unix seconds.
  */
 export type Admin = { email: string, sub: string, issuedAt: number, expires: number }
 

@@ -10,7 +10,7 @@ import { readLoginSettings, type LoginSettings } from './settings'
 // The parts of the login that need no other service: who is signed in (/api/auth/session), the token an app (iPad, Mac,
 // Android, Windows) trades its login's code for (/api/auth/token), signing out (of this browser, or of every device),
 // the made-up login for development (/api/auth/local), and signing out of the dashboard (/api/auth/admin/signout). The
-// login itself (/api/auth/signin and its callbacks) is still the Go backend's, and seals the same cookies.
+// login itself (/api/auth/signin and its callbacks) is src/server/signin.ts.
 
 export type AuthPath = 'session' | 'token' | 'signout' | 'local' | 'adminSignout'
 
