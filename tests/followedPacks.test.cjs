@@ -82,9 +82,11 @@ test('isFollowed is true only for a followed origin', () => {
 test('decodePacks accepts followed: true only', () => {
   const pack = { id: 'p', name: 'P', createdAt: OD }
   assert.deepEqual(decodePacks([{ ...pack, origin: { catalogId: 'go', version: 1, followed: true } }])[0].origin.followed, true)
-  for (const followed of [false, 'yes', 1, null]) {
+  for (const followed of [false, 'yes', 1]) {
     assert.throws(() => decodePacks([{ ...pack, origin: { catalogId: 'go', version: 1, followed } }]), { key: 'savedDataCorrupted' })
   }
+  // Saved as null, it is left out, as the backend has always read it.
+  assert.equal('followed' in decodePacks([{ ...pack, origin: { catalogId: 'go', version: 1, followed: null } }])[0].origin, false)
 })
 
 test('decodeLists keeps a list origin of the right shape and drops the others', () => {

@@ -109,6 +109,22 @@ Go と TS が互いに読む Cookie・トークンの形も変えない（どち
   順が違う。Go の `CompareNames` 自身がアプリの `Intl.Collator('ja')` に合わせるためのものだったので、こちらを正とする。
 - JSON の文字のエスケープ：Go は `<`・`>`・`&`・U+2028・U+2029 を `\u003c` などと書いた。TS は `JSON.stringify` のまま書く。
 
+### 段階6の前に洗い出した違いと、持ち主の決定（2026-11-16）
+
+段階6は 6a（`GET /api/workspace`）・6b（`PUT /api/workspace`）・6c（`/api/workspace/records`）の3つの PR に分ける。
+
+- 保存済みのデータの任意項目の `null`（リストの `tags`・`category`・`group`・`levels`・`packId`、記録の `id`・`mistakes`・`accuracy`・
+  `wordCount`・`device`、パックの `description`・`tags`、`origin.followed`）：**Go に合わせ、`src/core` で省略として読む**
+  （`writing: null` と同じ）。6a で直す。
+- API の答え（エラーのキーを Go と同じく `levelsConflict` 以外は `invalidWorkspace` にまとめる、保存できない文字（NUL・単独の
+  サロゲート）は 400 `invalidWorkspace`、`interests: null` は「なし」、記録の知らない項目は `invalidRecord`、難易度が2〜5個の古い
+  アプリの保存は1つにまとめる、記録の追加の `wordCount`・`device`・`deviceId` の `null` は省略）：**Go に合わせる**。
+- ふつうは来ない入力の細部（日付の書式、`1.0` のような整数、記録の `missed: []`、壊れた `weakReview`、大文字小文字だけ違うキー、
+  150リストの上限付近の数え方、単語が空で `origin` が不正な保存済みのリスト）：**`src/core` のまま**。Go との違いとして扱う。
+- TS で新しく書く必要があるもの：`typle_records` から記録をリストに戻す処理（`withRecords`）と記録の同期・`legacyID`、
+  `revision` による保存と 409、`records_split`、保存の計測（`typle_save_metrics`）、共有リンクの掃除（`deleteRemovedShares`）、
+  GET の答え（DB の jsonb テキストそのまま、`packs` が NULL なら `null`、`interests` がなければ既定、行がなければ revision 0）。
+
 ### DB の接続（実装者の判断）
 
 Go は1つの関数で `MaxConns=5` のプールを持っていた。Route Handler ではインスタンスごとにプールができるので、

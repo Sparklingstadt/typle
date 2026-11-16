@@ -1,5 +1,5 @@
 {
-  "about": "Bodies of PUT /api/workspace. tests/workspaceRequest.test.cjs runs them through validateWorkspaceRequest, and server/internal/web (TestMatchesTypeScript) through decodeRequest: both must accept and refuse the same ones. lists and devices are how many a body that is accepted sends, -1 when it leaves them out.",
+  "about": "Bodies of PUT /api/workspace. tests/workspaceRequest.test.cjs runs them through validateWorkspaceRequest, and tests/serverWorkspaceBody.test.cjs through readWorkspaceChange (src/server/workspace.ts), which answers them as the Go backend (TestMatchesTypeScript, until v2.46.5) did: both must accept and refuse the same ones. lists and devices are how many a body that is accepted sends, -1 when it leaves them out.",
   "cases": [
     {
       "name": "sharing fields dropped",

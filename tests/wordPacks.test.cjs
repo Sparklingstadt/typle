@@ -203,3 +203,14 @@ test('applyListChange: clearing the labels of one list in a pack clears the pack
   assert.equal('category' in next.packs[0] || 'tags' in next.packs[0], false)
   validateLibrary(next)
 })
+
+// A pack's description, tags or origin.followed saved as null is no field, as the backend has always read it.
+test('pack fields saved as null are read as left out', () => {
+  const pack = { id: 'p', name: 'P', createdAt: '2026-09-06', description: 'd', tags: ['t'] }
+  for (const name of ['description', 'tags']) {
+    const { [name]: _left, ...without } = pack
+    assert.deepEqual(decodePacks([{ ...pack, [name]: null }]), decodePacks([without]), name)
+  }
+  const origin = { catalogId: 'c', version: 1 }
+  assert.deepEqual(decodePacks([{ ...pack, origin: { ...origin, followed: null } }]), decodePacks([{ ...pack, origin }]))
+})

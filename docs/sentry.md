@@ -1,7 +1,7 @@
 # Sentry エラー監視
 
 ブラウザーの未処理例外、React の全体エラー画面、Next.js のサーバー例外、
-Go のバックエンド（`/api/workspace` の読み書き、GitHub ログイン）で捕捉した例外を収集します。
+Next.js の Route Handler（`src/server/report.ts`。`/api/workspace` の読み書き・共有・ギャラリーなど、操作名を `operation` のタグに付ける）と、Go のバックエンド（記録の追加と削除、GitHub ログイン、管理画面）で捕捉した例外を収集します。
 認証失敗・入力エラー・更新競合など、想定内の4xx応答は報告しません。
 
 ## 接続

@@ -110,11 +110,24 @@ export function normalizeGroup({ group, levels }: Pick<WordList, 'group' | 'leve
   return { group: name, ...(kept.length ? { levels: kept } : {}) }
 }
 
+/** Deletes the fields names of value that are null, in place. */
+function dropNulls(value: Record<string, unknown>, names: readonly string[]) {
+  for (const name of names) if (value[name] === null) delete value[name]
+}
+
 export function decodeLists(raw: string): SavedWordList[] {
   const data = JSON.parse(raw)
   if (data?.version !== 1 || !Array.isArray(data.lists)) throw new AppError('savedDataUnreadable')
-  // A writing mark saved as null is no mark, as the backend has always read it.
-  for (const list of data.lists) if (list && typeof list === 'object' && list.writing === null) delete list.writing
+  // An optional field saved as null is no field, as the backend has always read it.
+  for (const list of data.lists) {
+    if (!list || typeof list !== 'object') continue
+    dropNulls(list, ['writing', 'tags', 'category', 'group', 'levels', 'packId'])
+    if (Array.isArray(list.records)) {
+      for (const record of list.records) {
+        if (record && typeof record === 'object') dropNulls(record, ['id', 'mistakes', 'accuracy', 'wordCount', 'device', 'missed'])
+      }
+    }
+  }
   const ids = new Set<string>()
   for (const list of data.lists) {
     if (!list || typeof list.id !== "string" || !list.id || ids.has(list.id) || typeof list.name !== "string" ||
