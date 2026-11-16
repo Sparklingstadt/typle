@@ -129,7 +129,7 @@ export class Conflict extends Error {
 const refusal = (key: 'invalidWorkspace' | 'listLimit' | 'followLimit') => new AppError(key)
 
 /**
- * The parts a save writes, as the Go backend's encodeChange makes them. The lists are repaired and their followed packs
+ * The parts a save writes, as the Go backend's encodeChange made them. The lists are repaired and their followed packs
  * follow the catalog, as the app reads saved data (so what is saved reads back the same); they are then saved without
  * the followed packs' words and without their records, which go to typle_records.
  */
@@ -218,7 +218,7 @@ export async function modifyWorkspace<T>(db: Pool, owner: string,
 const json = (value: unknown) => value === undefined ? null : JSON.stringify(value)
 
 /**
- * Saves change over the owner's workspace at revision, as the Go backend's WriteRevision does: revision 0 creates the
+ * Saves change over the owner's workspace at revision, as the Go backend's WriteRevision did: revision 0 creates the
  * row, any other replaces what is saved only if it is still that revision (else Conflict). Parts not sent stay as they
  * are. Lists saved bring their records (typle_records becomes exactly theirs); packs saved delete the links to packs no
  * longer among them. More lists or followed packs than allowed are refused, unless the saved workspace already had more

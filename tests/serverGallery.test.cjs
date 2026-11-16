@@ -3,7 +3,7 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { parseGalleryQuery } = require('../src/server/gallery.ts')
 
-// The cases of server/internal/web/gallery_test.go (TestGalleryQuery, TestGalleryInvalid), which the Go backend answered.
+// The cases of the Go backend's TestGalleryQuery and TestGalleryInvalid, which it answered.
 // Next.js hands a Route Handler the query as URLSearchParams wrote it again: %FF arrives as U+FFFD, %zz as a literal
 // "%zz" and ; as a literal ";". So unlike Go, those are searched for rather than refused or skipped.
 const read = query => parseGalleryQuery(new URL(`http://localhost/api/gallery${query}`))

@@ -5,7 +5,7 @@ import { sealSession } from './sessionCookie'
 // The app's origin and session secret in the end-to-end setup (playwright.config.ts).
 export const origin = 'http://127.0.0.1:3101'
 export const secret = 'typle-e2e-only-not-a-production-secret-32-bytes'
-// The Go backend's login cookie over HTTP; the sealed value is what it sets after GitHub.
+// The login cookie over HTTP; the sealed value is what src/server/signin.ts sets after GitHub.
 export const cookieName = 'typle-session'
 
 /** A GitHub account id no other test uses. */

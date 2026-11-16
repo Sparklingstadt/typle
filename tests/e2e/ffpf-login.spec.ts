@@ -4,7 +4,7 @@ import { test, expect, type Page } from '@playwright/test'
 async function answer(page: Page, body: unknown) {
   await page.route('**/api/auth/session', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) }))
 }
-// The sign-in route is served by the Go backend; the navigation is stopped here so that the test sees where it goes.
+// The sign-in route redirects to the provider; the navigation is stopped here so that the test sees where it goes.
 async function captureSignIn(page: Page) {
   const urls: string[] = []
   await page.route('**/api/auth/signin?**', route => { urls.push(route.request().url()); return route.fulfill({ status: 200, contentType: 'text/html', body: 'ok' }) })

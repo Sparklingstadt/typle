@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 
-// Practice records are kept in typle_records, one row each, rather than in their lists (the Go backend's
-// server/internal/store/records.go, docs/superpowers/specs/2026-10-29-record-table.md). A workspace whose records_split
+// Practice records are kept in typle_records, one row each, rather than in their lists (as the Go backend, removed in
+// v2.47.0, kept them; docs/superpowers/specs/2026-10-29-record-table.md). A workspace whose records_split
 // is false still has them in its lists, as saved before the table existed: the first save of its lists moves them.
 // Reads put the records back in their lists, so the app sees lists with their records, as before.
 
@@ -39,7 +39,7 @@ type ListWithRecords = { id: string, records: { id?: string, time: number, date:
 
 /**
  * The records of the lists as rows, every record given an id that keeps it apart from the rest of its list (legacyId),
- * in place, as the Go backend's recordRows does.
+ * in place, as the Go backend's recordRows did.
  */
 export function recordRows(lists: ListWithRecords[]): RecordRow[] {
   const rows: RecordRow[] = []
@@ -55,7 +55,7 @@ export function recordRows(lists: ListWithRecords[]): RecordRow[] {
 }
 
 /**
- * The lists with the stored records put back in the lists that hold them, as the Go backend's withRecords does. A list
+ * The lists with the stored records put back in the lists that hold them, as the Go backend's withRecords did. A list
  * may still hold records of its own, saved by an app from before the table: they come first, and a record of the same id
  * is the table's. Records of a list that is no longer saved are left out; the next save deletes them.
  */
@@ -83,7 +83,7 @@ const recordIdOf = (record: unknown) => {
 type Queryable = { query: (text: string, values?: unknown[]) => Promise<{ rows: Record<string, unknown>[] }> }
 
 /**
- * Makes the owner's rows of typle_records exactly rows, as the Go backend's syncRecords does for a save of the lists:
+ * Makes the owner's rows of typle_records exactly rows, as the Go backend's syncRecords did for a save of the lists:
  * the rows of records no longer saved are deleted, and the others written where they changed. The number of rows is
  * checked afterwards, so a save never leaves records behind or missing.
  */

@@ -7,7 +7,7 @@ const { answerAdmin, isAdmin, setHidden } = require('../src/server/admin.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 
 // /api/admin/* against a real database, as npm run verify runs it: `TYPLE_TEST_DATABASE_URL=… npm test`. The answers are
-// the Go backend's (tests/fixtures/admin-answers.json, made by server/internal/web on the same kind of seed), with the
+// the Go backend's (tests/fixtures/admin-answers.json, made by the Go backend, removed in v2.47.0, on the same kind of seed), with the
 // counts over the whole database and the rows other tests leave left out.
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }

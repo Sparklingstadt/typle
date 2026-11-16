@@ -67,7 +67,7 @@ test('the administrator cookie is __Host- over HTTPS', () => {
 })
 
 // The login cookies, app tokens and app codes the Go backend sealed at a fixed time (tests/fixtures/auth-answers.json):
-// TS seals the same bytes, so that what either side issues the other reads until the Go backend is gone.
+// TS seals the same bytes, so that what the Go backend issued before v2.47.0 still opens.
 const auth = require('./fixtures/auth-answers.json')
 const authSettings = readLoginSettings({ AUTH_SECRET: auth.secret, AUTH_URL: 'https://typle.example' })
 const login = auth.now - 100

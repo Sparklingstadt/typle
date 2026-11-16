@@ -5,7 +5,7 @@ const http = require('node:http')
 const crypto = require('node:crypto')
 const { ffpfAuthorizeUrl, exchangeFfpfCode, FfpfError, newJwksCache } = require('../src/server/ffpf.ts')
 
-// "Sign in with FFPF ID", as the Go backend's auth.FFPF did it (its tests, server/internal/auth/ffpf_test.go, are copied
+// "Sign in with FFPF ID", as the Go backend's auth.FFPF did it (its tests are copied
 // here): the authorization code flow with PKCE, client_secret_basic, and an ES256 ID token checked against the portal's
 // JWKS and the claims.
 

@@ -1,8 +1,8 @@
 import { createHmac, hkdfSync } from 'node:crypto'
 
 // The login settings that the Route Handlers need: AUTH_URL, whose origin is the only one a write may come from, and
-// AUTH_SECRET, from which the keys are derived as the Go backend derives them (server/internal/session), so that what
-// one of them made the other reads.
+// AUTH_SECRET, from which the keys are derived as the Go backend derived them until v2.47.0, so that
+// the cookies and tokens it issued still open.
 
 export type LoginSettings = {
   /** The app's own origin, as a browser writes it in the Origin header. */
@@ -38,7 +38,7 @@ export type GitHubSettings = { clientId: string, clientSecret: string, authorize
 /** The FFPF ID client: the portal's issuer, without one trailing slash, and the client's credentials. */
 export type FfpfSettings = { issuer: string, clientId: string, clientSecret: string }
 
-/** The HKDF info of each key: the same as Go's (server/internal/session), so that each kind opens only as itself. */
+/** The HKDF info of each key: the same as the Go backend's, so that each kind opens only as itself. */
 const RATE_LIMIT_INFO = 'typle gallery-rate-limit v1'
 const SESSION_INFO = 'typle session v1'
 const APP_INFO = 'typle app session v1'

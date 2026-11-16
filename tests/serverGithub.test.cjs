@@ -4,8 +4,8 @@ const assert = require('node:assert/strict')
 const http = require('node:http')
 const { githubAuthorizeUrl, exchangeGitHubCode, githubUser, GitHubError } = require('../src/server/github.ts')
 
-// The GitHub OAuth App's side of the login, as the Go backend's auth.OAuth and auth.GitHub did it (their tests,
-// server/internal/auth/oauth_test.go and github_test.go, are copied here).
+// The GitHub OAuth App's side of the login, as the Go backend's auth.OAuth and auth.GitHub did it (their tests
+// are copied here).
 
 const servers = []
 after(() => { for (const server of servers) server.close() })

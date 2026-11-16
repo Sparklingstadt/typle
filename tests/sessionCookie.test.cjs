@@ -8,7 +8,7 @@ const { sealSession } = require('./e2e/sessionCookie.ts')
 const VECTOR =
   'eyJzdWIiOiJnaXRodWI6MSIsIm5hbWUiOiJFMkUgVXNlciIsImltYWdlIjoiIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjE3MDI1OTIwMDB9.PnYQedkDC_8_wH2YdnWBCStw6T-q-WuuzlkmghaPRro'
 
-test('sealSession produces the cookie the Go server produces', () => {
+test('sealSession produces the cookie the Go server produced', () => {
   const secret = 'typle-e2e-only-not-a-production-secret-32-bytes'
   const session = { sub: 'github:1', name: 'E2E User', image: '', iat: 1700000000, exp: 1702592000 }
   assert.equal(sealSession(secret, session), VECTOR)
@@ -18,7 +18,7 @@ test('sealSession produces the cookie the Go server produces', () => {
 const ESCAPED_VECTOR =
   'eyJzdWIiOiJnaXRodWI6MiIsIm5hbWUiOiJBICYgQiA8eD5cdTIwMjgiLCJpbWFnZSI6IiIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjoxNzAyNTkyMDAwfQ.kC3xQIvDOm0YGs1xA85LEKb4SB8PCoSntK11CucuLmk'
 
-test('sealSession writes a name with & < > and U+2028 as the Go server does', () => {
+test('sealSession writes a name with & < > and U+2028 as the Go server did', () => {
   const secret = 'typle-e2e-only-not-a-production-secret-32-bytes'
   const session = { sub: 'github:2', name: 'A & B <x>\u2028', image: '', iat: 1700000000, exp: 1702592000 }
   assert.equal(sealSession(secret, session), ESCAPED_VECTOR)

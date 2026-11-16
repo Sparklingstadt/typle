@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-// /api/health is a Route Handler of the app (src/app/api/health/route.ts), not forwarded to the Go backend.
+// /api/health is a Route Handler of the app (src/app/api/health/route.ts).
 test('/api/health says the database answers', async ({ request }) => {
   const response = await request.get('/api/health')
   expect(response.status()).toBe(200)
