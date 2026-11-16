@@ -13,8 +13,8 @@ import (
 // The administrator's dashboard (/admin) has a login of its own. It goes through FFPF ID only
 // (/api/auth/signin?admin=1, then /api/auth/callback/ffpf), and ends with the administrator's cookie instead of the
 // session cookie, for an account that typle_admins lets in: one registered there by its email, which binds the
-// account's sub at its first sign-in. Each /api/admin request checks the account against typle_admins again, so an
-// administrator whose row is removed is let in no longer.
+// account's sub at its first sign-in. Each /api/admin request (src/server/admin.ts since v2.46.8) checks the account
+// against typle_admins again, so an administrator whose row is removed is let in no longer.
 const (
 	adminPage = "/admin"
 	// adminRefused is where a login of an account that is not an administrator ends: the page says so.

@@ -18,7 +18,7 @@
 - `/api/auth/admin/signout` は段階8に回す（`/api/auth/:path*` の転送を段階8でまとめて外すため。ここで外すには両方の転送に否定の先読みが要る）。
 - 管理者の Cookie：名前は `AUTH_URL` が HTTPS なら `__Host-typle-admin`、そうでなければ `typle-admin`。値は段階4と同じ形式
   （厳密な base64url、HMAC-SHA256）。開けるのは期限内（`now < exp`）で、`email` が空でなく、`sub` が `^[a-z0-9]{1,64}$` のもの。
-- 確かめる順（Go の `databaseHandler` と mux）：405（`Allow: GET, HEAD` または `POST`）→ 設定がなければ 503 `authUnavailable`
+- 確かめる順（手元の Go の mux。Vercel の Go は設定・DB がないとき 405 より先に 503 だった）：405（`Allow: GET, HEAD` または `POST`）→ 設定がなければ 503 `authUnavailable`
   → DB が開けなければ 503 `databaseUnavailable` → Cookie がない・開けない 401 `adminRequired` → `typle_admins` を
   `UPDATE … SET ffpf_sub = $2, last_seen_at = now() WHERE email = lower($1) AND (ffpf_sub IS NULL OR ffpf_sub = $2) RETURNING 1`
   で問い（失敗は 503 `databaseUnavailable`、報告 `admin.check`）、なければ 403 `adminForbidden` と Cookie の削除

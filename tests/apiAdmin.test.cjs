@@ -263,3 +263,15 @@ test('equal reports are ordered by listed_at, the newest first and the never lis
   assert.deepEqual(packs.filter(pack => ids.includes(pack.id)).map(pack => pack.id), [ids[2], ids[1], ids[0]])
   assert.deepEqual(packs.find(pack => pack.id === ids[2]).reasons, { inappropriate: 1, other: 1, personalInfo: 1, spam: 2 })
 })
+
+// An app's token never stands in for the app's own Origin here: the dashboard is only used from the app's pages.
+test('a hide with an app token and no Origin is refused', database, async () => {
+  const run = await seed()
+  const cookie = `typle-admin=${sealAdmin(`admin-${run.token}@example.com`, 'cadmin')}`
+  const response = await answerAdmin('hide', new Request(`${fixture.origin}/api/admin/gallery/hide`, {
+    method: 'POST', body: JSON.stringify({ id: run.ids.newer }),
+    headers: { Cookie: cookie, Authorization: 'Bearer x', 'Content-Type': 'application/json' },
+  }), open, () => settings)
+  assert.equal(response.status, 403)
+  assert.equal(await response.text(), '{"error":"forbiddenRequest"}\n')
+})
