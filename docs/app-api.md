@@ -8,6 +8,6 @@
 | `/api/workspace`・`/api/workspace/records` | [api-docs/src/app/workspace.md](../api-docs/src/app/workspace.md) |
 | `/api/shares`・`/api/shared` | [api-docs/src/app/shares.md](../api-docs/src/app/shares.md) |
 | ログイン | [api-docs/src/app/auth.md](../api-docs/src/app/auth.md) |
-| 管理画面 | [api-docs/src/app/admin.md](../api-docs/src/app/admin.md) |
+| 管理画面 | v2.48.0 でなくしました（README の「ギャラリーの共有を隠す」） |
 
 `/api/workspace/records` の OpenAPI 定義は、これまでどおり [docs/api/workspace-records.openapi.json](api/workspace-records.openapi.json) です（サイトの [openapi.md](../api-docs/src/openapi.md) がビルド時に読み込みます）。

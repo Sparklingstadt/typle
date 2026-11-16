@@ -10,7 +10,7 @@ typle から消し、保守するコードと攻撃される入口を減らす�
 
 - 目標：管理画面、`/api/admin/*`、管理者のログインと Cookie、`/api/auth/admin/signout`、`typle_admins` を消す。
 - 目標でないこと：別のアプリに管理の機能（共有を隠すなど）を足すこと。今後、通報された共有を隠すには
-  `typle_shares.hidden_at` に SQL で時刻を入れる。
+  `typle_shared_packs.hidden_at` に SQL で時刻を入れる。
 - してはいけないこと：利用者の API（iPad・Mac・Android・Windows のアプリが使うもの）、ログイン、ギャラリーの
   動きを変えること。隠された共有（`hidden_at`）がギャラリーに出ないことと、通報（`/api/gallery/reports`）は残す。
 

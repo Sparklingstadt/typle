@@ -113,7 +113,7 @@ Next.js のアプリは1つで、`src` を層に分けています。依存は�
 
 | 層 | 場所 | 内容 |
 |---|---|---|
-| サーバー | `src/server`・`src/app/api` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ギャラリーの読み取り（`gallery.ts`）と書き込み（`galleryWrites.ts`。ログインの設定 `settings.ts`、要求の確認 `request.ts`、IP ごとの回数制限 `rateLimit.ts`）・共有パックの読み取り（`shared.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・共有の一覧・作成・停止（`shares.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン・管理画面のログアウト（`auth.ts`）・管理画面の API（`admin.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub は `github.ts`、FFPF ID は `ffpf.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。ギャラリーと `/api/shared` の応答は、エラーも含めてすべて `X-Robots-Tag: noindex` です（[設計](docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md)）。`src/core` を使えますが、画面と `src/core` からは import しません |
+| サーバー | `src/server`・`src/app/api` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ギャラリーの読み取り（`gallery.ts`）と書き込み（`galleryWrites.ts`。ログインの設定 `settings.ts`、要求の確認 `request.ts`、IP ごとの回数制限 `rateLimit.ts`）・共有パックの読み取り（`shared.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・共有の一覧・作成・停止（`shares.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン（`auth.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub は `github.ts`、FFPF ID は `ffpf.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。ギャラリーと `/api/shared` の応答は、エラーも含めてすべて `X-Robots-Tag: noindex` です（[設計](docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md)）。`src/core` を使えますが、画面と `src/core` からは import しません |
 | 画面 | `src/app`・`src/components`・`src/i18n`・`src/lib` | ページ、UI、多言語化、React のフック。`useWordLists` は React の状態とブラウザーのイベント（フォーカス・他タブの変更）だけを受け持ち、読み込み・保存は core の `createWorkspaceSession` に任せます。保存先は `src/lib/storage` で、`cloud.ts`（Next.js の Route Handler が答える `/api/workspace` と `/api/workspace/records`）と `guest.ts`（LocalStorage）を `workspaceStore(accountId)` がアカウントに応じて選びます |
 | core | `src/core` | React・Next.js・ブラウザーAPIに依存しない TypeScript。単語リスト・入力判定・記録・集計・ワークスペースのモデルと検証、保存先の型 `WorkspaceStore`（`workspaceStore.ts`、保存場所 `location` を含む）、ワークスペースの読み込み・保存 `createWorkspaceSession`（`workspaceSession.ts`。アカウントの切り替え後に届いた結果の破棄、保存の直列化、409での再読み込み、古いクラウド読み込みの無視）、単語ファイルの CSV の読み書き（`wordFormat.ts`。TSV の読み込みは v2.44.0 でやめました）。`packs/` は公式パック（v0.85.0 から sparklingstadt アカウントの67リストのコピーで、`commands/` に1リスト1ファイルで保存しています。それまではサンプル、国名193か国、コマンドと構文の25種類を初級・中級・上級に分けた85リスト）とそのカタログです |
 
@@ -158,7 +158,7 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 - `AUTH_SECRET`: 暗号学的にランダムな秘密値
 - `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`: 本番用OAuth Appの認証情報
 - `AUTH_URL`: 本番URL。本番OAuth callbackは `<本番URL>/api/auth/callback/github`（v0.55.0 でも変わりません）。この値のオリジンだけを使います
-- `FFPF_ID_ISSUER`, `FFPF_ID_CLIENT_ID`, `FFPF_ID_CLIENT_SECRET`: FFPF ID（ffpf-portal）の issuer とクライアントの認証情報（任意。3つ揃えたときだけ FFPF ID のログインと `/admin` を使えます）。portal に登録する redirect URI は `<本番URL>/api/auth/callback/ffpf` です
+- `FFPF_ID_ISSUER`, `FFPF_ID_CLIENT_ID`, `FFPF_ID_CLIENT_SECRET`: FFPF ID（ffpf-portal）の issuer とクライアントの認証情報（任意。3つ揃えたときだけ FFPF ID のログインを使えます）。portal に登録する redirect URI は `<本番URL>/api/auth/callback/ffpf` です
 
 対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/migrate.cjs` が `pg` で適用します（v2.36.19 から Prisma は使いません。アプリの DB の読み書きは Route Handler の `pg`）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](docs/release-workflow.md)）。
 
@@ -193,24 +193,20 @@ FFPF ID（ffpf-portal）は、GitHub と並ぶもう1つのログイン方法で
 - クライアントの登録（client_id・シークレットの作成と redirect URI の登録）は ffpf-portal 側の作業です。手順は ffpf-portal の README と、`docs/superpowers/specs/2026-10-27-ffpf-id-design.md` の「クライアント」を見てください。
 - `.env.example` に3つの変数を載せています。ローカルで試すときは `.env.local` に書きます。Vercel では「Neon / Vercelの構成」の環境変数に足します。
 - ログインした利用者は GitHub のアカウントとは別のアカウントです（アカウント ID は `ffpf:` で始まります）。
-- portal にログインしたままのブラウザでは、FFPF ID のログインはパスワードを聞かずに通ります（SSO）。ただし typle-r でログアウト（`/api/auth/signout`・`/api/auth/admin/signout`）したブラウザには Cookie `typle-ffpf-relogin`（`/api/auth`、30日）を置き、次の FFPF ID のログインに `prompt=login` を付けて portal のログイン画面を出させます。FFPF ID でログインし終えると消します。アプリ（iPad など）のログアウトでは置きません。
+- portal にログインしたままのブラウザでは、FFPF ID のログインはパスワードを聞かずに通ります（SSO）。ただし typle-r でログアウト（`/api/auth/signout`）したブラウザには Cookie `typle-ffpf-relogin`（`/api/auth`、30日）を置き、次の FFPF ID のログインに `prompt=login` を付けて portal のログイン画面を出させます。FFPF ID でログインし終えると消します。アプリ（iPad など）のログアウトでは置きません。
 
-### 管理者ダッシュボード（/admin）
+### ギャラリーの共有を隠す
 
-`/admin` には FFPF ID でだけログインできます（`GET /api/auth/signin?admin=1`、`provider` の値にかかわらず FFPF ID へ進み、コールバックは `/api/auth/callback/ffpf`）。GitHub でのログインでは管理者になれません。
+v2.48.0 で管理者ダッシュボード（`/admin`、`/api/admin/*`、管理者のログイン、表 `typle_admins`）をなくしました。データは、DB に直接つなぐ別の管理用ツールで見ます。
 
-- 使うには FFPF ID の設定（`FFPF_ID_ISSUER`・`FFPF_ID_CLIENT_ID`・`FFPF_ID_CLIENT_SECRET`）が必要です。揃っていなければ、管理者のログインは 503（`authUnavailable`）になります。
-- ログインの最後に `typle_admins` を確かめ、登録されたメールアドレスのときだけ管理者用 Cookie（`__Host-typle-admin`、SameSite=Strict、12時間で失効・延長なし）を発行して `/admin` に戻ります。登録されていないアカウントは `/admin?error=adminForbidden`、DB に届かないときは `/admin?error=adminUnavailable` に戻り、何にもログインしません。管理者のログインは通常のセッション Cookie を発行しません。
-- FFPF ID の `sub` は最初のログインで記録し、以後は同じ `sub` だけを通します（メールアドレスを引き継いだ別人を通さないため）。`GET /api/admin/*` も毎回この表を確かめ、行がなければ `403 adminForbidden` で Cookie を消します。
-- 「ギャラリー」の欄には、掲載中か非公開の共有を通報の多い順に最大100件並べ、通報の件数と理由ごとの件数を出します。「非公開にする」「戻す」は `POST /api/admin/gallery/hide`・`unhide` です（`Content-Type: application/json` とアプリの `Origin` が必要）。非公開にした共有は、ギャラリーからも `/api/shared` からも消えます。
-
-管理者は、リポジトリには書かず、対象の DB に SQL で登録します。1人につき1行で、メールアドレスは FFPF ID に登録したものを小文字で書きます。
+通報（表 `typle_gallery_reports`）を見て共有をギャラリーから隠すときは、対象の DB で SQL を実行します。隠した共有は、ギャラリーからも `/api/shared` からも消えます。持ち主のパックの行には「非公開にされました」と出て、持ち主はその共有をギャラリーに載せ直せません。
 
 ```sql
-INSERT INTO typle_admins (email) VALUES ('<FFPF IDのメールアドレス>');
+-- 隠す
+UPDATE typle_shared_packs SET hidden_at = now() WHERE id = '<共有の id>';
+-- 戻す
+UPDATE typle_shared_packs SET hidden_at = NULL WHERE id = '<共有の id>';
 ```
-
-管理者をやめるときは、その行を `DELETE FROM typle_admins WHERE email = '<メールアドレス>';` で消します。
 
 ### Sentry エラー監視
 
