@@ -114,3 +114,20 @@ test('every other method is 405, OPTIONS included', async () => {
     }
   }
 })
+
+// As the Go backend: a body whose stream breaks is a failed login (400), not the server's failure; and a body that starts
+// with a byte order mark is not JSON (Go's json.Unmarshal refused it).
+test('a broken or BOM-led token request is loginFailed', async () => {
+  const broken = new Request('http://127.0.0.1:3101/api/auth/token', {
+    method: 'POST', duplex: 'half',
+    body: new ReadableStream({ pull(controller) { controller.error(new Error('connection reset')) } }),
+  })
+  const response = await answerAuth('token', broken, open, settings, () => fixture.now)
+  assert.equal(response.status, 400)
+  assert.equal(await response.text(), '{"error":"loginFailed"}\n')
+  const body = JSON.stringify({ code: fixture.values.code, verifier: fixture.verifier })
+  const plain = await answerAuth('token', new Request('http://127.0.0.1:3101/api/auth/token', { method: 'POST', body }), open, settings, () => fixture.now)
+  assert.equal(plain.status, 200)
+  const bom = await answerAuth('token', new Request('http://127.0.0.1:3101/api/auth/token', { method: 'POST', body: '﻿' + body }), open, settings, () => fixture.now)
+  assert.equal(bom.status, 400)
+})

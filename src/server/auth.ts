@@ -116,8 +116,10 @@ function readTokenBody(text: string): { code: string, verifier: string } | null 
  * mistake is loginFailed, and the app starts the login again.
  */
 async function token(request: Request, login: LoginSettings, now: number): Promise<Response> {
-  const data = new Uint8Array(await request.arrayBuffer())
-  const body = data.byteLength > MAX_TOKEN_REQUEST ? null : readTokenBody(new TextDecoder().decode(data))
+  // A body whose stream breaks is a failed login, as one that is too large; a byte order mark is kept, so that such a
+  // body is not JSON, as Go's json.Unmarshal judged it.
+  const data = await request.arrayBuffer().then(buffer => new Uint8Array(buffer), () => null)
+  const body = !data || data.byteLength > MAX_TOKEN_REQUEST ? null : readTokenBody(new TextDecoder('utf-8', { ignoreBOM: true }).decode(data))
   if (!body || !PKCE_VERIFIER.test(body.verifier)) return refuse(400, 'loginFailed')
   const code = openCode(login.codeKey, body.code, now)
   const challenge = Buffer.from(challengeOf(body.verifier))

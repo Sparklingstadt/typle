@@ -81,7 +81,7 @@ Cookie で書き込むリクエストは、`Origin` がアプリの origin（`AU
 |---|---|
 | `src/app/api`・`src/server` | Next.js の Route Handler。`/api/auth/signin`・`callback/*` 以外のすべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/core/records.ts`、管理画面は `src/server/admin.ts`） |
 | `api/index.go` | Vercel の Go の関数（1つだけ）。`vercel.json` の `rewrites` が `/api/auth/signin` と `/api/auth/callback/*` をここへ送り、`server/vercel` が元のパスで振り分ける |
-| `server/vercel` | 環境変数から `internal/web` を組み立てる。`/api/auth` はセッションの応答が DB を待たないよう、DB を開かずに組み立てる |
+| `server/vercel` | 環境変数から `internal/web` を組み立てる。ログインの始まりと戻りは、管理者の確認のときだけ DB を開く |
 | `server/cmd/typle-web` | 手元でこの API を起動するコマンド |
 | `server/internal/web` | ログインの始まりと戻りの HTTPハンドラー（`web.go` がパスの一覧） |
 | `server/internal/session` | Cookie・トークン・ログイン途中の状態の署名 |

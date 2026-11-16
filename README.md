@@ -126,7 +126,7 @@ Next.js の Route Handler に移したパス（今は `/api/health`・`/api/gall
 | 場所 | 内容 |
 |---|---|
 | `server/internal/web` | ログインの始まりと戻り（`/api/auth/signin`・`callback/github`・`callback/ffpf`）を1つの `http.Handler` にまとめます。すべての応答に、`next.config.mjs` と同じ4つのセキュリティヘッダー（`Content-Security-Policy`・`X-Frame-Options`・`X-Content-Type-Options`・`Referrer-Policy`）を付けます。管理画面のログイン（FFPF ID の最後に管理者の Cookie を発行する）もここです。セッション・アプリのトークン・ログアウト・ローカル開発のログイン・管理画面のログアウトは v2.46.9 から Next.js（`src/server/auth.ts`）です |
-| `server/internal/session` | ログインの Cookie（`HttpOnly`・`SameSite=Lax`・ログインから30日で失効・延長なし）と、iPad・Android・Windows のログインのコード・トークンの署名と検証です。値は `AUTH_SECRET` から導いた鍵（種類ごとに別）で HMAC-SHA256 署名します。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です |
+| `server/internal/session` | ログインの Cookie（`HttpOnly`・`SameSite=Lax`・ログインから30日で失効・延長なし）と、iPad・Android・Windows のログインのコードの署名です（v2.46.9 から、トークンへの交換とセッション・トークンの検証は Next.js の `src/server/session.ts`。形式と鍵は同じ）。値は `AUTH_SECRET` から導いた鍵（種類ごとに別）で HMAC-SHA256 署名します。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です |
 | `server/internal/auth` | ログインの GitHub OAuth クライアント（認可コードと PKCE）と FFPF ID のクライアントです |
 | `server/vercel` | `web` のハンドラーを Vercel の Go の関数として呼ぶ橋渡しです。リポジトリ直下の `api/index.go`（Vercel の Go の関数は1つだけで、`vercel.json` の `rewrites` がバックエンドのパスをすべてここへ送ります）がこれを呼びます。`/api/auth/*` のほかのパスは、今は Next.js が答えるので、ここには届きません |
 | `server/cmd/typle-web` | `web` のハンドラーを手元で起動します（既定 `127.0.0.1:8081`）。`npm run dev` と E2E が使います |
