@@ -9,7 +9,7 @@ actions:
     type: primary
 features:
   - title: アプリのAPI（/api/*）
-    details: Web版と iPad・Mac・Android・Windows 版が使う本番のバックエンド。ログイン、ワークスペースの保存、練習記録、パックの共有。
+    details: Web版と iPad・Mac・Android・Windows 版が使う本番のバックエンド。ログイン、ワークスペースの保存、練習記録。
   - title: OpenAPI
     details: /api/workspace/records の本文・応答・エラーコードは OpenAPI 3.1 で定義し、Route Handler とアプリの両方をテストで照合しています。
 footer: Typle

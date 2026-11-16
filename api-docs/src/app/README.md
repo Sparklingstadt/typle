@@ -2,7 +2,7 @@
 
 Typle 本体（Web版と iPad・Mac・Android・Windows 版）が使う、アプリ自身のバックエンドです。v2.46.10 から、すべてのパスを Next.js の Route Handler（`src/app/api`・`src/server`）が答えます。v2.47.0 で消した Go のバックエンド（`server/`）と同じ答えを返します（違いは設計書 `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md` の「移した後も Go と違うところ」）。
 
-Web版は v2.41.1 から、ワークスペース・記録・共有・ギャラリーを下の REST のパスで読み書きします（v2.14.0〜v2.41.0 は GraphQL）。iPad・Mac 版も 11/13 に REST へ戻りました。GraphQL（`POST /api/graphql`）は v2.43.0 で消しました。
+Web版は v2.41.1 から、ワークスペース・記録を下の REST のパスで読み書きします（v2.14.0〜v2.41.0 は GraphQL）。iPad・Mac 版も 11/13 に REST へ戻りました。GraphQL（`POST /api/graphql`）は v2.43.0 で消しました。
 
 ## エンドポイント
 
@@ -13,14 +13,6 @@ Web版は v2.41.1 から、ワークスペース・記録・共有・ギャラ�
 | [`PUT /api/workspace`](./workspace.md#put-api-workspace) | 要 | ワークスペースを保存する |
 | [`POST /api/workspace/records`](./workspace.md#記録の追加と削除) | 要 | 記録を1件追加する |
 | [`DELETE /api/workspace/records`](./workspace.md#記録の追加と削除) | 要 | 記録を1件削除する |
-| [`GET /api/shares`](./shares.md) | 要 | 共有中のパックの一覧 |
-| [`PUT /api/shares`](./shares.md) | 要 | パックを共有する（共有中なら中身を取り直す） |
-| [`DELETE /api/shares?pack=<パックのID>`](./shares.md) | 要 | 共有をやめる |
-| [`GET /api/shared?id=<共有のID>`](./shares.md) | 不要 | 共有されたパックのファイル |
-| [`GET /api/gallery`](./shares.md#ギャラリー) | 不要 | ギャラリーのパックの検索 |
-| [`GET /api/gallery/categories`](./shares.md#ギャラリー) | 不要 | ギャラリーのカテゴリと件数 |
-| [`POST /api/gallery/added?id=<共有のID>`](./shares.md#ギャラリー) | 不要 | ギャラリーのパックが追加されたことを数える |
-| [`POST /api/gallery/reports`](./shares.md#ギャラリー) | 不要 | ギャラリーのパックを通報する |
 | [`GET /api/auth/session`](./auth.md#get-api-auth-session) | 任意 | ログイン中のユーザーと、使えるログイン方法 |
 | [`GET /api/auth/signin`](./auth.md#get-api-auth-signin) | — | ログインを始める |
 | [`GET /api/auth/callback/github`・`/api/auth/callback/ffpf`](./auth.md#ログインから戻る先) | — | ログインから戻る先 |
