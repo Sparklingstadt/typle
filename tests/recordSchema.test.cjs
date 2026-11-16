@@ -6,7 +6,7 @@ const path = require('node:path')
 const { createWorkspaceSession } = require('../src/core/workspaceSession.ts')
 
 // docs/api/workspace-records.openapi.json is the contract of /api/workspace/records, which
-// server/internal/web/records_test.go holds the Go handler to. These hold the app to it.
+// tests/apiRecords.test.cjs holds the Route Handler to. These hold the app to it.
 const contract = JSON.parse(fs.readFileSync(path.join(__dirname, '../docs/api/workspace-records.openapi.json'), 'utf8'))
 const schemas = contract.components.schemas
 

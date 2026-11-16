@@ -86,4 +86,4 @@ Cookie で書き込むリクエストは、`Origin` がアプリの origin（`AU
 | `server/internal/session` | Cookie・トークン・ログイン途中の状態の署名 |
 | `server/internal/auth` | GitHub の OAuth と FFPF ID のクライアント |
 | `server/internal/store` | `typle_workspaces`・`typle_records`・`typle_shared_packs`・`typle_admins` などの読み書き |
-| `server/internal/operation` | 記録の追加・削除 |
+| `src/server/workspace.ts`（`answerRecords`）・`src/core/records.ts` | 記録の追加・削除 |

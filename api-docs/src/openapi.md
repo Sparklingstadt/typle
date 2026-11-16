@@ -2,7 +2,7 @@
 
 アプリが練習記録を1件ずつ変える [`/api/workspace/records`](/app/workspace.md#記録の追加と削除) の本文・応答・エラーコードは、OpenAPI 3.1 の定義 `docs/api/workspace-records.openapi.json` にあります（v1.6.0 から）。
 
-- Go は `server/internal/web/records_test.go`、TS は `tests/recordSchema.test.cjs` が、この定義と実装を照合します。
+- `tests/apiRecords.test.cjs`（Route Handler）と `tests/recordSchema.test.cjs`（アプリ）が、この定義と実装を照合します。
 - エラーキーは画面のメッセージ（`src/messages/*/errors.json`）のキーです。`x-app-shows` が `false` の応答はアプリが受け取ることのないもので、画面のメッセージを持ちません。
 - このページの下の定義は、ビルドのときにリポジトリのファイルをそのまま読み込んでいます。定義を変えるときは `docs/api/workspace-records.openapi.json` を直してください。
 
