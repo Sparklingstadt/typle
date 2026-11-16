@@ -92,16 +92,20 @@ test('source files have no hard-coded Japanese text', () => {
 })
 
 // The screen shows the `error` of a failed /api/workspace (or other backend) answer through the `errors` messages, so
-// every key the Go backend answers with has one. methodNotAllowed and notFound are left out: the app's own requests
+// every key the backend (the Route Handlers' src/server, and what is left of the Go backend) answers with has one. methodNotAllowed and notFound are left out: the app's own requests
 // never get them. So is loginFailed: only POST /api/auth/token answers it, which the iPad app calls and the web app
 // does not.
-test('every error key of the Go backend has a message', () => {
+test('every error key of the backend has a message', () => {
   const sources = ['server/internal/web', 'server/vercel'].flatMap(dir =>
     fs.readdirSync(path.join(__dirname, '..', dir)).filter(file => file.endsWith('.go') && !file.endsWith('_test.go'))
       .map(file => fs.readFileSync(path.join(__dirname, '..', dir, file), 'utf8')))
   const keys = new Set()
   for (const source of sources) {
     for (const match of source.matchAll(/(?:refuse\(w, [^,]+, |Unavailable\()"(\w+)"/g)) keys.add(match[1])
+  }
+  const server = path.join(__dirname, '../src/server')
+  for (const file of fs.readdirSync(server).filter(name => name.endsWith('.ts'))) {
+    for (const match of fs.readFileSync(path.join(server, file), 'utf8').matchAll(/refuse\(\d+, '(\w+)'\)/g)) keys.add(match[1])
   }
   keys.delete('methodNotAllowed')
   keys.delete('notFound')

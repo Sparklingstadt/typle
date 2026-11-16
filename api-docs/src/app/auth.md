@@ -63,4 +63,4 @@
 
 開発用に `github:0`（「ローカル練習用」）としてログインし、`204` を返します。アプリの `Origin` が必要です。
 
-手元の `typle-web` で、`LOCAL_DEVELOPMENT_LOGIN=1` かつ `AUTH_URL` がこの機械への `http`（またはそれと同じ `LOCAL_DEVELOPMENT_LAN_HOST` のプライベートIPv4）のときだけあり（`server/internal/web/config.go` の `localLoginAllowed`）、本番を含むほかでは `404 notFound` です。
+Vercel の外（手元）で、`LOCAL_DEVELOPMENT_LOGIN=1` かつ `AUTH_URL` がこの機械への `http`（またはそれと同じ `LOCAL_DEVELOPMENT_LAN_HOST` のプライベートIPv4）のときだけあり（`src/server/settings.ts` の `localLoginAllowed`）、本番を含むほかではどのメソッドでも `404 notFound` です。

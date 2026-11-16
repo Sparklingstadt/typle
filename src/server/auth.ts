@@ -22,7 +22,7 @@ const ALLOW: Record<AuthPath, string[]> = {
 const RELOGIN_COOKIE = 'typle-ffpf-relogin'
 /** The made-up account of the local login. */
 const LOCAL_SUB = 'github:0'
-const LOCAL_NAME = 'ローカル練習用'
+const LOCAL_NAME = 'ローカル練習用' // i18n-ignore: a stored account name, as the Go backend gave it
 /** Far more than a code and a verifier take. */
 const MAX_TOKEN_REQUEST = 4096
 /** What RFC 7636 allows as a code verifier. */
