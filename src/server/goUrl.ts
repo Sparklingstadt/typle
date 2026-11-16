@@ -55,11 +55,6 @@ export function parseQuery(rawQuery: string): Map<string, string[]> {
   return values
 }
 
-/** The first value of key in the query of url, or '' (url.Values.Get). */
-export function queryValue(url: URL, key: string): string {
-  return parseQuery(url.search.slice(1)).get(key)?.[0] ?? ''
-}
-
 /** What unicode.IsSpace calls space. Unlike String.prototype.trim it has U+0085, and not U+FEFF. */
 const SPACE = '\\t\\n\\v\\f\\r \\u0085\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000'
 const EDGE_SPACE = new RegExp(`^[${SPACE}]+|[${SPACE}]+$`, 'g')
