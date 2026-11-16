@@ -4,27 +4,27 @@
 
 ## 残すもの
 
-次の3つの保存を、1回ごとに `typle_save_metrics`（マイグレーション `0035_save_metrics`）へ1行ずつ残します。
+Next.js の Route Handler（`src/server/metrics.ts`。v2.46.6 から、記録は v2.46.7 から）が、次の3つの保存を、1回ごとに `typle_save_metrics`（マイグレーション `0035_save_metrics`）へ1行ずつ残します。
 
 | `operation` | リクエスト |
 |---|---|
-| `workspace.write` | `PUT /api/workspace`（リスト・パック・端末・興味の保存）。v2.46.6 から Next.js の Route Handler（`src/server/metrics.ts`）が残します |
-| `record.add` | `POST /api/workspace/records`（練習の記録の追加）。Go のバックエンドが残します |
-| `record.delete` | `DELETE /api/workspace/records`（記録の削除）。Go のバックエンドが残します |
+| `workspace.write` | `PUT /api/workspace`（リスト・パック・端末・興味の保存） |
+| `record.add` | `POST /api/workspace/records`（練習の記録の追加） |
+| `record.delete` | `DELETE /api/workspace/records`（記録の削除） |
 
 | 列 | 内容 |
 |---|---|
 | `at` | 残した時刻 |
 | `status` | 答えた HTTP ステータス。`409` は競合、`413` は大きすぎる保存 |
 | `duration_ms` | ハンドラーにかかった時間（ミリ秒）。ログインの確認・検証・DB の読み書きを含み、通信の時間は含みません |
-| `request_bytes` | リクエストの本文のバイト数（`Content-Length`。ないときは、Go は 0、Next.js は本文を数えた値） |
+| `request_bytes` | リクエストの本文のバイト数（`Content-Length`。ないときは本文を数えた値。v2.46.5 までの Go は 0） |
 | `response_bytes` | 答えの本文のバイト数（圧縮の前） |
 
 アカウントのIDも保存の中身も残しません。90日より古い行は、次の行を残すときに消します。読み込み（`GET /api/workspace`）は測りません。
 
 ## 入れ方と止め方
 
-環境変数 `TYPLE_MEASURE_SAVES=1` を設定したときだけ測ります（Go は `web.FromEnv`、Next.js は `src/server/metrics.ts`）。Next.js は、ログインと `Origin` の確認を通った保存だけを測ります（Go は 403 や設定がないときの 503 も測っていました）。設定しなければ、ハンドラーは今までと同じです。
+環境変数 `TYPLE_MEASURE_SAVES=1` を設定したときだけ測ります（`src/server/metrics.ts`）。ログインと `Origin` の確認を通った保存だけを測ります（v2.46.5 までの Go は 403 や設定がないときの 503 も測っていました）。設定しなければ、ハンドラーは今までと同じです。
 
 - 本番: Vercel のプロジェクトの Production に `TYPLE_MEASURE_SAVES=1` を足して、デプロイし直します。止めるときは消してデプロイし直します。
 - 手元: `.env.local` に `TYPLE_MEASURE_SAVES=1` を足して `npm run dev` を起動し直します。

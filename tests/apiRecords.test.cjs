@@ -152,3 +152,82 @@ test('the route answers other methods with 405', async () => {
     assert.equal(response.headers.get('allow'), 'POST, DELETE', method)
   }
 })
+
+// docs/api/workspace-records.openapi.json is the contract of /api/workspace/records, which the app and the iPad and Mac
+// apps read: every answer here is one it declares, and every one it declares is answered to some request. (The Go
+// backend's TestRecordsContract held its handler to it until v2.46.6.)
+test('every answer is one the contract declares, and every declared one is answered', database, async () => {
+  const contract = require('../docs/api/workspace-records.openapi.json')
+  const declared = {}
+  for (const [method, operation] of Object.entries(contract.paths['/api/workspace/records'])) {
+    declared[method.toUpperCase()] = Object.fromEntries(Object.entries(operation.responses)
+      .map(([status, response]) => [status, response.content?.['application/json']?.schema?.properties?.error?.enum ?? ['']]))
+  }
+  const { MAX_RECORDS } = require('../src/core/records.ts')
+  const user = account()
+  const full = Array.from({ length: MAX_RECORDS }, (_, n) => ({ id: `r${n}`, time: 1, date: '2026-10-01T00:00:00.000Z' }))
+  const lists = ['one', 'full'].map(id => ({ id, name: id, packId: 'p', words: [{ display: 'a', input: 'a', annotation: '' }], records: id === 'full' ? full : [], createdAt: at }))
+  await db.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, revision, records_split) VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, 1, false)`,
+    [user.owner, JSON.stringify(lists), JSON.stringify([{ id: 'p', name: 'P', createdAt: at }]), JSON.stringify([{ id: 'mac', name: 'Mac', layout: 'JIS' }])])
+  const aRun = { id: 'run-1', time: 2.5, date: '2026-10-02T10:00:00.000Z', mistakes: 1, accuracy: 95.5, wordCount: 1, deviceId: 'mac' }
+  const body = (listId, record, owner = user.owner) => ({ accountId: owner, listId, record })
+  const del = (listId, recordId, owner = user.owner) => ({ accountId: owner, listId, recordId })
+  const tooLarge = JSON.stringify({ ...body('one', aRun), pad: 'x'.repeat(1 << 20) })
+  // A database that answers the login's questions but cannot hold the workspace, and one that cannot answer at all.
+  const writeDown = () => ({ query: (...args) => db.query(...args), connect: () => Promise.reject(new Error('down')) })
+  const allDown = () => ({ query: () => Promise.reject(new Error('down')), connect: () => Promise.reject(new Error('down')) })
+  const anonymous = { cookie: '' }
+  const calls = [
+    ['POST', body('one', aRun)], ['POST', body('one', aRun)], ['POST', ''],
+    ['POST', body('one', { ...aRun, accuracy: 101 })],
+    // A new id: a saved one is answered as sent again before its device is looked at.
+    ['POST', body('one', { ...aRun, id: 'run-2', deviceId: 'gone' })],
+    ['POST', body('full', { ...aRun, id: 'new' })], ['POST', body('gone', aRun)],
+    ['POST', body('one', aRun), { user: anonymous }], ['POST', body('one', aRun, 'github:1')],
+    ['POST', body('one', aRun), { headers: { Origin: 'https://evil.example' } }], ['POST', tooLarge],
+    ['POST', body('one', aRun), { open: writeDown }], ['POST', body('one', aRun), { open: allDown }],
+    ['DELETE', del('one', 'run-1')], ['DELETE', ''], ['DELETE', { accountId: user.owner, listId: 'one' }],
+    ['DELETE', del('one', 'run-1'), { user: anonymous }], ['DELETE', del('one', 'run-1', 'github:1')],
+    ['DELETE', del('one', 'run-1'), { headers: { Origin: 'https://evil.example' } }], ['DELETE', tooLarge],
+    ['DELETE', del('one', 'run-1'), { open: writeDown }], ['DELETE', del('one', 'run-1'), { open: allDown }],
+  ]
+  const seen = new Set()
+  const original = console.error
+  console.error = () => {}
+  try {
+    for (const [index, [method, sent, options = {}]] of calls.entries()) {
+      const response = await answerRecords(request(options.user ?? user, method, sent, options.headers), options.open ?? open, withSettings)
+      const key = response.status >= 400 ? JSON.parse(await response.text()).error : ''
+      assert.ok(declared[method][String(response.status)]?.includes(key), `call ${index} (${method}): ${response.status} ${key} is not declared`)
+      seen.add(`${method} ${response.status} ${key}`)
+    }
+    // 405 is answered to any other method; it is declared under each method the path has.
+    const route = require('../src/app/api/workspace/records/route.ts')
+    const notAllowed = await route.GET()
+    assert.ok(declared.POST['405']?.includes(JSON.parse(await notAllowed.text()).error))
+    seen.add('POST 405 methodNotAllowed')
+  } finally {
+    console.error = original
+  }
+  for (const [method, statuses] of Object.entries(declared)) {
+    for (const [status, keys] of Object.entries(statuses)) {
+      for (const key of keys) {
+        if (method === 'DELETE' && status === '405') continue // The same answer as POST's 405, for the same requests.
+        assert.ok(seen.has(`${method} ${status} ${key}`), `${method} ${status} ${key} is declared but never answered`)
+      }
+    }
+  }
+})
+
+// Every field the contract declares for a record is one a POST may send, and no other is taken. (The Go backend's
+// TestRecordInputContract.)
+test('a record may have the fields the contract declares, and no other', () => {
+  const contract = require('../docs/api/workspace-records.openapi.json')
+  const { readRecordAdd } = require('../src/server/workspace.ts')
+  const declared = Object.keys(contract.components.schemas.RecordInput.properties)
+  for (const name of declared) {
+    assert.ok(readRecordAdd({ accountId: 'a', listId: 'l', record: { id: 'r', [name]: name === 'id' ? 'r' : 1 } }), name)
+  }
+  assert.equal(readRecordAdd({ accountId: 'a', listId: 'l', record: { id: 'r', notDeclared: 1 } }), null)
+  assert.ok(declared.includes('id') && declared.includes('missed'))
+})
