@@ -108,7 +108,9 @@ test('the Route Handlers answer as the Go backend did, and ask the providers wha
       setCookie = setCookie.with(at, 'typle-oauth=OAUTH;' + setCookie[at].split(';').slice(1).join(';'))
       assert.deepEqual({ returnTo: pending.returnTo, challenge: pending.challenge, admin: pending.admin, provider: pending.provider, nonce: pending.nonce !== '', exp: pending.expires }, want.oauth, q.note)
     }
-    assert.equal(location, want.location, q.note)
+    // The Go backend sent a Location that is not ASCII as raw UTF-8, which Vercel re-encodes wrongly; it is percent-encoded
+    // instead, which a browser follows to the same page (the spec's differences).
+    assert.equal(location, want.location === undefined ? undefined : want.location.replace(/[^\x00-\x7f]+/gu, encodeURIComponent), q.note)
     assert.deepEqual(setCookie, want.setCookie, q.note)
     assert.equal(await response.text(), want.body, q.note)
     assert.deepEqual(got, want.provider.map(exchange => exchange.request), q.note)
@@ -133,6 +135,16 @@ test('a login to the dashboard when typle_admins cannot be asked ends at adminUn
     assert.deepEqual(response.headers.getSetCookie(), ['typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax'])
     assert.deepEqual(operations, ['admin.check'])
   }
+})
+
+test('a returnTo that is not ASCII goes back percent-encoded, as Vercel would otherwise mangle it', async () => {
+  const { sealOAuth } = require('../src/server/session.ts')
+  const login = settingsOf('https')
+  const now = fixture.now
+  const pending = { state: 's', verifier: 'v', returnTo: '/ほげ?q=a b&r=%E3%81%BB#é', challenge: '', admin: false, provider: '', nonce: '', expires: now + 600 }
+  const request = new Request('https://typle.example/api/auth/callback/github?state=other', { headers: { Cookie: `typle-oauth=${sealOAuth(login.oauthKey, pending)}` } })
+  const response = await answerLogin('github', request, open, () => login, () => now)
+  assert.equal(response.headers.get('Location'), '/%E3%81%BB%E3%81%92?q=a b&r=%E3%81%BB#%C3%A9')
 })
 
 test('without the login settings every path is 503 authUnavailable', async () => {
