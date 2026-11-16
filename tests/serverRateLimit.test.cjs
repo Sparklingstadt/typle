@@ -84,3 +84,18 @@ test('over the limit the request is answered with 429 and Retry-After', database
   assert.equal(answers[2].headers.get('x-robots-tag'), 'noindex')
   assert.equal(answers[2].headers.get('cache-control'), 'no-store')
 })
+
+// A new window counts from 1 again, and windows older than ten minutes are forgotten when a hit is counted.
+test('a new window counts again and old windows are forgotten', database, async () => {
+  const action = `test-${randomUUID()}`
+  actions.push(action)
+  const client = Buffer.from(randomUUID().replace(/-/g, ''), 'hex')
+  await db.query(`INSERT INTO typle_gallery_hits (action, client, window_start, hits) VALUES
+    ($1, $2, date_trunc('minute', now()) - interval '1 minute', 99),
+    ($1, $2, date_trunc('minute', now()) - interval '11 minutes', 99)`, [action, client])
+  if (60_000 - Date.now() % 60_000 < 3_000) await new Promise(resolve => setTimeout(resolve, 3_100))
+  assert.equal((await countHit(db, action, client)).hits, 1)
+  const { rows } = await db.query(`SELECT now() - window_start > interval '10 minutes' AS old FROM typle_gallery_hits
+    WHERE action = $1 AND client = $2 ORDER BY window_start`, [action, client])
+  assert.deepEqual(rows.map(row => row.old), [false, false])
+})

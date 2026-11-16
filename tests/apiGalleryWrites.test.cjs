@@ -4,7 +4,7 @@ const assert = require('node:assert/strict')
 const { randomUUID } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const { answerGalleryAdded, answerGalleryReport } = require('../src/server/galleryWrites.ts')
-const { readLoginSettings } = require('../src/server/settings.ts')
+const { readLoginSettings, clientMac } = require('../src/server/settings.ts')
 
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`. The shares are made under
 // one random owner, and every test counts as its own client (a random IP on Vercel), so the counts of others do not mix in.
@@ -14,13 +14,22 @@ const owner = `test-gallery-writes-${randomUUID()}`
 const db = url ? createPool(url) : null
 const origin = 'https://typle.example'
 const settings = { ...readLoginSettings({ AUTH_SECRET: 'typle-test-secret', AUTH_URL: origin }), onVercel: true }
+// Every client the tests count as, so that their rows of typle_gallery_hits are deleted at the end too.
+const usedIps = new Set(['unknown'])
 after(async () => {
   if (!db) return
   await db.query('DELETE FROM typle_shared_packs WHERE owner_id = $1', [owner])
+  const clients = [...usedIps].map(ip => clientMac(settings.rateLimitKey, ip))
+  await db.query("DELETE FROM typle_gallery_hits WHERE action IN ('added', 'reports') AND client = ANY($1)", [clients])
   await db.end()
 })
 
-const randomIp = () => `2001:db8::${randomUUID().slice(0, 4)}:${randomUUID().slice(0, 4)}`
+const randomIp = () => {
+  // In the form the server counts it by (canonicalIp), so that its rows are found to be deleted.
+  const ip = new URL(`http://[2001:db8::${randomUUID().slice(0, 4)}:${randomUUID().slice(0, 4)}]`).hostname.slice(1, -1)
+  usedIps.add(ip)
+  return ip
+}
 
 async function insertShare({ listed = new Date(), hidden = null } = {}) {
   const id = randomUUID()
@@ -161,4 +170,81 @@ test('the routes answer other methods with 405', async () => {
       assert.equal(response.headers.get('x-robots-tag'), 'noindex', method)
     }
   }
+})
+
+/** The hits of client (an IP) for action in the current window, as the database counts them. */
+async function hitsOf(action, ip) {
+  const { rows } = await db.query(`SELECT hits FROM typle_gallery_hits
+    WHERE action = $1 AND client = $2 AND window_start = date_trunc('minute', now())`, [action, clientMac(settings.rateLimitKey, ip)])
+  return rows[0]?.hits ?? 0
+}
+
+// A request refused before the limit (another site, a bad body) does not use up the client's adds or reports, so
+// that forged requests cannot spend someone else's.
+test('a refused request is not counted', database, async () => {
+  const id = await insertShare()
+  const ip = randomIp()
+  await awayFromMinuteEnd()
+  await answerGalleryAdded(added(id, { ip, headers: { Origin: 'https://evil.example' } }), open, withSettings)
+  await answerGalleryReport(report('x', { ip }), open, withSettings)
+  await answerGalleryReport(report(JSON.stringify({ id, reason: 'bad' }), { ip }), open, withSettings)
+  await answerGalleryReport(report(JSON.stringify({ id, reason: 'spam' }), { ip, headers: { 'Content-Type': 'text/plain' } }), open, withSettings)
+  assert.equal(await hitsOf('added', ip), 0)
+  assert.equal(await hitsOf('reports', ip), 0)
+})
+
+// Adds and reports have limits of their own, and each client its own count; an app's request is counted by its IP too.
+test('adds and reports, and each client, are counted apart', database, async () => {
+  const id = await insertShare()
+  const [one, two] = [randomIp(), randomIp()]
+  await awayFromMinuteEnd()
+  await answerGalleryAdded(added(id, { ip: one }), open, withSettings)
+  await answerGalleryAdded(added(id, { ip: one, headers: { Origin: '', Authorization: 'Bearer x' } }), open, withSettings)
+  await answerGalleryReport(report(JSON.stringify({ id, reason: 'spam' }), { ip: one }), open, withSettings)
+  await answerGalleryAdded(added(id, { ip: two }), open, withSettings)
+  assert.equal(await hitsOf('added', one), 2)
+  assert.equal(await hitsOf('reports', one), 1)
+  assert.equal(await hitsOf('added', two), 1)
+  assert.equal(await hitsOf('reports', two), 0)
+})
+
+// Vercel always tells the client's IP; if it does not, the request is still counted, as the one unknown client, and the
+// change is reported.
+test('a request without a client IP is counted as the unknown client and reported', database, async () => {
+  const id = await insertShare()
+  const before = await hitsOf('added', 'unknown')
+  const logged = []
+  const original = console.error
+  console.error = (...args) => logged.push(args.map(String).join(' '))
+  try {
+    const request = new Request(`http://localhost/api/gallery/added?id=${id}`, { method: 'POST', headers: { Origin: origin } })
+    assert.equal((await answerGalleryAdded(request, open, withSettings)).status, 204)
+  } finally { console.error = original }
+  assert.ok(logged.some(line => line.includes('gallery.limit.ip')), logged.join('\n'))
+  assert.ok(await hitsOf('added', 'unknown') >= before + 1)
+})
+
+// The failures are reported under the operation that failed: counting, then the write itself.
+test('a failure is reported under its operation', database, async () => {
+  const id = await insertShare()
+  const logged = []
+  const original = console.error
+  console.error = (...args) => logged.push(args.map(String).join(' '))
+  const down = createPool('postgres://user:pass@127.0.0.1:1/none')
+  // The counting works, the write fails: a database that answers the rate limit's statements only.
+  const halfway = {
+    connect: () => db.connect(),
+    query: () => Promise.reject(new Error('write failed')),
+  }
+  try {
+    await answerGalleryAdded(added(id), () => down, withSettings)
+    await answerGalleryAdded(added(id), () => halfway, withSettings)
+    await answerGalleryReport(report(JSON.stringify({ id, reason: 'spam' })), () => halfway, withSettings)
+  } finally {
+    console.error = original
+    await down.end()
+  }
+  assert.match(logged[0], /: gallery\.limit:/)
+  assert.match(logged[1], /: gallery\.added:/)
+  assert.match(logged[2], /: gallery\.report:/)
 })
