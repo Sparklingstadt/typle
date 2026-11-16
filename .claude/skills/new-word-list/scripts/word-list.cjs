@@ -8,13 +8,13 @@
 //
 // words.json is an array of { display, input?, annotation?, input_type? } (input defaults to display, annotation to "").
 // pack.json is a PackFile without format/version: { pack: { name, ... }, lists: [{ name, levels?, words }] }.
-// check reads .csv/.tsv (import), .typle-pack.json (pack import) and src/core/packs/commands/*.json (official list).
+// check reads .csv (import), .typle-pack.json (pack import) and src/core/packs/commands/*.json (official list).
 const fs = require('node:fs')
 const path = require('node:path')
 
 const root = path.resolve(__dirname, '../../../..')
 require(path.join(root, 'tests/register.cjs'))
-const { encodeWordCsv, parseWordFile } = require(path.join(root, 'src/core/wordFormat.ts'))
+const { encodeWordCsv, isWordCsv, parseWordCsv } = require(path.join(root, 'src/core/wordFormat.ts'))
 const { decodePackFile, importPackFile } = require(path.join(root, 'src/core/packFile.ts'))
 const { validateList, isInputType } = require(path.join(root, 'src/core/wordLists.ts'))
 const errors = require(path.join(root, 'src/messages/ja/errors.json'))
@@ -54,7 +54,9 @@ function warnings(words, where) {
 }
 
 function checkDelimited(file) {
-  const words = parseWordFile(fs.readFileSync(file, 'utf8'), file.toLowerCase().endsWith('.tsv') ? '\t' : ',')
+  // The app reads only .csv files (a TSV is refused since v2.44.0).
+  if (!isWordCsv(file)) throw new Error('アプリは .csv しか読み込みません（TSV は v2.44.0 から読み込めません）')
+  const words = parseWordCsv(fs.readFileSync(file, 'utf8'))
   return { summary: `${words.length}語`, notes: warnings(words.map(word => ({ ...word, annotation: word.annotation ?? '' })), path.basename(file)) }
 }
 

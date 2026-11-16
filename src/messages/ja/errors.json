@@ -29,7 +29,7 @@
   "listDeleted": "この単語リストは削除されています。画面を開き直してください。",
   "listLimit": "自作の単語リストは{max}件まで保存できます（フォローしたパックのリストは数えません）。",
   "followLimit": "公式パックは{max}個までフォローできます。",
-  "importFileType": "CSVまたはTSVファイルを選択してください。",
+  "importFileType": "CSVファイルを選択してください。",
   "importFileEncoding": "UTF-8形式で保存したファイルを選択してください。",
   "importTooLarge": "ファイルは1 MiB以内にしてください。",
   "importQuote": "{line}行目の引用符の形式が正しくありません。",

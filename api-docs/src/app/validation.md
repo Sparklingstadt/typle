@@ -48,14 +48,14 @@ v0.95.0 からです。
 - 難易度は拒否せずに直す（v0.96.3 から）: 2 つ以上の難易度（5 つまで）は、両端の空白と「・」を除き空を除いて「・」でつないだ 1 つにし（50 文字に収まるよう切り、切ったあとも両端の「・」と空白を除く。v0.97.0 から。例: `["基本", "初級"]` → `["基本・初級"]`）、リストどうしで同じになった難易度は後のリストに「（2）」…を付けて分ける（保存したデータを読み込むときと同じ）。以前に書き出したファイルや共有リンクも取り込めるようにするため。
 - パック・リストのIDは新しく作り、作成日時は今の時刻、記録は空です。1MiB を超えると `importTooLarge`。
 
-## CSV・TSV の取り込み
+## CSV の取り込み
 
 アプリで取り込むときと同じです。
 
 - 1行目は見出しで、`input`・`display` が必須、`annotation` は任意（誤記の `anotation` も読む）。順番は問わない。
 - `"` で囲んだ項目には区切り文字・改行・`""`（`"` 1文字）を入れられる。先頭の BOM と空行は読み飛ばす。単語の前後の空白・順序・重複はそのまま保存する。
 - ファイルは UTF-8 で送る。Excel の既定の Shift_JIS など、UTF-8 として読めないファイルはアプリと同じく `400 importFileEncoding`（v0.53.1 から。それまでは読めない文字を � にして保存していた）。
-- リスト名は作成と同じ検証（`listNameRequired`・`listNameDuplicate`・`invalidList`・`listLimit`）。`format` がないか `csv`・`tsv` 以外なら `400 invalidQuery`。
+- リスト名は作成と同じ検証（`listNameRequired`・`listNameDuplicate`・`invalidList`・`listLimit`）。`format` がないか `csv` 以外なら `400 invalidQuery`（v2.44.0 から TSV は読みません）。
 
 誤りは `400` で、行番号があるものは `line` を付けます（例 `{ "error": "importQuote", "line": 3 }`）。1MiB を超えると `importTooLarge` です。
 

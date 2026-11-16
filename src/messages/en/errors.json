@@ -29,7 +29,7 @@
   "listDeleted": "This word list has been deleted. Please reopen this page.",
   "listLimit": "You can save up to {max} word lists of your own (lists of followed packs are not counted).",
   "followLimit": "You can follow up to {max} official packs.",
-  "importFileType": "Choose a CSV or TSV file.",
+  "importFileType": "Choose a CSV file.",
   "importFileEncoding": "Choose a file saved in UTF-8.",
   "importTooLarge": "The file must be 1 MiB or less.",
   "importQuote": "Line {line}: the quotation marks are not formatted correctly.",

@@ -6,20 +6,19 @@ export type Word = WordList['words'][number]
 /** Larger word files are refused before they are read. */
 export const MAX_IMPORT_BYTES = 1024 * 1024
 
-// Words are read from CSV and TSV and written as CSV.
+// Words are read from and written to CSV only (TSV was read until v2.43.3).
 export const CSV_MIME_TYPE = 'text/csv;charset=utf-8'
 
-/** The extensions a file input accepts. */
-export const IMPORT_ACCEPT = '.csv,.tsv'
+/** The extension a file input accepts. */
+export const IMPORT_ACCEPT = '.csv'
 
-/** The delimiter of a word file with this name, by its extension: CSV or TSV, or none for another file. */
-export function importDelimiter(fileName: string): ',' | '\t' | undefined {
-  const extension = fileName.split('.').pop()?.toLowerCase()
-  return extension === 'csv' ? ',' : extension === 'tsv' ? '\t' : undefined
+/** Whether a file with this name is a word CSV, by its extension in any case. */
+export function isWordCsv(fileName: string) {
+  return /\.csv$/i.test(fileName)
 }
 
-/** Read CSV and TSV, including escaped quotes and quoted multiline fields. */
-export function parseWordFile(source: string, delimiter: "," | "\t"): Word[] {
+/** Read CSV, including escaped quotes and quoted multiline fields. */
+export function parseWordCsv(source: string): Word[] {
   if (new TextEncoder().encode(source).length > MAX_IMPORT_BYTES) throw new AppError('importTooLarge')
   const text = source.replace(/^\uFEFF/, "")
   const rows: { cells: string[]; line: number }[] = []
@@ -39,7 +38,7 @@ export function parseWordFile(source: string, delimiter: "," | "\t"): Word[] {
         if (text[i + 1] === '"') { value += '"'; i++ }
         else { quoted = false; closed = true }
       } else { value += c; if (c === "\n" || (c === "\r" && text[i + 1] !== "\n")) line++ }
-    } else if (c === delimiter) field()
+    } else if (c === ",") field()
     else if (c === "\r" || c === "\n") {
       row()
       if (c === "\r" && text[i + 1] === "\n") i++

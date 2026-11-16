@@ -29,7 +29,7 @@
     "title": "Ce que vous pouvez faire",
     "own": {
       "title": "S’entraîner avec vos propres listes",
-      "text": "Ajoutez les mots que vous voulez retenir et entraînez-vous. Le mot affiché et les caractères à taper peuvent différer, et vous pouvez importer des fichiers CSV ou TSV."
+      "text": "Ajoutez les mots que vous voulez retenir et entraînez-vous. Le mot affiché et les caractères à taper peuvent différer, et vous pouvez importer des fichiers CSV."
     },
     "recall": {
       "title": "Taper de mémoire",

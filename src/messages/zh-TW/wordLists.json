@@ -29,7 +29,7 @@
     "countFiltered": "{shown} 個 / 共 {total} 個",
     "count": "{total} 個",
     "noMatch": "沒有符合「{query}」的包。會從包名稱、清單名稱、分類、標籤和單字中搜尋。",
-    "csvNote": "CSV 匯出會儲存顯示的單字、輸入的文字和補充說明（不含練習紀錄）。可在建立、編輯畫面的「匯入 CSV/TSV」中使用。",
+    "csvNote": "CSV 匯出會儲存顯示的單字、輸入的文字和補充說明（不含練習紀錄）。可在建立、編輯畫面的「匯入 CSV」中使用。",
     "importFile": "從檔案匯入"
   },
   "delete": {
@@ -78,7 +78,7 @@
   "empty": {
     "title": "還沒有單字清單",
     "packTitle": "還沒有單字包",
-    "description": "登錄想練習的單字，以及作為正確答案輸入的文字。也可以從 CSV、TSV 檔案匯入。",
+    "description": "登錄想練習的單字，以及作為正確答案輸入的文字。也可以從 CSV 檔案匯入。",
     "packDescription": "還沒有單字包。請追蹤官方單字包，或建立新的單字包。",
     "catalogLink": "追蹤官方單字包"
   },
@@ -219,10 +219,10 @@
     "inputTypeCode": "程式碼"
   },
   "import": {
-    "open": "匯入 CSV/TSV",
-    "title": "從 CSV/TSV 匯入",
+    "open": "匯入 CSV",
+    "title": "從 CSV 匯入",
     "description": "第一列為欄位名稱。input 和 display 為必填項，annotation 和 input_type 可省略。input_type 為 command、code 或 word。欄位順序不限。",
-    "fileLabel": "選擇 CSV/TSV 檔案",
+    "fileLabel": "選擇 CSV 檔案",
     "readFailed": "無法讀取檔案。",
     "addFailed": "無法新增單字。",
     "bytes": "{value} B",
@@ -241,7 +241,7 @@
     "replaceHint": "已輸入的 {existing} 個單字將被刪除。",
     "drop": "將檔案拖放到這裡",
     "choose": "選擇檔案",
-    "limits": "CSV / TSV · UTF-8 · 1 MiB 以內 · 每個清單最多 1,000 個單字",
+    "limits": "CSV · UTF-8 · 1 MiB 以內 · 每個清單最多 1,000 個單字",
     "example": "格式範例",
     "sample": "display,input,annotation\n你好,nihao,問候\n謝謝,xiexie,",
     "loadedStatus": "已讀取 {count} 個單字。",

@@ -4,9 +4,9 @@ import { API, endpointOf } from './api'
 import { openPacks } from './packRows'
 const key = 'typle-r:guest-workspace:v1'
 async function importWords(page: import('@playwright/test').Page, files: Parameters<import('@playwright/test').Locator['setInputFiles']>[0]) {
-  await page.getByRole('button', { name: 'CSV・TSVを読み込む', exact: true }).click()
-  const dialog = page.getByRole('dialog', { name: 'CSV・TSVから読み込む' })
-  await dialog.getByLabel('CSV・TSVファイルを選択', { exact: true }).setInputFiles(files)
+  await page.getByRole('button', { name: 'CSVを読み込む', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'CSVから読み込む' })
+  await dialog.getByLabel('CSVファイルを選択', { exact: true }).setInputFiles(files)
   await dialog.getByRole('button', { name: /語を追加$|語で置き換える$/ }).click()
   await expect(dialog).toHaveCount(0)
 }

@@ -2,7 +2,6 @@
  "read": [
   {
    "name": "csv",
-   "delimiter": ",",
    "source": "input,display\na,あ\n",
    "words": [
     {
@@ -13,32 +12,7 @@
    ]
   },
   {
-   "name": "tsv",
-   "delimiter": "\t",
-   "source": "input\tdisplay\na\tあ\n",
-   "words": [
-    {
-     "input": "a",
-     "display": "あ",
-     "annotation": ""
-    }
-   ]
-  },
-  {
-   "name": "a comma is plain text in a tsv",
-   "delimiter": "\t",
-   "source": "input\tdisplay\na,b\tあ\n",
-   "words": [
-    {
-     "input": "a,b",
-     "display": "あ",
-     "annotation": ""
-    }
-   ]
-  },
-  {
    "name": "bom and crlf",
-   "delimiter": ",",
    "source": "﻿input,display\r\na,あ\r\n",
    "words": [
     {
@@ -50,7 +24,6 @@
   },
   {
    "name": "a lone cr ends a row",
-   "delimiter": ",",
    "source": "input,display\ra,あ\rb,い",
    "words": [
     {
@@ -67,7 +40,6 @@
   },
   {
    "name": "no newline at the end",
-   "delimiter": ",",
    "source": "input,display\na,あ",
    "words": [
     {
@@ -79,7 +51,6 @@
   },
   {
    "name": "reordered columns",
-   "delimiter": ",",
    "source": "annotation,display,input\n注,あ,a\n",
    "words": [
     {
@@ -91,7 +62,6 @@
   },
   {
    "name": "anotation is read as annotation",
-   "delimiter": ",",
    "source": "input,display,anotation\na,あ,注\n",
    "words": [
     {
@@ -103,7 +73,6 @@
   },
   {
    "name": "spaces around header names",
-   "delimiter": ",",
    "source": " input , display \na,あ\n",
    "words": [
     {
@@ -115,7 +84,6 @@
   },
   {
    "name": "input_type",
-   "delimiter": ",",
    "source": "input,display,input_type\na,あ,command\nb,い,code\nc,う,word\nd,え,\n",
    "words": [
     {
@@ -145,7 +113,6 @@
   },
   {
    "name": "quotes hold the delimiter, newlines and doubled quotes",
-   "delimiter": ",",
    "source": "input,display,annotation\n\"a,b\",\"x\r\ny\",\"say \"\"hi\"\"\"\n",
    "words": [
     {
@@ -157,7 +124,6 @@
   },
   {
    "name": "blank lines are skipped",
-   "delimiter": ",",
    "source": "input,display\n\n  \na,あ\n\n",
    "words": [
     {
@@ -169,7 +135,6 @@
   },
   {
    "name": "fields keep their spaces",
-   "delimiter": ",",
    "source": "input,display\n a , あ \n",
    "words": [
     {
@@ -181,7 +146,6 @@
   },
   {
    "name": "the longest fields, in UTF-16 units",
-   "delimiter": ",",
    "source": "input,display,annotation\n😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀,あ,aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
    "words": [
     {
@@ -193,7 +157,6 @@
   },
   {
    "name": "the most rows",
-   "delimiter": ",",
    "source": "input,display\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\n",
    "words": [
     {
@@ -5200,7 +5163,6 @@
   },
   {
    "name": "an empty file",
-   "delimiter": ",",
    "source": "",
    "error": {
     "key": "importHeaderRequired"
@@ -5208,7 +5170,6 @@
   },
   {
    "name": "only blank lines",
-   "delimiter": ",",
    "source": "\n\n",
    "error": {
     "key": "importHeaderRequired"
@@ -5216,7 +5177,6 @@
   },
   {
    "name": "no display column",
-   "delimiter": ",",
    "source": "input,annotation\na,注\n",
    "error": {
     "key": "importHeaderRequired"
@@ -5224,7 +5184,6 @@
   },
   {
    "name": "a repeated column",
-   "delimiter": ",",
    "source": "input,display,input\na,あ,b\n",
    "error": {
     "key": "importHeaderDuplicate"
@@ -5232,7 +5191,6 @@
   },
   {
    "name": "anotation beside annotation",
-   "delimiter": ",",
    "source": "input,display,annotation,anotation\na,あ,b,c\n",
    "error": {
     "key": "importHeaderDuplicate"
@@ -5240,7 +5198,6 @@
   },
   {
    "name": "an unknown column",
-   "delimiter": ",",
    "source": "input,display,note\na,あ,b\n",
    "error": {
     "key": "importHeaderUnknown"
@@ -5248,7 +5205,6 @@
   },
   {
    "name": "no rows",
-   "delimiter": ",",
    "source": "input,display\n",
    "error": {
     "key": "importNoRows"
@@ -5256,7 +5212,6 @@
   },
   {
    "name": "too many rows",
-   "delimiter": ",",
    "source": "input,display\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\na,あ\n",
    "error": {
     "key": "importTooManyRows"
@@ -5264,7 +5219,6 @@
   },
   {
    "name": "too few columns",
-   "delimiter": ",",
    "source": "input,display\na,あ\nb\n",
    "error": {
     "key": "importColumnCount",
@@ -5273,7 +5227,6 @@
   },
   {
    "name": "too many columns, after a multiline field",
-   "delimiter": ",",
    "source": "input,display\n\"a\nb\",あ\nc,い,う\n",
    "error": {
     "key": "importColumnCount",
@@ -5282,7 +5235,6 @@
   },
   {
    "name": "an unclosed quote",
-   "delimiter": ",",
    "source": "input,display\n\"a,あ\n",
    "error": {
     "key": "importQuote",
@@ -5291,7 +5243,6 @@
   },
   {
    "name": "a quote inside a field",
-   "delimiter": ",",
    "source": "input,display\na\"b,あ\n",
    "error": {
     "key": "importQuote",
@@ -5300,7 +5251,6 @@
   },
   {
    "name": "text after a closing quote",
-   "delimiter": ",",
    "source": "input,display\n\"a\"b,あ\n",
    "error": {
     "key": "importQuote",
@@ -5309,7 +5259,6 @@
   },
   {
    "name": "an empty input",
-   "delimiter": ",",
    "source": "input,display\n ,あ\n",
    "error": {
     "key": "importFieldRequired",
@@ -5318,7 +5267,6 @@
   },
   {
    "name": "an empty display",
-   "delimiter": ",",
    "source": "input,display\na,\n",
    "error": {
     "key": "importFieldRequired",
@@ -5327,7 +5275,6 @@
   },
   {
    "name": "an input too long",
-   "delimiter": ",",
    "source": "input,display\n😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀a,あ\n",
    "error": {
     "key": "importFieldTooLong",
@@ -5336,7 +5283,6 @@
   },
   {
    "name": "an annotation too long",
-   "delimiter": ",",
    "source": "input,display,annotation\na,あ,aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
    "error": {
     "key": "importFieldTooLong",
@@ -5345,7 +5291,6 @@
   },
   {
    "name": "an unknown input_type",
-   "delimiter": ",",
    "source": "input,display,input_type\na,あ,other\n",
    "error": {
     "key": "importInputTypeInvalid",
@@ -5354,7 +5299,6 @@
   },
   {
    "name": "an unknown input_type comes before an empty input",
-   "delimiter": ",",
    "source": "input,display,input_type\n,あ,other\n",
    "error": {
     "key": "importInputTypeInvalid",
@@ -5363,7 +5307,6 @@
   },
   {
    "name": "an unknown input_type comes before a field too long",
-   "delimiter": ",",
    "source": "input,display,input_type\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa,あ,other\n",
    "error": {
     "key": "importInputTypeInvalid",

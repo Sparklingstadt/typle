@@ -2,13 +2,12 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { read, write } = require('./fixtures/delimited/cases.json')
-const { encodeWordCsv, parseWordFile } = require('../src/core/wordFormat.ts')
+const { encodeWordCsv, parseWordCsv } = require('../src/core/wordFormat.ts')
 
-// The cases are shared with server/internal/workspace/delimited_test.go, so both read and write word files alike.
-for (const { name, delimiter, source, words, error } of read) {
+for (const { name, source, words, error } of read) {
   test(`reads: ${name}`, () => {
-    if (words) return assert.deepEqual(parseWordFile(source, delimiter), words)
-    assert.throws(() => parseWordFile(source, delimiter), thrown => {
+    if (words) return assert.deepEqual(parseWordCsv(source), words)
+    assert.throws(() => parseWordCsv(source), thrown => {
       assert.equal(thrown.key, error.key)
       assert.equal(thrown.values.line, error.line)
       return true

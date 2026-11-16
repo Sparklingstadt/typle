@@ -29,7 +29,7 @@
     "countFiltered": "{shown} sur {total}",
     "count": "{total, plural, one {# pack} other {# packs}}",
     "noMatch": "Aucun pack ne correspond à « {query} ». La recherche porte sur les noms de packs et de listes, catégories, étiquettes et mots.",
-    "csvNote": "L’export CSV enregistre les mots affichés, le texte à saisir et les notes (l’historique n’est pas inclus). Vous pouvez le réimporter avec « Importer un CSV/TSV » sur l’écran de création ou de modification.",
+    "csvNote": "L’export CSV enregistre les mots affichés, le texte à saisir et les notes (l’historique n’est pas inclus). Vous pouvez le réimporter avec « Importer un CSV » sur l’écran de création ou de modification.",
     "importFile": "Importer depuis un fichier"
   },
   "delete": {
@@ -78,7 +78,7 @@
   "empty": {
     "title": "Aucune liste de mots pour l’instant",
     "packTitle": "Aucun pack de mots pour l’instant",
-    "description": "Ajoutez les mots à travailler et le texte à saisir comme bonne réponse. Vous pouvez aussi les importer depuis un fichier CSV ou TSV.",
+    "description": "Ajoutez les mots à travailler et le texte à saisir comme bonne réponse. Vous pouvez aussi les importer depuis un fichier CSV.",
     "packDescription": "Aucun pack pour l’instant. Suivez un pack officiel ou créez-en un nouveau.",
     "catalogLink": "Suivre un pack officiel"
   },
@@ -219,10 +219,10 @@
     "inputTypeCode": "Code"
   },
   "import": {
-    "open": "Importer un CSV/TSV",
-    "title": "Importer depuis un CSV/TSV",
+    "open": "Importer un CSV",
+    "title": "Importer depuis un CSV",
     "description": "La première ligne contient les noms des colonnes. input et display sont obligatoires ; annotation et input_type sont facultatifs. input_type vaut command, code ou word. L’ordre des colonnes est libre.",
-    "fileLabel": "Choisir un fichier CSV ou TSV",
+    "fileLabel": "Choisir un fichier CSV",
     "readFailed": "Impossible de lire le fichier.",
     "addFailed": "Impossible d’ajouter les mots.",
     "bytes": "{value} o",
@@ -241,7 +241,7 @@
     "replaceHint": "{existing, plural, one {Le mot déjà saisi sera supprimé} other {Les # mots déjà saisis seront supprimés}}.",
     "drop": "Déposez un fichier ici",
     "choose": "Choisir un fichier",
-    "limits": "CSV / TSV · UTF-8 · 1 Mio maximum · 1 000 mots maximum par liste",
+    "limits": "CSV · UTF-8 · 1 Mio maximum · 1 000 mots maximum par liste",
     "example": "Exemple de format",
     "sample": "display,input,annotation\nBonjour,bonjour,salutation\nÉté,ete,",
     "loadedStatus": "{count, plural, one {# mot chargé} other {# mots chargés}}.",
