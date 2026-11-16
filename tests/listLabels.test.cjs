@@ -4,7 +4,7 @@ const assert = require('node:assert/strict')
 const { saveList, encodeLists, decodeLists, normalizeLabels, MAX_TAGS } = require('../src/core/wordLists.ts')
 const { duplicateList, isFiltered, listLabels, matchesFilter, matchesQuery, NO_FILTER } = require('../src/core/listOverview.ts')
 const { validateLists } = require('../src/core/workspaceRequest.ts')
-const { initialLists } = require('../src/plugins/packs/index.ts')
+const { initialLists } = require('../src/core/packs/index.ts')
 
 const words = [{ display: 'val', input: 'val', annotation: '' }]
 const list = (id, name, labels = {}) => ({ id, name, ...labels, words, records: [], createdAt: '2026-10-24T00:00:00.000Z' })

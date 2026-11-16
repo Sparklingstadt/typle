@@ -7,21 +7,20 @@ import { Button } from "./ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { useErrorText } from "@/i18n/useErrorText"
 import { AppError } from "@/core/appError"
-import { MAX_IMPORT_BYTES, type Word } from "@/core/wordFormat"
-import { importAccept, importFormat } from "@/plugins/formats"
+import { IMPORT_ACCEPT, MAX_IMPORT_BYTES, importDelimiter, parseWordFile, type Word } from "@/core/wordFormat"
 
 type Words = Word[]
 export type ImportMode = "append" | "replace"
 type Parsed = { name: string; size: number; words: Words }
 
 async function readWordFile(file: File): Promise<Parsed> {
-  const format = importFormat(file.name)
-  if (!format?.parse) throw new AppError("importFileType")
+  const delimiter = importDelimiter(file.name)
+  if (!delimiter) throw new AppError("importFileType")
   if (file.size > MAX_IMPORT_BYTES) throw new AppError("importTooLarge")
   let text: string
   try { text = new TextDecoder("utf-8", { fatal: true }).decode(await file.arrayBuffer()) }
   catch { throw new AppError("importFileEncoding") }
-  return { name: file.name, size: file.size, words: format.parse(text) }
+  return { name: file.name, size: file.size, words: parseWordFile(text, delimiter) }
 }
 
 export default function WordListImport({ onImport, disabled, existingCount }: {
@@ -79,7 +78,7 @@ export default function WordListImport({ onImport, disabled, existingCount }: {
         <DialogTitle>{t("title")}</DialogTitle>
         <DialogDescription id={helpId}>{t("description")}</DialogDescription>
       </DialogHeader>
-      <input ref={inputRef} type="file" accept={importAccept} className="sr-only" tabIndex={-1} aria-label={t("fileLabel")}
+      <input ref={inputRef} type="file" accept={IMPORT_ACCEPT} className="sr-only" tabIndex={-1} aria-label={t("fileLabel")}
         aria-describedby={helpId} disabled={busy} onChange={event => {
           const file = event.target.files?.[0]
           event.target.value = ""

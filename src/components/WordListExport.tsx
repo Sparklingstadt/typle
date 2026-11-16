@@ -1,15 +1,15 @@
 "use client"
-import { csvFormat, wordFilename } from "@/plugins/formats"
+import { CSV_MIME_TYPE, encodeWordCsv, wordFilename } from "@/core/wordFormat"
 import type { SavedWordList } from "@/core/wordLists"
 
 /** Downloads the list's words as CSV. Returns false when the browser could not start the download. */
 export function downloadWordCsv(list: SavedWordList) {
-  return downloadText(wordFilename(list.name, csvFormat), csvFormat.encode(list.words), csvFormat.mimeType)
+  return downloadText(wordFilename(list.name, "csv"), encodeWordCsv(list.words), CSV_MIME_TYPE)
 }
 
 /** Downloads a pack's file as `<name>.typle-pack.json`, the name made safe as a CSV's is. Returns false when the browser could not start the download. */
 export function downloadPackFile(name: string, text: string) {
-  return downloadText(wordFilename(name, { extension: "typle-pack.json", mimeType: "application/json" }), text, "application/json;charset=utf-8")
+  return downloadText(wordFilename(name, "typle-pack.json"), text, "application/json;charset=utf-8")
 }
 
 function downloadText(filename: string, text: string, type: string) {

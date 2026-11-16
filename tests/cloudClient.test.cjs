@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { bestRecords, recentRecords, removeRecord } = require('../src/core/records.ts')
-const { readWorkspace, writeWorkspace } = require('../src/plugins/storage/cloud/client.ts')
+const { readWorkspace, writeWorkspace } = require('../src/lib/storage/cloud.ts')
 const { WorkspaceError } = require('../src/core/workspaceStore.ts')
 
 // The backend's answer with the workspace, to a read (GET /api/workspace) or a save (PUT).
@@ -79,7 +79,7 @@ test('cloud reads drop sharing fields saved by older versions', async t => {
 })
 
 test('cloud reads give followed packs their words from the catalog, and saves send them without', async t => {
-  const { officialPacks, followOfficialPack } = require('../src/plugins/packs/catalog.ts')
+  const { officialPacks, followOfficialPack } = require('../src/core/packs/catalog.ts')
   const { withoutFollowedWords } = require('../src/core/followedPacks.ts')
   const entry = officialPacks()[0]
   const library = followOfficialPack({ packs: [], lists: [] }, entry.catalogId, { pack: 'f', lists: entry.lists.map((_, i) => `f-${i}`) })

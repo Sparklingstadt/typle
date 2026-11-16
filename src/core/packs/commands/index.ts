@@ -1,5 +1,5 @@
 // Made by scripts/generate-packs.cjs from manifest.json: run `npm run packs:generate` after changing the lists.
-import { isInputType, type SavedWordList } from '../../../core/wordLists'
+import { isInputType, type SavedWordList } from '../../wordLists'
 import list0 from './macos-zsh-commands.json'
 import list1 from './aws-cli-commands.json'
 import list2 from './gcloud-cli-commands.json'

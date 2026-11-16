@@ -1,10 +1,10 @@
-import type { NewPackIds } from '../../core/packFile'
-import { followPack, isFollowed, type OfficialPack } from '../../core/followedPacks'
-import { deletePack } from '../../core/packEditing'
-import type { Library } from '../../core/wordPacks'
+import type { NewPackIds } from '../packFile'
+import { followOfficial, followPack, isFollowed, type OfficialPack } from '../followedPacks'
+import { deletePack } from '../packEditing'
+import type { Library } from '../wordPacks'
 import { officialLibrary } from '.'
 
-// The official packs are the packs an account can follow (src/core may not read plugins, so the catalog lives here).
+// The official packs are the packs an account can follow.
 export type { OfficialPack }
 /** `followed` when the library has a followed pack from this entry. */
 export type CatalogEntry = OfficialPack & { followed: boolean }
@@ -17,6 +17,11 @@ const official: OfficialPack[] = officialLibrary.packs.map(pack => ({
 
 export function officialPacks(): OfficialPack[] {
   return official
+}
+
+/** The library as the screens show it: followed packs in line with the catalog, with the words they are saved without. */
+export function followed<T extends Library>(state: T): T {
+  return { ...state, ...followOfficial({ lists: state.lists, packs: state.packs }, officialPacks()) }
 }
 
 export function catalogEntries(library: Library): CatalogEntry[] {

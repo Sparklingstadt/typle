@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 import OfficialPackPractice from "@/components/OfficialPackPractice"
-import { OFFICIAL_PACK_PAGES, officialPackPage } from "@/plugins/packs/pages"
+import { OFFICIAL_PACK_PAGES, officialPackPage } from "@/core/packs/pages"
 import { PROGRAMMING_CATEGORY } from "@/core/landing"
 import { cn } from "@/lib/utils"
 

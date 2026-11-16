@@ -3,8 +3,8 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
-const { OFFICIAL_PACK_PAGES, officialPackPage, officialPackPagePaths } = require('../src/plugins/packs/pages.ts')
-const { officialPacks } = require('../src/plugins/packs/catalog.ts')
+const { OFFICIAL_PACK_PAGES, officialPackPage, officialPackPagePaths } = require('../src/core/packs/pages.ts')
+const { officialPacks } = require('../src/core/packs/catalog.ts')
 const { sitemapEntries, PACK_PAGE_PRIORITY } = require('../src/core/searchIndex.ts')
 
 test('every page names an official pack, once, under a slug of its own', () => {

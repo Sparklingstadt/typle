@@ -3,7 +3,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useWordLists } from "@/lib/useWordLists"
 import { randomId } from "@/core/randomId"
-import { followOfficialPack, officialPacks } from "@/plugins/packs/catalog"
+import { followOfficialPack, officialPacks } from "@/core/packs/catalog"
 import { practicePath } from "@/lib/routes"
 
 /**

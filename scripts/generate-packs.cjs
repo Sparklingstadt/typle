@@ -1,20 +1,20 @@
-// Makes everything that follows the official lists of src/plugins/packs from its one source, commands/manifest.json
+// Makes everything that follows the official lists of src/core/packs from its one source, commands/manifest.json
 // (the lists in order) and the JSON files beside it:
-//   - src/plugins/packs/commands/index.ts, which imports them in that order for the app;
+//   - src/core/packs/commands/index.ts, which imports them in that order for the app;
 //   - server/internal/workspace/packs, the copies the Go backend embeds.
 // With --check it changes nothing and fails when any of them is not what it would make (tests/commands.test.cjs).
 const fs = require('node:fs')
 const path = require('node:path')
 
 const root = path.join(__dirname, '..')
-const source = path.join(root, 'src/plugins/packs')
+const source = path.join(root, 'src/core/packs')
 const goCopies = path.join(root, 'server/internal/workspace/packs')
 
 function index(names) {
   const imports = names.map((name, i) => `import list${i} from './${name}'`).join('\n')
   const items = names.map((_, i) => `  list${i},`).join('\n')
   return `// Made by scripts/generate-packs.cjs from manifest.json: run \`npm run packs:generate\` after changing the lists.
-import { isInputType, type SavedWordList } from '../../../core/wordLists'
+import { isInputType, type SavedWordList } from '../../wordLists'
 ${imports}
 
 const commands: SavedWordList[] = [

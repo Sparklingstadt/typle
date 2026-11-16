@@ -1,11 +1,11 @@
 ---
 name: new-word-list
-description: typle の新しい単語リストを作る。テーマや元データから単語（display・input・annotation・input_type）を作り、アプリで取り込む CSV／パックファイル（.typle-pack.json）か、リポジトリの公式リスト（src/plugins/packs/commands/*.json）として出力し、アプリと同じコードで検証する。「単語リストを作って」「〇〇のタイピング練習リスト」「公式パックを追加」「CSVを作って取り込みたい」などで使う。
+description: typle の新しい単語リストを作る。テーマや元データから単語（display・input・annotation・input_type）を作り、アプリで取り込む CSV／パックファイル（.typle-pack.json）か、リポジトリの公式リスト（src/core/packs/commands/*.json）として出力し、アプリと同じコードで検証する。「単語リストを作って」「〇〇のタイピング練習リスト」「公式パックを追加」「CSVを作って取り込みたい」などで使う。
 ---
 
 # 新しい単語リストを作る
 
-typle のリストの形式は、アプリのコードで決まっています。CSV・TSV は `src/plugins/formats/delimited.ts`、パックファイルは `src/core/packFile.ts`、保存の規則は `src/core/wordLists.ts` を見てください。
+typle のリストの形式は、アプリのコードで決まっています。CSV・TSV は `src/core/wordFormat.ts`、パックファイルは `src/core/packFile.ts`、保存の規則は `src/core/wordLists.ts` を見てください。
 出来上がったファイルは、必ず `scripts/word-list.cjs` で検証します。このスクリプトはアプリと同じコードで読み込むので、ここで通ればアプリでも同じように読み込めます。
 ユーザーへの出力は日本語で行います。
 
@@ -17,7 +17,7 @@ typle のリストの形式は、アプリのコードで決まっています�
 |---|---|---|
 | **CSV**（既定） | アプリでリストを編集中に「CSV・TSVを読み込む」で取り込む。1リスト分 | スクラッチパッド、またはユーザーが指定した場所 |
 | **パックファイル** `<パック名>.typle-pack.json` | パック（複数のリスト）をまとめて取り込む | 同上 |
-| **公式リスト** | 全利用者がフォローできる公式パックに加える（リポジトリの変更） | `src/plugins/packs/commands/` |
+| **公式リスト** | 全利用者がフォローできる公式パックに加える（リポジトリの変更） | `src/core/packs/commands/` |
 
 あわせて、次のことを決めます。
 
@@ -99,7 +99,7 @@ node $S check <ファイル>...
 
 前例として `git show 0afa79e` を参照してください。チェコ語中級と HSK5級・HSK6級を追加したコミットです。
 
-1. **1リストを1ファイルにする**：`src/plugins/packs/commands/<id>.json` に置きます。`id` はファイル名と同じにします。キーは次の順に並べます。
+1. **1リストを1ファイルにする**：`src/core/packs/commands/<id>.json` に置きます。`id` はファイル名と同じにします。キーは次の順に並べます。
    ```json
    { "id": "rust-syntax-beginner", "name": "Rust構文（初級）", "category": "プログラミング", "tags": ["Rust"],
      "group": "Rust構文", "levels": ["初級"], "words": [ … ], "records": [], "createdAt": "<追加日>T00:00:00.000Z" }
@@ -113,9 +113,9 @@ node $S check <ファイル>...
      - 4つ：`初級`・`中級1`・`中級2`・`上級`
      - 5つ：`初級1`・`初級2`・`中級`・`上級1`・`上級2`
      - 語学のリストは `中級単語` や `単語1` のように内容で名付けることもあります。
-2. **並び順に加える**：`src/plugins/packs/commands/manifest.json` の末尾にファイル名を足します。
+2. **並び順に加える**：`src/core/packs/commands/manifest.json` の末尾にファイル名を足します。
 3. **生成する**：`npm run packs:generate` を実行します。`commands/index.ts` と Go 用のコピー（`server/internal/workspace/packs/`）ができます。
-4. **検証する**：`node $S check src/plugins/packs/commands/<id>.json`
+4. **検証する**：`node $S check src/core/packs/commands/<id>.json`
 5. **テストの数を更新する**
    - `tests/commands.test.cjs`
      - 「the initial lists decode…」の一覧の末尾に `['<id>', [語数]]` を足します。

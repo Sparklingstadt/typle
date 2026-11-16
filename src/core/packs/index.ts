@@ -1,5 +1,5 @@
-import type { SavedWordList } from '../../core/wordLists'
-import { convertLibrary, type Library } from '../../core/wordPacks'
+import type { SavedWordList } from '../wordLists'
+import { convertLibrary, type Library } from '../wordPacks'
 import samples from './samples.json'
 import countries from './countries.json'
 import commands from './commands'

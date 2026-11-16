@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useWordLists } from "@/lib/useWordLists"
 import { useOfficialPackStart } from "@/lib/useOfficialPackStart"
-import { starterPacks } from "@/plugins/packs/starters"
+import { starterPacks } from "@/core/packs/starters"
 
 const SAMPLE_WORDS = 3
 

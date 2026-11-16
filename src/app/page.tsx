@@ -5,8 +5,8 @@ import { Code, Eye, Keyboard, Languages, Library, ListPlus, TrendingUp, type Luc
 import { Button } from "@/components/ui/button"
 import TryWord from "@/components/Landing/TryWord"
 import { officialListCounts, wordMeaning } from "@/core/landing"
-import { initialLists } from "@/plugins/packs"
-import { officialPackPage } from "@/plugins/packs/pages"
+import { initialLists } from "@/core/packs"
+import { officialPackPage } from "@/core/packs/pages"
 
 // The landing page for first-time visitors. It renders on the server so search engines see its words,
 // and every visitor sees it: Home (/home) is one link away for people who already use Typle.

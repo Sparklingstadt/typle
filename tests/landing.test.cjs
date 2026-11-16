@@ -19,7 +19,7 @@ test('no lists means zero everywhere', () => {
 })
 
 test('every official list falls in one of the two categories the landing page names', () => {
-  const dir = path.join(__dirname, '../src/plugins/packs/commands')
+  const dir = path.join(__dirname, '../src/core/packs/commands')
   const files = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'))
   const lists = files.map(file => JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8')))
   const counts = officialListCounts(lists)

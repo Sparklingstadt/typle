@@ -30,7 +30,7 @@ test('record and list IDs work without secure-context randomUUID', () => {
 })
 
 test('the initial lists are valid saved lists with distinct ids and no records', () => {
-  const { initialLists } = require('../src/plugins/packs/index.ts')
+  const { initialLists } = require('../src/core/packs/index.ts')
   const lists = decodeLists(JSON.stringify({ version: 1, lists: initialLists }))
   assert.equal(new Set(lists.map(list => list.id)).size, lists.length)
   assert.ok(lists.some(list => list.id === 'un-member-states-chinese-193-lowercase'))

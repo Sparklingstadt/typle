@@ -3,7 +3,7 @@ import { applyChange, decodeDocument, type WorkspaceDocument } from '../../core/
 import { MAX_WORKSPACE_BYTES, validateWorkspaceRequest } from '../../core/workspaceRequest'
 import { withoutFollowedWords } from '../../core/followedPacks'
 import { decodeInterests } from '../../core/interests'
-import { followed } from './official'
+import { followed } from '../../core/packs/catalog'
 import { addRecord, deleteRecord } from '../../core/records'
 import { WorkspaceError, type RecordAdd, type RecordDelete, type WorkspaceState, type WorkspaceStore, type WorkspaceWrite } from '../../core/workspaceStore'
 

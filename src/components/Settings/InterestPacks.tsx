@@ -11,7 +11,7 @@ import { matchesInterests } from '@/core/interests'
 import { randomId } from '@/core/randomId'
 import type { SavedWordList } from '@/core/wordLists'
 import type { Library, WordPack } from '@/core/wordPacks'
-import { applyCatalogChoices, catalogEntries, type CatalogChoice } from '@/plugins/packs/catalog'
+import { applyCatalogChoices, catalogEntries, type CatalogChoice } from '@/core/packs/catalog'
 import { CardList } from '@/components/ui/card'
 
 type Props = {

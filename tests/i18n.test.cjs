@@ -62,7 +62,7 @@ test('messages are valid ICU and use the same placeholders in every language', (
   }
 })
 
-// Screen text belongs in src/messages. Comments and the initial word lists (JSON in src/plugins/packs) may still be Japanese, and a
+// Screen text belongs in src/messages. Comments and the initial word lists (JSON in src/core/packs) may still be Japanese, and a
 // literal that is data rather than screen text (a stored name, a language's own name) is marked `// i18n-ignore`.
 
 test('source files have no hard-coded Japanese text', () => {
