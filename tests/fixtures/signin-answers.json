@@ -1,0 +1,2616 @@
+{
+  "adminsAfter": [
+    {
+      "email": "zz-admin@example.com",
+      "ffpfSub": "zzadmin1"
+    }
+  ],
+  "answers": [
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/lists?x=1\u0026y=\u003c2\u003e"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/a?q=%zz"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/ほげ"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/a b c"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/one"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/x"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "http://127.0.0.1:38917/ffpf/oauth/authorize?client_id=typle+r\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026nonce=NONCE\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf\u0026response_type=code\u0026scope=openid+email+profile\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": true,
+        "provider": "ffpf",
+        "returnTo": "/play"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "http://127.0.0.1:38917/ffpf/oauth/authorize?client_id=typle+r\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026nonce=NONCE\u0026prompt=login\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf\u0026response_type=code\u0026scope=openid+email+profile\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": true,
+        "provider": "ffpf",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "http://127.0.0.1:38917/ffpf/oauth/authorize?client_id=typle+r\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026nonce=NONCE\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf\u0026response_type=code\u0026scope=openid+email+profile\u0026state=STATE",
+      "oauth": {
+        "admin": true,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": true,
+        "provider": "ffpf",
+        "returnTo": "/admin"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/lists"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "http://127.0.0.1:38917/ffpf/oauth/authorize?client_id=typle+r\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026nonce=NONCE\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf\u0026response_type=code\u0026scope=openid+email+profile\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+        "exp": 1790000700,
+        "nonce": true,
+        "provider": "ffpf",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "typle-r://login?error=loginFailed",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "typle-r://login?error=loginFailed",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/home"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "https://github.com/login/oauth/authorize?client_id=gh-id\u0026code_challenge=CHALLENGE\u0026code_challenge_method=S256\u0026redirect_uri=https%3A%2F%2Ftyple.example%2Fapi%2Fauth%2Fcallback%2Fgithub\u0026state=STATE",
+      "oauth": {
+        "admin": false,
+        "challenge": "",
+        "exp": 1790000700,
+        "nonce": false,
+        "provider": "",
+        "returnTo": "/play"
+      },
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=OAUTH; Path=/api/auth; Max-Age=600; HttpOnly; Secure; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "{\"error\":\"authUnavailable\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 503,
+      "vary": "Cookie"
+    },
+    {
+      "body": "{\"error\":\"authUnavailable\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 503,
+      "vary": "Cookie"
+    },
+    {
+      "body": "{\"error\":\"authUnavailable\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 503,
+      "vary": "Cookie"
+    },
+    {
+      "allow": "GET",
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 405,
+      "vary": "Cookie"
+    },
+    {
+      "allow": "GET",
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 405,
+      "vary": "Cookie"
+    },
+    {
+      "allow": "GET",
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 405,
+      "vary": "Cookie"
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-ok\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-ok\",\"token_type\":\"bearer\",\"scope\":\"\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-ok",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"id\":583231,\"login\":\"octocat\",\"name\":\" The Octocat \",\"avatar_url\":\"https://avatars.example/u/583231?v=4\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-session=eyJzdWIiOiJnaXRodWI6NTgzMjMxIiwibmFtZSI6IlRoZSBPY3RvY2F0IiwiaW1hZ2UiOiJodHRwczovL2F2YXRhcnMuZXhhbXBsZS91LzU4MzIzMT92PTQiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MjU5MjEwMH0.AK7Eamjuyy7SEP1YOLNBwh9cd1aVd2bmOIloLavceHI; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-login\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-login\",\"token_type\":\"bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-login",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"id\":2,\"login\":\"loginonly\",\"name\":null,\"avatar_url\":null}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-session=eyJzdWIiOiJnaXRodWI6MiIsIm5hbWUiOiJsb2dpbm9ubHkiLCJpbWFnZSI6IiIsImlhdCI6MTc5MDAwMDEwMCwiZXhwIjoxNzkyNTkyMTAwfQ.WnNaDYfawZOuCC-kAuADHv-ygHtiLCLUXwTrBjQVtFQ; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-space\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-space\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-space",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"avatar_url\":\"\",\"id\":3,\"login\":\"sp\",\"name\":\"　 Octo \\u003c\\u0026\\u003e \"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-session=eyJzdWIiOiJnaXRodWI6MyIsIm5hbWUiOiJPY3RvIDwmPiIsImltYWdlIjoiIiwiaWF0IjoxNzkwMDAwMTAwLCJleHAiOjE3OTI1OTIxMDB9.zgAlPmjK0_Rb0UbxSzE0z7q18eHsI5sEXZ3Pbo1gkOY; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-case\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"Access_Token\":\"tok-ok\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-ok",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"id\":583231,\"login\":\"octocat\",\"name\":\" The Octocat \",\"avatar_url\":\"https://avatars.example/u/583231?v=4\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-session=eyJzdWIiOiJnaXRodWI6NTgzMjMxIiwibmFtZSI6IlRoZSBPY3RvY2F0IiwiaW1hZ2UiOiJodHRwczovL2F2YXRhcnMuZXhhbXBsZS91LzU4MzIzMT92PTQiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MjU5MjEwMH0.AK7Eamjuyy7SEP1YOLNBwh9cd1aVd2bmOIloLavceHI; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/home",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/home",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/home",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/admin?error=adminForbidden",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/admin?error=adminForbidden",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/ほげ?q=a b",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-ok\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-ok\",\"token_type\":\"bearer\",\"scope\":\"\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-ok",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"id\":583231,\"login\":\"octocat\",\"name\":\" The Octocat \",\"avatar_url\":\"https://avatars.example/u/583231?v=4\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-session=eyJzdWIiOiJnaXRodWI6NTgzMjMxIiwibmFtZSI6IlRoZSBPY3RvY2F0IiwiaW1hZ2UiOiJodHRwczovL2F2YXRhcnMuZXhhbXBsZS91LzU4MzIzMT92PTQiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MjU5MjEwMH0.AK7Eamjuyy7SEP1YOLNBwh9cd1aVd2bmOIloLavceHI; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/home",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-ok\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-ok\",\"token_type\":\"bearer\",\"scope\":\"\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-ok",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"id\":583231,\"login\":\"octocat\",\"name\":\" The Octocat \",\"avatar_url\":\"https://avatars.example/u/583231?v=4\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-session=eyJzdWIiOiJnaXRodWI6NTgzMjMxIiwibmFtZSI6IlRoZSBPY3RvY2F0IiwiaW1hZ2UiOiJodHRwczovL2F2YXRhcnMuZXhhbXBsZS91LzU4MzIzMT92PTQiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MjU5MjEwMH0.AK7Eamjuyy7SEP1YOLNBwh9cd1aVd2bmOIloLavceHI; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-refused\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"error\":\"bad_verification_code\",\"error_description\":\"The code passed is incorrect or expired.\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-500\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "oops",
+            "contentType": "text/plain",
+            "status": 500
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-notoken\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-notjson\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "\u003chtml\u003enope\u003c/html\u003e",
+            "contentType": "text/html",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-redirect\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "",
+            "location": "/elsewhere",
+            "status": 302
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-user401\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-401\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-401",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"message\":\"Bad credentials\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 401
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-user500\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-500\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-500",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 500
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-userbad\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-bad\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-bad",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"id\":0,\"login\":\"zero\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "typle-r://login?code=eyJzdWIiOiJnaXRodWI6NTgzMjMxIiwibmFtZSI6IlRoZSBPY3RvY2F0IiwiaW1hZ2UiOiJodHRwczovL2F2YXRhcnMuZXhhbXBsZS91LzU4MzIzMT92PTQiLCJjaGFsbGVuZ2UiOiJFOU1lbGhvYTJPd3ZGckVNVEpndUNIYW9lSzF0OFVSV2J1R0pTc3R3LWNNIiwiZXhwIjoxNzkwMDAwMjIwfQ.6OTICyaKA9PLXkqcDdfRzIumuCvuSeaMyh8PoGaOHsw",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-app\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-ok\",\"token_type\":\"bearer\",\"scope\":\"\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-ok",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"id\":583231,\"login\":\"octocat\",\"name\":\" The Octocat \",\"avatar_url\":\"https://avatars.example/u/583231?v=4\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "typle-r://login?error=loginFailed",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "typle-r://login?error=loginFailed",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-refused\u0026code_verifier=verifier-1\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"error\":\"bad_verification_code\",\"error_description\":\"The code passed is incorrect or expired.\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "client_id=gh-id\u0026client_secret=gh+secret%2B%26\u0026code=gh-ok\u0026code_verifier=verifier-1\u0026redirect_uri=https%3A%2F%2Ftyple.example%2Fapi%2Fauth%2Fcallback%2Fgithub",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/github/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"tok-ok\",\"token_type\":\"bearer\",\"scope\":\"\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/vnd.github+json",
+            "authorization": "Bearer tok-ok",
+            "body": "",
+            "method": "GET",
+            "path": "/github/api/user",
+            "query": "",
+            "x-github-api-version": "2022-11-28"
+          },
+          "response": {
+            "body": "{\"id\":583231,\"login\":\"octocat\",\"name\":\" The Octocat \",\"avatar_url\":\"https://avatars.example/u/583231?v=4\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; Secure; SameSite=Lax",
+        "__Host-typle-session=eyJzdWIiOiJnaXRodWI6NTgzMjMxIiwibmFtZSI6IlRoZSBPY3RvY2F0IiwiaW1hZ2UiOiJodHRwczovL2F2YXRhcnMuZXhhbXBsZS91LzU4MzIzMT92PTQiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MjU5MjEwMH0.AK7Eamjuyy7SEP1YOLNBwh9cd1aVd2bmOIloLavceHI; Path=/; Max-Age=2592000; HttpOnly; Secure; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "allow": "GET",
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 405,
+      "vary": "Cookie"
+    },
+    {
+      "body": "{\"error\":\"authUnavailable\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 503,
+      "vary": "Cookie"
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-ok\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJlcmluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6NDAwMDAwMDAwMCwiaWF0IjoxNzkwMDAwMDAwLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjM4OTE3L2ZmcGYiLCJuYW1lIjoiIEVyaW4gIiwibm9uY2UiOiJub25jZS0xIiwic3ViIjoienplcmluIn0.GQT0J8s2THHWSWsYH7yy8UhEyC_Cdwqhzo4vjMRrI1by_QHOgPgyZ2in-_HD37f5LmZJ98ZVxVRE3ny5JVozMg\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        },
+        {
+          "request": {
+            "accept": "application/json",
+            "body": "",
+            "method": "GET",
+            "path": "/ffpf/oauth/jwks",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"keys\":[{\"e\":\"AQAB\",\"kid\":\"r1\",\"kty\":\"RSA\",\"n\":\"AQAB\"},{\"alg\":\"ES256\",\"crv\":\"P-256\",\"kid\":\"k1\",\"kty\":\"EC\",\"use\":\"sig\",\"x\":\"uadXSosoq0us_otNeox2qVlSeyvGNCS-ONYuZsvG0g8\",\"y\":\"tzB94AgoJJfhPdV77UxclNaFqsv1TZhkAoLE_DMFcYI\"}]}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-ffpf-relogin=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-session=eyJzdWIiOiJmZnBmOnp6ZXJpbiIsIm5hbWUiOiJFcmluIiwiaW1hZ2UiOiIiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MjU5MjEwMH0.7LL5CVS-JMXqbW-XG-hmGa44gF6S3SaEiCTBNahwkPM; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-noname\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJlcmluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6NDAwMDAwMDAwMCwiaWF0IjoxNzkwMDAwMDAwLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjM4OTE3L2ZmcGYiLCJuYW1lIjoiIiwibm9uY2UiOiJub25jZS0xIiwic3ViIjoienplcmluIn0.isNoxyfd5rA3VUnM_2PaBtiaw6iBglkuu1TbMgvponzbqMrkXGejc57Fe7rhEekYw0qYPKBl2x6-nhT-0c_ciQ\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-ffpf-relogin=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-session=eyJzdWIiOiJmZnBmOnp6ZXJpbiIsIm5hbWUiOiJlcmluIiwiaW1hZ2UiOiIiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MjU5MjEwMH0.HHRZDb2kw004jUwbb7_Wb-2jVBhR4gGAo6j5Gdq6yxs; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-400\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"error\":\"invalid_grant\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 400
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-500\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "down",
+            "contentType": "text/plain",
+            "status": 503
+          }
+        }
+      ],
+      "reports": [
+        "auth.callback"
+      ],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-badsig\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJlcmluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6NDAwMDAwMDAwMCwiaWF0IjoxNzkwMDAwMDAwLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjM4OTE3L2ZmcGYiLCJuYW1lIjoiIEVyaW4gIiwibm9uY2UiOiJub25jZS0xIiwic3ViIjoienplcmluIn0.Nlk0Y8BlR8rTW_bMKxX2BkSNox1kVFIWSL18g5fKAEAXFt1LNKj27gYREGfxs9WvceZeK3FE4NCqZtTTbDYECQ\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-nonce\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJlcmluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6NDAwMDAwMDAwMCwiaWF0IjoxNzkwMDAwMDAwLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjM4OTE3L2ZmcGYiLCJuYW1lIjoiIEVyaW4gIiwibm9uY2UiOiJvdGhlciIsInN1YiI6Inp6ZXJpbiJ9.gAebPqWzC2LB32C-m7ZqAnAV8rkTbDXWhFxbAcmhgCfQuPiobN002ZB2bFyn0Cijq1HDr7VuPOlfz_oJph6kbA\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-ok\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJlcmluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6NDAwMDAwMDAwMCwiaWF0IjoxNzkwMDAwMDAwLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjM4OTE3L2ZmcGYiLCJuYW1lIjoiIEVyaW4gIiwibm9uY2UiOiJub25jZS0xIiwic3ViIjoienplcmluIn0.PjboBAp5KnlEjtbOy6h9RraFB3StbNylo1HX5cmJzax4-8DOag1-9OXO28E1nXlr4qUXQxWE3B_41iGpEMBSZQ\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-exp\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJlcmluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6MTAwMCwiaWF0IjoxNzkwMDAwMDAwLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjM4OTE3L2ZmcGYiLCJuYW1lIjoiIEVyaW4gIiwibm9uY2UiOiJub25jZS0xIiwic3ViIjoienplcmluIn0.NcxBzBByytjae-VvL3Eey9Gf01av4LBxMg4BOjVNZ0wufhFnxrWAOw3V2kYi1Fi8_hZk1FsUuRMh61GI8nOqrA\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-unverified\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJlcmluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOiJ0cnVlIiwiZXhwIjo0MDAwMDAwMDAwLCJpYXQiOjE3OTAwMDAwMDAsImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6Mzg5MTcvZmZwZiIsIm5hbWUiOiIgRXJpbiAiLCJub25jZSI6Im5vbmNlLTEiLCJzdWIiOiJ6emVyaW4ifQ.UyDckbW2ukIjqFpK4ngpTIfNxoEU7OajXoPcL7-m9k_5D0y2JrALdAnb9P4RVgST5dDVpHN32oDZj99nu3RA2Q\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-aud\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOlsib3RoZXIiLCJ0eXBsZSByIl0sImVtYWlsIjoiZXJpbkBleGFtcGxlLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJleHAiOjQwMDAwMDAwMDAsImlhdCI6MTc5MDAwMDAwMCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTozODkxNy9mZnBmIiwibmFtZSI6IiBFcmluICIsIm5vbmNlIjoibm9uY2UtMSIsInN1YiI6Inp6ZXJpbiJ9.aSr1Q38HK9dyv0ClO-LNM3yO2NzmHrsi6fbJEM7LCkijfIwpP0DAl_H5L07slHSV-f9qVND-VHdh4-gHvSzFzQ\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-ffpf-relogin=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-session=eyJzdWIiOiJmZnBmOnp6ZXJpbiIsIm5hbWUiOiJFcmluIiwiaW1hZ2UiOiIiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MjU5MjEwMH0.7LL5CVS-JMXqbW-XG-hmGa44gF6S3SaEiCTBNahwkPM; Path=/; Max-Age=2592000; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-badsub\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJlcmluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6NDAwMDAwMDAwMCwiaWF0IjoxNzkwMDAwMDAwLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjM4OTE3L2ZmcGYiLCJuYW1lIjoiIEVyaW4gIiwibm9uY2UiOiJub25jZS0xIiwic3ViIjoiRXJpbiJ9.I0qoCsAtCZBrCxoLtGh6sEOGhsgs6hMfz4L29AYlHGzq_CdP4loNsXIDe74HYRwvy4up0g0hTxYUSxNr8K07Jw\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/play",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-noid\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/lists?x=1\u0026y=\u003c2\u003e",
+      "provider": [],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "typle-r://login?code=eyJzdWIiOiJmZnBmOnp6ZXJpbiIsIm5hbWUiOiJFcmluIiwiaW1hZ2UiOiIiLCJjaGFsbGVuZ2UiOiJFOU1lbGhvYTJPd3ZGckVNVEpndUNIYW9lSzF0OFVSV2J1R0pTc3R3LWNNIiwiZXhwIjoxNzkwMDAwMjIwfQ.Mt0vPF_NcrkcHj-suGpPuDqAD0e6g7ft1ZGUOWfmHRw",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-app\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJlcmluQGV4YW1wbGUuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImV4cCI6NDAwMDAwMDAwMCwiaWF0IjoxNzkwMDAwMDAwLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjM4OTE3L2ZmcGYiLCJuYW1lIjoiIEVyaW4gIiwibm9uY2UiOiJub25jZS0xIiwic3ViIjoienplcmluIn0.IX-YQ7UnsPKtzt9SfwGsD0rZ9dZ-BumEWV0EuA3QBrpfVSx4jmnO_4skXbEq5Ykm1fGYyOhg8r-Bb-0bKEeBGA\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "typle-r://login?error=loginFailed",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-400\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"error\":\"invalid_grant\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 400
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/admin",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-admin\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJaWi1BZG1pbkBFeGFtcGxlLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJleHAiOjQwMDAwMDAwMDAsImlhdCI6MTc5MDAwMDAwMCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTozODkxNy9mZnBmIiwibmFtZSI6IkFkbWluIiwibm9uY2UiOiJub25jZS0xIiwic3ViIjoienphZG1pbjEifQ.RFgWtFRUoUc6-gkQm8Td2VElKg4xUjA5vM62UHo-OjMkx2Dxmu9erY-xTIO0In6Wb9fxJ60OWXjpVLCu70UO0w\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-ffpf-relogin=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax",
+        "typle-admin=eyJlbWFpbCI6Inp6LWFkbWluQGV4YW1wbGUuY29tIiwic3ViIjoienphZG1pbjEiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MDA0MzMwMH0.Q5gbs9G0w_20feOvkV57XW-axZtyGVytuhRykpkb5g8; Path=/; Max-Age=43200; HttpOnly; SameSite=Strict"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/admin",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-admin\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=https%3A%2F%2Ftyple.example%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJaWi1BZG1pbkBFeGFtcGxlLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJleHAiOjQwMDAwMDAwMDAsImlhdCI6MTc5MDAwMDAwMCwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTozODkxNy9mZnBmIiwibmFtZSI6IkFkbWluIiwibm9uY2UiOiJub25jZS0xIiwic3ViIjoienphZG1pbjEifQ.rjsXwHykuQUJJuMpp8DHdetuTAG8mV83aAdpWPoqH1DpIB14J5x0zklHuAauSZVinymLz20TGp3MRllwT2AOjA\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; Secure; SameSite=Lax",
+        "typle-ffpf-relogin=; Path=/api/auth; Max-Age=0; HttpOnly; Secure; SameSite=Lax",
+        "__Host-typle-admin=eyJlbWFpbCI6Inp6LWFkbWluQGV4YW1wbGUuY29tIiwic3ViIjoienphZG1pbjEiLCJpYXQiOjE3OTAwMDAxMDAsImV4cCI6MTc5MDA0MzMwMH0.Q5gbs9G0w_20feOvkV57XW-axZtyGVytuhRykpkb5g8; Path=/; Max-Age=43200; HttpOnly; Secure; SameSite=Strict"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/admin?error=adminForbidden",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-notadmin\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"access_token\":\"at\",\"expires_in\":300,\"id_token\":\"eyJhbGciOiJFUzI1NiIsImtpZCI6ImsxIiwidHlwIjoiSldUIn0.eyJhdWQiOiJ0eXBsZSByIiwiZW1haWwiOiJ6ei1ub3RAZXhhbXBsZS5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZXhwIjo0MDAwMDAwMDAwLCJpYXQiOjE3OTAwMDAwMDAsImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6Mzg5MTcvZmZwZiIsIm5hbWUiOiJOb3QiLCJub25jZSI6Im5vbmNlLTEiLCJzdWIiOiJ6em5vdDEifQ.P1JGLaFNuKNOAw1UR_OgzNk6m1bVuVVjqOeJmojAlyfw9Y7s9oF8TDb97ZNDJi9qNb-yMP-UOaglucQGDKCaFg\",\"scope\":\"openid email profile\",\"token_type\":\"Bearer\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 200
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "body": "",
+      "cache-control": "no-store",
+      "location": "/admin",
+      "provider": [
+        {
+          "request": {
+            "accept": "application/json",
+            "authorization": "Basic dHlwbGUrcjpzJTNBZSUyRmM=",
+            "body": "code=ff-400\u0026code_verifier=verifier-1\u0026grant_type=authorization_code\u0026redirect_uri=http%3A%2F%2F127.0.0.1%3A3101%2Fapi%2Fauth%2Fcallback%2Fffpf",
+            "content-type": "application/x-www-form-urlencoded",
+            "method": "POST",
+            "path": "/ffpf/oauth/token",
+            "query": ""
+          },
+          "response": {
+            "body": "{\"error\":\"invalid_grant\"}",
+            "contentType": "application/json; charset=utf-8",
+            "status": 400
+          }
+        }
+      ],
+      "reports": [],
+      "setCookie": [
+        "typle-oauth=; Path=/api/auth; Max-Age=0; HttpOnly; SameSite=Lax"
+      ],
+      "status": 302
+    },
+    {
+      "allow": "GET",
+      "body": "{\"error\":\"methodNotAllowed\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 405,
+      "vary": "Cookie"
+    },
+    {
+      "body": "{\"error\":\"authUnavailable\"}\n",
+      "cache-control": "private, no-store",
+      "content-type": "application/json; charset=utf-8",
+      "provider": [],
+      "reports": [],
+      "setCookie": [],
+      "status": 503,
+      "vary": "Cookie"
+    }
+  ],
+  "challenge": "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM",
+  "comment": "The Go backend's answers (stage 8b), at a fixed time, with the providers at 127.0.0.1:38917. Made by a temporary Go test.",
+  "env": {
+    "github": {
+      "AUTH_GITHUB_ID": "gh-id",
+      "AUTH_GITHUB_SECRET": "gh secret+\u0026",
+      "AUTH_SECRET": "typle-fixture-secret",
+      "AUTH_URL": "http://127.0.0.1:3101"
+    },
+    "http": {
+      "AUTH_GITHUB_ID": "gh-id",
+      "AUTH_GITHUB_SECRET": "gh secret+\u0026",
+      "AUTH_SECRET": "typle-fixture-secret",
+      "AUTH_URL": "http://127.0.0.1:3101",
+      "FFPF_ID_CLIENT_ID": "typle r",
+      "FFPF_ID_CLIENT_SECRET": "s:e/c",
+      "FFPF_ID_ISSUER": "http://127.0.0.1:38917/ffpf/"
+    },
+    "https": {
+      "AUTH_GITHUB_ID": "gh-id",
+      "AUTH_GITHUB_SECRET": "gh secret+\u0026",
+      "AUTH_SECRET": "typle-fixture-secret",
+      "AUTH_URL": "https://typle.example",
+      "FFPF_ID_CLIENT_ID": "typle r",
+      "FFPF_ID_CLIENT_SECRET": "s:e/c",
+      "FFPF_ID_ISSUER": "http://127.0.0.1:38917/ffpf/"
+    },
+    "none": {
+      "AUTH_SECRET": "typle-fixture-secret",
+      "AUTH_URL": "http://127.0.0.1:3101"
+    }
+  },
+  "now": 1790000100,
+  "requests": [
+    {
+      "note": "github, no returnTo",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin"
+    },
+    {
+      "note": "returnTo with a query",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Flists%3Fx%3D1%26y%3D%3C2%3E"
+    },
+    {
+      "note": "protocol-relative",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2F%2Fevil.example"
+    },
+    {
+      "note": "backslash",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2F%5Cevil.example"
+    },
+    {
+      "note": "absolute",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=https%3A%2F%2Fevil.example"
+    },
+    {
+      "note": "control character",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Fa%09b"
+    },
+    {
+      "note": "1024 bytes",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "note": "1025 bytes",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "note": "bad escape in the path",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Fa%25zz"
+    },
+    {
+      "note": "bad escape in the query is kept",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Fa%3Fq%3D%25zz"
+    },
+    {
+      "note": "bad escape in the fragment",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Fa%23f%25zz"
+    },
+    {
+      "note": "utf-8",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2F%E3%81%BB%E3%81%92"
+    },
+    {
+      "note": "semicolon drops the pair",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Fa;b=c"
+    },
+    {
+      "note": "plus is a space",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Fa+b%20c"
+    },
+    {
+      "note": "the first returnTo",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Fone\u0026returnTo=%2Ftwo"
+    },
+    {
+      "note": "bad escape drops the pair",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Fx\u0026returnTo=%zz"
+    },
+    {
+      "note": "ffpf",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?provider=ffpf\u0026returnTo=%2Fplay"
+    },
+    {
+      "note": "ffpf after signing out",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?provider=ffpf",
+      "cookie": {
+        "typle-ffpf-relogin": "1"
+      }
+    },
+    {
+      "note": "github after signing out",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin",
+      "cookie": {
+        "typle-ffpf-relogin": "1"
+      }
+    },
+    {
+      "note": "admin, whatever else",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?admin=1\u0026provider=github\u0026returnTo=%2Flists\u0026client=ipad\u0026code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+    },
+    {
+      "note": "ipad",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?client=ipad\u0026code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM\u0026returnTo=%2Flists"
+    },
+    {
+      "note": "android ffpf",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?client=android\u0026provider=ffpf\u0026code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+    },
+    {
+      "note": "macos bad challenge",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?client=macos\u0026code_challenge=short"
+    },
+    {
+      "note": "windows no challenge",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?client=windows"
+    },
+    {
+      "note": "unknown client",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/signin?client=web\u0026code_challenge=short"
+    },
+    {
+      "note": "https",
+      "config": "https",
+      "method": "GET",
+      "path": "/api/auth/signin?returnTo=%2Fplay"
+    },
+    {
+      "note": "ffpf not configured",
+      "config": "github",
+      "method": "GET",
+      "path": "/api/auth/signin?provider=ffpf"
+    },
+    {
+      "note": "admin not configured",
+      "config": "github",
+      "method": "GET",
+      "path": "/api/auth/signin?admin=1"
+    },
+    {
+      "note": "github not configured",
+      "config": "none",
+      "method": "GET",
+      "path": "/api/auth/signin"
+    },
+    {
+      "note": "POST",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/signin"
+    },
+    {
+      "note": "HEAD",
+      "config": "http",
+      "method": "HEAD",
+      "path": "/api/auth/signin"
+    },
+    {
+      "note": "POST not configured",
+      "config": "none",
+      "method": "POST",
+      "path": "/api/auth/signin"
+    },
+    {
+      "note": "github success",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github name from login",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-login\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github name trimmed",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-space\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github key case",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-case\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "no cookie",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1"
+    },
+    {
+      "note": "expired cookie",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ghOld"
+      }
+    },
+    {
+      "note": "forged cookie",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "e30.AAAA"
+      }
+    },
+    {
+      "note": "other state",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-2",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "error",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?error=access_denied\u0026code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "no code",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "no state",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "ffpf cookie at github",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "admin at github",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ghAdmin"
+      }
+    },
+    {
+      "note": "admin at github, other state",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?state=x",
+      "cookie": {
+        "typle-oauth": "ffAdmin"
+      }
+    },
+    {
+      "note": "utf-8 and a space in returnTo",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ghUtf"
+      }
+    },
+    {
+      "note": "evil returnTo in the cookie",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ghEvil"
+      }
+    },
+    {
+      "note": "github refuses the code",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-refused\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github token 500",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-500\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github no token",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-notoken\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github not json",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-notjson\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github redirect",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-redirect\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github user 401",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-user401\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github user 500",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-user500\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github user id 0",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-userbad\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github app",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-app\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ghApp"
+      }
+    },
+    {
+      "note": "github app other state",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-app\u0026state=x",
+      "cookie": {
+        "typle-oauth": "ghApp"
+      }
+    },
+    {
+      "note": "github app refused",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-refused\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ghApp"
+      }
+    },
+    {
+      "note": "github https",
+      "config": "https",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-ffpf-relogin": "1",
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github POST",
+      "config": "http",
+      "method": "POST",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "github not configured",
+      "config": "none",
+      "method": "GET",
+      "path": "/api/auth/callback/github?code=gh-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "ffpf success",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-ok\u0026state=state-1",
+      "cookie": {
+        "typle-ffpf-relogin": "1",
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf no name",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-noname\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf 400",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-400\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf 503",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-500\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf bad signature",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-badsig\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf other nonce",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-nonce\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf no nonce in the cookie",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ffNoNonce"
+      }
+    },
+    {
+      "note": "ffpf expired",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-exp\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf unverified",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-unverified\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf aud array",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-aud\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf bad sub",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-badsub\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf no id token",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-noid\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "github cookie at ffpf",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "gh"
+      }
+    },
+    {
+      "note": "ffpf app",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-app\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ffApp"
+      }
+    },
+    {
+      "note": "ffpf app 400",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-400\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ffApp"
+      }
+    },
+    {
+      "note": "admin",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-admin\u0026state=state-1",
+      "cookie": {
+        "typle-ffpf-relogin": "1",
+        "typle-oauth": "ffAdmin"
+      }
+    },
+    {
+      "note": "admin again",
+      "config": "https",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-admin\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ffAdmin"
+      }
+    },
+    {
+      "note": "not an admin",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-notadmin\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ffAdmin"
+      }
+    },
+    {
+      "note": "admin refused by ffpf",
+      "config": "http",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-400\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ffAdmin"
+      }
+    },
+    {
+      "note": "ffpf HEAD",
+      "config": "http",
+      "method": "HEAD",
+      "path": "/api/auth/callback/ffpf?code=ff-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    },
+    {
+      "note": "ffpf not configured",
+      "config": "github",
+      "method": "GET",
+      "path": "/api/auth/callback/ffpf?code=ff-ok\u0026state=state-1",
+      "cookie": {
+        "typle-oauth": "ff"
+      }
+    }
+  ],
+  "values": {
+    "ff": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii9wbGF5IiwiZXhwIjoxNzkwMDAwNzAwLCJwcm92aWRlciI6ImZmcGYiLCJub25jZSI6Im5vbmNlLTEifQ.zhUoPWt2DDI1zknxUevwRVNmhvh6OLL5x1ILj8NGncs",
+    "ffAdmin": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii9hZG1pbiIsImV4cCI6MTc5MDAwMDcwMCwiYWRtaW4iOnRydWUsInByb3ZpZGVyIjoiZmZwZiIsIm5vbmNlIjoibm9uY2UtMSJ9.bR2zpCW3bi8VodDswdiYZSW0JXsiYomGkmkI3Hq1_uc",
+    "ffApp": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii9wbGF5IiwiZXhwIjoxNzkwMDAwNzAwLCJjaGFsbGVuZ2UiOiJFOU1lbGhvYTJPd3ZGckVNVEpndUNIYW9lSzF0OFVSV2J1R0pTc3R3LWNNIiwicHJvdmlkZXIiOiJmZnBmIiwibm9uY2UiOiJub25jZS0xIn0.VNvKewmmKy32JkKflh8B46OixG81m6KaCAxCZ6fLvT4",
+    "ffNoNonce": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii9wbGF5IiwiZXhwIjoxNzkwMDAwNzAwLCJwcm92aWRlciI6ImZmcGYifQ.Lguq-9HC4A-LX-jGWiZK2jMLDHb0t4IQ5n_TNgpjLKw",
+    "gh": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii9saXN0cz94PTEmeT08Mj4iLCJleHAiOjE3OTAwMDA3MDB9.eStNPghXnTI-bjsc2Pu5LD9xLPTg4ySCYOQYJwZGkmM",
+    "ghAdmin": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii9hZG1pbiIsImV4cCI6MTc5MDAwMDcwMCwiYWRtaW4iOnRydWV9.Rw1okfkjDhme0H6vWwihF9cLb0Oz4ehp3Lx48iLAPSU",
+    "ghApp": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii9saXN0cyIsImV4cCI6MTc5MDAwMDcwMCwiY2hhbGxlbmdlIjoiRTlNZWxob2EyT3d2RnJFTVRKZ3VDSGFvZUsxdDhVUldidUdKU3N0dy1jTSJ9.0uIEVhZ3t2_d1WIwSM-wWQY2IqPypEQid0_wjJZ6UMQ",
+    "ghEvil": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii8vZXZpbC5leGFtcGxlIiwiZXhwIjoxNzkwMDAwNzAwfQ.974sTZITJ7gqRqBWzd4lJLJn8A5JGVt80BWWEQzvIzk",
+    "ghOld": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii9saXN0cyIsImV4cCI6MTc5MDAwMDA5OX0.S1lsmAuDB0Nj9TrXQMP5Rg_kes9YYTDbS9eheb1vkVQ",
+    "ghUtf": "eyJzdGF0ZSI6InN0YXRlLTEiLCJ2ZXJpZmllciI6InZlcmlmaWVyLTEiLCJyZXR1cm5UbyI6Ii_jgbvjgZI_cT1hIGIiLCJleHAiOjE3OTAwMDA3MDB9.qtOQEoNHkTKSt2UGENYFZurilfv6ezEO_q9iU0LM8FM"
+  },
+  "verifier": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+}
