@@ -36,7 +36,7 @@ const steps = [
   { name: 'staticcheck', command: 'go', args: ['run', 'honnef.co/go/tools/cmd/staticcheck@v0.7.0', './...'], env: { GOTOOLCHAIN: 'go1.25.0' } },
   { name: 'go test', command: 'go', args: ['test', './...'], env: { TYPLE_TEST_DATABASE_URL: testDatabaseUrl } },
   { name: 'typecheck', command: 'npm', args: ['run', 'typecheck'] },
-  { name: 'unit tests', command: 'npm', args: ['test'] },
+  { name: 'unit tests', command: 'npm', args: ['test'], env: { TYPLE_TEST_DATABASE_URL: testDatabaseUrl } },
   { name: 'lint', command: 'npm', args: ['run', 'lint'] },
   { name: 'knip', command: 'npm', args: ['run', 'knip'] },
   { name: 'build', command: 'npm', args: ['run', 'build'] },

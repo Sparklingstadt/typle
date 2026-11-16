@@ -1,0 +1,126 @@
+# Go のバックエンドを Next.js の Route Handler に移す
+
+2026-11-16 に決めた設計です。
+
+## なぜやるか
+
+バックエンド（`server/`、本体約7,900行・テスト約12,000行）は Go で書かれており、持ち主が自分で処理を追えません。
+画面と `src/core` と同じ TypeScript・同じ書き方に移し、バックエンドも自分で読んで直せる状態にします。
+
+あわせて、今は Go の `internal/workspace` が `src/core` と同じ検証をもう一度書いており、`tests/fixtures`
+（`strings.json`・`workspace-put.json`・`limits.json` など）で両者が一致することを確かめ続けています。移した後は
+`src/core` の検証を直接呼ぶので、この二重の実装と照合が要らなくなります。
+
+## 目標
+
+- `server/`・`api/index.go`・`go.mod`・`go.sum` をなくし、バックエンドを `src/app/api/**/route.ts` で動かす。
+- 検証は `src/core` の関数をそのまま使う（`decodeLists`・`decodeDevices` など）。
+- `npm run verify` と `npm run dev` から Go を外し、手元に Go がなくても開発・検証できる。
+- 移行のどの時点でも本番が動いている。
+
+## 目標にしないこと
+
+- API の仕様の変更。パス・メソッド・状態コード・応答の JSON・エラーの名前（`authUnavailable` など）・ヘッダー・
+  Cookie の名前と属性・トークンの形式は今のまま保つ。改善はこの移行の後に別の PR で行う。
+- DB のスキーマの変更（移行 `db/migrations` は触らない）。
+- 機能を減らすこと。アーカイブ済みの `client=android`・`windows` も今は受け付け続ける。捨てる機能は、移す途中で
+  見つけたらその都度持ち主に聞いて別に決める。
+
+## 失敗とみなすこと
+
+- iPad／Mac アプリ（typle-ipad）のログインや保存が壊れる。アプリはこのリポジトリと別に出荷しているので、
+  サーバーの応答の形が1か所でも変わると直せない端末が残る。
+- 移行後に既存のログイン（Cookie・トークン）が無効になり、全員がログインし直しになる。`AUTH_SECRET` から鍵を
+  導く手順と HMAC-SHA256 の署名形式を、Go とビット単位で同じにする。
+- TS に移したのに、Go と同じくらい追いにくい構造になる（後述の「書き方」）。
+
+## 制約
+
+- Next.js 16.4.6。Route Handler の決まりは `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/route.md`
+  などを読んでから書く（AGENTS.md）。
+- DB は PostgreSQL。ドライバーはすでに依存にある `pg` を使う。
+- エラー報告は `@sentry/nextjs`（Go の `sentry-go` の代わり）。
+- 本番は Vercel。デプロイ・リリースは CLAUDE.md の Release workflow のとおり、1つの PR が1つの版。
+- `eslint.config.mjs` の層の規則を守る。サーバーのコードは `src/core` を import してよいが、`src/core` から
+  サーバーのコードを import しない。画面（`src/app` のページ・`src/components`）からサーバーのコードを import しない。
+
+## 作り方の候補と選んだもの
+
+| 案 | 内容 | 長所 | 短所 |
+|---|---|---|---|
+| **A（採用）** | Next.js の Route Handler（`src/app/api/.../route.ts`）に置き、`pg` と `src/core` を使う | 画面と同じアプリ・同じ書き方。検証の二重実装が消え、読む量が最少 | README の「Next.js の `/api` は使いません」を改める |
+| B | `api/index.ts` を1つ置き、中で自前の振り分け | 今の構造と1対1で見比べやすい | Next.js と別の仕組みが残り、自前の振り分けが追いにくい |
+| C | A の置き場所で、使わない機能を捨てながら作り直す | 読む量がさらに減る | 捨てる機能を1つずつ決める必要があり、移行と仕様変更が混ざる |
+
+持ち主が A を選んだ。理由は、画面と同じ書き方になり、自分で読めるという目的にいちばん近いこと。C の
+「捨てる機能」は A の途中で見つけたときに別に決める。
+
+## 進め方
+
+`vercel.json` の `rewrites` と `next.config.mjs` の開発用の `beforeFiles` がパスごとに分かれているので、
+エンドポイントのまとまりごとに1つの PR で移す。各 PR で、移したパスを両方の一覧と `tests/backendPaths.test.cjs`
+から外し、Go の該当するハンドラーとそのテストを消す。移行中は Go と TS の両方が本番で動く。
+
+順番（手間と危険の小さいものから）:
+
+1. 土台と `/api/health`：DB の接続、共通の応答（セキュリティヘッダー4つ・JSON のエラー）、Sentry、テストの
+   仕組み。ここで書き方を決め、持ち主が読んで納得してから次へ進む。
+2. ギャラリーの読み取り：`GET /api/gallery`・`/api/gallery/categories`、`/api/shared`。
+3. ギャラリーの書き込み：`/api/gallery/added`・`/api/gallery/reports`（IP ごとの回数制限、`Origin` の確認）。
+4. ログインのセッションの読み取り（Cookie とトークンの検証）を TS に作る。以降のログインが要るエンドポイントの前提。
+   Go と TS が同じ Cookie を互いに読めることを、両方を動かすテストで確かめる。
+5. `/api/shares`。
+6. `/api/workspace`・`/api/workspace/records`（`revision` による保存、409、`typle_save_metrics` の記録）。
+7. 管理画面 `/api/admin/*`・`/api/auth/admin/signout`。
+8. ログインの流れ：`/api/auth/signin`・`callback/github`・`callback/ffpf`・`session`・`token`・`signout`・`local`。
+   iPad／Mac のトークンの流れ（PKCE）を含む。
+9. 片付け：`server/`・`api/index.go`・`go.mod`・`go.sum`・`vercel.json` の `rewrites`・`next.config.mjs` の
+   `beforeFiles`、`scripts/dev.cjs` の Go の起動、`scripts/verify.cjs` の Go の検査、Go と TS の照合だけのための
+   fixture を消し、README・CLAUDE.md・`docs/` の Go の記述を書き換える。
+
+各段階は Go の挙動を正とし、移す前に Go のテストが確かめている事柄を TS のテストに写す。
+
+### `src/core` と Go の検証が食い違ったとき（持ち主の決定）
+
+段階6の前に、`src/core` と Go の `internal/workspace` の検証の違いを洗い出す。違いが見つかったら、どちらに
+合わせるかをその都度持ち主に聞く。その PR は返事を待って止めてよい。
+
+### iPad／Mac との互換の確かめ方（持ち主の決定）
+
+出す前は自動テストで確かめる。段階4〜8では、同じリクエストに対する Go の応答（状態コード・主なヘッダー・JSON）を
+記録し、TS の応答と比べるテストを書く。実機での確認は、リリースの後に持ち主が手で行う。段階5・6・8の PR の説明に、
+リリース後に確かめる操作（ログイン、保存、共有など）を書いておく。
+
+### 本番が壊れたとき（持ち主の決定）
+
+Vercel のロールバックで前のデプロイ（Go が応答する版）に戻して止血してよい。直した版は新しい版番号の PR として
+CLAUDE.md の手順どおり出し直す。ロールバックで戻るのはコードだけなので、各段階は DB のスキーマも、
+Go と TS が互いに読む Cookie・トークンの形も変えない（どちらに戻っても動く）。
+
+### DB の接続（実装者の判断）
+
+Go は1つの関数で `MaxConns=5` のプールを持っていた。Route Handler ではインスタンスごとにプールができるので、
+`pg.Pool` の `max` は小さく（5以下）し、`DATABASE_URL` は README のとおり Neon の pooled 接続を使う前提にする。
+
+## 書き方（読みやすさのための決まり）
+
+- 1つのパスは1つの `route.ts`。そのファイルを開けば、そのエンドポイントが何をするかが上から順に読める。
+- DB の読み書きは、まとまりごとに1つのファイル（例：`gallery`・`workspace`・`sessions`）に置き、SQL をそのまま書く。
+  ORM や独自の抽象は入れない。
+- 共通の処理（ヘッダー、エラーの応答、ログインの確認、回数制限）は小さな関数にし、ラッパーを何重にも重ねない。
+- 置き場所は `src/server/`（DB・セッション・OAuth など、Route Handler から使うもの）。正確な分け方は段階1で決める。
+
+## テスト
+
+- Go の `server/internal/**/_test.go` が確かめている事柄を、`node --test` のテスト（`tests/*.test.cjs` と同じ仕組み）
+  に移す。DB を使うテストは、今の Go の DB テストと同じく `.env.local` のローカルの PostgreSQL を使い、
+  ランダムな持ち主で行を作って消す。
+- 既存の E2E（`npm run test:e2e`）は、移行の各段階でそのまま通ること。
+- `npm run check:production` は各リリースの後にそのまま通ること（`/api/health` の説明文の「Go function」は直す）。
+
+## 実装者に任せること
+
+- `src/server/` の中の正確なファイルの分け方。
+- Route Handler からテストをどう呼ぶか（ハンドラーの関数を直接呼ぶか、`next start` に対して HTTP で叩くか）。
+- 段階の中で PR をさらに分けるかどうか。
+- Sentry へ送る内容の細部（Go と同じ程度の情報を送る）。

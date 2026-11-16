@@ -24,8 +24,9 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   use: { baseURL: 'http://127.0.0.1:3101', trace: 'retain-on-failure' },
   reporter: [['list']],
-  // The app's backend is the Go server; Next.js serves the pages and (next.config.mjs rewrites) forwards /api/workspace,
-  // /api/health and /api/auth/* to it at TYPLE_WEB_URL (default http://127.0.0.1:8081).
+  // The app's backend is the Go server; Next.js serves the pages and /api/health (a Route Handler), and (next.config.mjs
+  // rewrites) forwards /api/workspace, /api/auth/* and the other backend paths to it at TYPLE_WEB_URL (default
+  // http://127.0.0.1:8081).
   webServer: [
     {
       // go run compiles first, which can take a while on a cold cache.
@@ -37,7 +38,8 @@ export default defineConfig({
         AUTH_GITHUB_SECRET: 'e2e',
         ...(process.env.DATABASE_URL ? { DATABASE_URL: process.env.DATABASE_URL } : {}),
       },
-      url: 'http://127.0.0.1:8081/api/health',
+      // The session answers 200 without the database, so the server is up once it does.
+      url: 'http://127.0.0.1:8081/api/auth/session',
       reuseExistingServer: false,
       timeout: 180000,
     },

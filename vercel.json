@@ -16,7 +16,6 @@
     { "source": "/api/shared", "destination": "/api/index" },
     { "source": "/api/gallery", "destination": "/api/index" },
     { "source": "/api/gallery/:path*", "destination": "/api/index" },
-    { "source": "/api/health", "destination": "/api/index" },
     { "source": "/api/auth/:path*", "destination": "/api/index" },
     { "source": "/api/admin/:path*", "destination": "/api/index" }
   ]
