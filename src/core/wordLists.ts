@@ -113,6 +113,8 @@ export function normalizeGroup({ group, levels }: Pick<WordList, 'group' | 'leve
 export function decodeLists(raw: string): SavedWordList[] {
   const data = JSON.parse(raw)
   if (data?.version !== 1 || !Array.isArray(data.lists)) throw new AppError('savedDataUnreadable')
+  // A writing mark saved as null is no mark, as the backend has always read it.
+  for (const list of data.lists) if (list && typeof list === 'object' && list.writing === null) delete list.writing
   const ids = new Set<string>()
   for (const list of data.lists) {
     if (!list || typeof list.id !== "string" || !list.id || ids.has(list.id) || typeof list.name !== "string" ||

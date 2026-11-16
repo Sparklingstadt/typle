@@ -55,8 +55,10 @@ test('writing is kept, checked and optional', () => {
   assert.deepEqual(decodeLists(encodeLists([marked]))[0].writing, { language: 'zh-Hans' })
   assert.equal('writing' in decodeLists(encodeLists([list]))[0], false)
   for (const writing of [{ language: 'xx' }, { language: 'ja', extra: 1 }, 'ja', null, [], {}]) {
-    assert.throws(() => decodeLists(JSON.stringify({ version: 1, lists: [{ ...list, writing }] })), { key: 'savedDataCorrupted' })
     assert.throws(() => validateList({ ...list, writing }), { key: 'invalidWritingLanguage' })
+    // Saved data with null has no mark, as the backend has always read it; anything else of another shape is corrupted.
+    if (writing === null) assert.equal('writing' in decodeLists(JSON.stringify({ version: 1, lists: [{ ...list, writing }] }))[0], false)
+    else assert.throws(() => decodeLists(JSON.stringify({ version: 1, lists: [{ ...list, writing }] })), { key: 'savedDataCorrupted' })
   }
   validateList(marked)
 })

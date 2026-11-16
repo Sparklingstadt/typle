@@ -15,3 +15,12 @@ test('a shared pack is written from the saved row as the Go backend wrote it', (
 test('an account that has saved nothing has no pack to share', () => {
   assert.equal(sharedPackFile(null, 'pack-a'), null)
 })
+
+// A list saved with "writing": null has no writing mark, as the Go backend read it (writingOf); the owner decided to
+// follow Go here (docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md).
+test('a writing mark saved as null is read as none', () => {
+  const at = '2026-10-01T00:00:00.000Z'
+  const list = { id: 'l1', name: 'L', packId: 'pack-a', words: [{ display: 'a', input: 'a', annotation: '' }], records: [], createdAt: at }
+  const row = lists => ({ lists: JSON.stringify(lists), packs: JSON.stringify([{ id: 'pack-a', name: 'A', createdAt: at }]), devices: '[]' })
+  assert.equal(sharedPackFile(row([{ ...list, writing: null }]), 'pack-a'), sharedPackFile(row([list]), 'pack-a'))
+})
