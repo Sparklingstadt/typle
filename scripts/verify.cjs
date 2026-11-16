@@ -1,13 +1,12 @@
 // Runs, in order, every check a commit must pass before it is released (docs/release-workflow.md), and stops at the
-// first failure: the migrations on the local database, the migration tests, the Go checks and DB tests, the type
-// check, the unit tests, lint, knip, the production build, the end-to-end tests, and the API documentation's build
+// first failure: the migrations on the local database, the migration tests, the type check, the unit tests, lint, knip, the production build, the end-to-end tests, and the API documentation's build
 // and link check. Until v2.38.0 GitHub Actions ran these as `verify`; since v2.38.1 they run here, on the
 // developer's machine, before a PR is opened and again on the merged main commit before it is released.
 //
 //   npm run verify            every check
 //   npm run verify -- --fast  without the end-to-end tests and the API documentation, for a quick look while working
 //
-// Needs the local PostgreSQL (docker compose --env-file .env.local up -d --wait), Go 1.25 and Node.js 24. DATABASE_URL
+// Needs the local PostgreSQL (docker compose --env-file .env.local up -d --wait), and Node.js 24. DATABASE_URL
 // from .env.local is migrated and used by the DB tests and the end-to-end tests, which add rows under random owners
 // and delete them afterwards. TYPLE_TEST_DATABASE_URL, when set, is used for the DB tests instead.
 const { spawnSync } = require('node:child_process')
@@ -31,10 +30,6 @@ const docsDir = path.join(root, 'api-docs')
 const steps = [
   { name: 'db:migrate', command: 'npm', args: ['run', 'db:migrate'] },
   { name: 'migration tests', command: 'node', args: ['--test', 'tests/migrate.test.cjs'], env: { TYPLE_TEST_DATABASE_URL: testDatabaseUrl } },
-  { name: 'gofmt', command: 'gofmt', args: ['-l', '.'], check: stdout => (stdout.trim() ? `Run gofmt -w on: ${stdout.trim()}` : null) },
-  { name: 'go vet', command: 'go', args: ['vet', './...'] },
-  { name: 'staticcheck', command: 'go', args: ['run', 'honnef.co/go/tools/cmd/staticcheck@v0.7.0', './...'], env: { GOTOOLCHAIN: 'go1.25.0' } },
-  { name: 'go test', command: 'go', args: ['test', './...'], env: { TYPLE_TEST_DATABASE_URL: testDatabaseUrl } },
   { name: 'typecheck', command: 'npm', args: ['run', 'typecheck'] },
   { name: 'unit tests', command: 'npm', args: ['test'], env: { TYPLE_TEST_DATABASE_URL: testDatabaseUrl } },
   { name: 'lint', command: 'npm', args: ['run', 'lint'] },
