@@ -14,6 +14,8 @@ export type LoginSettings = {
   /** The keys of the login cookie and of the iPad and Mac apps' token. */
   sessionKey: Buffer,
   appKey: Buffer,
+  /** The key of the administrator's cookie of /admin. */
+  adminKey: Buffer,
   /** Whether AUTH_URL is HTTPS, which names the login cookie __Host-. */
   secure: boolean,
 }
@@ -22,6 +24,7 @@ export type LoginSettings = {
 const RATE_LIMIT_INFO = 'typle gallery-rate-limit v1'
 const SESSION_INFO = 'typle session v1'
 const APP_INFO = 'typle app session v1'
+const ADMIN_INFO = 'typle admin v2'
 
 /** A key of 32 bytes derived from AUTH_SECRET for one kind of value. */
 const deriveKey = (secret: string, info: string) => Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), info, 32))
@@ -48,6 +51,7 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
     onVercel: env.VERCEL === '1',
     sessionKey: deriveKey(secret, SESSION_INFO),
     appKey: deriveKey(secret, APP_INFO),
+    adminKey: deriveKey(secret, ADMIN_INFO),
     secure: base.protocol === 'https:',
   }
 }
