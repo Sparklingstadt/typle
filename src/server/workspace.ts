@@ -6,7 +6,7 @@ import { withoutFollowedWords } from '../core/followedPacks'
 import { followedPackCount, MAX_FOLLOWED_PACKS, MAX_LISTS, ownListCount } from '../core/listOverview'
 import { followed } from '../core/packs/catalog'
 import { repairLibrary } from '../core/wordPacks'
-import { decodeDocument, type WorkspaceChange } from '../core/workspaceDocument'
+import { decodeDocument, type WorkspaceChange, type WorkspaceDocument } from '../core/workspaceDocument'
 import { validateWorkspaceRequest } from '../core/workspaceRequest'
 import { signedIn } from './account'
 import { measureSave } from './metrics'
@@ -153,7 +153,64 @@ function encodeChange(change: WorkspaceChange) {
       rows,
       own: ownListCount(repaired),
       followed: followedPackCount(repaired.packs),
+      // The bytes of the lists (with their records) and packs as saved, which a change may not grow past MAX_LISTS_BYTES.
+      size: Buffer.byteLength(JSON.stringify(slim.lists)) + Buffer.byteLength(JSON.stringify(slim.packs)),
     },
+  }
+}
+
+/** The most bytes the lists and packs may grow to by a change of a record (the Go backend's MaxListsBytes). */
+const MAX_LISTS_BYTES = 896 << 10
+
+/**
+ * Changes the owner's workspace and saves it, as the Go backend's Modify did for adding and deleting records: in one
+ * transaction that holds the row, so a change is never refused for a revision another save moved on; the save from
+ * before it is the one told to reload (409). change gets the workspace as the app reads it, and says whether it changed
+ * anything; nothing changed is nothing written. A change is saved as a save of the lists and packs is (encodeChange),
+ * with the revision one up, and is refused when it makes them larger than MAX_LISTS_BYTES. A refusal change throws is
+ * thrown, with nothing written. Returns change's result and the workspace as saved afterwards, null when there is none.
+ */
+export async function modifyWorkspace<T>(db: Pool, owner: string,
+  change: (document: WorkspaceDocument) => { document: WorkspaceDocument, changed: boolean, result: T }): Promise<{ result: T, saved: SavedWorkspace | null }> {
+  const connection = await db.connect()
+  try {
+    await connection.query('BEGIN')
+    const { rows } = await connection.query<{ lists: string, packs: string | null, devices: string, split: boolean }>(
+      'SELECT lists::text AS lists, packs::text AS packs, devices::text AS devices, records_split AS split FROM typle_workspaces WHERE owner_id = $1 FOR UPDATE',
+      [owner])
+    let document: WorkspaceDocument = { lists: [], packs: [], devices: [], interests: [] }
+    if (rows.length) {
+      let lists = JSON.parse(rows[0].lists) as unknown[]
+      if (rows[0].split) {
+        const stored = await connection.query<{ list_id: string, data: string }>(
+          'SELECT list_id, data::text AS data FROM typle_records WHERE owner_id = $1 ORDER BY list_id, position', [owner])
+        const records = new Map<string, unknown[]>()
+        for (const row of stored.rows) records.set(row.list_id, [...records.get(row.list_id) ?? [], JSON.parse(row.data)])
+        lists = withRecords(lists, records)
+      }
+      document = followed(decodeDocument({ lists, packs: rows[0].packs === null ? null : JSON.parse(rows[0].packs), devices: JSON.parse(rows[0].devices) }))
+    }
+    const before = encodeChange({ lists: document.lists, packs: document.packs }).library!.size
+    const { document: next, changed, result } = change(document)
+    if (changed) {
+      if (!rows.length) throw new Error(`no workspace of ${owner} to change`)
+      const { library } = encodeChange({ lists: next.lists, packs: next.packs, devices: next.devices })
+      if (library!.size > MAX_LISTS_BYTES && library!.size > before) throw new AppError('workspaceTooLarge')
+      await connection.query(`UPDATE typle_workspaces SET lists = $2::jsonb, packs = $3::jsonb, devices = $4::jsonb,
+          records_split = true, revision = revision + 1, updated_at = now() WHERE owner_id = $1`,
+      [owner, JSON.stringify(library!.lists), JSON.stringify(library!.packs), JSON.stringify(next.devices)])
+      await syncRecords(connection, owner, library!.rows)
+      await connection.query('DELETE FROM typle_shared_packs WHERE owner_id = $1 AND NOT (pack_id = ANY($2::text[]))',
+        [owner, library!.packs.map(pack => pack.id)])
+    }
+    const saved = await readSavedWorkspace(connection, owner)
+    await connection.query('COMMIT')
+    connection.release()
+    return { result, saved }
+  } catch (error) {
+    await connection.query('ROLLBACK').catch(() => {})
+    connection.release(true)
+    throw error
   }
 }
 
