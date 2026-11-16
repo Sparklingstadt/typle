@@ -41,11 +41,12 @@ const ADMIN_UNAVAILABLE = '/admin?error=adminUnavailable'
 const random = () => randomBytes(32).toString('base64url')
 
 /**
- * A redirect, with the cookies it sets; no cache keeps it, as it may set a cookie. The Location is sent as the bytes of
- * its UTF-8, as the Go backend sent a returnTo that is not ASCII.
+ * A redirect, with the cookies it sets; no cache keeps it, as it may set a cookie. The characters of the Location that
+ * are not ASCII are percent-encoded as UTF-8, which a browser follows to the same page: the Go backend sent them as raw
+ * UTF-8, which Vercel re-encodes as if each byte were a character of its own.
  */
 function goTo(location: string, cookies: string[] = []): Response {
-  const response = new Response(null, { status: 302, headers: { Location: Buffer.from(location, 'utf8').toString('latin1'), 'Cache-Control': 'no-store' } })
+  const response = new Response(null, { status: 302, headers: { Location: location.replace(/[^\x00-\x7f]+/gu, encodeURIComponent), 'Cache-Control': 'no-store' } })
   for (const value of cookies) response.headers.append('Set-Cookie', value)
   return response
 }
