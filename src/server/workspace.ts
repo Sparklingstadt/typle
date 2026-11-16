@@ -5,7 +5,7 @@ import { MAX_LEVEL, MAX_SAVED_LEVELS } from '../core/wordLists'
 import { withoutFollowedWords } from '../core/followedPacks'
 import { followedPackCount, MAX_FOLLOWED_PACKS, MAX_LISTS, ownListCount } from '../core/listOverview'
 import { followed } from '../core/packs/catalog'
-import type { RecordInput } from '../core/records'
+import { addRecord, deleteRecord, type RecordInput } from '../core/records'
 import { repairLibrary } from '../core/wordPacks'
 import { decodeDocument, type WorkspaceChange, type WorkspaceDocument } from '../core/workspaceDocument'
 import { validateWorkspaceRequest } from '../core/workspaceRequest'
@@ -291,30 +291,43 @@ async function readWorkspaceAnswer(request: Request, db: Pool, login: LoginSetti
   }
 }
 
-/** PUT /api/workspace: checked as the Go backend's saveRequest and saveWorkspace checked it, in that order. */
-async function saveWorkspaceAnswer(request: Request, db: Pool, login: LoginSettings): Promise<Response> {
+/**
+ * The owner and body of a request that saves, checked as the Go backend's saveRequest checked it (after the Origin and
+ * Content-Type): the login, then the body (none is emptyRequest, past MAX_BODY_BYTES workspaceTooLarge, not a JSON
+ * object invalid, one that cannot be read workspaceSaveFailed, reported as operation), then its accountId, which must be
+ * the login's (loginAccountChanged), so a screen that signed in as someone else is told so first.
+ */
+async function readSaveRequest(request: Request, db: Pool, login: LoginSettings, operation: string, invalid: string):
+  Promise<{ owner: string, fields: Record<string, unknown> } | { refusal: Response }> {
   const account = await signedIn(request, db, login)
-  if ('refusal' in account) return account.refusal
+  if ('refusal' in account) return account
   const owner = account.user.sub
   let body: ArrayBuffer
   try {
     body = await request.arrayBuffer()
   } catch (error) {
-    reportFailure(request, error, 'workspace.write')
-    return refuse(503, 'workspaceSaveFailed')
+    reportFailure(request, error, operation)
+    return { refusal: refuse(503, 'workspaceSaveFailed') }
   }
-  if (body.byteLength === 0) return refuse(400, 'emptyRequest')
-  if (body.byteLength > MAX_BODY_BYTES) return refuse(413, 'workspaceTooLarge')
+  if (body.byteLength === 0) return { refusal: refuse(400, 'emptyRequest') }
+  if (body.byteLength > MAX_BODY_BYTES) return { refusal: refuse(413, 'workspaceTooLarge') }
   let fields: unknown
   try {
     fields = JSON.parse(new TextDecoder().decode(body))
   } catch {
-    return refuse(400, 'invalidWorkspace')
+    return { refusal: refuse(400, invalid) }
   }
-  if (!fields || typeof fields !== 'object' || Array.isArray(fields)) return refuse(400, 'invalidWorkspace')
-  // The account is checked before the rest, so a screen that signed in as someone else is told so first.
-  if ((fields as { accountId?: unknown }).accountId !== owner) return refuse(401, 'loginAccountChanged')
-  const read = readWorkspaceChange(fields as Record<string, unknown>)
+  if (!fields || typeof fields !== 'object' || Array.isArray(fields)) return { refusal: refuse(400, invalid) }
+  if ((fields as { accountId?: unknown }).accountId !== owner) return { refusal: refuse(401, 'loginAccountChanged') }
+  return { owner, fields: fields as Record<string, unknown> }
+}
+
+/** PUT /api/workspace: checked as the Go backend's saveRequest and saveWorkspace checked it, in that order. */
+async function saveWorkspaceAnswer(request: Request, db: Pool, login: LoginSettings): Promise<Response> {
+  const save = await readSaveRequest(request, db, login, 'workspace.write', 'invalidWorkspace')
+  if ('refusal' in save) return save.refusal
+  const { owner, fields } = save
+  const read = readWorkspaceChange(fields)
   if ('refusal' in read) return refuse(400, read.refusal)
   try {
     return reply(200, workspaceAnswer(await writeWorkspace(db, owner, read.revision, read.change), owner))
@@ -370,4 +383,73 @@ export function readRecordDelete(fields: Record<string, unknown>): { listId: str
   const { listId, recordId } = fields
   if (Object.keys(fields).length !== 3 || typeof listId !== 'string' || !listId || typeof recordId !== 'string' || !recordId) return null
   return { listId, recordId }
+}
+
+/**
+ * A change of a record answered as the Go backend answered it: 404 recordListDeleted for a list that is gone, 413 for a
+ * workspace that would be too large, 400 and the key for any other refusal, and 503 workspaceSaveFailed for the
+ * server's failure, reported as operation.
+ */
+function recordRefusal(request: Request, error: unknown, operation: string): Response {
+  if (error instanceof AppError && error.key === 'recordListDeleted') return refuse(404, 'recordListDeleted')
+  if (error instanceof AppError && error.key === 'workspaceTooLarge') return refuse(413, 'workspaceTooLarge')
+  if (error instanceof AppError) return refuse(400, error.key)
+  reportFailure(request, error, operation)
+  return refuse(503, 'workspaceSaveFailed')
+}
+
+/**
+ * POST and DELETE /api/workspace/records: one practice record of the account's workspace at a time. Neither names a
+ * revision: a record is saved or deleted however the lists were changed meanwhile, and a request sent again does the
+ * same. POST {accountId, listId, record} adds the record, 201 when it is new and 200 when the list already had it, and
+ * answers the workspace as now saved with the record; DELETE {accountId, listId, recordId} deletes it, 200 also when it,
+ * or its list, is already gone, and answers the workspace as now saved.
+ */
+async function changeRecordAnswer(request: Request, db: Pool, login: LoginSettings): Promise<Response> {
+  const adding = request.method === 'POST'
+  const operation = adding ? 'record.add' : 'record.delete'
+  const save = await readSaveRequest(request, db, login, operation, 'invalidRecord')
+  if ('refusal' in save) return save.refusal
+  const { owner, fields } = save
+  let outcome: { result: { record: unknown, added: boolean } | null, saved: SavedWorkspace | null }
+  try {
+    if (adding) {
+      const read = readRecordAdd(fields)
+      if (!read) return refuse(400, 'invalidRecord')
+      outcome = await modifyWorkspace(db, owner, document => {
+        const { document: next, record, added } = addRecord(document, read.listId, read.input)
+        return { document: next, changed: added, result: { record, added } }
+      })
+    } else {
+      const read = readRecordDelete(fields)
+      if (!read) return refuse(400, 'invalidRecord')
+      outcome = await modifyWorkspace(db, owner, document => {
+        const { document: next, deleted } = deleteRecord(document, read.listId, read.recordId)
+        return { document: next, changed: deleted, result: null }
+      })
+    }
+  } catch (error) {
+    return recordRefusal(request, error, operation)
+  }
+  // The Go backend read the workspace again after a change, and failed when there was none.
+  if (!outcome.saved) return recordRefusal(request, new Error('workspace missing after a record was changed'), operation)
+  const answer = workspaceAnswer(outcome.saved, owner)
+  if (!adding) return reply(200, answer)
+  return reply(outcome.result!.added ? 201 : 200, { ...answer, record: outcome.result!.record })
+}
+
+/** /api/workspace/records, as answerWorkspace answers /api/workspace: POST adds a record, DELETE deletes one. */
+export async function answerRecords(request: Request, open: () => Pool, settings: () => LoginSettings | null = readLoginSettings,
+  env: Record<string, string | undefined> = process.env): Promise<Response> {
+  const login = settings()
+  if (!login) return refuse(503, 'authUnavailable')
+  if (!fromAppOrOrigin(request, login.origin) || !jsonContent(request)) return refuse(403, 'forbiddenRequest')
+  let db: Pool
+  try {
+    db = open()
+  } catch (error) {
+    reportFailure(request, error, 'workspace.open')
+    return refuse(503, 'databaseUnavailable')
+  }
+  return measureSave(request, request.method === 'POST' ? 'record.add' : 'record.delete', () => db, () => changeRecordAnswer(request, db, login), env)
 }
