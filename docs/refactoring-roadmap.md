@@ -17,12 +17,12 @@ GraphQL（#11）は v2.43.0 で消しました。11/6〜11/13 の GraphQL を使
 
 ## 残っていること
 
-メジャーの依存の更新は、1つずつ別の PR にします。範囲内の依存の更新は月に1回、1つの PR にまとめます（最後は v2.42.17、2026-11-16）。`cn` 0.5 は v2.42.18 で上げました。残りは、次の理由で止めています。
+メジャーの依存の更新は、1つずつ別の PR にします。範囲内の依存の更新は月に1回、1つの PR にまとめます（最後は v2.43.2、2026-11-16）。`cn` 0.5 も v2.43.2 で上げました。残りは、次の理由で止めています。
 
 | 依存 | 止めている理由 | 上げられるようになる条件 |
 |---|---|---|
 | ESLint 10 | `eslint-config-next` が同梱する `eslint-plugin-import`・`eslint-plugin-jsx-a11y`・`eslint-plugin-react` の peer が eslint 9 まで。lint は通るが、npm が peer を上書きしないと入らない | 3つのプラグイン（または `eslint-config-next`）が eslint 10 に対応する |
-| TypeScript 7（`typescript` のまま） | パッケージが JavaScript の API（`ts.transpileModule`）を出さなくなった。typescript-eslint（8.72.2 で `typescript <6.1.0`）と、単体テストを読み込む `tests/register.cjs` がこの API を使う。v2.43.1 から、`typescript7`（`npm:typescript@^7`）を並べて入れ、`npm run typecheck` だけを TypeScript 7 の `tsc` で動かしている | typescript-eslint が TypeScript 7 に対応し、`tests/register.cjs` を別の読み込み方に変える。そのとき `typescript` を 7 に上げ、`typescript7` をやめる |
+| TypeScript 7（`typescript` のまま） | パッケージが JavaScript の API（`ts.transpileModule`）を出さなくなった。typescript-eslint（8.72.2 で `typescript <6.1.0`）と、単体テストを読み込む `tests/register.cjs` がこの API を使う。v2.43.2 から、`typescript7`（`npm:typescript@^7`）を並べて入れ、`npm run typecheck` だけを TypeScript 7 の `tsc` で動かしている | typescript-eslint が TypeScript 7 に対応し、`tests/register.cjs` を別の読み込み方に変える。そのとき `typescript` を 7 に上げ、`typescript7` をやめる |
 | `@types/node` 26 | 実行環境が Node.js 24（`package.json` の `engines`） | Node.js 26 に移る |
 
 ## 進め方の約束
