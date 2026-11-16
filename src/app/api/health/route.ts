@@ -18,3 +18,5 @@ export const POST = onlyGet
 export const PUT = onlyGet
 export const PATCH = onlyGet
 export const DELETE = onlyGet
+// Next.js would answer OPTIONS itself with 204 and every method of this file; the Go backend answered 405.
+export const OPTIONS = onlyGet

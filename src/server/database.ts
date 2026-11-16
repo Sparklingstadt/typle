@@ -3,9 +3,24 @@ import { Pool } from 'pg'
 // The database of the Route Handlers. Each server instance keeps one small pool: on Vercel many instances can run at
 // once, and DATABASE_URL is Neon's pooled connection.
 
-/** A pool of connections to the database at url. */
-export function createPool(url: string): Pool {
-  return new Pool({ connectionString: url, max: 5, idleTimeoutMillis: 30_000 })
+/**
+ * A pool of connections to the database at url. Connecting and each query give up after timeoutMs, so a database that
+ * stops answering cannot keep the pool's connections lent out: pg drops a connection whose query timed out.
+ */
+export function createPool(url: string, timeoutMs = 5_000): Pool {
+  const db = new Pool({
+    connectionString: url,
+    max: 5,
+    idleTimeoutMillis: 30_000,
+    connectionTimeoutMillis: timeoutMs,
+    query_timeout: timeoutMs,
+    // On Vercel an instance can sleep with idle connections open; keep-alive finds the dead ones.
+    keepAlive: true,
+  })
+  // The database closing an idle connection (a restart, an idle timeout) is emitted here. Unheard, the event would
+  // throw; the pool has already dropped that connection, so it is only logged.
+  db.on('error', error => console.error('database pool:', error))
+  return db
 }
 
 let shared: Pool | undefined

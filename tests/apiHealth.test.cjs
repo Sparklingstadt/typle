@@ -35,7 +35,7 @@ test('503 when no database is set', async () => {
 
 test('the route answers other methods with 405', async () => {
   const route = require('../src/app/api/health/route.ts')
-  for (const method of ['POST', 'PUT', 'PATCH', 'DELETE']) {
+  for (const method of ['POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']) {
     const response = await route[method]()
     assert.equal(response.status, 405, method)
     assert.equal(response.headers.get('allow'), 'GET, HEAD', method)
