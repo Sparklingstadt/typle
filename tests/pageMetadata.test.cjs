@@ -62,8 +62,6 @@ test('the sitemap lists no page that is marked noindex', () => {
   for (const { path: page } of INDEXED_PATHS) {
     assert.ok(!found[page]?.options.includes('personal: true'), `${page} is in the sitemap but noindex`)
   }
-  // The gallery and share links set noindex in their own layouts.
-  for (const page of ['/gallery']) assert.ok(!INDEXED_PATHS.some(entry => entry.path === page), page)
 })
 
 test('pages that show only the visitor\'s own data are noindex', () => {

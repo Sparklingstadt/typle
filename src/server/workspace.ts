@@ -201,8 +201,6 @@ export async function modifyWorkspace<T>(db: Pool, owner: string,
           records_split = true, revision = revision + 1, updated_at = now() WHERE owner_id = $1`,
       [owner, JSON.stringify(library!.lists), JSON.stringify(library!.packs), JSON.stringify(next.devices)])
       await syncRecords(connection, owner, library!.rows)
-      await connection.query('DELETE FROM typle_shared_packs WHERE owner_id = $1 AND NOT (pack_id = ANY($2::text[]))',
-        [owner, library!.packs.map(pack => pack.id)])
     }
     const saved = await readSavedWorkspace(connection, owner)
     await connection.query('COMMIT')
@@ -220,8 +218,7 @@ const json = (value: unknown) => value === undefined ? null : JSON.stringify(val
 /**
  * Saves change over the owner's workspace at revision, as the Go backend's WriteRevision did: revision 0 creates the
  * row, any other replaces what is saved only if it is still that revision (else Conflict). Parts not sent stay as they
- * are. Lists saved bring their records (typle_records becomes exactly theirs); packs saved delete the links to packs no
- * longer among them. More lists or followed packs than allowed are refused, unless the saved workspace already had more
+ * are. Lists saved bring their records (typle_records becomes exactly theirs). More lists or followed packs than allowed are refused, unless the saved workspace already had more
  * and the save does not raise the number. Returns the workspace as now saved.
  */
 export async function writeWorkspace(db: Pool, owner: string, revision: number, change: WorkspaceChange): Promise<SavedWorkspace> {
@@ -232,7 +229,7 @@ export async function writeWorkspace(db: Pool, owner: string, revision: number, 
     if (revision === 0) {
       if (library && library.own > MAX_LISTS) throw refusal('listLimit')
       if (library && library.followed > MAX_FOLLOWED_PACKS) throw refusal('followLimit')
-      // As a share of the initial packs is made under the owner's lock (src/server/shares.ts), so that a first save sees it.
+      // Two first saves of the same owner wait here for each other.
       await connection.query(`SELECT pg_advisory_xact_lock(hashtext('typle_workspaces:' || $1))`, [owner])
       const { rows } = await connection.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, interests, records_split)
         VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5::jsonb, true) ON CONFLICT (owner_id) DO NOTHING RETURNING revision`,
@@ -262,10 +259,6 @@ export async function writeWorkspace(db: Pool, owner: string, revision: number, 
     }
     if (library) await syncRecords(connection, owner, library.rows)
     const saved = await readSavedWorkspace(connection, owner)
-    if (library) {
-      await connection.query('DELETE FROM typle_shared_packs WHERE owner_id = $1 AND NOT (pack_id = ANY($2::text[]))',
-        [owner, library.packs.map(pack => pack.id)])
-    }
     await connection.query('COMMIT')
     connection.release()
     return saved!

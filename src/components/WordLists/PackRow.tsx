@@ -3,7 +3,7 @@ import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { useTranslations } from 'next-intl'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { ChevronRight, Copy, Download, EyeOff, History, Keyboard, Library, ListPlus, MoreHorizontal, Pencil, Share2, Trash2, UserMinus } from 'lucide-react'
+import { ChevronRight, Copy, Download, History, Keyboard, ListPlus, MoreHorizontal, Pencil, Trash2, UserMinus } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { PackOverview } from '@/core/packOverview'
@@ -17,7 +17,7 @@ const svgClass = '[&_svg]:shrink-0 [&_svg]:text-muted-foreground'
 // The lists of a pack as one row, such as Linuxコマンド with its 11 lists, which opens to show each of them with its
 // own actions. A pack of one list is a row too. 練習 opens the list of the pack practised last, or its first.
 // `onAddList` and `onCopy` are left out when no more lists can be saved.
-export default function PackRow({ item, now, open, onToggle, highlight, disabled, onEditPack, onAddList, onCopy, onExport, onShare, shared, listed, hidden, onDeletePack, followed, onUnfollow, children }: {
+export default function PackRow({ item, now, open, onToggle, highlight, disabled, onEditPack, onAddList, onCopy, onExport, onDeletePack, followed, onUnfollow, children }: {
   item: PackOverview
   now: Date
   open: boolean
@@ -28,14 +28,6 @@ export default function PackRow({ item, now, open, onToggle, highlight, disabled
   onAddList?: () => void
   onCopy?: () => void
   onExport: () => void
-  /** Left out for a guest, who has no account to share from. */
-  onShare?: () => void
-  /** The pack has a share link. */
-  shared?: boolean
-  /** The share is in the gallery. */
-  listed?: boolean
-  /** An administrator took the share out of the gallery, so its owner cannot put it back. */
-  hidden?: boolean
   onDeletePack: () => void
   /** A followed official pack: it has no editing actions, and 'フォロー解除' takes the place of 削除. */
   followed?: boolean
@@ -66,9 +58,6 @@ export default function PackRow({ item, now, open, onToggle, highlight, disabled
           </h3>
           <ListLabels list={pack} />
           {followed && <Badge variant="secondary">{follow('badge')}</Badge>}
-          {shared && <Badge variant="secondary" className="gap-1"><Share2 className="size-3" aria-hidden="true" />{t('shared')}</Badge>}
-          {listed && !hidden && <Badge variant="secondary" className="gap-1"><Library className="size-3" aria-hidden="true" />{t('listed')}</Badge>}
-          {hidden && <Badge variant="destructive" className="gap-1"><EyeOff className="size-3" aria-hidden="true" />{t('hidden')}</Badge>}
         </div>
         <p className="text-sm text-muted-foreground">
           {t('lists', { count: lists.length })}
@@ -96,7 +85,6 @@ export default function PackRow({ item, now, open, onToggle, highlight, disabled
             {!followed && onAddList && <DropdownMenuItem className={svgClass} disabled={disabled} onSelect={onAddList}><ListPlus aria-hidden="true" />{t('addList')}</DropdownMenuItem>}
             {onCopy && <DropdownMenuItem className={svgClass} disabled={disabled} onSelect={onCopy}><Copy aria-hidden="true" />{t('copy')}</DropdownMenuItem>}
             <DropdownMenuItem className={svgClass} onSelect={onExport}><Download aria-hidden="true" />{t('export')}</DropdownMenuItem>
-            {onShare && <DropdownMenuItem className={svgClass} onSelect={onShare}><Share2 aria-hidden="true" />{t('share')}</DropdownMenuItem>}
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive" className="[&_svg]:shrink-0 [&_svg]:text-destructive" disabled={disabled} onSelect={followed ? onUnfollow : onDeletePack}>
               {followed ? <><UserMinus aria-hidden="true" />{follow('unfollow')}</> : <><Trash2 aria-hidden="true" />{t('delete')}</>}

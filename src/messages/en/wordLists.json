@@ -45,8 +45,7 @@
     "export": "Export CSV",
     "packTitle": "Delete “{name}”?",
     "packDescription": "This also deletes {lists, plural, one {# list} other {# lists}} and {records, plural, one {# practice record} other {# practice records}}.",
-    "lastInPack": "The pack “{name}” will be deleted too.",
-    "shareEnds": "Its share link will stop working too."
+    "lastInPack": "The pack “{name}” will be deleted too."
   },
   "order": {
     "label": "Sort",
@@ -115,11 +114,7 @@
     "addList": "Add a list",
     "delete": "Delete",
     "copy": "Duplicate",
-    "export": "Export",
-    "share": "Share",
-    "shared": "Shared",
-    "listed": "In the gallery",
-    "hidden": "Hidden"
+    "export": "Export"
   },
   "wordRow": {
     "label": "Word {n}",
@@ -315,45 +310,10 @@
     "matching": "Packs matching your interests",
     "others": "Other packs",
     "noMatching": "No packs match your interests yet",
-    "changeInterests": "Change interests",
-    "toGallery": "Browse packs other people have published in the gallery"
-  },
-  "share": {
-    "title": "Share “{name}”",
-    "description": "Anyone with the link can see this pack’s name, description, lists and words, and add it to their own packs. Practice records are not included. The link shows the pack as it is when you create it; changing the pack later does not change it automatically.",
-    "sharing": "Anyone with the link can see this pack and add it to their own packs. After you change the pack, use “Update share” to refresh what the link shows.",
-    "link": "Share link",
-    "copy": "Copy",
-    "copied": "Copied",
-    "copyFailed": "Could not copy. Select the link and copy it.",
-    "updatedAt": "Last updated {date}",
-    "updateHint": "Editing the pack does not change the link automatically.",
-    "create": "Create link",
-    "update": "Update share",
-    "stop": "Stop sharing",
-    "failed": "Could not change the share.",
-    "gallery": "List in the gallery",
-    "galleryNotice": "Anyone can see it in the gallery. Your name is not shown. An administrator may hide inappropriate content.",
-    "galleryCategoryHint": "Adding a category makes it easier to find.",
-    "hiddenNotice": "An administrator has hidden this pack, so it cannot be listed in the gallery.",
-    "orphans": {
-      "title": "Shares without a pack",
-      "description": "The pack behind these share links is gone. Anyone with a link can still see it. Stop sharing the ones you no longer need.",
-      "unnamed": "Untitled pack",
-      "stop": "Stop sharing",
-      "stopLabel": "Stop sharing {name}"
-    }
+    "changeInterests": "Change interests"
   },
   "sharedPage": {
-    "loading": "Loading the share",
-    "intro": "This pack was shared with you. Add it to your packs to edit it and practice with it.",
-    "add": "Add to my packs",
-    "toPacks": "Open word packs",
-    "loadFailed": "Couldn’t load this share. Try again in a moment.",
-    "levels": "Difficulty: {levels}",
-    "lists": "Lists",
-    "addFailed": "Couldn’t add the pack. Please try again.",
-    "full": "You can save up to {max} word lists of your own. Delete lists you no longer use to add this pack."
+    "toPacks": "Open word packs"
   },
   "follow": {
     "badge": "Official",
@@ -363,38 +323,5 @@
     "confirm": "Unfollow",
     "confirming": "Unfollowing…",
     "done": "Unfollowed “{name}”."
-  },
-  "gallery": {
-    "title": "Gallery",
-    "intro": "Browse word packs other people have published, look inside, and add them to your own packs.",
-    "search": "Search",
-    "category": "Category",
-    "allCategories": "All categories",
-    "sort": "Sort by",
-    "sortNew": "Newest",
-    "sortPopular": "Most added",
-    "lists": "{count, plural, one {# list} other {# lists}}",
-    "words": "{count, plural, one {# word} other {# words}}",
-    "added": "{count, plural, one {Added # time} other {Added # times}}",
-    "more": "Show more",
-    "empty": "No packs have been published yet",
-    "noResults": "No packs found",
-    "loadFailed": "Couldn’t load the gallery. Try again in a moment.",
-    "retry": "Try again"
-  },
-  "report": {
-    "open": "Report",
-    "title": "Report this pack",
-    "description": "Let the administrators know about a problem with this pack. Choose a reason and send it.",
-    "reason": "Reason for the report",
-    "reasons": {
-      "inappropriate": "Inappropriate content",
-      "spam": "Spam or advertising",
-      "personalInfo": "Contains personal information",
-      "other": "Other"
-    },
-    "send": "Send",
-    "sent": "Your report was received",
-    "failed": "The report could not be sent. Please try again."
   }
 }

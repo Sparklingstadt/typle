@@ -63,13 +63,7 @@
   "packFileUnreadable": "This file could not be read as a word pack.",
   "invalidPackFile": "This file has an item that is over the limit for saving.",
   "sharedPackNotFound": "This share has ended.",
-  "packNotFound": "This pack could not be found. Reload the page.",
   "invalidPage": "The page number is not valid.",
   "importInputTypeInvalid": "Line {line}: input_type must be command, code or word.",
-  "invalidQuery": "The search conditions are not valid.",
-  "invalidReport": "The report is not valid.",
-  "notInGallery": "A pack that is not in the gallery cannot be reported.",
-  "tooManyRequests": "Too many requests. Please try again in a little while.",
-  "invalidRequest": "The request is not valid.",
-  "sharedPackHidden": "An administrator has hidden this pack, so it cannot be listed in the gallery."
+  "invalidRequest": "The request is not valid."
 }

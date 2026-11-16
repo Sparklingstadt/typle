@@ -1,5 +1,5 @@
 {
-  "comment": "PUT /api/workspace of the Go backend (saveWorkspace with a real database), step after step from each setup. After each step: the result (ok or the error key), the row (lists, packs, devices, interests, revision, records_split), the rows of typle_records ([list_id, record_id, position, at in ms, data]) and the pack ids of typle_shared_packs. accountId is the owner's. src/server/workspace.ts must leave the same (tests/serverWorkspaceWrite.test.cjs).",
+  "comment": "PUT /api/workspace of the Go backend (saveWorkspace with a real database), step after step from each setup. After each step: the result (ok or the error key), the row (lists, packs, devices, interests, revision, records_split), the rows of typle_records ([list_id, record_id, position, at in ms, data]) and the pack ids of typle_shared_packs (setup.shares and shares; not checked since v2.49.0, which removed sharing). accountId is the owner's. src/server/workspace.ts must leave the same (tests/serverWorkspaceWrite.test.cjs).",
   "scenarios": [
     {
       "name": "the first save and the saves after it",

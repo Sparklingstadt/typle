@@ -10,8 +10,3 @@ export function endpointOf(request: Request): string {
 
 /** Matches every request to the backend's REST paths. */
 export const API = /\/api\//
-
-/** The answer of a request refused with the error key and status. */
-export function apiError(key: string, status: number) {
-  return { status, json: { error: key } }
-}

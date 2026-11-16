@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
-const { randomInt, randomUUID } = require('node:crypto')
+const { randomInt } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const { readWorkspaceChange, writeWorkspace, Conflict } = require('../src/server/workspace.ts')
 
@@ -15,7 +15,7 @@ const db = url ? createPool(url) : null
 const owners = []
 after(async () => {
   if (!db) return
-  for (const table of ['typle_shared_packs', 'typle_records', 'typle_workspaces']) {
+  for (const table of ['typle_records', 'typle_workspaces']) {
     await db.query(`DELETE FROM ${table} WHERE owner_id = ANY($1)`, [owners])
   }
   await db.end()
@@ -45,8 +45,7 @@ async function state(owner) {
     'revision', revision, 'split', records_split) FROM typle_workspaces WHERE owner_id = $1), 'null'::jsonb)::text AS v`, [owner])).rows[0].v
   const records = (await db.query(`SELECT COALESCE(jsonb_agg(jsonb_build_array(list_id, record_id, position, (extract(epoch FROM at) * 1000)::bigint, data)
     ORDER BY list_id, position), '[]'::jsonb)::text AS v FROM typle_records WHERE owner_id = $1`, [owner])).rows[0].v
-  const shares = (await db.query(`SELECT COALESCE(jsonb_agg(pack_id ORDER BY pack_id), '[]'::jsonb)::text AS v FROM typle_shared_packs WHERE owner_id = $1`, [owner])).rows[0].v
-  return { row: JSON.parse(row), records: JSON.parse(records), shares: JSON.parse(shares) }
+  return { row: JSON.parse(row), records: JSON.parse(records) }
 }
 
 for (const scenario of scenarios) {
@@ -59,12 +58,9 @@ for (const scenario of scenarios) {
       [owner, JSON.stringify(row.lists), row.packs === null ? null : JSON.stringify(row.packs), JSON.stringify(row.devices),
         row.interests === null ? null : JSON.stringify(row.interests), row.revision, row.split])
     }
-    for (const pack of scenario.setup?.shares ?? []) {
-      await db.query(`INSERT INTO typle_shared_packs (id, owner_id, pack_id, data) VALUES ($1, $2, $3, '{}'::jsonb)`, [randomUUID(), owner, pack])
-    }
     for (const [index, step] of scenario.steps.entries()) {
       assert.equal(await save(owner, step.body), step.result, `step ${index + 1}`)
-      assert.deepEqual(await state(owner), { row: step.row, records: step.records, shares: step.shares }, `step ${index + 1}`)
+      assert.deepEqual(await state(owner), { row: step.row, records: step.records }, `step ${index + 1}`)
     }
   })
 }
@@ -80,4 +76,13 @@ test('of two saves from the same revision, only one is saved', database, async (
   const again = await Promise.all([save(owner, { ...body('three'), revision: 1 }), save(owner, { ...body('four'), revision: 1 })])
   assert.deepEqual(again.sort(), ['conflict', 'ok'])
   assert.equal((await state(owner)).row.revision, 2)
+})
+
+// The app before v2.49.0 runs on the database while a deploy builds and after an Instant Rollback: every save of its
+// lists or packs deletes the owner's shares of packs no longer saved, so typle_shared_packs must stay until it is gone.
+test('the save of the app before v2.49.0 still runs on the migrated database', database, async () => {
+  const owner = newOwner()
+  await db.query('DELETE FROM typle_shared_packs WHERE owner_id = $1 AND NOT (pack_id = ANY($2::text[]))', [owner, ['p1']])
+  const { rows } = await db.query('SELECT count(*)::int AS n FROM typle_shared_packs')
+  assert.equal(rows[0].n, 0)
 })

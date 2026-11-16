@@ -113,7 +113,7 @@ Next.js のアプリは1つで、`src` を層に分けています。依存は�
 
 | 層 | 場所 | 内容 |
 |---|---|---|
-| サーバー | `src/server`・`src/app/api` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ギャラリーの読み取り（`gallery.ts`）と書き込み（`galleryWrites.ts`。ログインの設定 `settings.ts`、要求の確認 `request.ts`、IP ごとの回数制限 `rateLimit.ts`）・共有パックの読み取り（`shared.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・共有の一覧・作成・停止（`shares.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン（`auth.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub は `github.ts`、FFPF ID は `ffpf.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。ギャラリーと `/api/shared` の応答は、エラーも含めてすべて `X-Robots-Tag: noindex` です（[設計](docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md)）。`src/core` を使えますが、画面と `src/core` からは import しません |
+| サーバー | `src/server`・`src/app/api` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ログインの設定（`settings.ts`）・書き込みの要求の確認（`request.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン（`auth.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub は `github.ts`、FFPF ID は `ffpf.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。`src/core` を使えますが、画面と `src/core` からは import しません |
 | 画面 | `src/app`・`src/components`・`src/i18n`・`src/lib` | ページ、UI、多言語化、React のフック。`useWordLists` は React の状態とブラウザーのイベント（フォーカス・他タブの変更）だけを受け持ち、読み込み・保存は core の `createWorkspaceSession` に任せます。保存先は `src/lib/storage` で、`cloud.ts`（Next.js の Route Handler が答える `/api/workspace` と `/api/workspace/records`）と `guest.ts`（LocalStorage）を `workspaceStore(accountId)` がアカウントに応じて選びます |
 | core | `src/core` | React・Next.js・ブラウザーAPIに依存しない TypeScript。単語リスト・入力判定・記録・集計・ワークスペースのモデルと検証、保存先の型 `WorkspaceStore`（`workspaceStore.ts`、保存場所 `location` を含む）、ワークスペースの読み込み・保存 `createWorkspaceSession`（`workspaceSession.ts`。アカウントの切り替え後に届いた結果の破棄、保存の直列化、409での再読み込み、古いクラウド読み込みの無視）、単語ファイルの CSV の読み書き（`wordFormat.ts`。TSV の読み込みは v2.44.0 でやめました）。`packs/` は公式パック（v0.85.0 から sparklingstadt アカウントの67リストのコピーで、`commands/` に1リスト1ファイルで保存しています。それまではサンプル、国名193か国、コマンドと構文の25種類を初級・中級・上級に分けた85リスト）とそのカタログです |
 
@@ -164,21 +164,6 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 
 公式資料: [GitHub OAuth App](https://docs.github.com/ja/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)、[PostgreSQL Docker image](https://hub.docker.com/_/postgres)。
 
-### ギャラリーのレート制限
-
-ログインなしで書き込める2つのAPIは、Next.js の Route Handler（`src/server/rateLimit.ts`）で IP ごとに回数を制限します。
-
-| 対象のパス（`POST`） | 上限 | 単位 | 超えたとき |
-|---|---|---|---|
-| `/api/gallery/reports` | 1分あたり10リクエスト | クライアントのIPごと | `429 tooManyRequests` と `Retry-After`（窓が終わるまでの秒数。1以上）。通報は記録しません |
-| `/api/gallery/added` | 1分あたり60リクエスト | クライアントのIPごと | 同上。追加数は変えません |
-
-- 数える窓は1分ごとの固定窓で、回数は DB の `typle_gallery_hits` に持ちます（関数のインスタンスをまたいで数えるため）。`Origin` や `Content-Type`、本文が不正で先に断る要求は数えません。アプリのトークン付きの要求も同じく IP で数えます。
-- DB に保存するのは IP そのものではなく、`AUTH_SECRET` から専用に導いた鍵での IP の HMAC-SHA256（先頭16バイト）です。値は v2.46.3 までの Go と同じです（`tests/fixtures/client-mac.json`）。10分より古い行は、次の回数の更新のときに消します。通報とは結び付けず、数えるためにだけ使います。
-- 数えられなかったとき（DB の失敗）は、制限なしで通さず `503 databaseUnavailable` にします。
-- IP の決め方：Vercel 上（`VERCEL=1`）では、`X-Vercel-Forwarded-For`、`X-Forwarded-For`、`X-Real-Ip` の順に、最初の値（カンマ区切りの先頭）が IP アドレスとして読めるものを使います。読めるものがなければ、共通の「不明」のクライアントとして数え（制限は外れません）、Sentry に `gallery.limit.ip` を報告します。Vercel 以外（`npm run dev` や E2E）では、クライアントが自由に書ける転送ヘッダーを信じず、すべての要求を1つのクライアント（`local`）として数えます。
-- Vercel Firewall の Rate Limiting は、現在のプランでは使えません（設定しようとすると 402 になります）。そのため、この制限はコードで行います。
-
 ### FFPF ID でのログインの設定
 
 FFPF ID（ffpf-portal）は、GitHub と並ぶもう1つのログイン方法です。次の3つの環境変数がすべて設定されているときだけ有効になります（1〜2個だけだと警告を1回ログに書いて無効のままです）。
@@ -195,18 +180,13 @@ FFPF ID（ffpf-portal）は、GitHub と並ぶもう1つのログイン方法で
 - ログインした利用者は GitHub のアカウントとは別のアカウントです（アカウント ID は `ffpf:` で始まります）。
 - portal にログインしたままのブラウザでは、FFPF ID のログインはパスワードを聞かずに通ります（SSO）。ただし typle-r でログアウト（`/api/auth/signout`）したブラウザには Cookie `typle-ffpf-relogin`（`/api/auth`、30日）を置き、次の FFPF ID のログインに `prompt=login` を付けて portal のログイン画面を出させます。FFPF ID でログインし終えると消します。アプリ（iPad など）のログアウトでは置きません。
 
-### ギャラリーの共有を隠す
+### パックの共有とギャラリー
 
-v2.48.0 で管理者ダッシュボード（`/admin`、`/api/admin/*`、管理者のログイン、表 `typle_admins`）をなくしました。データは、DB に直接つなぐ別の管理用ツールで見ます。
-
-通報（表 `typle_gallery_reports`）を見て共有をギャラリーから隠すときは、対象の DB で SQL を実行します。隠した共有は、ギャラリーからも `/api/shared` からも消えます。持ち主のパックの行には「非公開にされました」と出て、持ち主はその共有をギャラリーに載せ直せません。
-
-```sql
--- 隠す
-UPDATE typle_shared_packs SET hidden_at = COALESCE(hidden_at, now()) WHERE id = '<共有の id>';
--- 戻す
-UPDATE typle_shared_packs SET hidden_at = NULL WHERE id = '<共有の id>';
-```
+パックの共有（`/api/shares`・`/api/shared`）、ギャラリー（`/gallery`・`/api/gallery` と通報・追加数・IP ごとの回数制限）、
+表 `typle_gallery_reports`・`typle_gallery_hits` は v2.49.0 でなくしました（管理者ダッシュボードは v2.48.0）。表
+`typle_shared_packs` は、v2.48.0 までのアプリが保存のたびに行を消すため、空にして残しています。v2.48.0 に戻せなくなってよい
+後の版で消します。パックを人に渡すときは、パックのファイル（`.typle-pack.json`）か CSV を書き出して送り、相手が取り込みます。
+配られた共有リンク `/shared/<id>` は「この共有は終了しました。」とだけ表示し、`/gallery` は公式パックのカタログへ転送します。
 
 ### Sentry エラー監視
 

@@ -20,7 +20,7 @@ const now = Math.floor(Date.now() / 1000)
 const claimsFor = sub => ({ sub, name: 'N', image: '', iat: now - 60, exp: now + 3600 })
 const cookie = sub => seal('typle session v1', claimsFor(sub))
 const token = sub => seal('typle app session v1', claimsFor(sub))
-const request = headers => new Request('http://localhost/api/shares', { headers })
+const request = headers => new Request('http://localhost/api/workspace', { headers })
 
 test('the user is read from the cookie, or from an app\'s token alone', () => {
   assert.equal(currentUser(request({ Cookie: `typle-session=${cookie('github:1')}` }), http).sub, 'github:1')

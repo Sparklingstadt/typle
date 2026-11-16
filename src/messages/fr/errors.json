@@ -63,13 +63,7 @@
   "packFileUnreadable": "Ce fichier n’a pas pu être lu comme un pack de mots.",
   "invalidPackFile": "Ce fichier contient un élément qui dépasse la limite d’enregistrement.",
   "sharedPackNotFound": "Ce partage est terminé.",
-  "packNotFound": "Ce pack est introuvable. Rechargez la page.",
   "invalidPage": "Le numéro de page n’est pas valide.",
   "importInputTypeInvalid": "Ligne {line} : input_type doit être command, code ou word.",
-  "invalidQuery": "Les critères de recherche ne sont pas valides.",
-  "invalidReport": "Le signalement n’est pas valide.",
-  "notInGallery": "Un pack absent de la galerie ne peut pas être signalé.",
-  "tooManyRequests": "Trop de requêtes. Réessayez dans un moment.",
-  "invalidRequest": "La requête n’est pas valide.",
-  "sharedPackHidden": "Un administrateur a masqué ce pack : il ne peut pas être affiché dans la galerie."
+  "invalidRequest": "La requête n’est pas valide."
 }

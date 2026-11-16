@@ -45,8 +45,7 @@
     "export": "匯出 CSV",
     "packTitle": "要刪除「{name}」嗎？",
     "packDescription": "還會刪除 {lists} 個清單和 {records} 筆練習紀錄。",
-    "lastInPack": "包「{name}」也會被刪除。",
-    "shareEnds": "它的分享連結也會失效。"
+    "lastInPack": "包「{name}」也會被刪除。"
   },
   "order": {
     "label": "排序",
@@ -115,11 +114,7 @@
     "addList": "新增清單",
     "delete": "刪除",
     "copy": "複製",
-    "export": "匯出",
-    "share": "分享",
-    "shared": "分享中",
-    "listed": "已在圖庫中展示",
-    "hidden": "已被隱藏"
+    "export": "匯出"
   },
   "wordRow": {
     "label": "單字 {n}",
@@ -315,45 +310,10 @@
     "matching": "符合興趣的詞包",
     "others": "其他詞包",
     "noMatching": "目前沒有符合興趣的詞包",
-    "changeInterests": "變更興趣",
-    "toGallery": "在圖庫中尋找大家公開的包"
-  },
-  "share": {
-    "title": "分享「{name}」",
-    "description": "知道連結的人可以查看此包的名稱、說明、清單和單字，並將其加入自己的包。不含練習紀錄。連結顯示的是建立連結時的內容，之後修改包不會自動更新。",
-    "sharing": "知道連結的人可以查看此包並加入自己的包。修改包之後，請用「更新分享」重新整理連結的內容。",
-    "link": "分享連結",
-    "copy": "複製",
-    "copied": "已複製",
-    "copyFailed": "無法複製。請選取連結後手動複製。",
-    "updatedAt": "最後更新 {date}",
-    "updateHint": "編輯包不會自動更新連結的內容。",
-    "create": "建立連結",
-    "update": "更新分享",
-    "stop": "停止分享",
-    "failed": "無法變更分享。",
-    "gallery": "在圖庫中展示",
-    "galleryNotice": "任何人都可以在圖庫中看到。不會顯示作者名。管理員可能會隱藏不適當的內容。",
-    "galleryCategoryHint": "加上分類後更容易被找到。",
-    "hiddenNotice": "管理員已隱藏此包，因此無法在圖庫中展示。",
-    "orphans": {
-      "title": "找不到包的分享",
-      "description": "這些分享連結對應的包已不存在。知道連結的人仍然可以查看。不需要的話請停止分享。",
-      "unnamed": "未命名的包",
-      "stop": "停止分享",
-      "stopLabel": "停止分享 {name}"
-    }
+    "changeInterests": "變更興趣"
   },
   "sharedPage": {
-    "loading": "正在載入分享",
-    "intro": "這是別人分享的包。加入我的包後，就能編輯並用來練習。",
-    "add": "加入我的包",
-    "toPacks": "開啟單字包",
-    "loadFailed": "無法載入此分享。請稍後再試。",
-    "levels": "難度：{levels}",
-    "lists": "清單",
-    "addFailed": "無法加入此包。請重試。",
-    "full": "自建的單字清單最多可儲存 {max} 個。刪除不再使用的清單後即可新增。"
+    "toPacks": "開啟單字包"
   },
   "follow": {
     "badge": "官方",
@@ -363,38 +323,5 @@
     "confirm": "取消追蹤",
     "confirming": "正在取消追蹤…",
     "done": "已取消追蹤「{name}」"
-  },
-  "gallery": {
-    "title": "圖庫",
-    "intro": "尋找大家公開的單字包，先看看內容，再加入自己的包。",
-    "search": "搜尋",
-    "category": "分類",
-    "allCategories": "所有分類",
-    "sort": "排序",
-    "sortNew": "最新",
-    "sortPopular": "加入最多",
-    "lists": "清單 {count}",
-    "words": "單字 {count}",
-    "added": "已加入 {count}",
-    "more": "顯示更多",
-    "empty": "還沒有公開的包",
-    "noResults": "找不到",
-    "loadFailed": "無法載入圖庫。請稍後再試。",
-    "retry": "重試"
-  },
-  "report": {
-    "open": "檢舉",
-    "title": "檢舉此單字包",
-    "description": "向管理員回報此單字包的問題。請選擇理由後送出。",
-    "reason": "檢舉理由",
-    "reasons": {
-      "inappropriate": "內容不當",
-      "spam": "垃圾訊息或廣告",
-      "personalInfo": "包含個人資料",
-      "other": "其他"
-    },
-    "send": "送出",
-    "sent": "已收到你的檢舉",
-    "failed": "無法送出檢舉，請再試一次。"
   }
 }
