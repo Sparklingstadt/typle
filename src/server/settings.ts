@@ -11,10 +11,20 @@ export type LoginSettings = {
   rateLimitKey: Buffer,
   /** Whether this runs on Vercel, whose forwarding headers are the only ones that tell the client's IP. */
   onVercel: boolean,
+  /** The keys of the login cookie and of the iPad and Mac apps' token. */
+  sessionKey: Buffer,
+  appKey: Buffer,
+  /** Whether AUTH_URL is HTTPS, which names the login cookie __Host-. */
+  secure: boolean,
 }
 
-/** The HKDF info of the rate limit key: the same as Go's rateLimitInfo. */
+/** The HKDF info of each key: the same as Go's (server/internal/session), so that each kind opens only as itself. */
 const RATE_LIMIT_INFO = 'typle gallery-rate-limit v1'
+const SESSION_INFO = 'typle session v1'
+const APP_INFO = 'typle app session v1'
+
+/** A key of 32 bytes derived from AUTH_SECRET for one kind of value. */
+const deriveKey = (secret: string, info: string) => Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), info, 32))
 
 /** The bytes of a client's hash that the rate limit keeps: half of the SHA-256 output, as Go's ClientMACSize. */
 const CLIENT_MAC_SIZE = 16
@@ -34,8 +44,11 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
   if (!secret || (base.protocol !== 'http:' && base.protocol !== 'https:') || !base.hostname) return null
   return {
     origin: base.origin,
-    rateLimitKey: Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), RATE_LIMIT_INFO, 32)),
+    rateLimitKey: deriveKey(secret, RATE_LIMIT_INFO),
     onVercel: env.VERCEL === '1',
+    sessionKey: deriveKey(secret, SESSION_INFO),
+    appKey: deriveKey(secret, APP_INFO),
+    secure: base.protocol === 'https:',
   }
 }
 

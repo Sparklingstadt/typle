@@ -63,7 +63,7 @@ test('every rewritten path reaches a route of the Go backend', () => {
 })
 
 // These paths are answered by Next.js (src/app/api/<path>/route.ts): a rewrite would send them to Go instead.
-const nextRoutes = ['/api/health', '/api/gallery', '/api/gallery/categories', '/api/gallery/added', '/api/gallery/reports', '/api/shared']
+const nextRoutes = ['/api/health', '/api/gallery', '/api/gallery/categories', '/api/gallery/added', '/api/gallery/reports', '/api/shared', '/api/shares']
 
 test('the paths moved to Route Handlers are answered by Next.js, not forwarded', () => {
   for (const route of nextRoutes) {
