@@ -113,6 +113,7 @@
     "shareOnX": "X でシェア",
     "shareText": "Typle で「{name}」を {time} 秒・正確率 {accuracy}% で打ちました",
     "reviewNote": "間違えた単語のおさらいは記録しません。",
+    "reviewNoteWeak": "このおさらいは記録しません。ミスなく打てた単語は、苦手な単語から外れます。",
     "reviewing": "間違えた {count} 語のおさらい（記録しません）",
     "missed": {
       "tile": "間違えた単語",

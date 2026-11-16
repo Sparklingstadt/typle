@@ -76,7 +76,7 @@
   },
   "weak": {
     "title": "不熟的單字",
-    "description": "依清單顯示最近 {runs} 次練習（不含 Handwriting）中打錯的詞，打錯次數多的在前。",
+    "description": "依清單顯示最近 {runs} 次練習（不含 Handwriting）中打錯的詞，打錯次數多的在前。只練不熟的單字時沒有打錯的詞，會從這裡移除。",
     "none": "還沒有不熟的單字。練習中打錯的詞會顯示在這裡。",
     "wordsOf": "{name} 不熟的單字",
     "runs": "{count} 次",

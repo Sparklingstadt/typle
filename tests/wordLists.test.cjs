@@ -60,3 +60,16 @@ test('writing is kept, checked and optional', () => {
   }
   validateList(marked)
 })
+
+test('a list keeps its weak review through saving, and drops one of another shape', () => {
+  const weakReview = { date: '2026-09-07T00:00:00.000Z', missed: [{ word: 'one', count: 1 }] }
+  const saved = { ...list, weakReview }
+  assert.deepEqual(decodeLists(encodeLists([saved]))[0].weakReview, weakReview)
+  for (const wrong of [{ date: 'x' }, { date: weakReview.date, missed: [{ word: '' , count: 1 }] }, { date: weakReview.date, other: 1 }, []]) {
+    assert.equal('weakReview' in decodeLists(JSON.stringify({ version: 1, lists: [{ ...list, weakReview: wrong }] }))[0], false)
+  }
+  // The editor's copy has none, and does not clear it.
+  const edited = saveList([saved], { ...list, name: 'Renamed' }, true)[0]
+  assert.equal(edited.name, 'Renamed')
+  assert.deepEqual(edited.weakReview, weakReview)
+})

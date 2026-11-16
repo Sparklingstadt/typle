@@ -113,6 +113,7 @@
     "shareOnX": "Partager sur X",
     "shareText": "J’ai tapé « {name} » en {time} s avec {accuracy} % de précision sur Typle",
     "reviewNote": "Les révisions des mots manqués ne sont pas enregistrées.",
+    "reviewNoteWeak": "Cette révision n’est pas enregistrée. Les mots saisis sans erreur ne sont plus des mots difficiles.",
     "reviewing": "{count, plural, one {Révision de # mot manqué (non enregistrée)} other {Révision de # mots manqués (non enregistrée)}}",
     "missed": {
       "tile": "Mots manqués",

@@ -266,3 +266,25 @@ test('compareRun ranks a saved run among runs of its mode at the same word count
   // A recall run is never compared with normal runs.
   assert.deepEqual(compareRun(record, [record, run('recall', 1, { mode: 'recall' })], 2, true, 'normal'), { rank: 1, kind: 'firstForList' })
 })
+
+test('a finished review of the weak words is kept on its list with the words missed in it', () => {
+  const { weakReviewOf, setWeakReview, isWeakReview, MAX_WEAK_REVIEW_MISSED } = require('../src/core/records.ts')
+  const words = [{ input: 'ab' }, { input: 'cd' }]
+  let s = typeInput(newSession(), words, 'ab', 1000)
+  s = typeInput(s, words, 'x', 1100)
+  s = typeInput(s, words, 'cd', 1200)
+  const review = weakReviewOf(s, words)
+  assert.deepEqual(review, { date: new Date(1200).toISOString(), missed: [{ word: 'cd', count: 1 }] })
+  assert.equal(isWeakReview(review), true)
+  const clean = weakReviewOf(typeInput(typeInput(newSession(), words, 'ab', 1000), words, 'cd', 1100), words)
+  assert.equal('missed' in clean, false)
+  assert.throws(() => weakReviewOf(newSession(), words), { key: 'practiceIncomplete' })
+  const lists = [{ id: 'a' }, { id: 'b' }]
+  assert.deepEqual(setWeakReview(lists, 'b', review), [{ id: 'a' }, { id: 'b', weakReview: review }])
+  assert.deepEqual(setWeakReview(lists, 'gone', review), lists)
+  // A review keeps more missed words than a run: every weak word it practised.
+  const many = Array.from({ length: MAX_WEAK_REVIEW_MISSED }, (_, i) => ({ word: `w${i}`, count: 1 }))
+  assert.equal(isWeakReview({ date: review.date, missed: many }), true)
+  assert.equal(isWeakReview({ date: review.date, missed: [...many, { word: 'more', count: 1 }] }), false)
+  assert.equal(isWeakReview({ date: 'never' }), false)
+})

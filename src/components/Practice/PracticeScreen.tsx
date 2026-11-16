@@ -11,7 +11,7 @@ import { ErrorAlert } from "@/components/ui/alert"
 import { Card } from "@/components/ui/card"
 import { type RecordSave } from "@/lib/useWordLists"
 import type { SavedWordList } from "@/core/wordLists"
-import { usePractice } from "@/lib/usePractice"
+import { usePractice, type WeakReviewSave } from "@/lib/usePractice"
 import { usePracticeSwitch } from "@/lib/usePracticeSwitch"
 import { usePracticeFocus } from "@/lib/usePracticeFocus"
 import { compareInput, simpleInputKeys, typingSpeed } from "@/core/typing"
@@ -46,7 +46,7 @@ function weakReview(wordLists: SavedWordList[], listId: string | null, weak: boo
 }
 
 // The practice card, its list choosers and its confirmations. Remounted per account, so nothing carries over between them.
-export default function PracticeScreen({ wordLists, packs, listId, weak = false, error, addRecord, devices, accountId }: {
+export default function PracticeScreen({ wordLists, packs, listId, weak = false, error, addRecord, saveWeakReview, devices, accountId }: {
   devices: PracticeDevice[]
   accountId: string
   wordLists: SavedWordList[]
@@ -56,6 +56,8 @@ export default function PracticeScreen({ wordLists, packs, listId, weak = false,
   weak?: boolean
   error: string
   addRecord: RecordSave
+  // Keeps a finished practice of the weak words on its list; without it the weak words stay as they were.
+  saveWeakReview?: WeakReviewSave
 }) {
   const t = useTranslations('practice')
   const practiceName = usePracticeName()
@@ -66,7 +68,7 @@ export default function PracticeScreen({ wordLists, packs, listId, weak = false,
   const [chosenMode, chooseRecall] = usePracticeMode()
   // usePractice reads it only when it mounts, so it is worked out once rather than on every keystroke.
   const [initialReview] = useState(() => weakReview(wordLists, listId, weak))
-  const { list, review, selected, session, practiceDevice, practiceMode, composition, startComposition, endComposition, changeInput, record, saveState, input, word, finished, result, restart: restartPractice, retrySave, pause, resume, reveal } = usePractice(wordLists, addRecord, device, listId, chosenMode, initialReview)
+  const { list, review, selected, session, practiceDevice, practiceMode, composition, startComposition, endComposition, changeInput, record, saveState, input, word, finished, result, restart: restartPractice, retrySave, pause, resume, reveal } = usePractice(wordLists, addRecord, device, listId, chosenMode, initialReview, saveWeakReview)
   const [displayRun, setDisplayRun] = useState(0)
   // Typing or writing is decided when a list is chosen and on every restart; a run keeps its mode to the end.
   const [preferredWriting, setPreferredWriting] = useWritingMode()
@@ -164,7 +166,7 @@ export default function PracticeScreen({ wordLists, packs, listId, weak = false,
           review={review !== null} statsVisible={statsVisible} onRun={setWritingRun} onRestart={() => restart()} onReview={reviewMissed} onChooseList={openPicker} />
         : <>
         <PracticeProgress index={session.index} total={words.length} finished={finished} />
-        {finished ? <PracticeResult listName={practiceName(list)} words={words} mistakes={session.wordMistakes} review={review !== null} result={result} correct={session.attempts - session.mistakes} speed={typingSpeed(session, 0)}
+        {finished ? <PracticeResult listName={practiceName(list)} words={words} mistakes={session.wordMistakes} review={review !== null} weakReview={review === 'weak' && saveWeakReview !== undefined} result={result} correct={session.attempts - session.mistakes} speed={typingSpeed(session, 0)}
           device={practiceDevice} record={record} records={selectedRecords} mode={mode} saveState={saveState} onRestart={() => restart()} onReview={reviewMissed} onRetry={retrySave} onChooseList={openPicker} />
         : <>
           <WordPrompt key={`${list.id}:${session.index}:${displayRun}`} word={word} recall={recall} comparison={comparison} revealed={session.revealed} showResume={showResume}

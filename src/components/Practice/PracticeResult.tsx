@@ -16,12 +16,14 @@ import { cn } from '@/lib/utils'
 import { useFormat } from '@/i18n/useFormat'
 import type { SaveState } from '@/lib/useRecordSaving'
 
-export default function PracticeResult({ listName, words, mistakes = [], review = false, result, correct, speed, device, record, records, mode = 'normal', saveState, onRestart, onReview, onRetry, onChooseList }: {
+export default function PracticeResult({ listName, words, mistakes = [], review = false, weakReview = false, result, correct, speed, device, record, records, mode = 'normal', saveState, onRestart, onReview, onRetry, onChooseList }: {
   listName: string
   // The words of the run, and the ones that went wrong. A review (only the words missed last time) is not recorded.
   words: SavedWordList['words']
   mistakes?: WordMistake[]
   review?: boolean
+  // The review was of the list's weak words, typed: the words typed right in it are weak no longer.
+  weakReview?: boolean
   result: { time: number; mistakes: number; accuracy: number }
   correct: number
   speed: number | null
@@ -84,7 +86,7 @@ export default function PracticeResult({ listName, words, mistakes = [], review 
         </dd>
       </div>)}
     </dl>
-    {review ? <p role="status" className="text-[13px] text-muted-foreground">{t('reviewNote')}</p>
+    {review ? <p role="status" className="text-[13px] text-muted-foreground">{t(weakReview ? 'reviewNoteWeak' : 'reviewNote')}</p>
     : saveState === 'failed'
       ? <ErrorAlert action={<Button variant="outline" size="lg" onClick={onRetry}>{t('retry')}</Button>}>{t('saveFailed')}</ErrorAlert>
       : <p role="status" className={cn('flex items-center gap-2 text-[13px]', saveState === 'saved' ? 'text-green-700 dark:text-green-400' : 'text-muted-foreground')}>

@@ -96,9 +96,19 @@ test('weak words are listed per list from the latest runs, and their button prac
   await expect(page.getByRole('status').filter({ hasText: '苦手な 2 語のおさらい（記録しません）' })).toBeVisible()
   await expect(page.getByRole('progressbar', { name: '単語の進捗' })).toHaveAttribute('aria-valuemax', '2')
   const input = page.getByRole('textbox', { name: '表示された文字を入力', exact: true })
+  // beta is typed right; gamma is missed once, so it stays weak.
   await input.pressSequentially('beta')
-  await input.pressSequentially('gamma')
-  await expect(page.getByLabel('練習結果', { exact: true })).toContainText('間違えた単語のおさらいは記録しません。')
+  await input.pressSequentially('gx')
+  await input.pressSequentially('amma')
+  await expect(page.getByLabel('練習結果', { exact: true })).toContainText('このおさらいは記録しません。ミスなく打てた単語は、苦手な単語から外れます。')
+  await page.goto('/home')
+  const after = page.getByRole('list', { name: 'Weak の苦手な単語' }).getByRole('listitem')
+  await expect(after).toHaveCount(1)
+  await expect(after.first()).toContainText('gamma')
+  await expect(after.first()).toContainText('1回')
+  // The review is not a record.
+  await page.goto('/records')
+  await expect(page.getByText('4件', { exact: true })).toBeVisible()
 })
 
 test('a saved run keeps its missed words for the weak words', async ({ page }) => {

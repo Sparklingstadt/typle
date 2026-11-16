@@ -3,21 +3,24 @@ import { useEffect, useRef, useState } from 'react'
 import type { PracticeDevice } from '@/core/devices'
 import type { SavedWordList } from '@/core/wordLists'
 import type { RecordSave } from './useWordLists'
-import { sessionResult, revealAnswer, typeInput } from '@/core/typing'
-import type { PracticeMode } from '@/core/records'
+import { sessionResult, revealAnswer, typeInput, type TypingSession } from '@/core/typing'
+import { weakReviewOf, type PracticeMode, type WeakReview } from '@/core/records'
 import { useRecordSaving } from './useRecordSaving'
 import { useTypingOptions } from './inputSettings'
 
 // What a review practises: the words missed in the run just finished, or the list's weak words (from the home screen).
 export type ReviewKind = 'missed' | 'weak'
+/** Keeps a finished practice of a list's weak words on the list (`setWeakReview`). */
+export type WeakReviewSave = (listId: string, review: WeakReview) => Promise<boolean>
 
 export function usePractice(wordLists: SavedWordList[], addRecord: RecordSave, device?: PracticeDevice, initialListId?: string | null, mode: PracticeMode = 'normal',
-  initialReview?: { words: SavedWordList['words']; kind: ReviewKind }) {
+  initialReview?: { words: SavedWordList['words']; kind: ReviewKind }, saveWeakReview?: WeakReviewSave) {
   const [list, setList] = useState<SavedWordList | undefined>(() => {
     const found = wordLists.find(item => item.id === initialListId) ?? wordLists[0]
     return found && initialReview?.words.length ? { ...found, words: initialReview.words } : found
   })
-  // A review practises only some words of the list and is not recorded.
+  // A review practises only some words of the list and is not recorded. A finished review of the weak words is kept on
+  // the list instead (advance), so that the words typed right in it are weak no longer.
   const [review, setReview] = useState<ReviewKind | null>(() => initialReview?.words.length ? initialReview.kind : null)
   const selected = wordLists.findIndex(item => item.id === list?.id)
   const { session, practiceDevice, practiceMode, record, saveState, update, reset, completed, pause, resume, retrySave } = useRecordSaving(list, addRecord, device, mode, review === null)
@@ -44,15 +47,22 @@ export function usePractice(wordLists: SavedWordList[], addRecord: RecordSave, d
     input.current?.focus()
   }
 
+  // Moves the session on. The review of the weak words that this finishes is kept once; a failed save shows the
+  // workspace's error and leaves the weak words as they were.
+  function advance(next: TypingSession) {
+    update(next)
+    if (review === 'weak' && list && session.finishedAt === null && next.finishedAt !== null) void saveWeakReview?.(list.id, weakReviewOf(next, list.words))
+  }
+
   function enter(value: string) {
     if (completed()) return
-    update(typeInput(session, list?.words ?? [], value, Date.now(), typingOptions))
+    advance(typeInput(session, list?.words ?? [], value, Date.now(), typingOptions))
   }
 
   // Recall mode: shows the rest of the current word, counting it as mistakes once. Revealing also starts the clock.
   function reveal() {
     if (completed()) return
-    update(revealAnswer(session, list?.words ?? [], Date.now()))
+    advance(revealAnswer(session, list?.words ?? [], Date.now()))
     input.current?.focus()
   }
 

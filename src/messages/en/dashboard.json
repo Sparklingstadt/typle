@@ -76,7 +76,7 @@
   },
   "weak": {
     "title": "Weak words",
-    "description": "For each list, the words missed in its last {runs} runs (not counting Handwriting), most often missed first.",
+    "description": "For each list, the words missed in its last {runs} runs (not counting Handwriting), most often missed first. Words you type without a mistake when practising only the weak words leave this list.",
     "none": "No weak words yet. Words you miss in practice show up here.",
     "wordsOf": "Weak words of {name}",
     "runs": "{count, plural, one {# run} other {# runs}}",

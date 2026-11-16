@@ -76,7 +76,7 @@
   },
   "weak": {
     "title": "Mots difficiles",
-    "description": "Pour chaque liste, les mots manqués lors des {runs} derniers entraînements (hors Handwriting), les plus souvent manqués d’abord.",
+    "description": "Pour chaque liste, les mots manqués lors des {runs} derniers entraînements (hors Handwriting), les plus souvent manqués d’abord. Les mots saisis sans erreur lors d’un entraînement sur les seuls mots difficiles quittent cette liste.",
     "none": "Pas encore de mots difficiles. Les mots manqués à l’entraînement apparaîtront ici.",
     "wordsOf": "Mots difficiles de {name}",
     "runs": "{count, plural, one {# fois} other {# fois}}",

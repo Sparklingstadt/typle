@@ -1,5 +1,5 @@
 import { AppError } from "./appError"
-import { isMissedWords, type MissedWord } from "./records"
+import { isMissedWords, isWeakReview, type MissedWord, type WeakReview } from "./records"
 import { isDevice, type PracticeDevice } from "./devices"
 
 export type InputType = 'command' | 'code' | 'word'
@@ -36,6 +36,8 @@ export type WordList = {
   origin?: { listId: string },
   /** Set when the author lets the list be practised by handwriting (Typle Writing). Left out otherwise. */
   writing?: { language: WritingLanguage },
+  /** The last finished practice of the list's weak words alone (see WeakReview). Left out until there is one. */
+  weakReview?: WeakReview,
   words: {
     display: string,
     input: string,
@@ -141,9 +143,13 @@ export function decodeLists(raw: string): SavedWordList[] {
     ids.add(list.id)
   }
   // Lists saved while link sharing existed may still carry its fields; they mean nothing now.
-  // An origin of another shape is dropped.
-  return data.lists.map(({ shared: _shared, shareId: _shareId, origin, ...list }: SavedWordList & { shared?: unknown, shareId?: unknown }) =>
-    typeof (origin as { listId?: unknown } | null)?.listId === "string" ? { ...list, origin } : list)
+  // An origin of another shape is dropped, and so is a weak review of another shape: the backend keeps it as a field
+  // it does not know, unchecked, and losing it only brings the list's weak words back.
+  return data.lists.map(({ shared: _shared, shareId: _shareId, origin, weakReview, ...list }: SavedWordList & { shared?: unknown, shareId?: unknown }) => ({
+    ...list,
+    ...(typeof (origin as { listId?: unknown } | null)?.listId === "string" ? { origin } : {}),
+    ...(isWeakReview(weakReview) ? { weakReview } : {}),
+  }))
 }
 
 export function encodeLists(lists: SavedWordList[]) {
@@ -159,8 +165,9 @@ export function saveList(lists: SavedWordList[], list: SavedWordList, editing: b
   // Whitespace can be meaningful in imported typing strings and annotations.
   const { category, tags, group, levels, ...rest } = list
   const normalized = { ...rest, name: list.name.trim(), ...normalizeLabels({ category, tags }), ...normalizeGroup({ group, levels }) }
-  // The editor's copy of a list knows nothing of its records, so those stay as saved.
-  const keep = (item: SavedWordList): SavedWordList => ({ ...normalized, records: item.records })
+  // The editor's copy of a list knows nothing of its records or its weak review, so those stay as saved.
+  const { weakReview: _weakReview, ...edited } = normalized
+  const keep = (item: SavedWordList): SavedWordList => ({ ...edited, records: item.records, ...(item.weakReview ? { weakReview: item.weakReview } : {}) })
   if (!editing && lists.some(item => item.id === list.id)) return lists.map(item => item.id === list.id ? keep(item) : item)
   return editing ? lists.map(item => item.id === list.id ? keep(item) : item) : [...lists, normalized]
 }

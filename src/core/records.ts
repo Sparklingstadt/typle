@@ -31,25 +31,56 @@ export type MissedWord = { word: string; count: number }
 /** The most words a record keeps as missed, so that 10000 records of a list stay small. */
 export const MAX_MISSED_WORDS = 20
 
+/** The most words a review of a list's weak words keeps as missed: every word its WEAK_RUNS runs can name (src/core/dashboard.ts). */
+export const MAX_WEAK_REVIEW_MISSED = 200
+
 /**
- * Whether `value` is a record's `missed`: up to MAX_MISSED_WORDS words, each a non-empty text no longer than a list's
- * words (MAX_WORD_TEXT) and a count of 1 or more.
+ * Whether `value` is a record's `missed`: up to `limit` words (MAX_MISSED_WORDS for a record), each a non-empty text no
+ * longer than a list's words (MAX_WORD_TEXT) and a count of 1 or more.
  */
-export function isMissedWords(value: unknown): value is MissedWord[] {
-  return Array.isArray(value) && value.length <= MAX_MISSED_WORDS && value.every(item => item !== null && typeof item === 'object' &&
+export function isMissedWords(value: unknown, limit = MAX_MISSED_WORDS): value is MissedWord[] {
+  return Array.isArray(value) && value.length <= limit && value.every(item => item !== null && typeof item === 'object' &&
     Object.keys(item).every(key => key === 'word' || key === 'count') &&
     typeof item.word === 'string' && item.word.length > 0 && item.word.length <= MAX_WORD_TEXT &&
     Number.isSafeInteger(item.count) && item.count >= 1)
 }
 
-/** The missed words of a finished run, to save with its record: most mistakes first, at most MAX_MISSED_WORDS. */
-export function missedWords(session: TypingSession, words: { input: string }[]): MissedWord[] {
+/** The missed words of a finished run, to save with its record: most mistakes first, at most `limit`. */
+export function missedWords(session: TypingSession, words: { input: string }[], limit = MAX_MISSED_WORDS): MissedWord[] {
   const counts = new Map<string, number>()
   for (const mistake of session.wordMistakes ?? []) {
     const word = words[mistake.index]?.input
     if (word) counts.set(word, (counts.get(word) ?? 0) + Math.max(1, mistake.count))
   }
-  return [...counts].map(([word, count]) => ({ word, count })).sort((a, b) => b.count - a.count).slice(0, MAX_MISSED_WORDS)
+  return [...counts].map(([word, count]) => ({ word, count })).sort((a, b) => b.count - a.count).slice(0, limit)
+}
+
+/**
+ * The last finished practice of a list's weak words alone (/play?list=<id>&review=weak): when it finished and the words
+ * that went wrong in it, left out when none did. It is kept on the list, not as a record, so it counts for no best,
+ * ranking or statistic. The weak words start again from it: a word typed right in it is weak no longer (`weakWords` in
+ * src/core/dashboard.ts).
+ */
+export type WeakReview = { date: string; missed?: MissedWord[] }
+
+/** Whether `value` is a list's `weakReview`: a date that can be read, and up to MAX_WEAK_REVIEW_MISSED missed words. */
+export function isWeakReview(value: unknown): value is WeakReview {
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) return false
+  const { date, missed } = value as { date?: unknown; missed?: unknown }
+  return Object.keys(value).every(key => key === 'date' || key === 'missed') && typeof date === 'string' && Number.isFinite(Date.parse(date)) &&
+    (missed === undefined || isMissedWords(missed, MAX_WEAK_REVIEW_MISSED))
+}
+
+/** The weak review a finished practice of a list's weak words leaves on the list. */
+export function weakReviewOf(session: TypingSession, words: { input: string }[]): WeakReview {
+  if (session.finishedAt === null) throw new AppError('practiceIncomplete')
+  const missed = missedWords(session, words, MAX_WEAK_REVIEW_MISSED)
+  return { date: new Date(session.finishedAt).toISOString(), ...(missed.length ? { missed } : {}) }
+}
+
+/** The lists with the weak review of the list `listId`; unchanged when the list is gone. */
+export function setWeakReview<T extends { id: string }>(lists: T[], listId: string, review: WeakReview): T[] {
+  return lists.map(list => list.id === listId ? { ...list, weakReview: review } : list)
 }
 
 /** How a run was practised: normal typing (no `mode`), recall (typed from memory) or writing (Typle Handwriting). */
