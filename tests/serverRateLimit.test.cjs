@@ -58,6 +58,7 @@ test('the hits of a client are counted in windows of a minute', database, async 
   actions.push(action)
   const client = Buffer.from(randomUUID().replace(/-/g, ''), 'hex')
   const counts = []
+  if (60_000 - Date.now() % 60_000 < 3_000) await new Promise(resolve => setTimeout(resolve, 3_100))
   for (let i = 0; i < 3; i++) counts.push(await countHit(db, action, client))
   assert.deepEqual(counts.map(count => count.hits), [1, 2, 3])
   assert.equal(counts[0].windowEnd.getUTCSeconds(), 0)
@@ -71,6 +72,8 @@ test('over the limit the request is answered with 429 and Retry-After', database
   const action = `test-${randomUUID()}`
   actions.push(action)
   const answers = []
+  // All three must fall into one window of a minute.
+  if (60_000 - Date.now() % 60_000 < 3_000) await new Promise(resolve => setTimeout(resolve, 3_100))
   for (let i = 0; i < 3; i++) answers.push(await overLimit(request({ 'X-Vercel-Forwarded-For': ip }), db, settings, action, 2))
   assert.equal(answers[0], null)
   assert.equal(answers[1], null)
