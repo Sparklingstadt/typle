@@ -171,3 +171,30 @@ test('a body that is too large or breaks off is refused as a bad one', database,
     headers: { Cookie: user.cookie, Origin: origin, 'Content-Type': 'application/json' } })
   await expectError(await answerShares(request, open, withSettings), 400, 'invalidWorkspace')
 })
+
+// An Authorization header, even an empty one, is a browser's only when it is absent: an empty one is judged as no header
+// at all, as the Go backend judged it, so a cookie's write still needs the Origin.
+test('an empty Authorization header does not stand in for the Origin', database, async () => {
+  const user = await account()
+  await share(user, { packId: 'pack-a' })
+  await expectError(await answerShares(browser(user, 'PUT', { body: '{"packId":"pack-a"}', headers: { Origin: '', Authorization: '' } }), open, withSettings), 403, 'forbiddenRequest')
+  await expectError(await answerShares(browser(user, 'DELETE', { path: '/api/shares?pack=pack-a', headers: { Origin: '', Authorization: '' } }), open, withSettings), 403, 'forbiddenRequest')
+})
+
+// After signing out of every device, an earlier login can neither read nor change the links, and a browser loses its cookie.
+test('a revoked login is refused by every method', database, async () => {
+  const user = await account()
+  await share(user, { packId: 'pack-a' })
+  await db.query(`INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now())`, [user.owner])
+  try {
+    for (const request of [browser(user, 'GET'), browser(user, 'PUT', { body: '{"packId":"pack-a"}' }), browser(user, 'DELETE', { path: '/api/shares?pack=pack-a' })]) {
+      const response = await answerShares(request, open, withSettings)
+      await expectError(response, 401, 'loginRequired')
+      assert.equal(response.headers.get('set-cookie'), 'typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax', request.method)
+    }
+    const { rows } = await db.query('SELECT count(*)::int AS n FROM typle_shared_packs WHERE owner_id = $1', [user.owner])
+    assert.equal(rows[0].n, 1)
+  } finally {
+    await db.query('DELETE FROM typle_session_revocations WHERE owner_id = $1', [user.owner])
+  }
+})
