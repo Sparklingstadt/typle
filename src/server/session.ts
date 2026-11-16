@@ -1,6 +1,6 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto'
 
-// The login session, as the Go backend seals it (server/internal/session): base64url(JSON) + "." +
+// The login session, as the Go backend sealed it until v2.47.0: base64url(JSON) + "." +
 // base64url(HMAC-SHA256 of that text), without padding, under a key derived from AUTH_SECRET (src/server/settings.ts).
 // The cookie and the iPad and Mac apps' token are the same JSON under different keys, so one never opens as the other.
 
@@ -86,14 +86,14 @@ export function openAdmin(key: Buffer, value: string, now: number = Date.now() /
 export const SESSION_MAX_AGE = 30 * 24 * 3600
 
 /**
- * The JSON of claims as the Go backend signs it (session.encode): JSON.stringify, with U+2028 and U+2029 written
+ * The JSON of claims as the Go backend signed it (session.encode): JSON.stringify, with U+2028 and U+2029 written
  * escaped as Go's encoder writes them. The keys must be given in the order of Go's wire struct.
  */
 function encodeClaims(claims: Record<string, string | number | boolean>): string {
   return JSON.stringify(claims).replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029')
 }
 
-/** value sealed with key: base64url(JSON) + "." + base64url(HMAC-SHA256 of that text), as the Go backend seals it. */
+/** value sealed with key: base64url(JSON) + "." + base64url(HMAC-SHA256 of that text), as the Go backend sealed it. */
 function seal(key: Buffer, claims: Record<string, string | number | boolean>): string {
   const payload = Buffer.from(encodeClaims(claims)).toString('base64url')
   return `${payload}.${createHmac('sha256', key).update(payload).digest('base64url')}`

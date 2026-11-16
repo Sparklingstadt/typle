@@ -1,4 +1,4 @@
-// How the login talks to GitHub and FFPF ID, as the Go backend's clients did (server/internal/auth): a request gives up
+// How the login talks to GitHub and FFPF ID, as the Go backend's clients did (it was removed in v2.47.0): a request gives up
 // after 10 seconds, a redirect is never followed (the token request carries the client secret, and must not be replayed
 // to the target of a 3xx), and an answer is read up to 1 MiB.
 

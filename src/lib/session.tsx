@@ -23,7 +23,7 @@ const RETRY_DELAYS_MS = [1000, 2000, 4000]
 const SESSION_TIMEOUT_MS = 10_000
 
 /**
- * Reads the signed-in user from the Go backend. Only a 200 answer says who is signed in: null when its `user` is null
+ * Reads the signed-in user from /api/auth/session. Only a 200 answer says who is signed in: null when its `user` is null
  * or left out. Anything else (a failed request, one that timed out, another status, a body that is not the session)
  * rejects, since it does not say that the user signed out.
  */
@@ -139,7 +139,7 @@ export function useSession(): SessionState {
  * address stays what it always was.
  */
 export function signIn(provider: Provider = 'github'): void {
-  // A full navigation: the sign-in route is served by the Go backend, not by the Next.js router.
+  // A full navigation: the sign-in route is a Route Handler that redirects to the provider, not a page of the Next.js router.
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
   location.assign('/api/auth/signin?returnTo=' + encodeURIComponent(location.pathname + location.search) + (provider === 'ffpf' ? '&provider=ffpf' : ''))
 }

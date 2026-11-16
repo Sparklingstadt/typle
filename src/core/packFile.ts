@@ -8,7 +8,7 @@ import { MAX_ANNOTATION, MAX_WORD_TEXT, MAX_WORDS } from './wordDraft'
 
 /**
  * A pack as a file (`<pack name>.typle-pack.json`), to hand to another account. It holds no records, ids, dates or
- * origin. The Go backend writes the same bytes (see tests/fixtures/pack-file/README.md).
+ * origin. The Go backend, until v2.47.0, wrote the same bytes (see tests/fixtures/pack-file/README.md).
  */
 export type PackFile = {
   format: 'typle-pack'

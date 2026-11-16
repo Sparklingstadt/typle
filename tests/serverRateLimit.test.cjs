@@ -8,7 +8,7 @@ const { readLoginSettings } = require('../src/server/settings.ts')
 
 const request = headers => new Request('http://localhost/api/gallery/reports', { method: 'POST', headers })
 
-// The cases of server/internal/web/ratelimit_test.go (TestClientIP), which the Go backend read on Vercel.
+// The cases of the Go backend's TestClientIP, which it read on Vercel.
 test('on Vercel the client is the first IP of the forwarding headers', () => {
   const cases = [
     [{ 'X-Vercel-Forwarded-For': '203.0.113.1, 198.51.100.1', 'X-Forwarded-For': '203.0.113.2', 'X-Real-Ip': '203.0.113.3' }, '203.0.113.1', true],

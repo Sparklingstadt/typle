@@ -63,7 +63,7 @@ async function listShares(db: Pool, owner: string): Promise<ShareRow[]> {
  * (keeping the time it was first listed), false takes it out, and undefined leaves the listing as it is; a hidden link
  * can still be copied again, but its listing cannot change.
  *
- * The owner's lock and the workspace row are held as the Go backend's saves hold them (store.PutShare and lockOwner), so
+ * The owner's lock and the workspace row are held as the Go backend's saves held them (store.PutShare and lockOwner), so
  * a save that removes the pack at the same moment either comes first (and the pack is not found) or deletes the link
  * once this is done.
  */

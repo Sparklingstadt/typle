@@ -6,7 +6,7 @@ const { fromAppOrOrigin, jsonContent, readStringFields } = require('../src/serve
 const post = (body, headers = {}) => new Request('http://localhost/api/gallery/reports', { method: 'POST', body: body === null ? undefined : body, headers })
 const id = '0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d'
 
-// The bodies of server/internal/web/gallery_test.go (TestGalleryReport), which the Go backend refused.
+// The bodies of the Go backend's TestGalleryReport, which it refused.
 test('the report body has exactly a non-empty id and reason', async () => {
   assert.deepEqual(await readStringFields(post(`{"id":"${id}","reason":"spam"}`), 4096, ['id', 'reason']), { id, reason: 'spam' })
   assert.deepEqual(await readStringFields(post(`{"id":"x","reason":"spam","id":"${id}"}`), 4096, ['id', 'reason']), { id, reason: 'spam' })
