@@ -42,7 +42,7 @@
 
 ## 記録の追加と削除
 
-`POST /api/workspace/records`・`DELETE /api/workspace/records` は、練習画面の記録の追加と、記録画面の削除です（v1.2.0・v1.4.0 から）。`server/internal/operation` の `AddRecord`・`DeleteRecord` で、`revision` を使わないため、別の画面でリストを編集していても拒否されません。同じ本文で送り直しても結果は同じです。
+`POST /api/workspace/records`・`DELETE /api/workspace/records` は、練習画面の記録の追加と、記録画面の削除です（v1.2.0・v1.4.0 から）。Next.js の Route Handler（`src/server/workspace.ts` の `answerRecords`。v2.46.7 までは Go）が `src/core/records.ts` の `addRecord`・`deleteRecord` で行い、`revision` を使わないため、別の画面でリストを編集していても拒否されません。同じ本文で送り直しても結果は同じです。
 
 | メソッド | 本文 | 応答 |
 |---|---|---|

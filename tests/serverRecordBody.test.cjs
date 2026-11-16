@@ -7,7 +7,7 @@ const run = { id: 'run-1', time: 2.5, date: '2026-10-02T10:00:00.000Z', mistakes
 const add = fields => readRecordAdd({ accountId: 'github:1', ...fields })
 const remove = fields => readRecordDelete({ accountId: 'github:1', ...fields })
 
-// The bodies of server/internal/web/records_test.go, which the Go backend refused with invalidRecord.
+// The bodies the Go backend refused with invalidRecord (its records_test.go, deleted in v2.46.7).
 test('a POST body has exactly the account, a list id and a record with its id', () => {
   assert.deepEqual(add({ listId: 'one', record: run }), { listId: 'one', input: run })
   const { id: _id, ...withoutId } = run

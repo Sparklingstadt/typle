@@ -3,7 +3,7 @@
   "info": {
     "title": "Typle: practice record operations",
     "version": "1.6.0",
-    "description": "アプリが練習記録を1件ずつ変える /api/workspace/records の通信形式とエラーコードです（#174）。操作は server/internal/operation にあり、ゲスト保存も同じ規則に従います。Go は server/internal/web/records_test.go、TS は tests/recordSchema.test.cjs がこの定義と実装を照合します。エラーキーは画面のメッセージ（src/messages/*/errors.json）のキーです。 x-app-shows が false の応答はアプリが受け取ることのないもので、画面のメッセージを持たない。"
+    "description": "アプリが練習記録を1件ずつ変える /api/workspace/records の通信形式とエラーコードです（#174）。操作は src/core/records.ts にあり、Next.js の Route Handler（src/server/workspace.ts）とゲスト保存が同じ規則に従います。tests/apiRecords.test.cjs と tests/recordSchema.test.cjs がこの定義と実装を照合します。エラーキーは画面のメッセージ（src/messages/*/errors.json）のキーです。 x-app-shows が false の応答はアプリが受け取ることのないもので、画面のメッセージを持たない。"
   },
   "paths": {
     "/api/workspace/records": {
