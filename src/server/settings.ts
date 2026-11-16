@@ -18,6 +18,12 @@ export type LoginSettings = {
   adminKey: Buffer,
   /** The key of the code a login an app started ends with, which the app trades for its token. */
   codeKey: Buffer,
+  /** The key of the OAuth cookie, which holds a login in progress. */
+  oauthKey: Buffer,
+  /** The GitHub OAuth App the login goes through, when AUTH_GITHUB_ID and AUTH_GITHUB_SECRET are both set. */
+  github: GitHubSettings | null,
+  /** The FFPF ID client, when FFPF_ID_ISSUER, FFPF_ID_CLIENT_ID and FFPF_ID_CLIENT_SECRET are all set. */
+  ffpf: FfpfSettings | null,
   /** The logins that are configured, in the order the screen lists them. */
   providers: ('github' | 'ffpf')[],
   /** Whether POST /api/auth/local, the made-up login for development on this machine, is on. */
@@ -26,12 +32,19 @@ export type LoginSettings = {
   secure: boolean,
 }
 
+/** The GitHub OAuth App and the endpoints of GitHub it is used with (the tests point them elsewhere). */
+export type GitHubSettings = { clientId: string, clientSecret: string, authorizeUrl: string, tokenUrl: string, apiUrl: string }
+
+/** The FFPF ID client: the portal's issuer, without one trailing slash, and the client's credentials. */
+export type FfpfSettings = { issuer: string, clientId: string, clientSecret: string }
+
 /** The HKDF info of each key: the same as Go's (server/internal/session), so that each kind opens only as itself. */
 const RATE_LIMIT_INFO = 'typle gallery-rate-limit v1'
 const SESSION_INFO = 'typle session v1'
 const APP_INFO = 'typle app session v1'
 const ADMIN_INFO = 'typle admin v2'
 const CODE_INFO = 'typle app code v1'
+const OAUTH_INFO = 'typle oauth v1'
 
 /** A key of 32 bytes derived from AUTH_SECRET for one kind of value. */
 const deriveKey = (secret: string, info: string) => Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), info, 32))
@@ -60,6 +73,16 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
     appKey: deriveKey(secret, APP_INFO),
     adminKey: deriveKey(secret, ADMIN_INFO),
     codeKey: deriveKey(secret, CODE_INFO),
+    oauthKey: deriveKey(secret, OAUTH_INFO),
+    github: env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET
+      ? {
+          clientId: env.AUTH_GITHUB_ID, clientSecret: env.AUTH_GITHUB_SECRET,
+          authorizeUrl: 'https://github.com/login/oauth/authorize', tokenUrl: 'https://github.com/login/oauth/access_token', apiUrl: 'https://api.github.com',
+        }
+      : null,
+    ffpf: env.FFPF_ID_ISSUER && env.FFPF_ID_CLIENT_ID && env.FFPF_ID_CLIENT_SECRET
+      ? { issuer: env.FFPF_ID_ISSUER.replace(/\/$/, ''), clientId: env.FFPF_ID_CLIENT_ID, clientSecret: env.FFPF_ID_CLIENT_SECRET }
+      : null,
     providers: [
       ...(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET ? ['github' as const] : []),
       ...(env.FFPF_ID_ISSUER && env.FFPF_ID_CLIENT_ID && env.FFPF_ID_CLIENT_SECRET ? ['ffpf' as const] : []),
