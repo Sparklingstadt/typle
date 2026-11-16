@@ -53,3 +53,28 @@ export function recordRows(lists: ListWithRecords[]): RecordRow[] {
   }
   return rows
 }
+
+/**
+ * The lists with the stored records put back in the lists that hold them, as the Go backend's withRecords does. A list
+ * may still hold records of its own, saved by an app from before the table: they come first, and a record of the same id
+ * is the table's. Records of a list that is no longer saved are left out; the next save deletes them.
+ */
+export function withRecords(lists: unknown[], stored: Map<string, unknown[]>): unknown[] {
+  return lists.map(item => {
+    const list = item as { id?: unknown, records?: unknown }
+    const moved = typeof list.id === 'string' ? stored.get(list.id) ?? [] : []
+    if (!moved.length) return item
+    const movedIds = new Set(moved.map(recordIdOf))
+    const own = Array.isArray(list.records) ? list.records : []
+    const kept = own.filter(record => {
+      const id = recordIdOf(record)
+      return id === '' || !movedIds.has(id)
+    })
+    return { ...list, records: [...kept, ...moved] }
+  })
+}
+
+const recordIdOf = (record: unknown) => {
+  const id = (record as { id?: unknown } | null)?.id
+  return typeof id === 'string' ? id : ''
+}
