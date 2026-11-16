@@ -3,9 +3,14 @@ import { openPacks } from './packRows'
 import { guestWorkspace } from './guestData'
 
 test('removed server routes answer 404', async ({ page }) => {
-  for (const path of ['/api/v1/lists', '/api/tokens']) {
+  for (const path of ['/api/v1/lists', '/api/tokens', '/api/admin/dashboard', '/api/admin/users', '/api/admin/gallery']) {
     expect((await page.request.get(path)).status(), path).toBe(404)
   }
+  // The administrator's dashboard and its API were removed in v2.48.0.
+  for (const path of ['/api/admin/gallery/hide', '/api/admin/gallery/unhide', '/api/auth/admin/signout']) {
+    expect((await page.request.post(path)).status(), path).toBe(404)
+  }
+  expect((await page.goto('/admin'))!.status()).toBe(404)
   // /shared/<id> is the public page of a shared pack again; an id that names no share says it has ended.
   await page.goto('/shared/0b1c')
   await expect(page.getByText('この共有は終了しました。')).toBeVisible()

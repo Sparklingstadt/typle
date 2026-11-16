@@ -4,18 +4,17 @@ import { currentUser, dropCookie, readRevokedAt, revokedBy } from './account'
 import { reportFailure } from './report'
 import { fromApp } from './request'
 import { methodNotAllowed, refuse, reply, withoutBody } from './response'
-import { adminCookieName, challengeOf, newSession, openCode, sealSession, SESSION_MAX_AGE, sessionCookieName, type Session } from './session'
+import { challengeOf, newSession, openCode, sealSession, SESSION_MAX_AGE, sessionCookieName, type Session } from './session'
 import { readLoginSettings, type LoginSettings } from './settings'
 
 // The parts of the login that need no other service: who is signed in (/api/auth/session), the token an app (iPad, Mac,
 // Android, Windows) trades its login's code for (/api/auth/token), signing out (of this browser, or of every device),
-// the made-up login for development (/api/auth/local), and signing out of the dashboard (/api/auth/admin/signout). The
-// login itself (/api/auth/signin and its callbacks) is src/server/signin.ts.
+// and the made-up login for development (/api/auth/local). The login itself (/api/auth/signin and its callbacks) is src/server/signin.ts.
 
-export type AuthPath = 'session' | 'token' | 'signout' | 'local' | 'adminSignout'
+export type AuthPath = 'session' | 'token' | 'signout' | 'local'
 
 const ALLOW: Record<AuthPath, string[]> = {
-  session: ['GET', 'HEAD'], token: ['POST'], signout: ['POST'], local: ['POST'], adminSignout: ['POST'],
+  session: ['GET', 'HEAD'], token: ['POST'], signout: ['POST'], local: ['POST'],
 }
 
 /** The cookie that marks a browser that signed out: its next login with FFPF ID asks for the password again. */
@@ -164,12 +163,6 @@ function local(request: Request, login: LoginSettings, now: number): Response {
   return noContent([cookieHeader(sessionCookieName(login.secure), value, '/', SESSION_MAX_AGE, 'Lax', login.secure)])
 }
 
-/** POST /api/auth/admin/signout: forgets the administrator's cookie, and marks the browser as signout does. */
-function adminSignout(request: Request, login: LoginSettings): Response {
-  if (request.headers.get('Origin') !== login.origin) return refuse(403, 'forbiddenRequest')
-  return noContent([cookieHeader(adminCookieName(login.secure), '', '/', 0, 'Strict', login.secure), relogin(login)])
-}
-
 /**
  * Answers path of /api/auth. As on the Go backend on Vercel, the login settings come first (503 authUnavailable without
  * them), then the local login when it is off (404 notFound, whatever the method), then the method.
@@ -189,6 +182,5 @@ export async function answerAuth(path: AuthPath, request: Request, open: () => P
     case 'token': return token(request, login, now)
     case 'signout': return signout(request, open, login, now)
     case 'local': return local(request, login, now)
-    case 'adminSignout': return adminSignout(request, login)
   }
 }

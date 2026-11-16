@@ -21,8 +21,7 @@ import records from '@/messages/ja/records.json'
 import rankings from '@/messages/ja/rankings.json'
 import dashboard from '@/messages/ja/dashboard.json'
 import globalError from '@/messages/ja/globalError.json'
-import admin from '@/messages/ja/admin.json'
 
-const messages = { errors, format, common, metadata, nav, account, settings, input, devices, interests, guide, about, landing, sharedResult, officialPack, home, practice, wordLists, records, rankings, dashboard, globalError, admin }
+const messages = { errors, format, common, metadata, nav, account, settings, input, devices, interests, guide, about, landing, sharedResult, officialPack, home, practice, wordLists, records, rankings, dashboard, globalError }
 // Only the type is used: the messages themselves are loaded per language in messages.ts.
 export type Messages = typeof messages

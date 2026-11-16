@@ -5,7 +5,7 @@ const { createPool } = require('../src/server/database.ts')
 const { answerAuth } = require('../src/server/auth.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 
-// /api/auth/session, token, signout, local and admin/signout, against a real database as npm run verify runs it
+// /api/auth/session, token, signout and local, against a real database as npm run verify runs it
 // (`TYPLE_TEST_DATABASE_URL=… npm test`). The answers are the Go backend's at the same fixed time
 // (tests/fixtures/auth-answers.json), cookie values and tokens included.
 const url = process.env.TYPLE_TEST_DATABASE_URL
@@ -29,7 +29,7 @@ after(async () => {
 
 const paths = {
   '/api/auth/session': 'session', '/api/auth/token': 'token', '/api/auth/signout': 'signout',
-  '/api/auth/local': 'local', '/api/auth/admin/signout': 'adminSignout',
+  '/api/auth/local': 'local',
 }
 
 /** The request of the fixture as a browser or an app would send it to the configuration's AUTH_URL. */
@@ -50,6 +50,8 @@ test('the Route Handlers answer as the Go backend did, cookies and tokens includ
   for (const [n, q] of fixture.requests.entries()) {
     const want = fixture.answers[n]
     const [path] = q.path.split('?')
+    // The dashboard's signout of the Go run: removed in v2.48.0, a 404 of Next.js now.
+    if (!(path in paths)) continue
     const response = await answerAuth(paths[path], requestOf(q), open, () => readLoginSettings(fixture.env[q.config]), () => fixture.now)
     assert.equal(response.status, want.status, q.note)
     assert.equal(response.headers.get('Allow') ?? '', want.allow ?? '', q.note)
@@ -106,7 +108,7 @@ test('without the login settings the answer is 503 authUnavailable', async () =>
 })
 
 test('every other method is 405, OPTIONS included', async () => {
-  for (const [path, allow] of [['session', 'GET, HEAD'], ['token', 'POST'], ['signout', 'POST'], ['adminSignout', 'POST']]) {
+  for (const [path, allow] of [['session', 'GET, HEAD'], ['token', 'POST'], ['signout', 'POST']]) {
     for (const method of ['PUT', 'PATCH', 'DELETE', 'OPTIONS']) {
       const response = await answerAuth(path, new Request('http://127.0.0.1:3101/api/auth/x', { method }), open, settings, () => fixture.now)
       assert.equal(response.status, 405, `${path} ${method}`)

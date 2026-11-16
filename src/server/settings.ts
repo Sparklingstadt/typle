@@ -14,8 +14,6 @@ export type LoginSettings = {
   /** The keys of the login cookie and of the iPad and Mac apps' token. */
   sessionKey: Buffer,
   appKey: Buffer,
-  /** The key of the administrator's cookie of /admin. */
-  adminKey: Buffer,
   /** The key of the code a login an app started ends with, which the app trades for its token. */
   codeKey: Buffer,
   /** The key of the OAuth cookie, which holds a login in progress. */
@@ -42,7 +40,6 @@ export type FfpfSettings = { issuer: string, clientId: string, clientSecret: str
 const RATE_LIMIT_INFO = 'typle gallery-rate-limit v1'
 const SESSION_INFO = 'typle session v1'
 const APP_INFO = 'typle app session v1'
-const ADMIN_INFO = 'typle admin v2'
 const CODE_INFO = 'typle app code v1'
 const OAUTH_INFO = 'typle oauth v1'
 
@@ -71,7 +68,6 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
     onVercel: env.VERCEL === '1',
     sessionKey: deriveKey(secret, SESSION_INFO),
     appKey: deriveKey(secret, APP_INFO),
-    adminKey: deriveKey(secret, ADMIN_INFO),
     codeKey: deriveKey(secret, CODE_INFO),
     oauthKey: deriveKey(secret, OAUTH_INFO),
     github: env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET

@@ -16,14 +16,14 @@ test('query strings and fragments are dropped', () => {
   assert.equal(analyticsUrl(`${site}/records?pack=p1#top`), `${site}/records`)
 })
 
-test('the admin screen and the development login are not sent', () => {
-  assert.equal(analyticsUrl(`${site}/admin`), null)
-  assert.equal(analyticsUrl(`${site}/admin/gallery`), null)
+test('the development login is not sent', () => {
+  assert.equal(analyticsUrl(`${site}/local-login`), null)
+  assert.equal(analyticsUrl(`${site}/local-login/x`), null)
   assert.equal(analyticsUrl(`${site}/local-login?next=/play`), null)
 })
 
 test('a path that only starts with the same letters is still sent', () => {
-  assert.equal(analyticsUrl(`${site}/administrator`), `${site}/administrator`)
+  assert.equal(analyticsUrl(`${site}/local-logins`), `${site}/local-logins`)
 })
 
 test('a URL that cannot be read is not sent', () => {
