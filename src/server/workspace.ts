@@ -8,7 +8,13 @@ import { followed } from '../core/packs/catalog'
 import { repairLibrary } from '../core/wordPacks'
 import { decodeDocument, type WorkspaceChange } from '../core/workspaceDocument'
 import { validateWorkspaceRequest } from '../core/workspaceRequest'
+import { signedIn } from './account'
+import { measureSave } from './metrics'
 import { recordRows, syncRecords, withRecords } from './records'
+import { reportFailure } from './report'
+import { fromAppOrOrigin, jsonContent } from './request'
+import { refuse, reply } from './response'
+import { readLoginSettings, type LoginSettings } from './settings'
 
 // The account's workspace, /api/workspace: its lists, packs, devices and interests as saved in typle_workspaces, with
 // the records of typle_records put back in their lists, and the revision a save must name.
@@ -210,4 +216,74 @@ export async function writeWorkspace(db: Pool, owner: string, revision: number, 
     connection.release(true)
     throw error
   }
+}
+
+/** The largest body a save may send. */
+const MAX_BODY_BYTES = 1 << 20
+
+/** GET /api/workspace: the owner's workspace as saved. */
+async function readWorkspaceAnswer(request: Request, db: Pool, login: LoginSettings): Promise<Response> {
+  const account = await signedIn(request, db, login)
+  if ('refusal' in account) return account.refusal
+  try {
+    return reply(200, workspaceAnswer(await readSavedWorkspace(db, account.user.sub), account.user.sub))
+  } catch (error) {
+    reportFailure(request, error, 'workspace.read')
+    return refuse(503, 'databaseUnavailable')
+  }
+}
+
+/** PUT /api/workspace: checked as the Go backend's saveRequest and saveWorkspace checked it, in that order. */
+async function saveWorkspaceAnswer(request: Request, db: Pool, login: LoginSettings): Promise<Response> {
+  const account = await signedIn(request, db, login)
+  if ('refusal' in account) return account.refusal
+  const owner = account.user.sub
+  let body: ArrayBuffer
+  try {
+    body = await request.arrayBuffer()
+  } catch (error) {
+    reportFailure(request, error, 'workspace.write')
+    return refuse(503, 'workspaceSaveFailed')
+  }
+  if (body.byteLength === 0) return refuse(400, 'emptyRequest')
+  if (body.byteLength > MAX_BODY_BYTES) return refuse(413, 'workspaceTooLarge')
+  let fields: unknown
+  try {
+    fields = JSON.parse(new TextDecoder().decode(body))
+  } catch {
+    return refuse(400, 'invalidWorkspace')
+  }
+  if (!fields || typeof fields !== 'object' || Array.isArray(fields)) return refuse(400, 'invalidWorkspace')
+  // The account is checked before the rest, so a screen that signed in as someone else is told so first.
+  if ((fields as { accountId?: unknown }).accountId !== owner) return refuse(401, 'loginAccountChanged')
+  const read = readWorkspaceChange(fields as Record<string, unknown>)
+  if ('refusal' in read) return refuse(400, read.refusal)
+  try {
+    return reply(200, workspaceAnswer(await writeWorkspace(db, owner, read.revision, read.change), owner))
+  } catch (error) {
+    if (error instanceof Conflict) return refuse(409, 'conflict')
+    if (error instanceof AppError && ['listLimit', 'followLimit', 'invalidWorkspace'].includes(error.key)) return refuse(400, error.key)
+    reportFailure(request, error, 'workspace.write')
+    return refuse(503, 'workspaceSaveFailed')
+  }
+}
+
+/**
+ * /api/workspace: GET (and HEAD) reads the owner's workspace, PUT saves a change of it by revision. A save must come
+ * from the app; both need the login. Saves are measured when env turns it on (src/server/metrics.ts).
+ */
+export async function answerWorkspace(request: Request, open: () => Pool, settings: () => LoginSettings | null = readLoginSettings,
+  env: Record<string, string | undefined> = process.env): Promise<Response> {
+  const login = settings()
+  if (!login) return refuse(503, 'authUnavailable')
+  if (request.method === 'PUT' && (!fromAppOrOrigin(request, login.origin) || !jsonContent(request))) return refuse(403, 'forbiddenRequest')
+  let db: Pool
+  try {
+    db = open()
+  } catch (error) {
+    reportFailure(request, error, 'workspace.open')
+    return refuse(503, 'databaseUnavailable')
+  }
+  if (request.method !== 'PUT') return readWorkspaceAnswer(request, db, login)
+  return measureSave(request, 'workspace.write', () => db, () => saveWorkspaceAnswer(request, db, login), env)
 }
