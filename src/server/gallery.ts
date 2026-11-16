@@ -25,62 +25,32 @@ type GalleryPack = {
 
 type GalleryCategory = { name: string, count: number }
 
-/**
- * The value of the query parameter name as Go's url.Values.Get read it: the first pair with that name. A pair with a
- * malformed escape or a semicolon is skipped, as Go's url.ParseQuery skips it. invalid is true when the value is not
- * UTF-8 (`%FF`), which URLSearchParams would quietly turn into U+FFFD.
- */
-function queryValue(url: URL, name: string): { value: string, invalid: boolean } {
-  for (const pair of url.search.slice(1).split('&')) {
-    if (!pair || pair.includes(';')) continue
-    const [rawKey, rawValue = ''] = splitOnce(pair, '=')
-    if (/%(?![0-9a-fA-F]{2})/.test(rawKey) || /%(?![0-9a-fA-F]{2})/.test(rawValue)) continue
-    let key: string
-    try {
-      key = decodeURIComponent(rawKey.replace(/\+/g, ' '))
-    } catch {
-      continue
-    }
-    if (key !== name) continue
-    try {
-      return { value: decodeURIComponent(rawValue.replace(/\+/g, ' ')), invalid: false }
-    } catch {
-      return { value: '', invalid: true }
-    }
-  }
-  return { value: '', invalid: false }
-}
-
-function splitOnce(text: string, separator: string): [string, string?] {
-  const at = text.indexOf(separator)
-  return at < 0 ? [text] : [text.slice(0, at), text.slice(at + 1)]
-}
-
 // The white space Go's strings.TrimSpace removes (unicode.IsSpace).
 const GO_SPACE = '[\\t\\n\\v\\f\\r \\u0085\\u00A0\\u1680\\u2000-\\u200A\\u2028\\u2029\\u202F\\u205F\\u3000]'
 const EDGE_SPACE = new RegExp(`^${GO_SPACE}+|${GO_SPACE}+$`, 'g')
 
 /**
  * Reads ?q=&category=&sort=&page= as the Go backend did. null is a query to refuse with 400 invalidQuery: text or
- * category that is not UTF-8 or has a NUL, a sort other than new or popular, or a page that is not a whole number
- * from 1 to MAX_GALLERY_PAGE.
+ * category with a NUL, a sort other than new or popular, or a page that is not a whole number from 1 to
+ * MAX_GALLERY_PAGE. Next.js hands the query over as URLSearchParams wrote it again, so an escape that is not UTF-8
+ * (%FF) arrives as U+FFFD and is searched for, where Go refused it.
  */
 export function parseGalleryQuery(url: URL): GalleryQuery | null {
-  const text = queryValue(url, 'q')
-  const category = queryValue(url, 'category')
-  const sort = queryValue(url, 'sort')
-  const page = queryValue(url, 'page')
-  if ([text, category, sort, page].some(field => field.invalid)) return null
-  if (text.value.includes('\0') || category.value.includes('\0')) return null
-  if (sort.value !== '' && sort.value !== 'new' && sort.value !== 'popular') return null
+  const params = url.searchParams
+  const text = params.get('q') ?? ''
+  const category = params.get('category') ?? ''
+  const sort = params.get('sort') ?? ''
+  const page = params.get('page') ?? ''
+  if (text.includes('\0') || category.includes('\0')) return null
+  if (sort !== '' && sort !== 'new' && sort !== 'popular') return null
   // strconv.Atoi: an optional sign and decimal digits, nothing else.
-  if (page.value !== '' && !/^[+-]?\d+$/.test(page.value)) return null
-  const pageNumber = page.value === '' ? 1 : Number(page.value)
+  if (page !== '' && !/^[+-]?\d+$/.test(page)) return null
+  const pageNumber = page === '' ? 1 : Number(page)
   if (pageNumber < 1 || pageNumber > MAX_GALLERY_PAGE) return null
   return {
-    text: [...text.value.replace(EDGE_SPACE, '')].slice(0, MAX_GALLERY_QUERY).join(''),
-    category: category.value,
-    sort: sort.value === 'popular' ? 'popular' : 'new',
+    text: [...text.replace(EDGE_SPACE, '')].slice(0, MAX_GALLERY_QUERY).join(''),
+    category,
+    sort: sort === 'popular' ? 'popular' : 'new',
     page: pageNumber,
   }
 }
