@@ -124,7 +124,7 @@ export function decodeLists(raw: string): SavedWordList[] {
     dropNulls(list, ['writing', 'tags', 'category', 'group', 'levels', 'packId'])
     if (Array.isArray(list.records)) {
       for (const record of list.records) {
-        if (record && typeof record === 'object') dropNulls(record, ['id', 'mistakes', 'accuracy', 'wordCount', 'device'])
+        if (record && typeof record === 'object') dropNulls(record, ['id', 'mistakes', 'accuracy', 'wordCount', 'device', 'missed'])
       }
     }
   }

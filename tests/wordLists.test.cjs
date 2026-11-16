@@ -91,3 +91,10 @@ test('optional fields saved as null are read as left out', () => {
     assert.deepEqual(read({ ...full, records: [{ ...record, [name]: null }] }), read({ ...full, records: [without] }), name)
   }
 })
+
+// A record's missed words saved as null are none, as the Go backend read them (decodeMissed).
+test('missed words saved as null are read as left out', () => {
+  const record = { id: 'r1', time: 1500, date: '2026-09-07T00:00:00.000Z' }
+  const read = value => decodeLists(JSON.stringify({ version: 1, lists: [value] }))[0]
+  assert.deepEqual(read({ ...list, records: [{ ...record, missed: null }] }), read({ ...list, records: [record] }))
+})
