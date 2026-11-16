@@ -183,8 +183,9 @@ FFPF ID（ffpf-portal）は、GitHub と並ぶもう1つのログイン方法で
 ### パックの共有とギャラリー
 
 パックの共有（`/api/shares`・`/api/shared`）、ギャラリー（`/gallery`・`/api/gallery` と通報・追加数・IP ごとの回数制限）、
-表 `typle_shared_packs`・`typle_gallery_reports`・`typle_gallery_hits` は v2.49.0 でなくしました（管理者ダッシュボードは
-v2.48.0）。パックを人に渡すときは、パックのファイル（`.typle-pack.json`）か CSV を書き出して送り、相手が取り込みます。
+表 `typle_gallery_reports`・`typle_gallery_hits` は v2.49.0 でなくしました（管理者ダッシュボードは v2.48.0）。表
+`typle_shared_packs` は、v2.48.0 までのアプリが保存のたびに行を消すため、空にして残しています。v2.48.0 に戻せなくなってよい
+後の版で消します。パックを人に渡すときは、パックのファイル（`.typle-pack.json`）か CSV を書き出して送り、相手が取り込みます。
 配られた共有リンク `/shared/<id>` は「この共有は終了しました。」とだけ表示し、`/gallery` は公式パックのカタログへ転送します。
 
 ### Sentry エラー監視

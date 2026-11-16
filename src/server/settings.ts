@@ -78,7 +78,6 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
   }
 }
 
-
 /**
  * Whether the local login may be on: LOCAL_DEVELOPMENT_LOGIN is 1 and AUTH_URL is plain http to this machine, a
  * loopback name or address, or a private IPv4 address that LOCAL_DEVELOPMENT_LAN_HOST names exactly. As the Go backend

@@ -1,5 +1,5 @@
 {
-  "comment": "POST and DELETE /api/workspace/records of the Go backend (recordAdd and recordDelete with a real database), step after step from each setup. After each step: the status, the error key, the record answered, the row, the rows of typle_records ([list_id, record_id, position, at in ms, data]) and the pack ids of typle_shared_packs. accountId is the owner's. src/server must leave the same (tests/apiRecords.test.cjs).",
+  "comment": "POST and DELETE /api/workspace/records of the Go backend (recordAdd and recordDelete with a real database), step after step from each setup. After each step: the status, the error key, the record answered, the row, the rows of typle_records ([list_id, record_id, position, at in ms, data]) and the pack ids of typle_shared_packs (setup.shares and shares; not checked since v2.49.0, which removed sharing). accountId is the owner's. src/server must leave the same (tests/apiRecords.test.cjs).",
   "scenarios": [
     {
       "name": "records added, sent again and deleted",

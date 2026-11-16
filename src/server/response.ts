@@ -30,5 +30,3 @@ export function methodNotAllowed(allow: readonly string[]): Response {
 export function withoutBody(response: Response): Response {
   return new Response(null, { status: response.status, headers: response.headers })
 }
-
-

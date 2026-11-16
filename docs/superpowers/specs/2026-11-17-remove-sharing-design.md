@@ -9,8 +9,8 @@
 ## 目標・目標でないこと・してはいけないこと
 
 - 目標：パックの共有（`/api/shares`・`/api/shared`・共有ダイアログ・持ち主のいない共有の一覧）と、ギャラリー
-  （`/gallery`・`/api/gallery`・`categories`・`added`・`reports`・通報・回数制限）を消す。表 `typle_shared_packs`・
-  `typle_gallery_reports`・`typle_gallery_hits` を新しい移行で消す。
+  （`/gallery`・`/api/gallery`・`categories`・`added`・`reports`・通報・回数制限）を消す。表
+  `typle_gallery_reports`・`typle_gallery_hits` を新しい移行で消し、`typle_shared_packs` は空にする。
 - 目標でないこと：CSV・`.typle-pack.json` の取り込み・書き出し、公式パックのカタログとフォロー、練習の結果の共有
   （`/result`）を変えること。
 - してはいけないこと：利用者のパック・リスト・記録を失うこと（共有から追加したパックはワークスペースのふつうの
@@ -27,8 +27,10 @@
 - `/shared/<id>`：API を呼ばずに「この共有は終了しました」とだけ出すページを残す（配られたリンクを 404 にしない）。
 - `/gallery`：公式パックのカタログ `/packs/catalog` へ転送する。
 - ワークスペースの保存の中の `typle_shared_packs` の片付けは消す。
-- 移行 `0037_drop_sharing` で3つの表を消す。Vercel で v2.48.0 に戻すと、共有とギャラリーだけが動かず（DB の失敗）、
-  ほかは動く。ビルドし直しではなく Instant Rollback を使う。
+- 移行 `0037_drop_sharing` で `typle_gallery_reports`・`typle_gallery_hits` を消し、`typle_shared_packs` は中身だけ消して
+  表を残す（レビューでの修正）。v2.48.0 は保存のたびに `typle_shared_packs` の行を消すので、表がないとビルドの間や
+  Instant Rollback の後に保存が失敗する。表は、v2.48.0 に戻せなくなってよい後の版で消す。Vercel で v2.48.0 に戻すと、
+  共有とギャラリーだけが動かず、ほかは動く。ビルドし直しではなく Instant Rollback を使う。
 - ガイドの共有・ギャラリーの節は「パックを渡すには CSV を書き出して、相手が取り込む」に書き換える。
 - 過去の版を書いた文書（CHANGELOG、`docs/release-notes`、`docs/superpowers`）は書き換えない。Go が記録した
   fixture のうち、共有・ギャラリーだけを確かめていたもの（`share-snapshots.json`・`client-mac.json` など）は、

@@ -77,3 +77,12 @@ test('of two saves from the same revision, only one is saved', database, async (
   assert.deepEqual(again.sort(), ['conflict', 'ok'])
   assert.equal((await state(owner)).row.revision, 2)
 })
+
+// The app before v2.49.0 runs on the database while a deploy builds and after an Instant Rollback: every save of its
+// lists or packs deletes the owner's shares of packs no longer saved, so typle_shared_packs must stay until it is gone.
+test('the save of the app before v2.49.0 still runs on the migrated database', database, async () => {
+  const owner = newOwner()
+  await db.query('DELETE FROM typle_shared_packs WHERE owner_id = $1 AND NOT (pack_id = ANY($2::text[]))', [owner, ['p1']])
+  const { rows } = await db.query('SELECT count(*)::int AS n FROM typle_shared_packs')
+  assert.equal(rows[0].n, 0)
+})

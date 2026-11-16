@@ -22,7 +22,7 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 
 ## 共通事項
 
-- 本文はJSON（`Content-Type: application/json; charset=utf-8`）で、`Cache-Control: private, no-store`・`Vary: Cookie` を付けます。`/api/shared`・`/api/gallery`・`/api/gallery/categories`・`/api/gallery/added`・`/api/gallery/reports` は `Cache-Control: no-store` で、`X-Robots-Tag: noindex` も付けます。
+- 本文はJSON（`Content-Type: application/json; charset=utf-8`）で、`Cache-Control: private, no-store`・`Vary: Cookie` を付けます。
 - エラーは `{ "error": "<キー>" }` です。キーはアプリの `errors` のメッセージのキーで、画面が利用者の言語で表示します。
 - すべての応答に `Content-Security-Policy: frame-ancestors 'none'; base-uri 'self'; object-src 'none'`・`X-Frame-Options: DENY`・`X-Content-Type-Options: nosniff`・`Referrer-Policy: strict-origin-when-cross-origin` を付けます（`next.config.mjs`）。
 - `HEAD` は `GET` と同じに答えます（本文なし）。
