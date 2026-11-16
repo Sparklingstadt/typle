@@ -1,5 +1,5 @@
 {
-  "about": "What JavaScript's String.prototype.toLowerCase and trim give. tests/strings.test.cjs checks them against Node, and server/internal/workspace (lowerCase, trimJS) must give the same.",
+  "about": "What JavaScript's String.prototype.toLowerCase and trim give. tests/strings.test.cjs checks them against Node (the Go backend's lowerCase and trimJS gave the same until v2.46.11).",
   "lowerCase": [
     {
       "input": "\u039f\u0394\u039f\u03a3",

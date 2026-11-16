@@ -28,16 +28,16 @@
 
 | リポジトリ | 内容 |
 |---|---|
-| typle-r（このリポジトリ） | Web 版（Next.js）、Go のバックエンドと API（`server/`） |
+| typle-r（このリポジトリ） | Web 版と、そのバックエンドの API（どちらも Next.js。API は `src/app/api`・`src/server`） |
 | [typle-ipad](https://github.com/Sparklingstadt/typle-ipad) | iPad 版と Mac 版（SwiftUI）。同じコードを1つのプロジェクトでビルドします |
 | [typle-macos](https://github.com/Sparklingstadt/typle-macos)（旧 typle-m） | Mac 版。v2.6.11 で typle-ipad にまとめてアーカイブしました |
 | [typle-w](https://github.com/Sparklingstadt/typle-w) | Windows 11 版（C#・WinUI 3）。v2.6.9 でアーカイブし、開発を止めました |
 | [typle-a](https://github.com/Sparklingstadt/typle-a) | Android タブレット版（Kotlin・Jetpack Compose）。v2.6.9 でアーカイブし、開発を止めました |
-| [typle-kotlin-backend](https://github.com/Sparklingstadt/typle-kotlin-backend) | Go のバックエンドと同じ API の Kotlin（Ktor）版。v2.6.10 でアーカイブし、`TYPLE_BACKEND=kotlin` の切り替えも外しました |
+| [typle-kotlin-backend](https://github.com/Sparklingstadt/typle-kotlin-backend) | 以前の Go のバックエンドと同じ API の Kotlin（Ktor）版。v2.6.10 でアーカイブし、`TYPLE_BACKEND=kotlin` の切り替えも外しました |
 
 どのアプリも、このリポジトリのバックエンド（Next.js の Route Handler）に同じ GitHub ログインでつなぎます。Web は `https://typle.sparklingstadt.com`、iPad・Mac 版は `https://typle-r-six.vercel.app` の `/api/*` を呼びます。Vercel のドメインで始めたログイン（`/api/auth/signin`）は、OAuth の cookie とコールバックを同じホストにするため、`vercel.json` で本番のドメインへ移します（`tests/domainRedirect.test.cjs`）。ほかのリポジトリは、このリポジトリのコードやデータの写しや対応する実装を持っています。ここを変えたら、合わせて直してください。
 
-- 公式の単語リスト（`src/core/packs`）：`commands/` の各 JSON が1リストです。並び順の原本は `commands/manifest.json` です。追加・削除時は JSON と manifest を更新して `npm run packs:generate` を実行すると、Web が読み込む `commands/index.ts` と Go の埋め込み用コピー（`server/internal/workspace/packs`）を生成します（v1.5.0 から。`go generate ./server/internal/workspace` も同じスクリプトを実行します）。生成し忘れは単体テストで分かります。以前の `commands.json` 形式を使う他アプリには、`commands/manifest.json` の順に各 JSON を配列へまとめて渡してください。
+- 公式の単語リスト（`src/core/packs`）：`commands/` の各 JSON が1リストです。並び順の原本は `commands/manifest.json` です。追加・削除時は JSON と manifest を更新して `npm run packs:generate` を実行すると、Web が読み込む `commands/index.ts` を生成します（v1.5.0 から。v2.46.11 までは Go のバックエンドの埋め込み用コピーも生成していました）。生成し忘れは単体テストで分かります。以前の `commands.json` 形式を使う他アプリには、`commands/manifest.json` の順に各 JSON を配列へまとめて渡してください。
 - iPad 版と Mac 版：typle-ipad の `TypleCore/` は `src/core` の規則の Swift 版で、`catalog.json` は公式の単語リストから作った写しです。公式の単語リストを変えたら、typle-ipad で `node scripts/catalog.cjs ../typle-r` を実行して作り直します。
 - ログイン（`client=ipad|macos|android|windows`）とトークンの形：各アプリが使うので、互換を保ちます。アーカイブした Android 版・Windows 版も、入っているアプリがそのままログインできるよう `android`・`windows` を受け付け続けます。
 - アーカイブした typle-macos・typle-w・typle-a・typle-kotlin-backend は、このリポジトリを変えても直しません。
@@ -46,7 +46,7 @@
 
 ### Dockerでの仮運用
 
-Node.js 24（`package.json` の `engines` で24系に固定）、npm、Go 1.25以上、Docker Composeを使用します。
+Node.js 24（`package.json` の `engines` で24系に固定）、npm、Docker Composeを使用します（v2.47.0 から Go は要りません）。
 
 ```sh
 npm ci
@@ -68,7 +68,7 @@ Client IDとClient secretを `.env.local` の `AUTH_GITHUB_ID` / `AUTH_GITHUB_SE
 npm run dev
 ```
 
-`npm run dev` は2つのプロセスを起動します。Go のバックエンド（`go run ./server/cmd/typle-web`、`127.0.0.1:8081`）と `next dev`（`127.0.0.1:3000`）で、どちらかが止まるともう片方も止めます。v2.46.10 からは `/api` のすべてのパスを Next.js が答え、Go には何も届きません（Go は次の版で消します）。`go` コマンドがないときは、メッセージを出して終了します。バックエンドは `.env.local` の値を使い、起動のたびにコンパイルするため、初回は少し時間がかかります。`npm run dev:local`・`npm run dev:lan` も同じです。`TYPLE_WEB_URL` を設定すると、Go のバックエンドの待受（その URL のホストとポート）がそこに変わります。バックエンドは HTTP だけで待ち受けるため、`TYPLE_WEB_URL` が `https://` の URL なら起動せずにメッセージを出して終了します。DB に接続できなくても起動し、その間 `/api/workspace`・`/api/health`（どちらも Next.js）は 503（`databaseUnavailable`）を返しますが、ログインは使えます。GitHub のログインは `AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET` が揃っているときだけ使え、揃っていなければ `/api/auth/signin` だけが 503 になります（開発ログインだけで開発できます）。
+`npm run dev` は `next dev`（`127.0.0.1:3000`）を起動します。ページも API（Route Handler）も Next.js が答えます（v2.47.0 から。それまでは Go のバックエンドも一緒に起動していました）。`npm run dev:local`・`npm run dev:lan` も同じです。DB に接続できなくても起動し、その間 `/api/workspace`・`/api/health`（どちらも Next.js）は 503（`databaseUnavailable`）を返しますが、ログインは使えます。GitHub のログインは `AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET` が揃っているときだけ使え、揃っていなければ `/api/auth/signin` だけが 503 になります（開発ログインだけで開発できます）。
 
 [ローカルアプリ](http://localhost:3000) を開いてGitHubでログインします。通常の停止は `docker compose --env-file .env.local stop`、再開は `up -d --wait` です。`down -v` は保存データを削除するため使用しないでください。
 
@@ -90,7 +90,7 @@ http://localhost:3000/local-login を開き「練習を始める」を押しま�
 
 ## 検証
 
-Dockerを起動してマイグレーションを実行した状態で（Go 1.25以上が必要です）。`npm run verify` は、Go の検査も含めて公開の前に通す検査をすべて同じ順に流し、最初の失敗で止まります（E2E と API の文書を省くときは `npm run verify -- --fast`）。1つずつなら:
+Dockerを起動してマイグレーションを実行した状態で。`npm run verify` は、公開の前に通す検査をすべて同じ順に流し、最初の失敗で止まります（E2E と API の文書を省くときは `npm run verify -- --fast`）。1つずつなら:
 
 ```sh
 npm run typecheck
@@ -101,9 +101,9 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Goのバックエンドと API はリポジトリ直下で `gofmt -l .`・`go vet ./...`・`GOTOOLCHAIN=go1.25.0 go run honnef.co/go/tools/cmd/staticcheck@v0.7.0 ./...`・`go test ./...` を実行します。ログインの Cookie、GitHub の OAuth（`httptest` で作った偽の GitHub を相手にします）、`/api/workspace`（検証・`revision` の競合・`409`）、iPad・Mac・Android・Windows のログイン（コード・トークン・Bearer）、セキュリティヘッダーなど、`server/internal/web` のハンドラーのテストも含みます。マイグレーション済みのテスト用DBを `TYPLE_TEST_DATABASE_URL` で指定すると、DBの読み書きも確かめます（`npm run verify` は `db:migrate` の後に実行します）。
+API の Route Handler は、DB を使うテスト（`tests/api*.test.cjs` など）が、マイグレーション済みのテスト用DB（`TYPLE_TEST_DATABASE_URL`）で確かめます（`npm run verify` は `db:migrate` の後に実行します）。v2.46.11 まで動いていた Go のバックエンドの答え・Cookie・トークンは `tests/fixtures`（`sessions.json`・`auth-answers.json`・`signin-answers.json` など）に記録してあり、TS が同じ答えを返し、Go の発行した Cookie・トークンを読めることを確かめます。
 
-`npm test` は入力判定、記録、移行、形式検証などの単体テストです。速さのため全ファイルを1つのプロセスで動かす（`--test-isolation=none`）ので、`process.env` や `globalThis` を変えるテストは終わりに元へ戻してください。E2Eは既定で6 workersを使い、ファイル内も並列実行します（v2.38.2 から。それまでは手元ではコアの半分でした）。すべてのテストが1つの `next start` と1つの Go のサーバーを共有するため、workers を増やしても速くなりません。14コアの Mac では、6のとき約56秒、コアの半分の7で約61秒、14で約88秒でした。数は環境変数 `TYPLE_E2E_WORKERS`（`4` や `50%` など）で変えられます。テストごとにランダムなアカウントIDを使用します。Playwright が Go のバックエンド（`go run ./server/cmd/typle-web`、ポート8081）と、本番ビルドの `next start`（ポート3101）を両方起動し、実PostgreSQLとAPIを通して作成・編集・練習・再読み込み・削除、アカウント分離、401/403/409応答を確認します。GitHub にはつながず、`tests/e2e/sessionCookie.ts` がテスト専用の秘密値で署名したログインの Cookie を作ります（Go の `server/internal/session` と同じ値になることは `tests/sessionCookie.test.cjs` が確かめます）。GitHub OAuth画面の実ログインは自動テストできないため、公開後に本番で別途確認が必要です。テストユーザーの行だけを終了後に削除します。
+`npm test` は入力判定、記録、移行、形式検証などの単体テストです。速さのため全ファイルを1つのプロセスで動かす（`--test-isolation=none`）ので、`process.env` や `globalThis` を変えるテストは終わりに元へ戻してください。E2Eは既定で6 workersを使い、ファイル内も並列実行します（v2.38.2 から。それまでは手元ではコアの半分でした）。すべてのテストが1つの `next start` を共有するため、workers を増やしても速くなりません。14コアの Mac では、6のとき約56秒、コアの半分の7で約61秒、14で約88秒でした。数は環境変数 `TYPLE_E2E_WORKERS`（`4` や `50%` など）で変えられます。テストごとにランダムなアカウントIDを使用します。Playwright が本番ビルドの `next start`（ポート3101）を起動し、実PostgreSQLとAPIを通して作成・編集・練習・再読み込み・削除、アカウント分離、401/403/409応答を確認します。GitHub にはつながず、`tests/e2e/sessionCookie.ts` がテスト専用の秘密値で署名したログインの Cookie を作ります（`src/server/session.ts` と同じ値になることは `tests/sessionCookie.test.cjs` が確かめます）。GitHub OAuth画面の実ログインは自動テストできないため、公開後に本番で別途確認が必要です。テストユーザーの行だけを終了後に削除します。
 
 GitHub Actions の CI は v2.38.1 でやめ、公開の前の検査は手元の `npm run verify` で行います（[リリース運用](docs/release-workflow.md)）。開発ビルド `.next` と本番ビルド `.next-production` は分離しています。
 
@@ -113,24 +113,15 @@ Next.js のアプリは1つで、`src` を層に分けています。依存は�
 
 | 層 | 場所 | 内容 |
 |---|---|---|
-| サーバー | `src/server`・`src/app/api` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ギャラリーの読み取り（`gallery.ts`）と書き込み（`galleryWrites.ts`。ログインの設定 `settings.ts`、要求の確認 `request.ts`、IP ごとの回数制限 `rateLimit.ts`）・共有パックの読み取り（`shared.ts`）・ログインの Cookie とアプリのトークンを開く処理（`session.ts`。鍵と形式は Go の `server/internal/session` と同じで、互いに読める）・ログインとすべての端末からのログアウトの確認（`account.ts`）・共有の一覧・作成・停止（`shares.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン・管理画面のログアウト（`auth.ts`）・管理画面の API（`admin.ts`。管理者の Cookie は Go の `server/internal/session` と同じ形式で、Go が発行したものを開く）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。Go のバックエンドから1つずつ移しているところで、今は `/api/health`・`/api/gallery` とその下のすべて・`GET /api/shared`・`/api/shares`・`/api/workspace`・`/api/workspace/records`・`/api/admin/*`・`/api/auth/session`・`token`・`signout`・`local`・`admin/signout` です。ギャラリーと `/api/shared` の応答は、エラーも含めてすべて `X-Robots-Tag: noindex` です（[設計](docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md)）。`src/core` を使えますが、画面と `src/core` からは import しません |
+| サーバー | `src/server`・`src/app/api` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ギャラリーの読み取り（`gallery.ts`）と書き込み（`galleryWrites.ts`。ログインの設定 `settings.ts`、要求の確認 `request.ts`、IP ごとの回数制限 `rateLimit.ts`）・共有パックの読み取り（`shared.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・共有の一覧・作成・停止（`shares.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン・管理画面のログアウト（`auth.ts`）・管理画面の API（`admin.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub は `github.ts`、FFPF ID は `ffpf.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。ギャラリーと `/api/shared` の応答は、エラーも含めてすべて `X-Robots-Tag: noindex` です（[設計](docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md)）。`src/core` を使えますが、画面と `src/core` からは import しません |
 | 画面 | `src/app`・`src/components`・`src/i18n`・`src/lib` | ページ、UI、多言語化、React のフック。`useWordLists` は React の状態とブラウザーのイベント（フォーカス・他タブの変更）だけを受け持ち、読み込み・保存は core の `createWorkspaceSession` に任せます。保存先は `src/lib/storage` で、`cloud.ts`（Next.js の Route Handler が答える `/api/workspace` と `/api/workspace/records`）と `guest.ts`（LocalStorage）を `workspaceStore(accountId)` がアカウントに応じて選びます |
 | core | `src/core` | React・Next.js・ブラウザーAPIに依存しない TypeScript。単語リスト・入力判定・記録・集計・ワークスペースのモデルと検証、保存先の型 `WorkspaceStore`（`workspaceStore.ts`、保存場所 `location` を含む）、ワークスペースの読み込み・保存 `createWorkspaceSession`（`workspaceSession.ts`。アカウントの切り替え後に届いた結果の破棄、保存の直列化、409での再読み込み、古いクラウド読み込みの無視）、単語ファイルの CSV の読み書き（`wordFormat.ts`。TSV の読み込みは v2.44.0 でやめました）。`packs/` は公式パック（v0.85.0 から sparklingstadt アカウントの67リストのコピーで、`commands/` に1リスト1ファイルで保存しています。それまではサンプル、国名193か国、コマンドと構文の25種類を初級・中級・上級に分けた85リスト）とそのカタログです |
 
 v2.43.2 まであったプラグインの層（`src/plugins`）と、ファイル形式を差し替えるための拡張口（`WordFormat` と形式の一覧）は v2.43.3 でやめました。読み書きする単語ファイルは CSV だけで、保存先は guest と cloud の2つです。
 
-バックエンド（`server/`）はNext.jsとは独立したGoのコードで、モジュールはリポジトリ直下の `go.mod` です。`internal/store` が DB を読み書きし、`internal/workspace` がアプリの `decodeLists`・`decodeDevices` と同じ規則で検証します。標準ライブラリ以外の主な依存は、PostgreSQLのドライバー（pgx）、名前を日本語の照合で並べる `golang.org/x/text`、エラー報告の `sentry-go` です。
+v2.46.11 まではバックエンドの一部が Go（`server/`、Vercel の Go の関数 `api/index.go`）でした。v2.46.10 で `/api` のすべてのパスを Next.js の Route Handler に移し、v2.47.0 で Go のコードを消しました（設計は `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md`。Go と違うところもそこにあります）。
 
-v2.46.10 で `/api` のすべてのパスを Next.js の Route Handler に移し、`vercel.json` と `next.config.mjs` の Go への転送をなくしました。下の Go のコードはもうどのリクエストにも使われず、次の版で消します。
-
-| 場所 | 内容 |
-|---|---|
-| `server/internal/web` | v2.46.9 までのログインの始まりと戻り（`/api/auth/signin`・`callback/github`・`callback/ffpf`）。v2.46.10 から Next.js の `src/server/signin.ts` です |
-| `server/internal/session` | ログインの Cookie（`HttpOnly`・`SameSite=Lax`・ログインから30日で失効・延長なし）と、iPad・Android・Windows のログインのコードの署名です（v2.46.9 から、トークンへの交換とセッション・トークンの検証は Next.js の `src/server/session.ts`。形式と鍵は同じ）。値は `AUTH_SECRET` から導いた鍵（種類ごとに別）で HMAC-SHA256 署名します。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です |
-| `server/internal/auth` | ログインの GitHub OAuth クライアント（認可コードと PKCE）と FFPF ID のクライアントです |
-| `server/vercel` | `web` のハンドラーを Vercel の Go の関数として呼ぶ橋渡しです。リポジトリ直下の `api/index.go` がこれを呼びます。v2.46.10 から `vercel.json` は何もここへ送りません |
-| `server/cmd/typle-web` | `web` のハンドラーを手元で起動します（既定 `127.0.0.1:8081`）。`npm run dev` が起動しますが、v2.46.10 からは何も届きません |
-| `server/internal/serve` | `typle-web` の待受です。止めるとき（SIGINT・SIGTERM）は、処理中のリクエストが終わるまで最大5秒待ってから DB を閉じます |
+ログインの Cookie は `HttpOnly`・`SameSite=Lax` で、ログインから30日で切れます（延長しません）。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です。Cookie・アプリのトークン・アプリのログインのコード・ログイン途中の状態（`typle-oauth`）・管理者の Cookie は、`AUTH_SECRET` から HKDF で導いた種類ごとの鍵で HMAC-SHA256 署名します（`src/server/session.ts`・`settings.ts`。形式と鍵は Go のときと同じです）。ログインの始まりと戻りは `src/server/signin.ts`、GitHub と FFPF ID とのやりとりは `github.ts`・`ffpf.ts` です。
 
 ### iPad と Mac と Android と Windows のログイン
 
@@ -146,7 +137,7 @@ iPad アプリと Mac アプリ（どちらも [typle-ipad](https://github.com/S
 
 Android のエミュレーターから手元の `npm run dev` で試すときは、サーバー URL に `http://10.0.2.2:<ポート>`（エミュレーターから見たホストの `localhost`）を入れます。ただし GitHub の OAuth App の callback URL は `AUTH_URL` に合わせたもの（`<AUTH_URL>/api/auth/callback/github`）でなければならず、開発用ログイン（`POST /api/auth/local`）はアプリでは使えません。
 
-画面は `src/lib/session.tsx` の `useSession`・`signIn`・`signOut` で `/api/auth/*` を呼びます。ログイン状態は `/api/auth/session` の 200 の答えだけで決め、確認が失敗したとき（通信の失敗、200 以外の答え、読めない本文）は前の状態のままにします。最初の確認だけは 1・2・4 秒後にやり直し、すべて失敗したら未ログインとして扱います。手元と E2E では、`next.config.mjs` が `/api/workspace/records`・`/api/auth/*` などの Go のパスを `TYPLE_WEB_URL`（既定 `http://127.0.0.1:8081`）へ転送します。Vercel 上では転送せず、同じパスの Go の関数が応答します。`/api/health` は Next.js の Route Handler が答えます。エラーは `SENTRY_DSN`（なければ `NEXT_PUBLIC_SENTRY_DSN`）で Sentry に送ります（[docs/sentry.md](docs/sentry.md)）。
+画面は `src/lib/session.tsx` の `useSession`・`signIn`・`signOut` で `/api/auth/*` を呼びます。ログイン状態は `/api/auth/session` の 200 の答えだけで決め、確認が失敗したとき（通信の失敗、200 以外の答え、読めない本文）は前の状態のままにします。最初の確認だけは 1・2・4 秒後にやり直し、すべて失敗したら未ログインとして扱います。`/api/*` はどれも Next.js の Route Handler が答えます。エラーは `SENTRY_DSN`（なければ `NEXT_PUBLIC_SENTRY_DSN`）で Sentry に送ります（[docs/sentry.md](docs/sentry.md)）。
 
 ## 保存とアクセス制御
 
@@ -169,7 +160,7 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 - `AUTH_URL`: 本番URL。本番OAuth callbackは `<本番URL>/api/auth/callback/github`（v0.55.0 でも変わりません）。この値のオリジンだけを使います
 - `FFPF_ID_ISSUER`, `FFPF_ID_CLIENT_ID`, `FFPF_ID_CLIENT_SECRET`: FFPF ID（ffpf-portal）の issuer とクライアントの認証情報（任意。3つ揃えたときだけ FFPF ID のログインと `/admin` を使えます）。portal に登録する redirect URI は `<本番URL>/api/auth/callback/ffpf` です
 
-Go の関数（`api/index.go`）も同じ環境変数を読むため、Vercel の設定は増やしません。対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/migrate.cjs` が `pg` で適用します（v2.36.19 から Prisma は使いません。アプリの DB の読み書きは Go の pgx）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](docs/release-workflow.md)）。
+対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/migrate.cjs` が `pg` で適用します（v2.36.19 から Prisma は使いません。アプリの DB の読み書きは Route Handler の `pg`）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](docs/release-workflow.md)）。
 
 公式資料: [GitHub OAuth App](https://docs.github.com/ja/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)、[PostgreSQL Docker image](https://hub.docker.com/_/postgres)。
 

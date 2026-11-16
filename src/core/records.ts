@@ -105,7 +105,7 @@ export function makeRecord(session: TypingSession, words: { input: string }[], i
 
 export const MAX_RECORDS = 10000
 export const MAX_RECORD_ID = 100
-// The built-in device's name in the app's base language, as Go saves it (defaultDeviceName in server/internal/workspace);
+// The built-in device's name in the app's base language, as the server saves it (the Go backend's defaultDeviceName until v2.46.11);
 // screens show it by its id.
 const DEFAULT_DEVICE_NAME = baseFormat.defaultDevice
 

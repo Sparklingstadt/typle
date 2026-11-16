@@ -4,7 +4,6 @@ const assert = require('node:assert/strict')
 const { validateWorkspaceRequest } = require('../src/core/workspaceRequest.ts')
 const { cases } = require('./fixtures/workspace-put.json')
 
-// The same bodies are read by server/internal/web (TestMatchesTypeScript), so a save is accepted or refused alike.
 test('save bodies are accepted and refused as the backend does', () => {
   for (const c of cases) {
     let change

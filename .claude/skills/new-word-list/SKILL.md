@@ -114,7 +114,7 @@ node $S check <ファイル>...
      - 5つ：`初級1`・`初級2`・`中級`・`上級1`・`上級2`
      - 語学のリストは `中級単語` や `単語1` のように内容で名付けることもあります。
 2. **並び順に加える**：`src/core/packs/commands/manifest.json` の末尾にファイル名を足します。
-3. **生成する**：`npm run packs:generate` を実行します。`commands/index.ts` と Go 用のコピー（`server/internal/workspace/packs/`）ができます。
+3. **生成する**：`npm run packs:generate` を実行します。`commands/index.ts` ができます。
 4. **検証する**：`node $S check src/core/packs/commands/<id>.json`
 5. **テストの数を更新する**
    - `tests/commands.test.cjs`
@@ -124,10 +124,9 @@ node $S check <ファイル>...
    - `tests/packCatalog.test.cjs`：`official.length`（公式パックの数）
    - `tests/e2e/interests.spec.ts`：「every interest is picked at first…」の `toHaveCount`（公式パックの数。2か所）
    - `tests/listGroups.test.cjs`：`entries.length` と `groups.length`
-   - `server/internal/workspace/follow_test.go`：`len(official)` とリストの数 `count`、そのコメント
    - 新しいパックの構成（パック名、カテゴリー、タグ、リストの id と levels、語数）を確かめるテストを足します。語学なら `tests/languagePacks.test.cjs` に置きます。
 6. **出典を書く**：元データがあれば、出典・作り方・確かめ方を `docs/word-list-sources.md` に書き足します。
-7. **確かめる**：`npm test` と `go test ./server/internal/workspace/...` を実行します。
+7. **確かめる**：`npm test` を実行します。
 8. **公開する**：`docs/release-workflow.md` に従います。
    - `npm version <X.Y.Z> --no-git-tag-version` で `package.json` と `package-lock.json` のバージョンを上げます。単語パックの追加はマイナーバージョンです（前例は v2.4.0・v2.5.0）。
    - 変更履歴は GitHub Releases に自動で作られるので、`CHANGELOG.md` には書きません。

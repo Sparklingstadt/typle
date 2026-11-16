@@ -7,7 +7,7 @@
 ```
 
 `matchesWriting(candidates, target, language, options)` の結果が `expected` と一致します。`options` の項目は省略できます。
-TS は `tests/writing.test.cjs`、iPad / Mac の TypleCore のテストが同じファイルを読みます。Go は読みません。
+TS は `tests/writing.test.cjs`、iPad / Mac の TypleCore のテストが同じファイルを読みます。
 
 ## 守る約束
 

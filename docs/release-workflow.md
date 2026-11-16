@@ -4,7 +4,7 @@
 
 v2.38.1 から GitHub Actions は使いません（API の文書を公開する「Docs deploy」だけ残しています）。それまで `.github/workflows/ci.yml` の
 `policy → verify → release → deploy` が行っていた検査・Release・デプロイは、すべてマージした人の手元（Mac）で、この順に手で行います。
-verify は `npm run verify`（`scripts/verify.cjs`）の1コマンドです。CI の verify と同じ検査（DB更新・マイグレーションのテスト・Goの検査とDBテスト・
+verify は `npm run verify`（`scripts/verify.cjs`）の1コマンドです。CI の verify と同じ検査（DB更新・マイグレーションのテスト・
 型チェック・単体テスト・Lint・knip・本番ビルド・E2E・APIの文書のビルドとリンク検査）を同じ順に流し、最初の失敗で止まります。
 PR の前にも手元で `npm run verify` を通し、マージ後の main のコミットでもう一度通してから公開します。
 
@@ -16,7 +16,7 @@ PR の前にも手元で `npm run verify` を通し、マージ後の main の�
    PR必須、ブランチを最新にすることを必須にし、force push・削除禁止、bypass対象なしを設定します。
    required status check は v2.38.1 からありません。
    private repoのプラン等によりルールを強制できない場合、mainへの直接pushは運用で禁止します。
-3. 公開する Mac を準備します。README の「Dockerでの仮運用」のとおり Node.js 24・Go 1.25・Docker Compose と `.env.local` を用意し、
+3. 公開する Mac を準備します。README の「Dockerでの仮運用」のとおり Node.js 24・Docker Compose と `.env.local` を用意し、
    Release を作る `gh auth login`（リポジトリへの書き込み権限）と、デプロイする `vercel login`・`vercel link`
    （`.vercel/project.json` が本番のプロジェクトを指すこと）を済ませます。`.vercel/`・トークン・`.env.local` はコミットしません。
    それまで Actions の `production` Environment に置いていた `VERCEL_TOKEN`・`VERCEL_ORG_ID`・`VERCEL_PROJECT_ID` は使わないので、削除してかまいません。

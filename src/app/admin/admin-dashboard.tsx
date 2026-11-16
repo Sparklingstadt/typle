@@ -26,7 +26,7 @@ type State =
 
 type ErrorKey = Parameters<ReturnType<typeof useTranslations<'errors'>>>[0]
 
-// The errors a login to the dashboard comes back with (/admin?error=…, server/internal/web/admin.go).
+// The errors a login to the dashboard comes back with (/admin?error=…, src/server/signin.ts).
 const loginErrors = ['adminForbidden', 'adminUnavailable'] as const
 type LoginError = typeof loginErrors[number]
 const isLoginError = (value: string | null): value is LoginError => loginErrors.some(key => key === value)

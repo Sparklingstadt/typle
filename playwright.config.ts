@@ -14,7 +14,7 @@ function e2eWorkers(value: string | undefined): number | string {
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
-  // Every test shares one next start and one Go server, so more browsers stop paying off long before the cores run
+  // Every test shares one next start, so more browsers stop paying off long before the cores run
   // out: on a 14-core Mac (2026-11-10) the suite took about 63 s with 4 workers, 56 s with 5 or 6, 61 s with 7
   // (Playwright's default, half of the cores), 72 s with 10 and 88 s with 14. TYPLE_E2E_WORKERS sets another number or
   // share, such as 4 or 50%.

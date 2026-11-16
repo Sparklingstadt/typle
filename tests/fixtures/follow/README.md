@@ -6,8 +6,8 @@
 { "official": [OfficialPack], "library": { "lists": [...], "packs": [...] | null }, "expected": { "lists": [...], "packs": [...] } }
 ```
 
-`library` に `normalizeLibrary`（Go は `workspace.Decode`）をかけ、続けて `followOfficial(_, official)`（Go は同期）をかけた結果が `expected` です。
-もう一度かけても変わりません。TS は `tests/followedPacks.test.cjs`、Go は `server/internal/workspace` のテストが読みます。
+`library` に `normalizeLibrary`をかけ、続けて `followOfficial(_, official)`をかけた結果が `expected` です。
+もう一度かけても変わりません。`tests/followedPacks.test.cjs` が読みます（v2.46.11 までは Go のバックエンドのテストも読みました）。
 
 - `official` は小さな架空のカタログ。各エントリは `{ catalogId, version, pack, lists }` で、`pack` と `lists` は保存された形（`lists` の `packId` は公式パックの `id`、`records` は空、`createdAt` あり）。
 

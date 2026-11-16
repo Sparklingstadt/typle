@@ -17,11 +17,9 @@ by a PR merged in the meantime.
 
 `npm run verify` (`scripts/verify.cjs`) runs every check in this order and stops at the first failure:
 `npm run db:migrate` on the local database (`DATABASE_URL` in `.env.local`; the DB tests add rows under random
-owners and delete them), `node --test tests/migrate.test.cjs`, `gofmt -l .` (empty), `go vet ./...`,
-`GOTOOLCHAIN=go1.25.0 go run honnef.co/go/tools/cmd/staticcheck@v0.7.0 ./...`, `go test ./...`, `npm run typecheck`,
-`npm test`, `npm run lint`, `npm run knip`, `npm run build`, `npm run test:e2e`, and `npm run docs:build` /
-`npm run docs:check` in `api-docs/`. `npm run verify -- --fast` leaves out the end-to-end tests and the API docs while
-working; run it in full before opening the PR. It needs Docker (the local PostgreSQL), Go 1.25 and Node.js 24, so a
+owners and delete them), `node --test tests/migrate.test.cjs`, `npm run typecheck`, `npm test`, `npm run lint`,
+`npm run knip`, `npm run build`, `npm run test:e2e`, and `npm run docs:build` / `npm run docs:check` in `api-docs/`. `npm run verify -- --fast` leaves out the end-to-end tests and the API docs while
+working; run it in full before opening the PR. It needs Docker (the local PostgreSQL) and Node.js 24, so a
 cloud session cannot run it: say so and hand it to the user.
 
 ### Release and deploy (the user's Mac)

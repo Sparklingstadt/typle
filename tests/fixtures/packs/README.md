@@ -1,11 +1,11 @@
 # 単語パックの共通 fixture
 
-入力 `lists`・`packs` に `normalizeLibrary`（Go は `workspace.Decode`）をかけた結果が `expected` です。
-TS は `tests/wordPacks.test.cjs`、Go は `server/internal/workspace/packs_library_test.go` が読みます。
+入力 `lists`・`packs` に `normalizeLibrary`をかけた結果が `expected` です。
+`tests/wordPacks.test.cjs` が読みます。
 
 - 読み込み時の補正だけをかけます。v1.0.0 より前の、パックのないデータを `group` ごとにパックへ変換する処理は v2.0.0 で削除しました（そのデータは `0032_drop_legacy` で削除）。
 
-## Go で守る約束
+## 守る約束
 
 - 長さは UTF-16 のコード単位で数える（TS の `string.length`）。
 - 名前は前後の空白を除き、`toLocaleLowerCase` で比べる。

@@ -170,7 +170,7 @@ test('reporting a pack that is only shared by link says it failed', async ({ pag
   expect((await reports(id)).rows).toHaveLength(0)
 })
 
-// The real count is tested in Go (server/internal/web, server/internal/store). Here every request comes from 127.0.0.1,
+// The real count is tested against the database (tests/apiGallery*.test.cjs, tests/serverRateLimit.test.cjs). Here every request comes from 127.0.0.1,
 // so really sending more than 10 reports would use up the allowance that the other tests (and workers) share; the
 // answer of an over-the-limit report is mocked to check what the dialog shows.
 test('a report refused for too many requests says to try again later', async ({ page, browser }) => {

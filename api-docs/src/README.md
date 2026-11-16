@@ -2,7 +2,7 @@
 home: true
 title: ホーム
 heroText: Typle API
-tagline: Typle のバックエンド（Go）が提供する API の仕様
+tagline: Typle のバックエンドが提供する API の仕様
 actions:
   - text: アプリのAPI
     link: /app/
@@ -11,13 +11,13 @@ features:
   - title: アプリのAPI（/api/*）
     details: Web版と iPad・Mac・Android・Windows 版が使う本番のバックエンド。ログイン、ワークスペースの保存、練習記録、パックの共有、管理画面。
   - title: OpenAPI
-    details: /api/workspace/records の本文・応答・エラーコードは OpenAPI 3.1 で定義し、Go とアプリの両方をテストで照合しています。
+    details: /api/workspace/records の本文・応答・エラーコードは OpenAPI 3.1 で定義し、Route Handler とアプリの両方をテストで照合しています。
 footer: Typle
 ---
 
 ## API
 
-Typle のバックエンドは Go（`server/`）です。本番は Vercel の Go の関数（`api/index.go`）で、手元は `server/cmd/typle-web` で動きます。使うのは Typle 本体（Web版と iPad・Mac・Android・Windows 版）だけで、認証はセッションの Cookie かアプリのトークンです。
+Typle のバックエンドは Next.js の Route Handler（`src/app/api`・`src/server`）です（v2.46.11 までは一部が Go の `server/` でした）。本番は Vercel で、手元は `npm run dev` で動きます。使うのは Typle 本体（Web版と iPad・Mac・Android・Windows 版）だけで、認証はセッションの Cookie かアプリのトークンです。
 
 手元専用の `/api/v1`（`typle-api`）は v2.36.20 でなくしました。
 

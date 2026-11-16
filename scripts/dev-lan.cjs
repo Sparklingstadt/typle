@@ -1,5 +1,7 @@
+// Starts `next dev` on the LAN address of .env.local (LOCAL_DEVELOPMENT_LAN_HOST and AUTH_URL), for trying the app from
+// another device on the same network. Usage: npm run dev:lan
 const { loadEnvConfig } = require('@next/env')
-const { startDev } = require('./dev.cjs')
+const { spawn } = require('node:child_process')
 const { isIPv4 } = require('node:net')
 
 loadEnvConfig(process.cwd(), true)
@@ -14,4 +16,6 @@ if (!privateAddress || url?.protocol !== 'http:' || url.hostname !== host) {
   console.error('.env.local の LOCAL_DEVELOPMENT_LAN_HOST と AUTH_URL に同じLAN内IPv4を設定してください。')
   process.exit(1)
 }
-startDev(['--hostname', host, '--port', url.port || '80'])
+const next = spawn(process.execPath, [require.resolve('next/dist/bin/next'), 'dev', '--hostname', host, '--port', url.port || '80'], { stdio: 'inherit' })
+for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => next.kill(signal))
+next.on('exit', (code, signal) => process.exit(code ?? (signal === 'SIGINT' ? 130 : 143)))
