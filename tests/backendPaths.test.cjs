@@ -62,10 +62,14 @@ test('every rewritten path reaches a route of the Go backend', () => {
   }
 })
 
-// /api/health is answered by Next.js (src/app/api/health/route.ts): a rewrite would send it to Go instead.
-test('/api/health is answered by Next.js, not forwarded', () => {
-  for (const source of [...vercelSources, ...nextSources()]) {
-    assert.ok(!covers(source, '/api/health'), `${source} forwards /api/health`)
+// These paths are answered by Next.js (src/app/api/<path>/route.ts): a rewrite would send them to Go instead.
+const nextRoutes = ['/api/health', '/api/gallery', '/api/gallery/categories', '/api/shared']
+
+test('the paths moved to Route Handlers are answered by Next.js, not forwarded', () => {
+  for (const route of nextRoutes) {
+    for (const source of [...vercelSources, ...nextSources()]) {
+      assert.ok(!covers(source, route), `${source} forwards ${route}`)
+    }
+    assert.ok(fs.existsSync(path.join(root, 'src/app', route, 'route.ts')), `${route} has no route.ts`)
   }
-  assert.ok(fs.existsSync(path.join(root, 'src/app/api/health/route.ts')))
 })

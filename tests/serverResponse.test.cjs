@@ -32,3 +32,29 @@ test('withoutBody keeps the status and headers', async () => {
   assert.equal(response.headers.get('cache-control'), 'private, no-store')
   assert.equal(await response.text(), '')
 })
+
+const { forGallery, notForSearch } = require('../src/server/response.ts')
+
+test('forGallery keeps the answer from search engines and caches', () => {
+  const response = forGallery(refuse(400, 'invalidQuery'))
+  assert.equal(response.headers.get('x-robots-tag'), 'noindex')
+  assert.equal(response.headers.get('cache-control'), 'no-store')
+  assert.equal(response.headers.get('vary'), 'Cookie')
+})
+
+test('notForSearch only keeps the answer from search engines', () => {
+  const response = notForSearch(refuse(404, 'sharedPackNotFound'))
+  assert.equal(response.headers.get('x-robots-tag'), 'noindex')
+  assert.equal(response.headers.get('cache-control'), 'private, no-store')
+})
+
+test('reportFailure logs the method, path and operation', () => {
+  const { reportFailure } = require('../src/server/report.ts')
+  const logged = []
+  const original = console.error
+  console.error = (...args) => logged.push(args.join(' '))
+  try {
+    reportFailure(new Request('http://localhost/api/gallery?q=x'), new Error('down'), 'gallery.read')
+  } finally { console.error = original }
+  assert.match(logged[0], /^GET \/api\/gallery: gallery\.read: .*down/)
+})
