@@ -1,12 +1,12 @@
 // Runs, in order, every check a commit must pass before it is released (docs/release-workflow.md), and stops at the
-// first failure: the migrations on the local database, the migration tests, the type check, the unit tests, lint, knip, the production build, the end-to-end tests, and the API documentation's build
-// and link check. Until v2.38.0 GitHub Actions ran these as `verify`; since v2.38.1 they run here, on the
+// first failure: the migrations on the local database, the migration tests, the type check, the unit tests, lint,
+// knip, the production build, the end-to-end tests, and the API documentation's build and link check. Until v2.38.0 GitHub Actions ran these as `verify`; since v2.38.1 they run here, on the
 // developer's machine, before a PR is opened and again on the merged main commit before it is released.
 //
 //   npm run verify            every check
 //   npm run verify -- --fast  without the end-to-end tests and the API documentation, for a quick look while working
 //
-// Needs the local PostgreSQL (docker compose --env-file .env.local up -d --wait), and Node.js 24. DATABASE_URL
+// Needs the local PostgreSQL (docker compose --env-file .env.local up -d --wait) and Node.js 24. DATABASE_URL
 // from .env.local is migrated and used by the DB tests and the end-to-end tests, which add rows under random owners
 // and delete them afterwards. TYPLE_TEST_DATABASE_URL, when set, is used for the DB tests instead.
 const { spawnSync } = require('node:child_process')
@@ -26,7 +26,7 @@ if (!databaseUrl) {
 const testDatabaseUrl = process.env.TYPLE_TEST_DATABASE_URL || databaseUrl
 const docsDir = path.join(root, 'api-docs')
 
-/** @type {{ name: string, command: string, args: string[], env?: Record<string, string>, cwd?: string, check?: (stdout: string) => string | null }[]} */
+/** @type {{ name: string, command: string, args: string[], env?: Record<string, string>, cwd?: string }[]} */
 const steps = [
   { name: 'db:migrate', command: 'npm', args: ['run', 'db:migrate'] },
   { name: 'migration tests', command: 'node', args: ['--test', 'tests/migrate.test.cjs'], env: { TYPLE_TEST_DATABASE_URL: testDatabaseUrl } },
@@ -52,12 +52,10 @@ for (const [index, step] of steps.entries()) {
   const result = spawnSync(step.command, step.args, {
     cwd: step.cwd ?? root,
     env: { ...process.env, ...step.env },
-    stdio: step.check ? ['inherit', 'pipe', 'inherit'] : 'inherit',
-    encoding: 'utf8',
+    stdio: 'inherit',
   })
   const failure = result.error ? result.error.message
-    : result.status !== 0 ? `exited with ${result.status ?? `signal ${result.signal}`}`
-    : step.check ? step.check(result.stdout) : null
+    : result.status !== 0 ? `exited with ${result.status ?? `signal ${result.signal}`}` : null
   if (failure) {
     console.error(`\n${label} failed: ${failure}`)
     process.exit(1)
