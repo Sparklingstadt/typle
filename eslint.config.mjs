@@ -19,7 +19,7 @@ export default defineConfig([
     },
   })),
   // Screens reach the workspace through useWordLists (src/lib), which chooses the store (src/lib/storage); the server side
-  // is the Go backend and the Route Handlers (src/app/api), whose code (src/server) runs on the server only.
+  // is the Route Handlers (src/app/api), whose code (src/server) runs on the server only.
   {
     files: ['src/app/**', 'src/components/**'],
     ignores: ['src/app/api/**'],

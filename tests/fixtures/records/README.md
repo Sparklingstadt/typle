@@ -2,10 +2,10 @@
 
 `lists`・`devices` のワークスペースで、`listId` のリストに `input` の記録を追加した結果が `expected` です。
 記録の追加は Web（`/api/workspace/records`）とゲスト保存で同じ操作契約に従います。
-TS は `tests/records.test.cjs`（`addRecord`）、Go は `server/internal/workspace/records_test.go`（`AddRecord`）が読みます。
+`tests/records.test.cjs`（`addRecord`）が読みます。
 
 - 成功したときは `expected.added`（新しく追加したか）と `expected.record`（保存された記録）。
-- 拒否したときは `expected.error`（Go の `workspace.Error` のキー）。TS ではリストがないとき `recordListDeleted` になります。
+- 拒否したときは `expected.error`（エラーのキー）。リストがないとき `recordListDeleted` になります。
 
 ## 守る約束
 

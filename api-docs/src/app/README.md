@@ -1,6 +1,6 @@
 # 概要と共通事項
 
-Typle 本体（Web版と iPad・Mac・Android・Windows 版）が使う、アプリ自身のバックエンドです。v2.46.10 から、すべてのパスを Next.js の Route Handler（`src/app/api`・`src/server`）が答えます。以前の Go のバックエンド（`server/`）と同じ答えを返します（違いは設計書 `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md` の「移した後も Go と違うところ」）。
+Typle 本体（Web版と iPad・Mac・Android・Windows 版）が使う、アプリ自身のバックエンドです。v2.46.10 から、すべてのパスを Next.js の Route Handler（`src/app/api`・`src/server`）が答えます。v2.47.0 で消した Go のバックエンド（`server/`）と同じ答えを返します（違いは設計書 `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md` の「移した後も Go と違うところ」）。
 
 Web版は v2.41.1 から、ワークスペース・記録・共有・ギャラリー・管理画面を下の REST のパスで読み書きします（v2.14.0〜v2.41.0 は GraphQL）。iPad・Mac 版も 11/13 に REST へ戻りました。GraphQL（`POST /api/graphql`）は v2.43.0 で消しました。
 

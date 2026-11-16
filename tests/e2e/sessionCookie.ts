@@ -2,8 +2,8 @@ import { createHmac, hkdfSync } from 'node:crypto'
 
 export type SessionClaims = { sub: string; name: string; image: string; iat: number; exp: number }
 
-// Forges a login cookie the Go server accepts, so the end-to-end tests can sign in without GitHub. It must stay byte
-// for byte what server/internal/session produces: the same key derivation, the JSON keys in the same order, and the same
+// Forges a login cookie the server accepts, so the end-to-end tests can sign in without GitHub. It must stay byte
+// for byte what src/server/session.ts seals (as the Go backend did): the same key derivation, the JSON keys in the same order, and the same
 // escapes.
 export function sealSession(secret: string, session: SessionClaims): string {
   const key = Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), 'typle session v1', 32))

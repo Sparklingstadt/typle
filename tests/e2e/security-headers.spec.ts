@@ -1,9 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-// next.config.mjs sends these with every page and Route Handler (/api/health, /api/gallery and below, /api/shared), and the Go backend (server/internal/web)
-// with every API response, because next.config.mjs headers do not apply to the Go functions on Vercel. Locally
-// /api/workspace goes through Next's rewrite, so both sets are present and this checks the combined result; the Go
-// backend's own headers are covered by server/internal/web/headers_test.go.
+// next.config.mjs sends these with every page and Route Handler (every /api path since v2.46.10).
 for (const path of ['/home', '/api/health', '/api/gallery', '/api/shared?id=00000000-0000-0000-0000-000000000000', '/api/gallery/added', '/api/workspace']) {
   test(`${path} cannot be framed by another site`, async ({ request }) => {
     const headers = (await request.get(path)).headers()

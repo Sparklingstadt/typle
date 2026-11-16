@@ -217,7 +217,7 @@ v2.42.0 から、記録は間違えた単語を `missed` に持ちます（`[{ "
 - 単語は並び順ではなく入力する文字で持ちます。リストを編集・並べ替えても、同じ単語を指せます。
 - 回数は、打ち間違えたキーの数か、Handwriting で違った答えの数です。答えを見た・飛ばした単語は、間違えたキーがなくても1回と数えます。
 - 間違えた単語がない記録と、v2.42.0 より前の記録は `missed` を持ちません。
-- アカウントの記録（Go、`server/internal/workspace` の `decodeMissed`）と、ブラウザーの記録（`src/core/records.ts` の `isMissedWords`）は、同じ規則で確かめます（`tests/fixtures/records/missed*.json`）。DB は記録を JSONB のまま持つので、マイグレーションはありません。
+- アカウントの記録とブラウザーの記録は、同じ規則（`src/core/records.ts` の `isMissedWords`）で確かめます（`tests/fixtures/records/missed*.json`）。DB は記録を JSONB のまま持つので、マイグレーションはありません。
 
 ## ベスト記録
 

@@ -1,7 +1,7 @@
 import { AppError } from './appError'
 
 /**
- * A refused request to the backend's REST API (server/internal/web). `key` is the error key the backend answers with
+ * A refused request to the backend's REST API (src/app/api, src/server). `key` is the error key the backend answers with
  * (`{ "error": <key> }`), and `status` the HTTP status. `key` is undefined when the answer names none.
  */
 export class ApiError extends Error {

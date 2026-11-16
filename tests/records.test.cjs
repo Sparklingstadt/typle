@@ -92,7 +92,7 @@ test('lists to choose from put the most recently practised first and keep the sa
   assert.deepEqual(lists.map(item => item.id), ['a', 'b', 'c', 'd', 'e'])
 })
 
-// The fixtures are shared with server/internal/workspace/records_test.go, so the guest's workspace adds a run as the account's does.
+// The fixtures are the rules of /api/workspace/records too, so the guest's workspace adds a run as the account's does.
 const fs = require('node:fs')
 const path = require('node:path')
 const recordFixtures = path.join(__dirname, 'fixtures', 'records')
@@ -129,7 +129,7 @@ test('deleteRecord removes the run of that id only, and a run or list already go
   }
 })
 
-// The fixtures are shared with server/internal/workspace/records_test.go: the same steps leave the same records in the app and in Go.
+// The fixtures are the rules of /api/workspace/records too: the same steps leave the same records in the app and on the server.
 const operationFixtures = path.join(__dirname, 'fixtures', 'record-operations')
 for (const file of fs.readdirSync(operationFixtures).filter(name => name.endsWith('.json'))) {
   test(`record operations fixture ${file}`, () => {
