@@ -31,12 +31,12 @@ const PKCE_VERIFIER = /^[A-Za-z0-9._~-]{43,128}$/
 const REVOCATION_WAIT_MS = 1000
 
 /** A Set-Cookie value written as Go's http.Cookie writes one; a maxAge of 0 removes the cookie. */
-function cookie(name: string, value: string, path: string, maxAge: number, sameSite: 'Lax' | 'Strict', secure: boolean): string {
+export function cookieHeader(name: string, value: string, path: string, maxAge: number, sameSite: 'Lax' | 'Strict', secure: boolean): string {
   return `${name}=${value}; Path=${path}; Max-Age=${maxAge}; HttpOnly${secure ? '; Secure' : ''}; SameSite=${sameSite}`
 }
 
-const relogin = (login: LoginSettings) => cookie(RELOGIN_COOKIE, '1', '/api/auth', SESSION_MAX_AGE, 'Lax', login.secure)
-const dropSession = (login: LoginSettings) => cookie(sessionCookieName(login.secure), '', '/', 0, 'Lax', login.secure)
+const relogin = (login: LoginSettings) => cookieHeader(RELOGIN_COOKIE, '1', '/api/auth', SESSION_MAX_AGE, 'Lax', login.secure)
+const dropSession = (login: LoginSettings) => cookieHeader(sessionCookieName(login.secure), '', '/', 0, 'Lax', login.secure)
 
 /** The answer of a request that has nothing to show, with the cookies it sets. */
 function noContent(cookies: string[] = []): Response {
@@ -161,13 +161,13 @@ async function signout(request: Request, open: () => Pool, login: LoginSettings,
 function local(request: Request, login: LoginSettings, now: number): Response {
   if (request.headers.get('Origin') !== login.origin) return refuse(403, 'forbiddenRequest')
   const value = sealSession(login.sessionKey, newSession(LOCAL_SUB, LOCAL_NAME, '', now))
-  return noContent([cookie(sessionCookieName(login.secure), value, '/', SESSION_MAX_AGE, 'Lax', login.secure)])
+  return noContent([cookieHeader(sessionCookieName(login.secure), value, '/', SESSION_MAX_AGE, 'Lax', login.secure)])
 }
 
 /** POST /api/auth/admin/signout: forgets the administrator's cookie, and marks the browser as signout does. */
 function adminSignout(request: Request, login: LoginSettings): Response {
   if (request.headers.get('Origin') !== login.origin) return refuse(403, 'forbiddenRequest')
-  return noContent([cookie(adminCookieName(login.secure), '', '/', 0, 'Strict', login.secure), relogin(login)])
+  return noContent([cookieHeader(adminCookieName(login.secure), '', '/', 0, 'Strict', login.secure), relogin(login)])
 }
 
 /**
