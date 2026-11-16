@@ -36,7 +36,7 @@ test('pages move to the custom domain for good', () => {
 })
 
 test('the apps keep calling the API at the Vercel domain', () => {
-  for (const api of ['/api/workspace', '/api/workspace/records', '/api/auth/token', '/api/auth/session', '/api/auth/callback/github', '/api/shared', '/api/graphql', '/api/health']) {
+  for (const api of ['/api/workspace', '/api/workspace/records', '/api/auth/token', '/api/auth/session', '/api/auth/callback/github', '/api/shared', '/api/health']) {
     assert.equal(redirectOf(api), undefined, api)
   }
 })

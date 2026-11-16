@@ -13,15 +13,9 @@
 - CI: `verify` を Node・Go・E2E の並列ジョブに分けました。
 - 文書: 実装済みの計画を `docs/superpowers/plans/archive` に移しました。
 
+GraphQL（#11）は v2.43.0 で消しました。11/6〜11/13 の GraphQL を使う iPad・Mac 版は、もう読み書きできません。
+
 ## 残っていること
-
-設計の判断が要るので、決めてから進めます。
-
-| # | 項目 | 決めること |
-|---|---|---|
-| 11 | GraphQL を消す | GraphQL を使う古い版の iPad・Mac 版が使われなくなったのを、いつ・どう確かめて消すか |
-
-- **#11 iPad・Mac** — Web は v2.41.1 で GraphQL から REST へ戻りました（`src/core/api.ts`）。iPad・Mac 版も 11/13 に REST へ戻りました。`/api/graphql` は、11/6〜11/13 の GraphQL を使う版がまだ手元に残っているかもしれないので残しています。その版が使われなくなったら、`server/internal/web/graphql.go`・`server/internal/web/graph`・gqlgen の依存・`api-docs/src/app/graphql.md` を消します。
 
 メジャーの依存の更新は、1つずつ別の PR にします。範囲内の依存の更新は月に1回、1つの PR にまとめます（最後は v2.42.17、2026-11-16）。`cn` 0.5 は v2.42.18 で上げました。残りは、次の理由で止めています。
 

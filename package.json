@@ -10,7 +10,7 @@
     "knip": "knip",
     "test": "node --test --test-isolation=none tests/*.test.cjs",
     "test:coverage": "node --test --test-isolation=none --experimental-test-coverage --test-coverage-include='src/**' tests/*.test.cjs",
-    "typecheck": "node node_modules/typescript7/bin/tsc --noEmit --incremental false",
+    "typecheck": "tsc --noEmit --incremental false",
     "test:e2e": "playwright test",
     "verify": "node scripts/verify.cjs",
     "check:production": "node scripts/check-production.cjs",
@@ -55,8 +55,7 @@
     "postcss": "^8",
     "shadcn": "^4.21.0",
     "tailwindcss": "^4.3.3",
-    "typescript": "6.0.3",
-    "typescript7": "npm:typescript@^7.0.2"
+    "typescript": "6.0.3"
   },
   "engines": {
     "node": "24.x"

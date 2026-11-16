@@ -9,6 +9,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/sparklingstadt/typle-r/server/internal/store"
+	"github.com/sparklingstadt/typle-r/server/internal/workspace"
 )
 
 // The gallery is the shares their owners list and the operator has not hidden. Anyone may read it, signed in or not,
@@ -126,7 +127,7 @@ func (s *server) gallery(w http.ResponseWriter, r *http.Request) {
 		answer.Packs = append(answer.Packs, galleryPackJSON{
 			ID: pack.ID, Name: pack.Name, Description: pack.Description, Category: pack.Category, Tags: pack.Tags,
 			Lists: pack.Lists, Words: pack.Words, Added: pack.Added,
-			UpdatedAt: jsTime(pack.UpdatedAt),
+			UpdatedAt: workspace.FormatTime(pack.UpdatedAt),
 		})
 	}
 	reply(w, http.StatusOK, answer)
@@ -138,7 +139,7 @@ func (s *server) galleryPage(r *http.Request, query store.GalleryQuery) (*store.
 	if err != nil {
 		return nil, broken(err, "gallery.read", "databaseUnavailable")
 	}
-	// An empty page answers [], never null, in REST and GraphQL alike.
+	// An empty page answers [], never null.
 	if page.Packs == nil {
 		page.Packs = []store.GalleryPack{}
 	}
