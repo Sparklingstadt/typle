@@ -78,3 +78,28 @@ const recordIdOf = (record: unknown) => {
   const id = (record as { id?: unknown } | null)?.id
   return typeof id === 'string' ? id : ''
 }
+
+/** Anything that runs queries: a pool, or the client of a transaction. */
+type Queryable = { query: (text: string, values?: unknown[]) => Promise<{ rows: Record<string, unknown>[] }> }
+
+/**
+ * Makes the owner's rows of typle_records exactly rows, as the Go backend's syncRecords does for a save of the lists:
+ * the rows of records no longer saved are deleted, and the others written where they changed. The number of rows is
+ * checked afterwards, so a save never leaves records behind or missing.
+ */
+export async function syncRecords(db: Queryable, owner: string, rows: RecordRow[]): Promise<void> {
+  const lists = rows.map(row => row.listId)
+  const ids = rows.map(row => row.recordId)
+  await db.query(`DELETE FROM typle_records r WHERE r.owner_id = $1 AND NOT EXISTS (SELECT 1 FROM
+    unnest($2::text[], $3::text[]) AS k(list_id, record_id) WHERE k.list_id = r.list_id AND k.record_id = r.record_id)`, [owner, lists, ids])
+  if (rows.length) {
+    await db.query(`INSERT INTO typle_records (owner_id, list_id, record_id, position, at, data)
+      SELECT $1, k.list_id, k.record_id, k.position, k.at, k.data
+      FROM unnest($2::text[], $3::text[], $4::int[], $5::timestamptz[], $6::jsonb[]) AS k(list_id, record_id, position, at, data)
+      ON CONFLICT (owner_id, list_id, record_id) DO UPDATE SET position = EXCLUDED.position, at = EXCLUDED.at, data = EXCLUDED.data
+      WHERE (typle_records.position, typle_records.at, typle_records.data) IS DISTINCT FROM (EXCLUDED.position, EXCLUDED.at, EXCLUDED.data)`,
+    [owner, lists, ids, rows.map(row => row.position), rows.map(row => row.at), rows.map(row => row.data)])
+  }
+  const { rows: counted } = await db.query('SELECT count(*)::int AS n FROM typle_records WHERE owner_id = $1', [owner])
+  if (counted[0].n !== rows.length) throw new Error(`records of ${owner}: ${counted[0].n} rows saved for ${rows.length} records`)
+}

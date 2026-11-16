@@ -2,10 +2,13 @@ import type { Pool, PoolClient } from 'pg'
 import { AppError } from '../core/appError'
 import { DEFAULT_INTERESTS } from '../core/interests'
 import { MAX_LEVEL, MAX_SAVED_LEVELS } from '../core/wordLists'
+import { withoutFollowedWords } from '../core/followedPacks'
+import { followedPackCount, MAX_FOLLOWED_PACKS, MAX_LISTS, ownListCount } from '../core/listOverview'
 import { followed } from '../core/packs/catalog'
+import { repairLibrary } from '../core/wordPacks'
 import { decodeDocument, type WorkspaceChange } from '../core/workspaceDocument'
 import { validateWorkspaceRequest } from '../core/workspaceRequest'
-import { withRecords } from './records'
+import { recordRows, syncRecords, withRecords } from './records'
 
 // The account's workspace, /api/workspace: its lists, packs, devices and interests as saved in typle_workspaces, with
 // the records of typle_records put back in their lists, and the revision a save must name.
@@ -106,4 +109,105 @@ export function readWorkspaceChange(fields: Record<string, unknown>): { revision
   }
   if (interests === null) change.interests = []
   return { revision, change }
+}
+
+/** A save named a revision the workspace has moved on from; the app reads it again (409). */
+export class Conflict extends Error {
+  constructor() {
+    super('conflict')
+  }
+}
+
+/** A refusal answered with its key: invalidWorkspace, listLimit or followLimit. */
+const refusal = (key: 'invalidWorkspace' | 'listLimit' | 'followLimit') => new AppError(key)
+
+/**
+ * The parts a save writes, as the Go backend's encodeChange makes them. The lists are repaired and their followed packs
+ * follow the catalog, as the app reads saved data (so what is saved reads back the same); they are then saved without
+ * the followed packs' words and without their records, which go to typle_records.
+ */
+function encodeChange(change: WorkspaceChange) {
+  const { devices, interests } = change
+  if (!change.lists) return { devices, interests, library: undefined }
+  const repaired = followed(repairLibrary({ lists: change.lists, packs: change.packs ?? [] }))
+  const rows = recordRows(repaired.lists as never)
+  const slim = withoutFollowedWords(repaired)
+  // A change the app could not read back is never written.
+  try {
+    followed(decodeDocument({ lists: slim.lists, packs: slim.packs, devices: devices ?? [], interests }))
+  } catch {
+    throw refusal('invalidWorkspace')
+  }
+  return {
+    devices,
+    interests,
+    library: {
+      lists: slim.lists.map(list => ({ ...list, records: [] })),
+      packs: slim.packs,
+      rows,
+      own: ownListCount(repaired),
+      followed: followedPackCount(repaired.packs),
+    },
+  }
+}
+
+const json = (value: unknown) => value === undefined ? null : JSON.stringify(value)
+
+/**
+ * Saves change over the owner's workspace at revision, as the Go backend's WriteRevision does: revision 0 creates the
+ * row, any other replaces what is saved only if it is still that revision (else Conflict). Parts not sent stay as they
+ * are. Lists saved bring their records (typle_records becomes exactly theirs); packs saved delete the links to packs no
+ * longer among them. More lists or followed packs than allowed are refused, unless the saved workspace already had more
+ * and the save does not raise the number. Returns the workspace as now saved.
+ */
+export async function writeWorkspace(db: Pool, owner: string, revision: number, change: WorkspaceChange): Promise<SavedWorkspace> {
+  const { devices, interests, library } = encodeChange(change)
+  const connection = await db.connect()
+  try {
+    await connection.query('BEGIN')
+    if (revision === 0) {
+      if (library && library.own > MAX_LISTS) throw refusal('listLimit')
+      if (library && library.followed > MAX_FOLLOWED_PACKS) throw refusal('followLimit')
+      // As a share of the initial packs is made under the owner's lock (src/server/shares.ts), so that a first save sees it.
+      await connection.query(`SELECT pg_advisory_xact_lock(hashtext('typle_workspaces:' || $1))`, [owner])
+      const { rows } = await connection.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, interests, records_split)
+        VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5::jsonb, true) ON CONFLICT (owner_id) DO NOTHING RETURNING revision`,
+      [owner, json(library?.lists ?? []), json(library?.packs), json(devices ?? []), json(interests)])
+      if (!rows.length) throw new Conflict()
+      await connection.query('DELETE FROM typle_records WHERE owner_id = $1', [owner])
+    } else {
+      // The saved lists and followed packs, counted as ownListCount and followedPackCount count them.
+      const { rows } = await connection.query<{ revision: number, own: string, followed: string }>(`WITH followed AS (
+          SELECT p->>'id' AS id FROM typle_workspaces, jsonb_array_elements(COALESCE(packs, '[]'::jsonb)) AS p
+          WHERE owner_id = $1 AND p->'origin'->>'followed' = 'true')
+        SELECT revision,
+          (SELECT count(*) FROM jsonb_array_elements(lists) AS l
+            WHERE l->>'packId' IS NULL OR l->>'packId' NOT IN (SELECT id FROM followed)) AS own,
+          (SELECT count(*) FROM followed) AS followed
+        FROM typle_workspaces WHERE owner_id = $1`, [owner])
+      if (!rows.length || rows[0].revision !== revision) throw new Conflict()
+      if (library && library.own > MAX_LISTS && library.own > Number(rows[0].own)) throw refusal('listLimit')
+      if (library && library.followed > MAX_FOLLOWED_PACKS && library.followed > Number(rows[0].followed)) throw refusal('followLimit')
+      // Matching the revision in the UPDATE itself makes the comparison and the write one atomic operation.
+      const updated = await connection.query(`UPDATE typle_workspaces SET lists = COALESCE($3::jsonb, lists),
+          packs = COALESCE($4::jsonb, packs), devices = COALESCE($5::jsonb, devices), interests = COALESCE($6::jsonb, interests),
+          records_split = records_split OR $3::jsonb IS NOT NULL, revision = revision + 1, updated_at = now()
+        WHERE owner_id = $1 AND revision = $2 RETURNING revision`,
+      [owner, revision, json(library?.lists), json(library?.packs), json(devices), json(interests)])
+      if (!updated.rows.length) throw new Conflict()
+    }
+    if (library) await syncRecords(connection, owner, library.rows)
+    const saved = await readSavedWorkspace(connection, owner)
+    if (library) {
+      await connection.query('DELETE FROM typle_shared_packs WHERE owner_id = $1 AND NOT (pack_id = ANY($2::text[]))',
+        [owner, library.packs.map(pack => pack.id)])
+    }
+    await connection.query('COMMIT')
+    connection.release()
+    return saved!
+  } catch (error) {
+    await connection.query('ROLLBACK').catch(() => {})
+    connection.release(true)
+    throw error
+  }
 }
