@@ -1,4 +1,4 @@
-// The overview of /api/admin/dashboard (server/internal/web/admin.go, server/internal/store/admin.go).
+// The overview of /api/admin/dashboard (src/server/admin.ts).
 export type Overview = {
   workspaces: number
   activeDay: number

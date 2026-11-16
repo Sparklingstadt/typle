@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { ApiError, api, withQuery } from '@/core/api'
 
-// The answer of /api/admin/users (server/internal/web/admin.go, server/internal/store/admin.go).
+// The answer of /api/admin/users (src/server/admin.ts).
 type User = { ownerId: string; lists: number; packs: number; devices: number; shares: number; revision: number; updatedAt: string }
 type Page = { page: number; pageSize: number; total: number; users: User[] }
 

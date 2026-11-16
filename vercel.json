@@ -10,7 +10,6 @@
     { "source": "/:path((?!api/).*)", "has": [{ "type": "host", "value": "typle-r-six\\.vercel\\.app" }], "destination": "https://typle.sparklingstadt.com/:path", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/api/auth/:path*", "destination": "/api/index" },
-    { "source": "/api/admin/:path*", "destination": "/api/index" }
+    { "source": "/api/auth/:path*", "destination": "/api/index" }
   ]
 }
