@@ -5,6 +5,7 @@ import { MAX_LEVEL, MAX_SAVED_LEVELS } from '../core/wordLists'
 import { withoutFollowedWords } from '../core/followedPacks'
 import { followedPackCount, MAX_FOLLOWED_PACKS, MAX_LISTS, ownListCount } from '../core/listOverview'
 import { followed } from '../core/packs/catalog'
+import type { RecordInput } from '../core/records'
 import { repairLibrary } from '../core/wordPacks'
 import { decodeDocument, type WorkspaceChange, type WorkspaceDocument } from '../core/workspaceDocument'
 import { validateWorkspaceRequest } from '../core/workspaceRequest'
@@ -343,4 +344,30 @@ export async function answerWorkspace(request: Request, open: () => Pool, settin
   }
   if (request.method !== 'PUT') return readWorkspaceAnswer(request, db, login)
   return measureSave(request, 'workspace.write', () => db, () => saveWorkspaceAnswer(request, db, login), env)
+}
+
+/** The fields a record of POST /api/workspace/records may have: the Go backend's RecordInput. */
+const RECORD_FIELDS = new Set(['id', 'time', 'date', 'mistakes', 'accuracy', 'wordCount', 'deviceId', 'device', 'mode', 'missed'])
+
+/**
+ * The list and record of a POST /api/workspace/records body: exactly accountId, listId (a string other than "") and
+ * record, one object of RECORD_FIELDS with its id (a string). null when it is not, which is invalidRecord. As the Go
+ * backend read them, wordCount, device and deviceId sent as null are left out. The record's values are checked when it
+ * is added (addRecord).
+ */
+export function readRecordAdd(fields: Record<string, unknown>): { listId: string, input: RecordInput } | null {
+  const { listId, record } = fields
+  if (Object.keys(fields).length !== 3 || typeof listId !== 'string' || !listId) return null
+  if (!record || typeof record !== 'object' || Array.isArray(record)) return null
+  const input = { ...record as Record<string, unknown> }
+  if (Object.keys(input).some(key => !RECORD_FIELDS.has(key)) || typeof input.id !== 'string') return null
+  for (const name of ['wordCount', 'device', 'deviceId']) if (input[name] === null) delete input[name]
+  return { listId, input: input as unknown as RecordInput }
+}
+
+/** The list and record of a DELETE /api/workspace/records body: exactly accountId, listId and recordId, both strings other than "". */
+export function readRecordDelete(fields: Record<string, unknown>): { listId: string, recordId: string } | null {
+  const { listId, recordId } = fields
+  if (Object.keys(fields).length !== 3 || typeof listId !== 'string' || !listId || typeof recordId !== 'string' || !recordId) return null
+  return { listId, recordId }
 }
