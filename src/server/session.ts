@@ -19,7 +19,7 @@ export function sessionCookieName(secure: boolean): string {
  * The bytes of base64url text written strictly, as Go's base64.RawURLEncoding.Strict() reads it: no padding, no other
  * characters, and the unused bits of the last character zero, so that one value has one spelling. Otherwise null.
  */
-function strictBase64url(text: string): Buffer | null {
+export function strictBase64url(text: string): Buffer | null {
   if (!/^[A-Za-z0-9_-]*$/.test(text) || text.length % 4 === 1) return null
   const bytes = Buffer.from(text, 'base64url')
   return bytes.toString('base64url') === text ? bytes : null
