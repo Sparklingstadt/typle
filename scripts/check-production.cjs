@@ -38,7 +38,7 @@ async function main() {
 
   for (const origin of [SITE, LEGACY]) {
     const health = await request(`${origin}/api/health`)
-    check(health.ok, `GET ${origin}/api/health succeeds (the Go function reaches the production DB)`, `HTTP ${health.status}`)
+    check(health.ok, `GET ${origin}/api/health succeeds (the Route Handler reaches the production DB)`, `HTTP ${health.status}`)
     const workspace = await request(`${origin}/api/workspace`)
     check(workspace.status === 401, `anonymous GET ${origin}/api/workspace answers 401`, `HTTP ${workspace.status}`)
   }

@@ -49,7 +49,7 @@ test('next.config.mjs forwards the same paths as vercel.json', () => {
 
 test('every route of the Go backend is reached on Vercel and locally', () => {
   const routes = webRoutes()
-  assert.ok(routes.includes('/api/health') && routes.includes('/api/auth/callback/github'), routes.join(', '))
+  assert.ok(routes.includes('/api/workspace') && routes.includes('/api/auth/callback/github'), routes.join(', '))
   for (const route of routes) {
     assert.ok(vercelSources.some(source => covers(source, route)), `${route} is not rewritten in vercel.json`)
   }
@@ -60,4 +60,12 @@ test('every rewritten path reaches a route of the Go backend', () => {
   for (const source of vercelSources) {
     assert.ok(routes.some(route => covers(source, route)), `${source} matches no route in server/internal/web`)
   }
+})
+
+// /api/health is answered by Next.js (src/app/api/health/route.ts): a rewrite would send it to Go instead.
+test('/api/health is answered by Next.js, not forwarded', () => {
+  for (const source of [...vercelSources, ...nextSources()]) {
+    assert.ok(!covers(source, '/api/health'), `${source} forwards /api/health`)
+  }
+  assert.ok(fs.existsSync(path.join(root, 'src/app/api/health/route.ts')))
 })

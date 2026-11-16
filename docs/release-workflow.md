@@ -70,7 +70,7 @@ GitHub Proへ変更した場合は、上記のmain保護ルールを追加して
    `vercel deploy` の出力した URL のデプロイを指すまで待ちます。
    そのあと `npm run check:production`（`scripts/check-production.cjs`）で次を確かめます。1つでも失敗すれば終了コード1です。
    本番（`https://typle.sparklingstadt.com`）のホームの成功応答、Vercel のドメインのページが本番へ308で移ること（クエリも残す）、
-   両方のドメインで Goの関数が返す`/api/health`の200（本番DBへの接続を含む）と匿名APIアクセスの401。
+   両方のドメインで Route Handler（`src/app/api/health/route.ts`）が返す`/api/health`の200（本番DBへの接続を含む）と匿名APIアクセスの401。
    ログインの関数も確かめます。`/api/auth/session`が200で、本文の`user`が`null`、`providers`が`"github"`を含む配列であること（FFPF IDを設定している場合は`"ffpf"`も入りますが、確認はしません）、
    `/api/auth/signin`がリダイレクトを辿らずに302を返し、`Location`が`https://github.com/login/oauth/authorize?`で始まり
    本番の`redirect_uri`（`https://typle.sparklingstadt.com/api/auth/callback/github`）を含むことです。
