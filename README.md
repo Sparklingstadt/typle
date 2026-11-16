@@ -121,7 +121,7 @@ v2.43.2 まであったプラグインの層（`src/plugins`）と、ファイ�
 
 v2.46.11 まではバックエンドの一部が Go（`server/`、Vercel の Go の関数 `api/index.go`）でした。v2.46.10 で `/api` のすべてのパスを Next.js の Route Handler に移し、v2.47.0 で Go のコードを消しました（設計は `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md`。Go と違うところもそこにあります）。
 
-ログインの Cookie は `HttpOnly`・`SameSite=Lax` で、ログインから30日で切れます（延長しません）。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です。Cookie・アプリのトークン・アプリのログインのコード・ログイン途中の状態（`typle-oauth`）・管理者の Cookie は、`AUTH_SECRET` から HKDF で導いた種類ごとの鍵で HMAC-SHA256 署名します（`src/server/session.ts`・`settings.ts`。形式と鍵は Go のときと同じです）。ログインの始まりと戻りは `src/server/signin.ts`、GitHub と FFPF ID とのやりとりは `github.ts`・`ffpf.ts` です。
+ログインの Cookie は `HttpOnly`・`SameSite=Lax` で、ログインから30日で切れます（延長しません）。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です。Cookie・アプリのトークン・アプリのログインのコード・ログイン途中の状態（`typle-oauth`）は、`AUTH_SECRET` から HKDF で導いた種類ごとの鍵で HMAC-SHA256 署名します（`src/server/session.ts`・`settings.ts`。形式と鍵は Go のときと同じです）。ログインの始まりと戻りは `src/server/signin.ts`、GitHub と FFPF ID とのやりとりは `github.ts`・`ffpf.ts` です。
 
 ### iPad と Mac と Android と Windows のログイン
 
@@ -203,7 +203,7 @@ v2.48.0 で管理者ダッシュボード（`/admin`、`/api/admin/*`、管理�
 
 ```sql
 -- 隠す
-UPDATE typle_shared_packs SET hidden_at = now() WHERE id = '<共有の id>';
+UPDATE typle_shared_packs SET hidden_at = COALESCE(hidden_at, now()) WHERE id = '<共有の id>';
 -- 戻す
 UPDATE typle_shared_packs SET hidden_at = NULL WHERE id = '<共有の id>';
 ```

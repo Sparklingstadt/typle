@@ -1,7 +1,7 @@
 # Sentry エラー監視
 
 ブラウザーの未処理例外、React の全体エラー画面、Next.js のサーバー例外、
-Next.js の Route Handler（`src/server/report.ts`。`/api/workspace` と `/api/workspace/records` の読み書き・共有・ギャラリー・管理画面の API・セッション・ログアウトなど、操作名を `operation` のタグに付ける）で捕捉した例外を収集します（ログインの始まりと戻り・管理画面のログインも v2.46.10 から Route Handler です）。
+Next.js の Route Handler（`src/server/report.ts`。`/api/workspace` と `/api/workspace/records` の読み書き・共有・ギャラリー・セッション・ログアウトなど、操作名を `operation` のタグに付ける）で捕捉した例外を収集します（ログインの始まりと戻りも v2.46.10 から Route Handler です）。
 認証失敗・入力エラー・更新競合など、想定内の4xx応答は報告しません。
 
 ## 接続
