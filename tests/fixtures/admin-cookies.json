@@ -1,0 +1,62 @@
+{
+  "comment": "SealAdmin of server/internal/session (Go) under the secret below. src/server/session.ts must open them as Go's OpenAdmin does at now (tests/serverSession.test.cjs).",
+  "cookies": [
+    {
+      "note": "sealed by SealAdmin",
+      "value": "eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwic3ViIjoiY2FkbWluIiwiaWF0IjoxNzkwMDAwMDAwLCJleHAiOjE3OTAwNDMyMDB9.zk0rYm2KUup9gw3TLECVGbJy2Ut-ZbjPLAxp6kMQWMw",
+      "admin": {
+        "email": "admin@example.com",
+        "exp": 1790043200,
+        "iat": 1790000000,
+        "sub": "cadmin"
+      }
+    },
+    {
+      "note": "an email with characters JSON escapes",
+      "value": "eyJlbWFpbCI6IjxhJmI-XHUyMDI4QGV4YW1wbGUuY29tIiwic3ViIjoiYzAiLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6MTc5MDA0MzIwMH0.h9dbcckKwDDk2nJzAhgP2UQrl98cRx5eD_JKUl7v9SA",
+      "admin": {
+        "email": "\u003ca\u0026b\u003e\u2028@example.com",
+        "exp": 1790043200,
+        "iat": 1790000000,
+        "sub": "c0"
+      }
+    },
+    {
+      "note": "expired",
+      "value": "eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwic3ViIjoiY2FkbWluIiwiaWF0IjoxNzg5OTUzMjAwLCJleHAiOjE3ODk5OTY0MDB9.Rcu3siuYhwjqPxxX7TpMtHnrVTRLkvQKRVp3-l4c38k",
+      "admin": null
+    },
+    {
+      "note": "expiring at now",
+      "value": "eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwic3ViIjoiY2FkbWluIiwiaWF0IjoxNzg5OTU2ODAwLCJleHAiOjE3OTAwMDAwMDB9.OAm7RHktY8rJ-cRaoSm1OLUyEbZgTWFtHbVa6h25jKw",
+      "admin": null
+    },
+    {
+      "note": "a sub that is not FFPF ID's",
+      "value": "eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwic3ViIjoiZmZwZjpjYWRtaW4iLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6MTc5MDA0MzIwMH0.gJ6FmJv7ZBQUwkC3d5XYGp5JlgcyY4pIzjzIgm48Lb4",
+      "admin": null
+    },
+    {
+      "note": "an uppercase sub",
+      "value": "eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwic3ViIjoiQ0FETUlOIiwiaWF0IjoxNzkwMDAwMDAwLCJleHAiOjE3OTAwNDMyMDB9.3Vg5Di6G8PX90nCkc87sWNUUiX73VbdCxqI14GrgS3g",
+      "admin": null
+    },
+    {
+      "note": "no email",
+      "value": "eyJlbWFpbCI6IiIsInN1YiI6ImNhZG1pbiIsImlhdCI6MTc5MDAwMDAwMCwiZXhwIjoxNzkwMDQzMjAwfQ.1bTfYc_eHEHZyJHo6gcJ50tmHotRVVI71_FesHnaevI",
+      "admin": null
+    },
+    {
+      "note": "the admin JSON under the session key",
+      "value": "eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwic3ViIjoiY2FkbWluIiwiaWF0IjoxNzkwMDAwMDAwLCJleHAiOjE3OTAwNDMyMDB9.uI_oOTd4afJXejHQyvJJlweHH1nkTJIrSvzwqlTCuPg",
+      "admin": null
+    },
+    {
+      "note": "a login session under the admin key",
+      "value": "eyJzdWIiOiJmZnBmOmNhZG1pbiIsIm5hbWUiOiJBIiwiaW1hZ2UiOiIiLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6MTc5MDA0MzIwMH0.oj-BVCDmCyaTUqv4JeqCtw8rLdH_x-RUNIpZnx9MjnA",
+      "admin": null
+    }
+  ],
+  "now": 1790000100,
+  "secret": "typle-fixture-secret"
+}
