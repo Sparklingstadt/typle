@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 
-// A share link is an unlisted capability URL: keep it out of search indexes and describe it generically, never by the pack.
+// A link to a share of the past: keep it out of search indexes.
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("metadata")
   const title = t("sharedTitle")

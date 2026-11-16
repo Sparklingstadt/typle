@@ -12,12 +12,9 @@ import EmptyLists from "@/components/WordLists/EmptyLists"
 import ListToolbar from "@/components/WordLists/ListToolbar"
 import PackFileInput from "@/components/WordLists/PackFileInput"
 import PackRow from "@/components/WordLists/PackRow"
-import OrphanShares from "@/components/WordLists/OrphanShares"
-import ShareDialog from "@/components/WordLists/ShareDialog"
 import UnfollowDialog from "@/components/WordLists/UnfollowDialog"
 import DeleteListDialog from "@/components/WordLists/DeleteListDialog"
 import DeletePackDialog from "@/components/WordLists/DeletePackDialog"
-import { useShares } from "@/lib/useShares"
 import { useListActions } from "@/lib/useListActions"
 import { LIST_FOCUS_TARGETS } from "@/lib/focusAfterRemoval"
 import type { Workspace } from "@/lib/useWordLists"
@@ -55,8 +52,6 @@ export default function ListManager({ lists, packs, saving, highlight, highlight
   const [deleting, setDeleting] = useState<{ open: boolean; item: ListOverview | null; position: number }>({ open: false, item: null, position: 0 })
   const [unfollowing, setUnfollowing] = useState<{ id: string; name: string } | null>(null)
   const [deletingPack, setDeletingPack] = useState<{ open: boolean; item: PackOverview | null; position: number }>({ open: false, item: null, position: 0 })
-  const { enabled: canShare, shares, orphans, share, stop } = useShares()
-  const [sharing, setSharing] = useState<{ id: string; name: string } | null>(null)
   // `lists` are the lists as screens see them (each carries its pack's labels), which is what the overviews are built from.
   const all = useMemo(() => packOverviews({ packs, lists }), [packs, lists])
   const labels = useMemo(() => listLabels(packs, locale), [packs, locale])
@@ -92,7 +87,6 @@ export default function ListManager({ lists, packs, saving, highlight, highlight
   if (!lists.length) return <>
     <EmptyLists actions={<PackFileInput disabled={saving} onFile={file => void importFile(file)} />} />
     {exportError && <p role="alert" className="mt-3 flex items-center gap-1.5 text-sm text-destructive"><CircleAlert className="size-4 shrink-0" aria-hidden="true" />{exportError}</p>}
-    <OrphanShares orphans={orphans} onStop={stop} focusWhenGone="empty-heading" className="mt-6" />
   </>
 
   return <section aria-labelledby="list-heading" className="space-y-3">
@@ -129,7 +123,6 @@ export default function ListManager({ lists, packs, saving, highlight, highlight
           onEditPack={() => router.push(packSettingsPath(pack.id))}
           onAddList={full ? undefined : () => router.push(`/create?pack=${encodeURIComponent(pack.id)}`)}
           onCopy={own + item.lists.length > MAX_LISTS ? undefined : () => copyPackOf(item)} onExport={() => exportPack(item)}
-          onShare={canShare ? () => setSharing({ id: pack.id, name: pack.name }) : undefined} shared={shares.has(pack.id)} listed={shares.get(pack.id)?.listed} hidden={shares.get(pack.id)?.hidden}
           onDeletePack={() => setDeletingPack({ open: true, item, position: shown.indexOf(item) })}
           followed={followed} onUnfollow={() => setUnfollowing({ id: pack.id, name: pack.name })}>
           {rows.map(row => <ListRow key={row.list.id} item={row} now={now} highlight={highlight === row.list.id} disabled={saving} canCopy={!full} readOnly={followed}
@@ -142,7 +135,6 @@ export default function ListManager({ lists, packs, saving, highlight, highlight
       <Button variant="outline" onClick={() => { setQuery(''); setFilter(NO_FILTER) }}>{isFiltered(filter) ? t('filter.clearAll') : t('manager.clearSearch')}</Button>
     </EmptyState>}
     <p className="text-xs text-muted-foreground">{t('manager.csvNote')}</p>
-    <OrphanShares orphans={orphans} onStop={stop} focusWhenGone="list-heading" />
 
     <DeleteListDialog state={deleting} lonePackName={deletingPackName} now={now}
       onOpenChange={open => setDeleting(current => ({ ...current, open }))}
@@ -153,7 +145,7 @@ export default function ListManager({ lists, packs, saving, highlight, highlight
         return saved
       }} />
 
-    <DeletePackDialog state={deletingPack} shared={!!deletingPack.item && shares.has(deletingPack.item.pack.id)}
+    <DeletePackDialog state={deletingPack}
       onOpenChange={open => setDeletingPack(current => ({ ...current, open }))}
       onDelete={async pack => {
         const saved = await updateLibrary(current => deletePack(current, pack.id))
@@ -168,7 +160,5 @@ export default function ListManager({ lists, packs, saving, highlight, highlight
         window.requestAnimationFrame(() => (document.getElementById('list-heading') ?? document.getElementById('empty-heading'))?.focus())
       }} />
 
-    <ShareDialog pack={sharing} hasCategory={!!packs.find(pack => pack.id === sharing?.id)?.category} share={sharing ? shares.get(sharing.id) : undefined} onShare={share} onStop={stop}
-      onOpenChange={open => { if (!open) setSharing(null) }} />
   </section>
 }

@@ -63,13 +63,7 @@
   "packFileUnreadable": "単語パックのファイルとして読み込めませんでした",
   "invalidPackFile": "このファイルの中に、保存できる上限を超える項目があります",
   "sharedPackNotFound": "この共有は終了しました。",
-  "packNotFound": "このパックが見つかりません。ページを再読み込みしてください。",
   "invalidPage": "ページの指定が正しくありません。",
   "importInputTypeInvalid": "{line}行目の input_type は command、code、word のいずれかにしてください。",
-  "invalidQuery": "検索の条件が正しくありません。",
-  "invalidReport": "通報の内容が正しくありません。",
-  "notInGallery": "ギャラリーに載っていないパックは通報できません。",
-  "tooManyRequests": "しばらくしてからもう一度お試しください。",
-  "invalidRequest": "リクエストの内容が正しくありません。",
-  "sharedPackHidden": "このパックは管理者により非公開にされているため、ギャラリーに載せられません。"
+  "invalidRequest": "リクエストの内容が正しくありません。"
 }

@@ -45,8 +45,7 @@
     "export": "Exporter en CSV",
     "packTitle": "Supprimer « {name} » ?",
     "packDescription": "Cela supprime aussi {lists, plural, one {# liste} other {# listes}} et {records, plural, one {# enregistrement} other {# enregistrements}} d’entraînement.",
-    "lastInPack": "Le pack « {name} » sera aussi supprimé.",
-    "shareEnds": "Son lien de partage cessera aussi de fonctionner."
+    "lastInPack": "Le pack « {name} » sera aussi supprimé."
   },
   "order": {
     "label": "Tri",
@@ -115,11 +114,7 @@
     "addList": "Ajouter une liste",
     "delete": "Supprimer",
     "copy": "Dupliquer",
-    "export": "Exporter",
-    "share": "Partager",
-    "shared": "Partagé",
-    "listed": "Dans la galerie",
-    "hidden": "Masqué"
+    "export": "Exporter"
   },
   "wordRow": {
     "label": "Mot {n}",
@@ -315,45 +310,10 @@
     "matching": "Packs correspondant à vos centres d’intérêt",
     "others": "Autres packs",
     "noMatching": "Aucun pack ne correspond encore à vos centres d’intérêt",
-    "changeInterests": "Modifier les centres d’intérêt",
-    "toGallery": "Parcourir dans la galerie les packs publiés par d’autres"
-  },
-  "share": {
-    "title": "Partager « {name} »",
-    "description": "Toute personne qui a le lien peut voir le nom, la description, les listes et les mots de ce pack, et l’ajouter à ses propres packs. Les enregistrements d’entraînement ne sont pas inclus. Le lien montre le pack tel qu’il est à sa création ; modifier le pack ensuite ne le met pas à jour automatiquement.",
-    "sharing": "Toute personne qui a le lien peut voir ce pack et l’ajouter à ses propres packs. Après une modification du pack, utilisez « Mettre à jour » pour actualiser le lien.",
-    "link": "Lien de partage",
-    "copy": "Copier",
-    "copied": "Copié",
-    "copyFailed": "Copie impossible. Sélectionnez le lien et copiez-le.",
-    "updatedAt": "Dernière mise à jour : {date}",
-    "updateHint": "Modifier le pack ne met pas le lien à jour automatiquement.",
-    "create": "Créer le lien",
-    "update": "Mettre à jour",
-    "stop": "Arrêter le partage",
-    "failed": "Impossible de modifier le partage.",
-    "gallery": "Afficher dans la galerie",
-    "galleryNotice": "Tout le monde peut le voir dans la galerie. Votre nom n’est pas affiché. Un administrateur peut masquer un contenu inapproprié.",
-    "galleryCategoryHint": "Ajouter une catégorie le rend plus facile à trouver.",
-    "hiddenNotice": "Un administrateur a masqué ce pack : il ne peut pas être affiché dans la galerie.",
-    "orphans": {
-      "title": "Partages sans pack",
-      "description": "Le pack de ces liens de partage n’existe plus. Toute personne qui a le lien peut encore le voir. Arrêtez le partage de ceux dont vous n’avez plus besoin.",
-      "unnamed": "Pack sans nom",
-      "stop": "Arrêter le partage",
-      "stopLabel": "Arrêter le partage de {name}"
-    }
+    "changeInterests": "Modifier les centres d’intérêt"
   },
   "sharedPage": {
-    "loading": "Chargement du partage",
-    "intro": "Ce pack a été partagé avec vous. Ajoutez-le à vos packs pour le modifier et vous entraîner avec.",
-    "add": "Ajouter à mes packs",
-    "toPacks": "Ouvrir les packs de mots",
-    "loadFailed": "Impossible de charger ce partage. Réessayez dans un instant.",
-    "levels": "Difficulté : {levels}",
-    "lists": "Listes",
-    "addFailed": "Impossible d’ajouter le pack. Réessayez.",
-    "full": "Vous pouvez enregistrer jusqu’à {max} listes de mots à vous. Supprimez celles que vous n’utilisez plus pour ajouter ce pack."
+    "toPacks": "Ouvrir les packs de mots"
   },
   "follow": {
     "badge": "Officiel",
@@ -363,38 +323,5 @@
     "confirm": "Ne plus suivre",
     "confirming": "Arrêt du suivi…",
     "done": "« {name} » n’est plus suivi."
-  },
-  "gallery": {
-    "title": "Galerie",
-    "intro": "Parcourez les packs de mots publiés par d’autres, regardez leur contenu et ajoutez-les à vos packs.",
-    "search": "Rechercher",
-    "category": "Catégorie",
-    "allCategories": "Toutes les catégories",
-    "sort": "Trier par",
-    "sortNew": "Plus récents",
-    "sortPopular": "Plus ajoutés",
-    "lists": "Listes : {count}",
-    "words": "Mots : {count}",
-    "added": "Ajouts : {count}",
-    "more": "Afficher plus",
-    "empty": "Aucun pack n’a encore été publié",
-    "noResults": "Aucun résultat",
-    "loadFailed": "Impossible de charger la galerie. Réessayez dans un instant.",
-    "retry": "Réessayer"
-  },
-  "report": {
-    "open": "Signaler",
-    "title": "Signaler ce pack",
-    "description": "Informez les administrateurs d’un problème avec ce pack. Choisissez un motif puis envoyez le signalement.",
-    "reason": "Motif du signalement",
-    "reasons": {
-      "inappropriate": "Contenu inapproprié",
-      "spam": "Spam ou publicité",
-      "personalInfo": "Contient des informations personnelles",
-      "other": "Autre"
-    },
-    "send": "Envoyer",
-    "sent": "Votre signalement a été reçu",
-    "failed": "Le signalement n’a pas pu être envoyé. Veuillez réessayer."
   }
 }

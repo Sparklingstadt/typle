@@ -3,18 +3,31 @@ import { openPacks } from './packRows'
 import { guestWorkspace } from './guestData'
 
 test('removed server routes answer 404', async ({ page }) => {
-  for (const path of ['/api/v1/lists', '/api/tokens', '/api/admin/dashboard', '/api/admin/users', '/api/admin/gallery']) {
+  for (const path of ['/api/v1/lists', '/api/tokens', '/api/admin/dashboard', '/api/admin/users', '/api/admin/gallery',
+    '/api/shares', '/api/shared?id=0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d', '/api/gallery', '/api/gallery/categories']) {
     expect((await page.request.get(path)).status(), path).toBe(404)
   }
-  // The administrator's dashboard and its API were removed in v2.48.0.
-  for (const path of ['/api/admin/gallery/hide', '/api/admin/gallery/unhide', '/api/auth/admin/signout']) {
+  // The administrator's dashboard and its API were removed in v2.48.0, sharing a pack and the gallery in v2.49.0.
+  for (const path of ['/api/admin/gallery/hide', '/api/admin/gallery/unhide', '/api/auth/admin/signout', '/api/shares', '/api/gallery/added', '/api/gallery/reports']) {
     expect((await page.request.post(path)).status(), path).toBe(404)
   }
   expect((await page.goto('/admin'))!.status()).toBe(404)
-  // /shared/<id> is the public page of a shared pack again; an id that names no share says it has ended.
-  await page.goto('/shared/0b1c')
-  await expect(page.getByText('この共有は終了しました。')).toBeVisible()
-  await expect(page.getByRole('banner', { name: 'トップバー' })).toBeVisible()
+})
+
+test('a link to a shared pack says sharing has ended, and asks nothing of the server', async ({ page }) => {
+  const asked: string[] = []
+  page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/api/shared')) asked.push(request.url()) })
+  for (const id of ['0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d', '0b1c']) {
+    await page.goto(`/shared/${id}`)
+    await expect(page.getByText('この共有は終了しました。')).toBeVisible()
+    await expect(page.getByRole('banner', { name: 'トップバー' })).toBeVisible()
+  }
+  expect(asked).toEqual([])
+})
+
+test('the gallery goes to the catalog of the official packs', async ({ page }) => {
+  await page.goto('/gallery?q=css')
+  await expect(page).toHaveURL(/\/packs\/catalog$/)
 })
 
 // authjs.session-token is what a browser that used the app before the Go backend still holds; typle-session=stale is an

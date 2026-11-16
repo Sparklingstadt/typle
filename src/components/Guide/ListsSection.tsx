@@ -32,11 +32,6 @@ export default function ListsSection() {
       <Points>
         <li>{t("lists.share.p1")}</li>
         <li>{t("lists.share.p2")}</li>
-        <li>{t("lists.share.p3")}</li>
-        <li>{t("lists.share.p4")}</li>
-        <li>{t("lists.share.p5")}</li>
-        <li>{t("lists.share.p6")}</li>
-        <li>{t("lists.share.p7")}</li>
       </Points>
     </Topic>
     <Topic title={t("lists.input.title")}>

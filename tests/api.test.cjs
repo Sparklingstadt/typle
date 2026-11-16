@@ -20,7 +20,7 @@ test('api reads with GET, sends a body as JSON and resolves with the answer', as
   assert.equal(init.headers['Content-Type'], 'application/json')
   assert.deepEqual(JSON.parse(init.body), { packId: 'p' })
   fetch.mock.mockImplementation(async () => new Response(null, { status: 204 }))
-  assert.equal(await api('/api/gallery/added?id=x', { method: 'POST', keepalive: true }), undefined)
+  assert.equal(await api('/api/workspace/records?id=x', { method: 'POST', keepalive: true }), undefined)
   assert.equal(fetch.mock.calls[2].arguments[1].keepalive, true)
 })
 
@@ -36,7 +36,7 @@ test('api rejects with the key and status the backend gives an error', async t =
 })
 
 test('withQuery encodes every parameter', () => {
-  assert.equal(withQuery('/api/gallery', { q: 'a b&c', page: 2 }), '/api/gallery?q=a+b%26c&page=2')
+  assert.equal(withQuery('/api/workspace', { q: 'a b&c', page: 2 }), '/api/workspace?q=a+b%26c&page=2')
 })
 
 test('records are added with POST and deleted with DELETE, and resolve with the workspace', async t => {

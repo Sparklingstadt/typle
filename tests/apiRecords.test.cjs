@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
-const { createHmac, hkdfSync, randomInt, randomUUID } = require('node:crypto')
+const { createHmac, hkdfSync, randomInt } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const { answerRecords } = require('../src/server/workspace.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
@@ -21,7 +21,7 @@ const open = () => db
 const owners = []
 after(async () => {
   if (!db) return
-  for (const table of ['typle_session_revocations', 'typle_shared_packs', 'typle_records', 'typle_workspaces']) {
+  for (const table of ['typle_session_revocations', 'typle_records', 'typle_workspaces']) {
     await db.query(`DELETE FROM ${table} WHERE owner_id = ANY($1)`, [owners])
   }
   await db.end()
@@ -48,8 +48,7 @@ async function state(owner) {
     'revision', revision, 'split', records_split) FROM typle_workspaces WHERE owner_id = $1), 'null'::jsonb)::text AS v`, [owner])).rows[0].v
   const records = (await db.query(`SELECT COALESCE(jsonb_agg(jsonb_build_array(list_id, record_id, position, (extract(epoch FROM at) * 1000)::bigint, data)
     ORDER BY list_id, position), '[]'::jsonb)::text AS v FROM typle_records WHERE owner_id = $1`, [owner])).rows[0].v
-  const shares = (await db.query(`SELECT COALESCE(jsonb_agg(pack_id ORDER BY pack_id), '[]'::jsonb)::text AS v FROM typle_shared_packs WHERE owner_id = $1`, [owner])).rows[0].v
-  return { row: JSON.parse(row), records: JSON.parse(records), shares: JSON.parse(shares) }
+  return { row: JSON.parse(row), records: JSON.parse(records) }
 }
 
 for (const scenario of scenarios) {
@@ -62,9 +61,6 @@ for (const scenario of scenarios) {
       [user.owner, JSON.stringify(row.lists), row.packs === null ? null : JSON.stringify(row.packs), JSON.stringify(row.devices),
         row.interests === null ? null : JSON.stringify(row.interests), row.revision, row.split])
     }
-    for (const pack of scenario.setup.shares) {
-      await db.query(`INSERT INTO typle_shared_packs (id, owner_id, pack_id, data) VALUES ($1, $2, $3, '{}'::jsonb)`, [randomUUID(), user.owner, pack])
-    }
     const original = console.error
     console.error = () => {}
     try {
@@ -74,7 +70,7 @@ for (const scenario of scenarios) {
         assert.equal(response.status, step.status, `step ${index + 1}`)
         if (step.key) assert.deepEqual(answer, { error: step.key }, `step ${index + 1}`)
         if (step.kind === 'add' && !step.key) assert.deepEqual(answer.record, step.record, `step ${index + 1}`)
-        assert.deepEqual(await state(user.owner), { row: step.row, records: step.records, shares: step.shares }, `step ${index + 1}`)
+        assert.deepEqual(await state(user.owner), { row: step.row, records: step.records }, `step ${index + 1}`)
       }
     } finally {
       console.error = original

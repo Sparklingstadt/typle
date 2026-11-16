@@ -1,21 +1,9 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { fromAppOrOrigin, jsonContent, readStringFields } = require('../src/server/request.ts')
+const { fromAppOrOrigin, jsonContent } = require('../src/server/request.ts')
 
-const post = (body, headers = {}) => new Request('http://localhost/api/gallery/reports', { method: 'POST', body: body === null ? undefined : body, headers })
-const id = '0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d'
-
-// The bodies of the Go backend's TestGalleryReport, which it refused.
-test('the report body has exactly a non-empty id and reason', async () => {
-  assert.deepEqual(await readStringFields(post(`{"id":"${id}","reason":"spam"}`), 4096, ['id', 'reason']), { id, reason: 'spam' })
-  assert.deepEqual(await readStringFields(post(`{"id":"x","reason":"spam","id":"${id}"}`), 4096, ['id', 'reason']), { id, reason: 'spam' })
-  for (const body of [`{"id":"${id}"}`, '{"reason":"spam"}', `{"id":"","reason":"spam"}`, `{"id":"${id}","reason":null}`,
-    `{"id":"${id}","reason":"spam","x":1}`, '[]', 'x', '{"id":1,"reason":"spam"}', '', 'null', null]) {
-    assert.equal(await readStringFields(post(body), 4096, ['id', 'reason']), null, String(body))
-  }
-  assert.equal(await readStringFields(post(`{"id":"${'a'.repeat(5000)}","reason":"spam"}`), 4096, ['id', 'reason']), null)
-})
+const post = (body, headers = {}) => new Request('http://localhost/api/workspace', { method: 'POST', body: body === null ? undefined : body, headers })
 
 test('only the app or the app\'s own origin may write', () => {
   const origin = 'https://typle.example'

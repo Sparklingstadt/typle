@@ -31,15 +31,4 @@ export function withoutBody(response: Response): Response {
   return new Response(null, { status: response.status, headers: response.headers })
 }
 
-/** Marks an answer of the gallery, errors and 405s included, as not for search engines and not to be kept by any cache. */
-export function forGallery(response: Response): Response {
-  response.headers.set('X-Robots-Tag', 'noindex')
-  response.headers.set('Cache-Control', 'no-store')
-  return response
-}
 
-/** Marks an answer, errors and 405s included, as not for search engines: a shared pack is for people with the link. */
-export function notForSearch(response: Response): Response {
-  response.headers.set('X-Robots-Tag', 'noindex')
-  return response
-}
