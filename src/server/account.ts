@@ -8,7 +8,7 @@ import type { LoginSettings } from './settings'
 // made until then (typle_session_revocations), which is the one way to stop a stolen cookie or token before it expires.
 
 /** The value of the cookie name in the request, the first one when there are several; quotes around it are dropped. */
-function cookieValue(request: Request, name: string): string | null {
+export function cookieValue(request: Request, name: string): string | null {
   for (const part of (request.headers.get('Cookie') ?? '').split(';')) {
     const at = part.indexOf('=')
     if (at < 0 || part.slice(0, at).trim() !== name) continue

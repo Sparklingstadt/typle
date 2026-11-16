@@ -7,7 +7,7 @@ import { readLoginSettings, type LoginSettings } from './settings'
 import { isLinkId } from './shared'
 
 // The administrator's dashboard (/admin) and its API, /api/admin/*. The login to it goes through FFPF ID and ends with
-// the administrator's cookie (still the Go backend's /api/auth/callback/ffpf), for an account that typle_admins lets in:
+// the administrator's cookie (/api/auth/callback/ffpf, src/server/signin.ts), for an account that typle_admins lets in:
 // one registered there by its email, which binds the account's sub at its first sign-in. Every request asks
 // typle_admins again, so an administrator whose row is removed is let in no longer.
 

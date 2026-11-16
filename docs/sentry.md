@@ -1,7 +1,7 @@
 # Sentry エラー監視
 
 ブラウザーの未処理例外、React の全体エラー画面、Next.js のサーバー例外、
-Next.js の Route Handler（`src/server/report.ts`。`/api/workspace` と `/api/workspace/records` の読み書き・共有・ギャラリー・管理画面の API・セッション・ログアウトなど、操作名を `operation` のタグに付ける）と、Go のバックエンド（ログインの始まりと戻り、管理画面のログイン）で捕捉した例外を収集します。
+Next.js の Route Handler（`src/server/report.ts`。`/api/workspace` と `/api/workspace/records` の読み書き・共有・ギャラリー・管理画面の API・セッション・ログアウトなど、操作名を `operation` のタグに付ける）で捕捉した例外を収集します（ログインの始まりと戻り・管理画面のログインも v2.46.10 から Route Handler です）。
 認証失敗・入力エラー・更新競合など、想定内の4xx応答は報告しません。
 
 ## 接続
@@ -29,8 +29,6 @@ Vercel の Production と Preview で環境名をそれぞれ設定してくだ�
 
 エラー内容・スタックトレース・実行環境を収集します。ワークスペースAPIの例外には
 `workspace.read` / `workspace.write`、ログインの例外には `auth.callback` の操作タグを付けます。
-Go のバックエンドは `SENTRY_DSN`（なければ `NEXT_PUBLIC_SENTRY_DSN`）と `SENTRY_ENVIRONMENT`（なければ VERCEL_ENV）を読み、
-リクエストのメソッドとパスだけを送ります（本文・ヘッダー・Cookie・クエリーは送りません）。
 リクエスト本文、ヘッダー、Cookie、URLのクエリー・フラグメント、ユーザー情報、
 追加データ、操作履歴を送信前に除去します。Session Replay・性能トレースは無効です。
 例外メッセージ自体は診断に必要なため残します。入力した単語や秘密情報を例外メッセージに含めないでください。
