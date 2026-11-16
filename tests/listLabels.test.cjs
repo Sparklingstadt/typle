@@ -23,9 +23,11 @@ test('the category and tags are saved trimmed, without empty or repeated tags, a
 test('lists keep their category and tags when saved and read back, and lists without them still read', () => {
   const lists = [list('a', 'A', { category: 'プログラミング', tags: ['Go'] }), list('b', 'B')]
   assert.deepEqual(decodeLists(encodeLists(lists)), lists)
-  for (const bad of [{ category: 1 }, { category: null }, { tags: 'Go' }, { tags: ['Go', 2] }, { tags: [null] }]) {
+  for (const bad of [{ category: 1 }, { tags: 'Go' }, { tags: ['Go', 2] }, { tags: [null] }]) {
     assert.throws(() => decodeLists(JSON.stringify({ version: 1, lists: [list('a', 'A', bad)] })), { key: 'savedDataCorrupted' })
   }
+  // A category or tags saved as null is left out, as the backend has always read it.
+  assert.equal('category' in decodeLists(JSON.stringify({ version: 1, lists: [list('a', 'A', { category: null })] }))[0], false)
 })
 
 test('a save refuses a category or tags past their limits', () => {

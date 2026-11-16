@@ -93,10 +93,29 @@ export function separateLevels(library: Library): Library {
 }
 
 /** Reads saved packs, keeping fields Typle does not know. */
+/**
+ * A pack with its optional fields saved as null left out, as the backend has always read them: description, tags and
+ * origin.followed. Anything that is not an object is kept as it is, to be refused.
+ */
+function withoutNulls(pack: unknown): unknown {
+  if (!pack || typeof pack !== 'object' || Array.isArray(pack)) return pack
+  const { description, tags, origin, ...rest } = pack as Record<string, unknown>
+  const cleanOrigin = origin && typeof origin === 'object' && (origin as Record<string, unknown>).followed === null
+    ? (({ followed: _followed, ...kept }) => kept)(origin as Record<string, unknown>)
+    : origin
+  return {
+    ...rest,
+    ...(description === null || description === undefined ? {} : { description }),
+    ...(tags === null || tags === undefined ? {} : { tags }),
+    ...(origin === undefined ? {} : { origin: cleanOrigin }),
+  }
+}
+
 export function decodePacks(value: unknown): WordPack[] {
   if (!Array.isArray(value)) throw new AppError('savedDataCorrupted')
+  value = value.map(withoutNulls)
   const ids = new Set<string>()
-  for (const pack of value) {
+  for (const pack of value as unknown[] as WordPack[]) {
     const origin = pack?.origin
     if (!pack || typeof pack !== 'object' || !isString(pack.id) || !pack.id || ids.has(pack.id) || !isString(pack.name) ||
         !isString(pack.createdAt) ||
@@ -109,7 +128,7 @@ export function decodePacks(value: unknown): WordPack[] {
     }
     ids.add(pack.id)
   }
-  return value
+  return value as WordPack[]
 }
 
 const withoutLabels = ({ group: _group, category: _category, tags: _tags, ...rest }: SavedWordList): SavedWordList => rest

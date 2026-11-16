@@ -75,3 +75,19 @@ test('a list keeps its weak review through saving, and drops one of another shap
   assert.equal(edited.name, 'Renamed')
   assert.deepEqual(edited.weakReview, weakReview)
 })
+
+// An optional field saved as null is no field, as the backend has always read it (the owner's decision before moving
+// /api/workspace from Go: docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md).
+test('optional fields saved as null are read as left out', () => {
+  const record = { id: 'r1', time: 1500, date: '2026-09-07T00:00:00.000Z', mistakes: 1, accuracy: 95, wordCount: 1, device: { id: 'd', name: 'D', layout: '' } }
+  const full = { ...list, tags: ['t'], category: 'c', group: 'g', levels: ['l'], packId: 'p', records: [record] }
+  const read = value => decodeLists(JSON.stringify({ version: 1, lists: [value] }))[0]
+  for (const name of ['tags', 'category', 'group', 'levels', 'packId']) {
+    const { [name]: _left, ...without } = full
+    assert.deepEqual(read({ ...full, [name]: null }), read(without), name)
+  }
+  for (const name of ['id', 'mistakes', 'accuracy', 'wordCount', 'device']) {
+    const { [name]: _left, ...without } = record
+    assert.deepEqual(read({ ...full, records: [{ ...record, [name]: null }] }), read({ ...full, records: [without] }), name)
+  }
+})
