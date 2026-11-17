@@ -1,11 +1,11 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { validateLibrary } = require('../src/core/wordPacks.ts')
-const { loneListPack, storedLibrary, createPackFromLists, updatePack, reorderPackLists, deletePack, saveListInPack, packFieldsOf, reconcileOrder, packListChoices } = require('../src/core/packEditing.ts')
-const { packOverviews, sortPacks, visibleListRows, matchesPackQuery, matchingListIds } = require('../src/core/packOverview.ts')
-const { duplicateList, MAX_LISTS } = require('../src/core/listOverview.ts')
-const { saveList } = require('../src/core/wordLists.ts')
+const { validateLibrary } = require('../src/lib/wordPacks.ts')
+const { loneListPack, storedLibrary, createPackFromLists, updatePack, reorderPackLists, deletePack, saveListInPack, packFieldsOf, reconcileOrder, packListChoices } = require('../src/lib/packEditing.ts')
+const { packOverviews, sortPacks, visibleListRows, matchesPackQuery, matchingListIds } = require('../src/lib/packOverview.ts')
+const { duplicateList, MAX_LISTS } = require('../src/lib/listOverview.ts')
+const { saveList } = require('../src/lib/wordLists.ts')
 
 const { words } = require('./helpers.cjs')
 const stamp = '2026-10-01T00:00:00.000Z'
@@ -184,7 +184,7 @@ test('saveListInPack refuses levels that leave a list of the pack out of reach',
 })
 
 test('tidyLevels, saveListInPack and createPack refuse more than one level, as tooManyLevels', () => {
-  const { tidyLevels } = require('../src/core/packEditing.ts')
+  const { tidyLevels } = require('../src/lib/packEditing.ts')
   assert.throws(() => tidyLevels(['基本', '初級']), { key: 'tooManyLevels' })
   assert.throws(() => tidyLevels(['基本', '基本']), { key: 'tooManyLevels' })
   assert.throws(() => tidyLevels(['1', '2', '3', '4', '5', '6']), { key: 'tooManyLevels' })
@@ -201,7 +201,7 @@ test('tidyLevels, saveListInPack and createPack refuse more than one level, as t
 })
 
 test('the official library has no lists out of reach in its packs', () => {
-  const { officialLibrary: initialLibrary } = require('../src/core/packs/index.ts')
+  const { officialLibrary: initialLibrary } = require('../src/lib/packs/index.ts')
   const path = item => item.levels?.length ? item.levels : [item.name]
   for (const pack of initialLibrary.packs) {
     const paths = initialLibrary.lists.filter(item => item.packId === pack.id).map(path)
@@ -212,8 +212,8 @@ test('the official library has no lists out of reach in its packs', () => {
 })
 
 // Followed official packs: the catalog's to change, so edits are refused (deleting and records still work).
-const { followPack } = require('../src/core/followedPacks.ts')
-const { copyPack } = require('../src/core/packFile.ts')
+const { followPack } = require('../src/lib/followedPacks.ts')
+const { copyPack } = require('../src/lib/packFile.ts')
 const official = {
   catalogId: 'cat', version: 1,
   pack: { id: 'cat', name: '公式', createdAt: stamp },

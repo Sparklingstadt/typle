@@ -1,7 +1,7 @@
 "use client"
 import { useTranslations } from 'next-intl'
 import { Folder } from 'lucide-react'
-import type { SavedWordList } from '@/core/wordLists'
+import type { SavedWordList } from '@/lib/wordLists'
 import { cn } from '@/lib/utils'
 
 // A list's category and tags after its name, such as [プログラミング] #Kotlin #JVM. Spans only, so it can sit inside a

@@ -6,8 +6,8 @@ import { ErrorAlert } from "./ui/alert"
 import { Button } from "./ui/button"
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog"
 import { useErrorText } from "@/i18n/useErrorText"
-import { AppError } from "@/core/appError"
-import { IMPORT_ACCEPT, MAX_IMPORT_BYTES, isWordCsv, parseWordCsv, type Word } from "@/core/wordFormat"
+import { AppError } from "@/lib/appError"
+import { IMPORT_ACCEPT, MAX_IMPORT_BYTES, isWordCsv, parseWordCsv, type Word } from "@/lib/wordFormat"
 
 type Words = Word[]
 export type ImportMode = "append" | "replace"

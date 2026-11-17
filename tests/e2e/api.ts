@@ -1,6 +1,6 @@
 import type { Request } from '@playwright/test'
 
-// The app reads and changes the account's data through the backend's REST paths (src/core/api.ts,
+// The app reads and changes the account's data through the backend's REST paths (src/lib/api.ts,
 // src/app/api), so a test that holds or answers one of them picks it by its method and path.
 
 /** The method and path of a request, such as "PUT /api/shares". */

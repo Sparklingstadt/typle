@@ -1,7 +1,7 @@
 "use client"
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { chosenDevice, type PracticeDevice } from '@/core/devices'
+import { chosenDevice, type PracticeDevice } from '@/lib/devices'
 
 // The device used for practice is remembered per browser (and per account), so each computer keeps its own choice.
 export function selectedDeviceKey(accountId: string) {

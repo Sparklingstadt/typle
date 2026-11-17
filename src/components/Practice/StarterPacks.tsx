@@ -5,9 +5,9 @@ import { Keyboard } from "lucide-react"
 import { ErrorAlert } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { useWordLists } from "@/lib/useWordLists"
-import { useOfficialPackStart } from "@/lib/useOfficialPackStart"
-import { starterPacks } from "@/core/packs/starters"
+import { useWordLists } from "@/hooks/useWordLists"
+import { useOfficialPackStart } from "@/hooks/useOfficialPackStart"
+import { starterPacks } from "@/lib/packs/starters"
 
 const SAMPLE_WORDS = 3
 

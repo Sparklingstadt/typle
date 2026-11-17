@@ -1,6 +1,6 @@
 "use client"
 import { Analytics, type BeforeSendEvent } from "@vercel/analytics/next"
-import { analyticsUrl } from "@/core/analytics"
+import { analyticsUrl } from "@/lib/analytics"
 
 // beforeSend is a function, so it must be set in a client component rather than the server layout.
 function beforeSend(event: BeforeSendEvent): BeforeSendEvent | null {

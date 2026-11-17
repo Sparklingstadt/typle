@@ -4,7 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server"
 import { Keyboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { defaultLocale, isLocale, type Locale } from "@/i18n/config"
-import { fromSharedQuery, toSharedQuery } from "@/core/sharedResult"
+import { fromSharedQuery, toSharedQuery } from "@/lib/sharedResult"
 import { sharedResultMode, sharedResultTiles } from "@/lib/sharedResultView"
 
 // A practice result someone shared on X. The link carries the result itself; nothing is stored. The page is kept out

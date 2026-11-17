@@ -1,8 +1,8 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { listRanking } = require('../src/core/rankings.ts')
-const { packRankings, sortPackRankings, matchesRankingQuery, packRecordOptions } = require('../src/core/packRecords.ts')
+const { listRanking } = require('../src/lib/rankings.ts')
+const { packRankings, sortPackRankings, matchesRankingQuery, packRecordOptions } = require('../src/lib/packRecords.ts')
 
 const stamp = '2026-10-01T00:00:00.000Z'
 const now = new Date('2026-10-20T00:00:00.000Z')

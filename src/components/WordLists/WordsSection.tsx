@@ -10,7 +10,7 @@ import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrate
 import { WORD_ROW_COLUMNS } from "@/components/SortableWordRow"
 import WordListImport from "@/components/WordListImport"
 import WordRowFields from "@/components/WordLists/WordRowFields"
-import { MAX_WORDS, type DraftWord, type Word } from "@/core/wordDraft"
+import { MAX_WORDS, type DraftWord, type Word } from "@/lib/wordDraft"
 
 function Kbd({ children }: { children: string }) {
   return <kbd className="rounded border bg-background px-1.5 py-px font-sans text-[11px] font-medium text-foreground/70">{children}</kbd>

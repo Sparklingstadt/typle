@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useRef } from 'react'
-import type { InkStroke } from '@/core/handwriting'
+import type { InkStroke } from '@/lib/handwriting'
 
 // The stroke width, in CSS pixels.
 export const LINE_WIDTH = 5

@@ -2,7 +2,7 @@
 import { useTranslations } from 'next-intl'
 import { ChevronDown, Folder, Tag } from 'lucide-react'
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import type { ListFilter, Labels } from '@/core/listOverview'
+import type { ListFilter, Labels } from '@/lib/listOverview'
 import { cn } from '@/lib/utils'
 
 

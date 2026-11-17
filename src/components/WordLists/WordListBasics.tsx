@@ -7,9 +7,9 @@ import { NativeSelect } from "@/components/ui/native-select"
 import { Switch } from "@/components/ui/switch"
 import LevelFields from "@/components/WordLists/LevelFields"
 import FieldError from "@/components/WordLists/FieldError"
-import { WRITING_LANGUAGES, type WritingLanguage } from "@/core/wordLists"
-import type { WordPack } from "@/core/wordPacks"
-import { WRITING_DEFAULTS } from "@/core/wordDraft"
+import { WRITING_LANGUAGES, type WritingLanguage } from "@/lib/wordLists"
+import type { WordPack } from "@/lib/wordPacks"
+import { WRITING_DEFAULTS } from "@/lib/wordDraft"
 
 export default function WordListBasics({ baseId, nameId, hasPackFields, choosePack, packs, chosenPack, setChosenPack, leavingLonePack, lonePackName, name, setName, nameError, nameAlert, levels, setLevels, levelError, error, refusals, writing, setWriting }: {
   baseId: string

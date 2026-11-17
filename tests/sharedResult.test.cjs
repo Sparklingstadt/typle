@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { toSharedQuery, fromSharedQuery, sharedName, xIntentUrl, MAX_SHARED_NAME } = require('../src/core/sharedResult.ts')
+const { toSharedQuery, fromSharedQuery, sharedName, xIntentUrl, MAX_SHARED_NAME } = require('../src/lib/sharedResult.ts')
 
 const result = { name: 'Go の予約語', time: 12.345, accuracy: 98, speed: 321.6, words: 20, mode: 'normal' }
 

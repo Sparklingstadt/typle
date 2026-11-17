@@ -1,6 +1,6 @@
 "use client"
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { api } from '@/core/api'
+import { api } from '@/lib/api'
 
 export type SessionUser = { id: string; name: string; image: string | null }
 type SessionData = { user: SessionUser } | null

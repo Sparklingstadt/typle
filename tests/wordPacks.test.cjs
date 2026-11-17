@@ -3,9 +3,9 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
-const { normalizeLibrary, decodePacks, validateLibrary, viewLists, applyListChange, importedLevel } = require('../src/core/wordPacks.ts')
-const { decodeLists, saveList } = require('../src/core/wordLists.ts')
-const { levelSteps, listAtLevels } = require('../src/core/listOverview.ts')
+const { normalizeLibrary, decodePacks, validateLibrary, viewLists, applyListChange, importedLevel } = require('../src/lib/wordPacks.ts')
+const { decodeLists, saveList } = require('../src/lib/wordLists.ts')
+const { levelSteps, listAtLevels } = require('../src/lib/listOverview.ts')
 
 const dir = path.join(__dirname, 'fixtures/packs')
 for (const file of fs.readdirSync(dir).filter(name => name.endsWith('.json'))) {

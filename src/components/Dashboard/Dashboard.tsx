@@ -10,10 +10,10 @@ import WeakWords from "@/components/Dashboard/WeakWords"
 import TrendCard from "@/components/Dashboard/TrendCard"
 import WeekStats from "@/components/Dashboard/WeekStats"
 import { useFormat } from "@/i18n/useFormat"
-import { continueList, listTrends, nextLists, summarize, weakLists, WEAK_RUNS, LOW_ACCURACY, STALE_DAYS } from "@/core/dashboard"
-import { addDays } from "@/core/dates"
-import type { SavedWordList } from "@/core/wordLists"
-import type { WorkspaceLocation } from "@/core/workspaceStore"
+import { continueList, listTrends, nextLists, summarize, weakLists, WEAK_RUNS, LOW_ACCURACY, STALE_DAYS } from "@/lib/dashboard"
+import { addDays } from "@/lib/dates"
+import type { SavedWordList } from "@/lib/wordLists"
+import type { WorkspaceLocation } from "@/lib/workspaceStore"
 
 function Section({ title, description, children }: { title: string; description: string; children: ReactNode }) {
   const id = useId()

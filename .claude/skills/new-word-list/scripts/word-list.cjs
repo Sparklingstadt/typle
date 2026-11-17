@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds and checks typle word lists with the app's own code (src/core), so a file that passes
+// Builds and checks typle word lists with the app's own code (src/lib), so a file that passes
 // here is read by the app the same way. Run from the repository root:
 //
 //   node .claude/skills/new-word-list/scripts/word-list.cjs csv  <words.json> <out.csv>
@@ -8,15 +8,15 @@
 //
 // words.json is an array of { display, input?, annotation?, input_type? } (input defaults to display, annotation to "").
 // pack.json is a PackFile without format/version: { pack: { name, ... }, lists: [{ name, levels?, words }] }.
-// check reads .csv (import), .typle-pack.json (pack import) and src/core/packs/commands/*.json (official list).
+// check reads .csv (import), .typle-pack.json (pack import) and src/lib/packs/commands/*.json (official list).
 const fs = require('node:fs')
 const path = require('node:path')
 
 const root = path.resolve(__dirname, '../../../..')
 require(path.join(root, 'tests/register.cjs'))
-const { encodeWordCsv, isWordCsv, parseWordCsv } = require(path.join(root, 'src/core/wordFormat.ts'))
-const { decodePackFile, importPackFile } = require(path.join(root, 'src/core/packFile.ts'))
-const { validateList, isInputType } = require(path.join(root, 'src/core/wordLists.ts'))
+const { encodeWordCsv, isWordCsv, parseWordCsv } = require(path.join(root, 'src/lib/wordFormat.ts'))
+const { decodePackFile, importPackFile } = require(path.join(root, 'src/lib/packFile.ts'))
+const { validateList, isInputType } = require(path.join(root, 'src/lib/wordLists.ts'))
 const errors = require(path.join(root, 'src/messages/ja/errors.json'))
 
 /** The app's Japanese message for an AppError, with its values filled in. */
@@ -85,7 +85,7 @@ function checkOfficial(file) {
   if (!problems.length) {
     try { validateList({ ...list, records: [], createdAt: new Date().toISOString() }) } catch (error) { problems.push(describe(error)) }
   }
-  const manifest = readJson(path.join(root, 'src/core/packs/commands/manifest.json'))
+  const manifest = readJson(path.join(root, 'src/lib/packs/commands/manifest.json'))
   const notes = Array.isArray(list.words) ? warnings(list.words, name) : []
   if (list.id !== name.replace(/\.json$/, '')) notes.push(`id（${list.id}）がファイル名と違います。新しいリストはファイル名と同じ id にしてください`)
   if (!manifest.includes(name)) notes.push(`${name} は manifest.json にまだありません`)

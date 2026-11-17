@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { saveList, encodeLists, decodeLists, validateList } = require('../src/core/wordLists.ts')
+const { saveList, encodeLists, decodeLists, validateList } = require('../src/lib/wordLists.ts')
 const list = { id: 'a', name: 'First', words: [{ display: 'one', input: 'one', annotation: '' }], records: [], createdAt: '2026-09-06' }
 
 test('create, edit, reorder, delete and reload lists', () => {
@@ -39,7 +39,7 @@ test('word input types survive save and reload while legacy words remain unchang
 })
 
 test('word input types reject invalid strings, null and non-string values', () => {
-  const { isInputType, validateList } = require('../src/core/wordLists.ts')
+  const { isInputType, validateList } = require('../src/lib/wordLists.ts')
   for (const value of ['command', 'code', 'word']) assert.equal(isInputType(value), true)
   for (const input_type of ['', 'other', 'Code', null, 1, false, {}, []]) {
     assert.equal(isInputType(input_type), false)

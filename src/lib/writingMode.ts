@@ -1,5 +1,5 @@
 "use client"
-import { useStoredChoice } from '@/lib/useStoredChoice'
+import { useStoredChoice } from '@/hooks/useStoredChoice'
 
 // Whether a list marked for writing is practised by typing or by handwriting. Remembered per browser; typing by default,
 // and only `writing` is written (as the recall switch does in practiceMode.ts).

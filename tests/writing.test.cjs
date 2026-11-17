@@ -3,8 +3,8 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
-const { newSession, pauseSession, sessionResult } = require('../src/core/typing.ts')
-const { normalizeWriting, matchesWriting, startWriting, judgeWriting, skipWord } = require('../src/core/writing.ts')
+const { newSession, pauseSession, sessionResult } = require('../src/lib/typing.ts')
+const { normalizeWriting, matchesWriting, startWriting, judgeWriting, skipWord } = require('../src/lib/writing.ts')
 
 const cases = JSON.parse(fs.readFileSync(path.join(__dirname, 'fixtures/writing/match.json'), 'utf8'))
 for (const c of cases) {

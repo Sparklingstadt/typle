@@ -4,7 +4,7 @@ const assert = require('node:assert/strict')
 const { randomInt } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const { modifyWorkspace, writeWorkspace, readWorkspaceChange, Conflict } = require('../src/server/workspace.ts')
-const { addRecord } = require('../src/core/records.ts')
+const { addRecord } = require('../src/lib/records.ts')
 
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL

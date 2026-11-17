@@ -1,11 +1,11 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { initialLists } = require('../src/core/packs/index.ts')
+const { initialLists } = require('../src/lib/packs/index.ts')
 const languageLists = initialLists.filter(list => list.id.endsWith('-basics'))
-const { decodeLists } = require('../src/core/wordLists.ts')
-const { officialPacks, followOfficialPack } = require('../src/core/packs/catalog.ts')
-const { validateLibrary } = require('../src/core/wordPacks.ts')
+const { decodeLists } = require('../src/lib/wordLists.ts')
+const { officialPacks, followOfficialPack } = require('../src/lib/packs/catalog.ts')
+const { validateLibrary } = require('../src/lib/wordPacks.ts')
 
 test('the six beginner language lists decode and can be followed with all their words intact', () => {
   assert.deepEqual(languageLists.map(list => list.id), ['korean-basics', 'french-basics', 'czech-basics', 'german-basics', 'spanish-basics', 'chinese-basics'])
@@ -40,7 +40,7 @@ test('native spelling, romanization and tone marks remain in the typing targets'
 })
 
 test('English and Russian each have one pack of basic and intermediate words and syntax', () => {
-  const { officialLibrary } = require('../src/core/packs/index.ts')
+  const { officialLibrary } = require('../src/lib/packs/index.ts')
   for (const [slug, language] of [['english', '英語'], ['russian', 'ロシア語']]) {
     const pack = officialLibrary.packs.find(item => item.name === `${language}：基礎・中級`)
     assert.ok(pack, language)
@@ -62,7 +62,7 @@ test('English and Russian each have one pack of basic and intermediate words and
 })
 
 test('Czech intermediate and Chinese HSK 5 and 6 packs each hold two lists of 40 words, the HSK lists marked for handwriting', () => {
-  const { officialLibrary } = require('../src/core/packs/index.ts')
+  const { officialLibrary } = require('../src/lib/packs/index.ts')
   for (const [name, tag, ids, levels, writing] of [
     ['チェコ語：中級', 'チェコ語', ['czech-intermediate-words', 'czech-intermediate-syntax'], ['中級単語', '中級構文'], undefined],
     ['中国語：HSK5級レベル単語', '中国語', ['chinese-hsk5-words-1', 'chinese-hsk5-words-2'], ['単語1', '単語2'], { language: 'zh-Hans' }],
@@ -93,7 +93,7 @@ test('Czech intermediate and Chinese HSK 5 and 6 packs each hold two lists of 40
 })
 
 test('the twenty-five HSK 6 handwriting packs each hold six lists of 15 words, marked for handwriting in simplified Chinese', () => {
-  const { officialLibrary } = require('../src/core/packs/index.ts')
+  const { officialLibrary } = require('../src/lib/packs/index.ts')
   for (let pack = 1; pack <= 25; pack++) {
     const found = officialLibrary.packs.find(item => item.name === `中国語：HSK6級 手書き単語${pack}`)
     assert.ok(found, String(pack))
@@ -114,7 +114,7 @@ test('the twenty-five HSK 6 handwriting packs each hold six lists of 15 words, m
 })
 
 test('the Korean beginner handwriting pack holds six themed lists of 15 words, marked for handwriting in Korean', () => {
-  const { officialLibrary } = require('../src/core/packs/index.ts')
+  const { officialLibrary } = require('../src/lib/packs/index.ts')
   const found = officialLibrary.packs.find(item => item.name === '韓国語：手書き初級単語')
   assert.ok(found)
   assert.equal(found.category, '語学')
@@ -139,7 +139,7 @@ test('the Korean beginner handwriting pack holds six themed lists of 15 words, m
 })
 
 test('the Korean beginner handwriting packs 2 and 3 hold six themed lists of 15 words, and share no word with the other Korean lists', () => {
-  const { officialLibrary } = require('../src/core/packs/index.ts')
+  const { officialLibrary } = require('../src/lib/packs/index.ts')
   const packs = [
     [2, ['体', '衣服・持ち物', '動物', '数・色', '動詞', '形容詞']],
     [3, ['家・家具', '趣味・スポーツ', '町・乗り物', '食事・料理', '動詞', '形容詞']],
@@ -171,7 +171,7 @@ test('the Korean beginner handwriting packs 2 and 3 hold six themed lists of 15 
 })
 
 test('the Korean intermediate and advanced handwriting packs hold six themed lists of 15 words, and share no word with the other Korean lists', () => {
-  const { officialLibrary } = require('../src/core/packs/index.ts')
+  const { officialLibrary } = require('../src/lib/packs/index.ts')
   const packs = [
     ['intermediate', '中級', ['体・健康', '交通・旅行', '自然・天気', '仕事・学校', '動詞', '形容詞']],
     ['advanced', '上級', ['社会・政治', '経済・産業', '科学・環境', '文化・歴史', '動詞', '形容詞']],

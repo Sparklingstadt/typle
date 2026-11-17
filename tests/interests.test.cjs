@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { INTEREST_OPTIONS, decodeInterests, toggleInterest, normalizeInterests, matchesInterests } = require('../src/core/interests.ts')
+const { INTEREST_OPTIONS, decodeInterests, toggleInterest, normalizeInterests, matchesInterests } = require('../src/lib/interests.ts')
 
 const corrupted = error => error.key === 'savedDataCorrupted'
 
@@ -57,8 +57,8 @@ test('normalizeInterests orders by options and drops duplicates', () => {
 })
 
 test('decodeInterests', () => {
-  assert.deepEqual(decodeInterests(undefined), [...require('../src/core/interests.ts').DEFAULT_INTERESTS])
-  assert.deepEqual(decodeInterests(null), [...require('../src/core/interests.ts').DEFAULT_INTERESTS])
+  assert.deepEqual(decodeInterests(undefined), [...require('../src/lib/interests.ts').DEFAULT_INTERESTS])
+  assert.deepEqual(decodeInterests(null), [...require('../src/lib/interests.ts').DEFAULT_INTERESTS])
   assert.deepEqual(decodeInterests([]), [])
   assert.deepEqual(decodeInterests(['language', 'x']), ['language', 'x'])
   assert.equal(decodeInterests(Array.from({ length: 50 }, (_, n) => `i${n}`)).length, 50)
@@ -69,9 +69,9 @@ test('decodeInterests', () => {
 })
 
 test('the default interests are every option, as the fixture Go also reads has them, and every official pack fits them', () => {
-  const defaults = require('../src/core/interests.ts').DEFAULT_INTERESTS
+  const defaults = require('../src/lib/interests.ts').DEFAULT_INTERESTS
   assert.deepEqual(defaults, INTEREST_OPTIONS.flatMap(option => [option.id, ...option.children.map(child => child.id)]))
   assert.deepEqual(defaults, require('./fixtures/default-interests.json'))
-  const { officialPacks } = require('../src/core/packs/catalog.ts')
+  const { officialPacks } = require('../src/lib/packs/catalog.ts')
   for (const entry of officialPacks()) assert.ok(matchesInterests(entry.pack, [...defaults]), entry.pack.name)
 })

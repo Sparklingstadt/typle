@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { validateWorkspaceRequest } = require('../src/core/workspaceRequest.ts')
+const { validateWorkspaceRequest } = require('../src/lib/workspaceRequest.ts')
 const { cases } = require('./fixtures/workspace-put.json')
 
 test('save bodies are accepted and refused as the backend does', () => {

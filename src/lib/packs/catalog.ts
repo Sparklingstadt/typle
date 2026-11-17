@@ -2,7 +2,7 @@ import type { NewPackIds } from '../packFile'
 import { followOfficial, followPack, isFollowed, type OfficialPack } from '../followedPacks'
 import { deletePack } from '../packEditing'
 import type { Library } from '../wordPacks'
-import { officialLibrary } from '.'
+import { officialLibrary } from './'
 
 // The official packs are the packs an account can follow.
 export type { OfficialPack }

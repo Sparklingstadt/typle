@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
-import { useWordLists } from '@/lib/useWordLists'
+import { useWordLists } from '@/hooks/useWordLists'
 import { ErrorAlert } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
 import PageStorageBadge from '@/components/PageStorageBadge'

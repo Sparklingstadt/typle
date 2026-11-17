@@ -1,6 +1,6 @@
 "use client"
-import { CSV_MIME_TYPE, encodeWordCsv, wordFilename } from "@/core/wordFormat"
-import type { SavedWordList } from "@/core/wordLists"
+import { CSV_MIME_TYPE, encodeWordCsv, wordFilename } from "@/lib/wordFormat"
+import type { SavedWordList } from "@/lib/wordLists"
 
 /** Downloads the list's words as CSV. Returns false when the browser could not start the download. */
 export function downloadWordCsv(list: SavedWordList) {

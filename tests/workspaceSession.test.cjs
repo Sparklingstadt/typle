@@ -1,9 +1,9 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { createWorkspaceSession } = require('../src/core/workspaceSession.ts')
-const { WorkspaceError } = require('../src/core/workspaceStore.ts')
-const { convertLibrary, normalizeLibrary: repaired, viewLists } = require('../src/core/wordPacks.ts')
+const { createWorkspaceSession } = require('../src/lib/workspaceSession.ts')
+const { WorkspaceError } = require('../src/lib/workspaceStore.ts')
+const { convertLibrary, normalizeLibrary: repaired, viewLists } = require('../src/lib/wordPacks.ts')
 // The test's lists are written with groups, as the catalog's are: without packs, they are made into packs by group.
 const normalizeLibrary = (lists, packs) => packs === null ? convertLibrary(lists) : repaired(lists, packs)
 

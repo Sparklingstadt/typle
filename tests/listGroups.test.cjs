@@ -1,11 +1,11 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { saveList, encodeLists, decodeLists } = require('../src/core/wordLists.ts')
-const { normalizeLibrary, validateLibrary } = require('../src/core/wordPacks.ts')
-const { duplicateList, levelName, levelSteps, listAtLevels, matchesQuery } = require('../src/core/listOverview.ts')
-const { validateLists } = require('../src/core/workspaceRequest.ts')
-const { initialLists } = require('../src/core/packs/index.ts')
+const { saveList, encodeLists, decodeLists } = require('../src/lib/wordLists.ts')
+const { normalizeLibrary, validateLibrary } = require('../src/lib/wordPacks.ts')
+const { duplicateList, levelName, levelSteps, listAtLevels, matchesQuery } = require('../src/lib/listOverview.ts')
+const { validateLists } = require('../src/lib/workspaceRequest.ts')
+const { initialLists } = require('../src/lib/packs/index.ts')
 
 const words = [{ display: 'ls', input: 'ls', annotation: '' }]
 const list = (id, group, levels) => ({ id, name: id, ...(group ? { group } : {}), ...(levels ? { levels } : {}), words, records: [], createdAt: '2026-10-24T00:00:00.000Z' })

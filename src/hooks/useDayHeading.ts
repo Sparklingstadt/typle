@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import { useFormat } from '@/i18n/useFormat'
-import { dayKind } from '@/core/dashboard'
+import { dayKind } from '@/lib/dashboard'
 
 // Today and yesterday are named before the date; other days show the date alone.
 export function useDayHeading(now: Date) {

@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import type { SavedWordList } from '@/core/wordLists'
+import type { SavedWordList } from '@/lib/wordLists'
 
 // Two columns at every width: the number, and the text to type with the shown word and the note under it. The shown
 // word is left out when it is the same as the text to type. Long words, such as an SQL statement, wrap inside their

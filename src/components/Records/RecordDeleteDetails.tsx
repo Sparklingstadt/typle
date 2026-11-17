@@ -3,8 +3,8 @@ import { Trophy } from 'lucide-react'
 import { useFormat } from '@/i18n/useFormat'
 import PracticeName from '@/components/PracticeName'
 import { RecordTime } from '@/components/Records/RecordRow'
-import { formatAccuracy, listBest } from '@/core/records'
-import type { RecordRow as Row } from '@/core/recordHistory'
+import { formatAccuracy, listBest } from '@/lib/records'
+import type { RecordRow as Row } from '@/lib/recordHistory'
 
 // What the delete dialog is about to remove, and what becomes the best when it is the list's best.
 export default function RecordDeleteDetails({ row, dayHeading }: { row: Row; dayHeading: (day: Date) => string }) {

@@ -3,7 +3,7 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
-const { createWorkspaceSession } = require('../src/core/workspaceSession.ts')
+const { createWorkspaceSession } = require('../src/lib/workspaceSession.ts')
 
 // docs/api/workspace-records.openapi.json is the contract of /api/workspace/records, which
 // tests/apiRecords.test.cjs holds the Route Handler to. These hold the app to it.

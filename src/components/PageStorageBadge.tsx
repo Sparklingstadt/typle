@@ -1,7 +1,7 @@
 "use client"
 import { Cloud, HardDrive } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import type { WorkspaceLocation } from '@/core/workspaceStore'
+import type { WorkspaceLocation } from '@/lib/workspaceStore'
 
 /** Beside a page heading on narrow screens, where the top bar hides its own badge: where the page's data is saved, with the same icons. Nothing until that is known. */
 export default function PageStorageBadge({ storage }: { storage?: WorkspaceLocation }) {

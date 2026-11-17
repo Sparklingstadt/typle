@@ -1,8 +1,8 @@
 "use client"
 import { useEffect, useRef, useState } from 'react'
-import type { WritingLanguage } from '@/core/wordLists'
+import type { WritingLanguage } from '@/lib/wordLists'
 import { loadHandwritingRecognizer, type HandwritingRecognizer } from '@/lib/handwritingRecognizer'
-import { LINE_WIDTH, useInkCanvas } from '@/lib/useInkCanvas'
+import { LINE_WIDTH, useInkCanvas } from '@/hooks/useInkCanvas'
 
 // How long the pen rests before the writing is read by itself, in milliseconds.
 const READ_DELAY = 600

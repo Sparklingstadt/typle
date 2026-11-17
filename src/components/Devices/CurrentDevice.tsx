@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useDeviceOptions } from './useDeviceOptions'
-import type { PracticeDevice } from '@/core/devices'
+import type { PracticeDevice } from '@/lib/devices'
 import { IconTile } from '@/components/ui/icon-tile'
 
 // The same per-browser choice as the device menu on the practice screen, shown where devices are managed.

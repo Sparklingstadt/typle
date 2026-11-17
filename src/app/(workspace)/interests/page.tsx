@@ -1,6 +1,6 @@
 "use client"
 import { useTranslations } from 'next-intl'
-import { useWordLists } from '@/lib/useWordLists'
+import { useWordLists } from '@/hooks/useWordLists'
 import { ErrorAlert } from '@/components/ui/alert'
 import { Skeleton } from '@/components/ui/skeleton'
 import InterestSettings from '@/components/Settings/InterestSettings'

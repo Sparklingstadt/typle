@@ -2,8 +2,8 @@
 import { useTranslations } from 'next-intl'
 import DeleteConfirmation from '@/components/DeleteConfirmation'
 import { useSaveNotification } from '@/components/SaveNotification'
-import { deletePack } from '@/core/packEditing'
-import type { Library } from '@/core/wordPacks'
+import { deletePack } from '@/lib/packEditing'
+import type { Library } from '@/lib/wordPacks'
 
 // Asks before a followed pack is unfollowed, which deletes it with its records. Controlled by the screen that opens it.
 export default function UnfollowDialog({ pack, onOpenChange, updateLibrary, onUnfollowed }: {

@@ -3,7 +3,7 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
-const { inkBounds, inkLayout, lineTensor, recognitionClasses, readBestPath, textLogProbability, readHandwriting, LINE_HEIGHT, ACCEPT_MARGIN } = require('../src/core/handwriting.ts')
+const { inkBounds, inkLayout, lineTensor, recognitionClasses, readBestPath, textLogProbability, readHandwriting, LINE_HEIGHT, ACCEPT_MARGIN } = require('../src/lib/handwriting.ts')
 
 // A model output from per-step class probabilities given as { class: probability }, the rest spread evenly.
 function output(steps, classes) {

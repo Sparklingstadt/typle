@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og"
 import { getTranslations } from "next-intl/server"
 import { defaultLocale, isLocale } from "@/i18n/config"
-import { fromSharedQuery } from "@/core/sharedResult"
+import { fromSharedQuery } from "@/lib/sharedResult"
 import { sharedResultMode, sharedResultTiles } from "@/lib/sharedResultView"
 import { siteUrl } from "@/lib/siteUrl"
 

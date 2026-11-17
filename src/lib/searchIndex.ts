@@ -31,7 +31,7 @@ function siteOrigin(siteUrl: string): string {
   return new URL(siteUrl).origin
 }
 
-// The official pack pages (/packs/<slug>) come from the packs, which src/core may not read, so the caller passes them.
+// The official pack pages (/packs/<slug>) come from the packs (src/lib/packs); the caller passes them, so the sitemap can be tested without them.
 export const PACK_PAGE_PRIORITY = 0.7
 
 export function sitemapEntries(siteUrl: string, packPagePaths: readonly string[] = []): SitemapEntry[] {

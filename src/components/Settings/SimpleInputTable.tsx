@@ -1,5 +1,5 @@
 import { useTranslations } from 'next-intl'
-import { cyrillicLatin, latinBase } from '@/core/typing'
+import { cyrillicLatin, latinBase } from '@/lib/typing'
 
 // Marked letters of the languages the packs cover. Any marked Latin letter folds the same way; letters without a plain
 // base (ł, ø, đ) are left out by latinBase, so the table only shows what practice accepts.

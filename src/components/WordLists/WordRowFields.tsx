@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import SortableWordRow from "@/components/SortableWordRow"
 import FieldError from "@/components/WordLists/FieldError"
-import type { InputType } from "@/core/wordLists"
-import type { DraftWord, Word } from "@/core/wordDraft"
+import type { InputType } from "@/lib/wordLists"
+import type { DraftWord, Word } from "@/lib/wordDraft"
 
 export default function WordRowFields({ word, index, count, baseId, displayId, inputId, saving, displayError, inputError, onChange, onMove, onRemove }: {
   word: DraftWord

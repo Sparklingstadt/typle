@@ -3,7 +3,7 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
-const { INDEXED_PATHS, DISALLOWED_PATHS, sitemapEntries, robotsRules } = require('../src/core/searchIndex.ts')
+const { INDEXED_PATHS, DISALLOWED_PATHS, sitemapEntries, robotsRules } = require('../src/lib/searchIndex.ts')
 
 const site = 'https://typle-r-six.vercel.app'
 

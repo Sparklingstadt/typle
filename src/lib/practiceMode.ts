@@ -1,6 +1,6 @@
 "use client"
-import type { PracticeMode } from '@/core/records'
-import { useStoredChoice } from '@/lib/useStoredChoice'
+import type { PracticeMode } from '@/lib/records'
+import { useStoredChoice } from '@/hooks/useStoredChoice'
 
 // How the practice screen asks for the words: normal shows the answer, recall hides it. Remembered per browser and
 // synced across tabs; only `recall` is written, so normal is the default.

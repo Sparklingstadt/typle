@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
 import { useLocale } from 'next-intl'
-import { listLabels } from '@/core/listOverview'
-import { packOverviews } from '@/core/packOverview'
-import { packsByRecentPractice } from '@/core/packPractice'
-import { matchingPacks } from '@/core/practiceView'
-import type { SavedWordList } from '@/core/wordLists'
-import type { WordPack } from '@/core/wordPacks'
+import { listLabels } from '@/lib/listOverview'
+import { packOverviews } from '@/lib/packOverview'
+import { packsByRecentPractice } from '@/lib/packPractice'
+import { matchingPacks } from '@/lib/practiceView'
+import type { SavedWordList } from '@/lib/wordLists'
+import type { WordPack } from '@/lib/wordPacks'
 
 // The state of the two list choosers of a screen: the side panel and the dialog.
 // Each has its own search. They share one category, so the lists of a subject stay in view while switching between them.

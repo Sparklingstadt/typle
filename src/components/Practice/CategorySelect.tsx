@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import { NativeSelect } from '@/components/ui/native-select'
-import type { Labels } from '@/core/listOverview'
+import type { Labels } from '@/lib/listOverview'
 
 const ALL = 'all'
 const NONE = 'none'

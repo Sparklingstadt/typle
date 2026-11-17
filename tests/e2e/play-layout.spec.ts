@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { guestWorkspace } from './guestData'
-import zsh from '../../src/core/packs/commands/macos-zsh-commands.json'
+import zsh from '../../src/lib/packs/commands/macos-zsh-commands.json'
 
 test('labels in a long pack chooser do not add blank space below the play page', async ({ page }) => {
   const lists = Array.from({ length: 40 }, (_, index) => ({

@@ -3,8 +3,8 @@ import { useTranslations } from 'next-intl'
 import { Eraser, LoaderCircle, Undo2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Kbd from '@/components/Practice/Kbd'
-import type { WritingLanguage } from '@/core/wordLists'
-import { useHandwritingPad } from '@/lib/useHandwritingPad'
+import type { WritingLanguage } from '@/lib/wordLists'
+import { useHandwritingPad } from '@/hooks/useHandwritingPad'
 
 // Typle Writing's own handwriting input, for languages the app reads itself: strokes drawn with a pen, a finger or a
 // mouse are read in the browser (handwritingRecognizer.ts). A pause in the writing reads it silently (a match moves on,

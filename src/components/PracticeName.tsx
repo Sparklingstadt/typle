@@ -1,7 +1,7 @@
 "use client"
 import { useTranslations } from "next-intl"
-import { practiceName } from "@/core/packPractice"
-import type { SavedWordList } from "@/core/wordLists"
+import { practiceName } from "@/lib/packPractice"
+import type { SavedWordList } from "@/lib/wordLists"
 
 const PACK = '\u0001'
 const LIST = '\u0002'

@@ -2,9 +2,9 @@
 import { useTranslations } from "next-intl"
 import { Keyboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useWordLists } from "@/lib/useWordLists"
-import { useOfficialPackStart } from "@/lib/useOfficialPackStart"
-import { followedPackCount, MAX_FOLLOWED_PACKS } from "@/core/listOverview"
+import { useWordLists } from "@/hooks/useWordLists"
+import { useOfficialPackStart } from "@/hooks/useOfficialPackStart"
+import { followedPackCount, MAX_FOLLOWED_PACKS } from "@/lib/listOverview"
 
 // The practice button of an official pack's page (see useOfficialPackStart).
 export default function OfficialPackPractice({ catalogId }: { catalogId: string }) {

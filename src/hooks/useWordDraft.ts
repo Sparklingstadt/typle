@@ -2,10 +2,10 @@
 import { useState } from "react"
 import { flushSync } from "react-dom"
 import { arrayMove } from "@dnd-kit/sortable"
-import { randomId } from "@/core/randomId"
-import { AppError } from "@/core/appError"
-import type { SavedWordList } from "@/core/wordLists"
-import { MAX_WORDS, emptyWord, isFilledWord, normalizeWord, type DraftWord, type Word } from "@/core/wordDraft"
+import { randomId } from "@/lib/randomId"
+import { AppError } from "@/lib/appError"
+import type { SavedWordList } from "@/lib/wordLists"
+import { MAX_WORDS, emptyWord, isFilledWord, normalizeWord, type DraftWord, type Word } from "@/lib/wordDraft"
 import type { ImportMode } from "@/components/WordListImport"
 
 /** The words being edited and the operations on them. `focusWord` is called from event handlers and from `requestAnimationFrame`, so it need not be stable. */

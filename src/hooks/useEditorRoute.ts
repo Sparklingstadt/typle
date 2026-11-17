@@ -1,6 +1,6 @@
 "use client"
 import { useCallback, useEffect, useRef, useState } from "react"
-import type { SavedWordList } from "@/core/wordLists"
+import type { SavedWordList } from "@/lib/wordLists"
 import { editListPath } from "@/lib/routes"
 
 // `/edit?list=<id>` opens the editor, so other screens can link to it and the browser's back button returns to the lists.

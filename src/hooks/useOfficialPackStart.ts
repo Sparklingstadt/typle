@@ -1,9 +1,9 @@
 "use client"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useWordLists } from "@/lib/useWordLists"
-import { randomId } from "@/core/randomId"
-import { followOfficialPack, officialPacks } from "@/core/packs/catalog"
+import { useWordLists } from "@/hooks/useWordLists"
+import { randomId } from "@/lib/randomId"
+import { followOfficialPack, officialPacks } from "@/lib/packs/catalog"
 import { practicePath } from "@/lib/routes"
 
 /**

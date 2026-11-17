@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import PracticeName, { usePracticeName } from "@/components/PracticeName"
 import { useFormat } from "@/i18n/useFormat"
-import type { ContinueList } from "@/core/dashboard"
+import type { ContinueList } from "@/lib/dashboard"
 import { practicePath } from "@/lib/routes"
-import { formatAccuracy } from "@/core/records"
+import { formatAccuracy } from "@/lib/records"
 
 const SAMPLE_WORDS = 3
 

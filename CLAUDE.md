@@ -41,8 +41,8 @@ After the merge, on the main commit, after the user confirms each step that publ
 
 ## コードとコミットの規約
 
-- `src` の層と依存の向きは README の「コードの構成」にあります。`eslint.config.mjs` が
-  `src/core` からの逆向きの import と、画面から保存先（`src/lib/storage`）への import をエラーにします。
+- `src` のディレクトリーは README の「コードの構成」にあります。`eslint.config.mjs` が
+  画面から保存先（`src/lib/storage`）とサーバーのコード（`src/server`）への import をエラーにします。
 - squash merge・普通のマージのコミットのタイトルと PR のタイトルは、変更を日本語の1文で書き、末尾に半角の
   `(vX.Y.Z)` を付けます。`fix:` などの接頭辞は付けません。PR 番号は squash merge で付き、普通のマージでは手で付けます。PR の途中のコミットは内容だけを書き、`(vX.Y.Z)` は付けません。
 

@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server"
 import type { Locale } from "@/i18n/config"
-import type { SharedResult } from "@/core/sharedResult"
+import type { SharedResult } from "@/lib/sharedResult"
 
 export type ResultTile = { label: string; value: string; unit: string }
 
