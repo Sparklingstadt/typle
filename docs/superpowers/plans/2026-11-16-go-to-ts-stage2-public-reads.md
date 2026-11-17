@@ -1,5 +1,7 @@
 # Go から TS への移行・段階2（ギャラリーの読み取りと /api/shared）Implementation Plan
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** ログイン不要の読み取り `GET /api/gallery`・`GET /api/gallery/categories`・`GET /api/shared` を Go から Route Handler に移す。

@@ -1,5 +1,7 @@
 # Go から TS への移行・段階4と5（ログインの読み取りと /api/shares）Implementation Plan
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** ログインの Cookie とアプリのトークンを TS で読めるようにし、それを使う最初のエンドポイント `/api/shares`（共有の一覧・作成・停止）を Go から移す。

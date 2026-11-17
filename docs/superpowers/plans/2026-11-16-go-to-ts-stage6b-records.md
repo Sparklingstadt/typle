@@ -1,5 +1,7 @@
 # Go から TS への移行・段階6b（/api/workspace/records）Implementation Plan
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 練習の記録の追加と削除（`POST`・`DELETE /api/workspace/records`）を Go から Route Handler に移し、ワークスペースをすべて TS で扱う。

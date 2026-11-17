@@ -1,5 +1,7 @@
 # Go のバックエンドを Next.js の Route Handler に移す
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 2026-11-16 に決めた設計です。
 
 ## なぜやるか

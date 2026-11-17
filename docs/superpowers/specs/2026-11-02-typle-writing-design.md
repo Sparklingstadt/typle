@@ -1,5 +1,7 @@
 # Typle Handwriting（手書きで単語を書いて覚える）設計
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 - 日付: 2026-11-02
 - 前提: v2.6.11。練習はキーボードで単語の `input` を入力するタイピングだけで、記録（`records`）はリストごとに時間・ミス・正確率・端末を持つ。Web・iPad・Mac は同じ Go のバックエンドにつなぎ、iPad・Mac は `TypleCore` に `src/core` の規則の Swift 版を持つ
 

@@ -1,5 +1,7 @@
 # /guide（使い方）デザインレビュー
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 - Figma: https://www.figma.com/design/Ye1CfYsXr0QvtzExjVI22Q?node-id=98-1407 （ページ「/guide デザインレビュー」）
   - 01 現状（Before）: Desktop 1440（ページ全体 1,648px）、Mobile 390（最初の画面）、課題マーカー（オレンジ）と右の課題ノート11項目
   - 02 改善案（After）— Desktop: 1440（ページ全体 4,945px）、1024×768（目次は見出しの下）、青の番号 1〜9 と改善案ノート
