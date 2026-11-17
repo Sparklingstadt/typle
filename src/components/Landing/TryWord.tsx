@@ -4,9 +4,9 @@ import { useTranslations } from "next-intl"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import TargetText from "@/components/Practice/TargetText"
-import { useOfficialPackStart } from "@/lib/useOfficialPackStart"
-import { useWordLists } from "@/lib/useWordLists"
-import { compareInput } from "@/core/typing"
+import { useOfficialPackStart } from "@/hooks/useOfficialPackStart"
+import { useWordLists } from "@/hooks/useWordLists"
+import { compareInput } from "@/lib/typing"
 
 export type TryWordItem = { input: string; meaning: string }
 

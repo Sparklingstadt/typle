@@ -6,9 +6,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import LabelFields from "@/components/WordLists/LabelFields"
-import type { Labels } from "@/core/listOverview"
-import type { PackInput } from "@/core/packEditing"
-import { MAX_PACK_DESCRIPTION, MAX_PACK_NAME } from "@/core/wordPacks"
+import type { Labels } from "@/lib/listOverview"
+import type { PackInput } from "@/lib/packEditing"
+import { MAX_PACK_DESCRIPTION, MAX_PACK_NAME } from "@/lib/wordPacks"
 
 /** The `name` of the pack name field, for finding it to focus. */
 export const PACK_NAME_FIELD = "pack-name"

@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { normalizeLibrary } = require('../src/core/wordPacks.ts')
+const { normalizeLibrary } = require('../src/lib/wordPacks.ts')
 const { readGuestWorkspace, writeGuestWorkspace, addGuestRecord, deleteGuestRecord, GUEST_STORAGE_KEY } = require('../src/lib/storage/guest.ts')
 const { storage } = require('./helpers.cjs')
 const list = { id: 'l', name: 'Local', packId: 'pack-l', createdAt: '2026-09-27', words: [{ display: 'a', input: 'a', annotation: '' }], records: [{ time: 1, date: '2026-09-27' }] }
@@ -87,13 +87,13 @@ test('lists saved without packs are each put in a pack of their own, and lists t
 })
 
 test('the guest starts with no packs', () => {
-  const { initialLibrary } = require('../src/core/packs/index.ts')
+  const { initialLibrary } = require('../src/lib/packs/index.ts')
   assert.deepEqual(initialLibrary, { packs: [], lists: [] })
   assert.deepEqual([readGuestWorkspace(storage()).packs, readGuestWorkspace(storage()).lists], [[], []])
 })
 
 test('reading guest data removes copies of official packs but keeps the guest\'s own packs', () => {
-  const { officialPacks } = require('../src/core/packs/catalog.ts')
+  const { officialPacks } = require('../src/lib/packs/catalog.ts')
   const [entry] = officialPacks()
   const copy = { ...entry.pack, id: 'copy', origin: { catalogId: entry.catalogId, version: 1 } }
   const copyList = { ...entry.lists[0], id: 'copy-l', packId: 'copy' }
@@ -105,7 +105,7 @@ test('reading guest data removes copies of official packs but keeps the guest\'s
 })
 
 test('followed packs read back as the official words, and a read does not save them', () => {
-  const { officialPacks, followOfficialPack } = require('../src/core/packs/catalog.ts')
+  const { officialPacks, followOfficialPack } = require('../src/lib/packs/catalog.ts')
   const [entry] = officialPacks()
   const store = storage()
   const initial = readGuestWorkspace(store)
@@ -122,7 +122,7 @@ test('followed packs read back as the official words, and a read does not save t
 test('guest interests are saved without touching lists, and old data reads as the default (every option)', () => {
   const store = storage()
   const initial = readGuestWorkspace(store)
-  assert.deepEqual(initial.interests, require('../src/core/interests.ts').DEFAULT_INTERESTS)
+  assert.deepEqual(initial.interests, require('../src/lib/interests.ts').DEFAULT_INTERESTS)
   const withLists = writeGuestWorkspace({ ...initial, lists: [list], packs: [pack] }, store)
   const saved = writeGuestWorkspace({ accountId: withLists.accountId, revision: withLists.revision, interests: ['language', 'language/zh'] }, store)
   assert.deepEqual(readGuestWorkspace(store).interests, ['language', 'language/zh'])
@@ -131,7 +131,7 @@ test('guest interests are saved without touching lists, and old data reads as th
   assert.deepEqual(again.interests, ['language', 'language/zh'])
   const old = storage()
   old.setItem(GUEST_STORAGE_KEY, JSON.stringify({ version: 1, accountId: 'guest:local', revision: 2, lists: [], devices: [] }))
-  assert.deepEqual(readGuestWorkspace(old).interests, require('../src/core/interests.ts').DEFAULT_INTERESTS)
+  assert.deepEqual(readGuestWorkspace(old).interests, require('../src/lib/interests.ts').DEFAULT_INTERESTS)
   assert.throws(() => writeGuestWorkspace({ accountId: 'guest:local', revision: 2, interests: ['a', 'a'] }, old))
 })
 
@@ -171,7 +171,7 @@ test('a guest run is deleted without a revision, and deleting it again changes n
 })
 
 test('the guest saves followed packs without their words, and reads them back with them', () => {
-  const { officialPacks, followOfficialPack } = require('../src/core/packs/catalog.ts')
+  const { officialPacks, followOfficialPack } = require('../src/lib/packs/catalog.ts')
   const store = storage()
   const entry = officialPacks()[0]
   const library = followOfficialPack({ packs: [], lists: [] }, entry.catalogId, { pack: 'f', lists: entry.lists.map((_, i) => `f-${i}`) })

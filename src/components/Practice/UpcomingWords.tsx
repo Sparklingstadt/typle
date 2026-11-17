@@ -4,8 +4,8 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { isParagraphWord, oneLineDisplay, upcomingWords } from "@/core/practiceView"
-import type { Word } from "@/core/wordFormat"
+import { isParagraphWord, oneLineDisplay, upcomingWords } from "@/lib/practiceView"
+import type { Word } from "@/lib/wordFormat"
 
 export default function UpcomingWords({ words, index, showAll, onToggleAll }: {
   words: Word[]

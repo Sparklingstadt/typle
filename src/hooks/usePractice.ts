@@ -1,12 +1,12 @@
 "use client"
 import { useEffect, useRef, useState } from 'react'
-import type { PracticeDevice } from '@/core/devices'
-import type { SavedWordList } from '@/core/wordLists'
+import type { PracticeDevice } from '@/lib/devices'
+import type { SavedWordList } from '@/lib/wordLists'
 import type { RecordSave } from './useWordLists'
-import { sessionResult, revealAnswer, typeInput, type TypingSession } from '@/core/typing'
-import { weakReviewOf, type PracticeMode, type WeakReview } from '@/core/records'
+import { sessionResult, revealAnswer, typeInput, type TypingSession } from '@/lib/typing'
+import { weakReviewOf, type PracticeMode, type WeakReview } from '@/lib/records'
 import { useRecordSaving } from './useRecordSaving'
-import { useTypingOptions } from './inputSettings'
+import { useTypingOptions } from '../lib/inputSettings'
 
 // What a review practises: the words missed in the run just finished, or the list's weak words (from the home screen).
 export type ReviewKind = 'missed' | 'weak'

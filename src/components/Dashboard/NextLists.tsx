@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import type { T } from "@/components/Dashboard/Delta"
 import PracticeName, { usePracticeName } from "@/components/PracticeName"
 import { useFormat } from "@/i18n/useFormat"
-import type { NextList } from "@/core/dashboard"
+import type { NextList } from "@/lib/dashboard"
 import { practicePath } from "@/lib/routes"
 
 function reasonBadge(t: T, { reason }: NextList) {

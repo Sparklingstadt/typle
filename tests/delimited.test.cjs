@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { read, write } = require('./fixtures/delimited/cases.json')
-const { encodeWordCsv, parseWordCsv } = require('../src/core/wordFormat.ts')
+const { encodeWordCsv, parseWordCsv } = require('../src/lib/wordFormat.ts')
 
 for (const { name, source, words, error } of read) {
   test(`reads: ${name}`, () => {

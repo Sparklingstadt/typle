@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
 import { PageMain } from "@/components/ui/page-layout"
-import { useWordLists } from "@/lib/useWordLists"
+import { useWordLists } from "@/hooks/useWordLists"
 import Dashboard from "@/components/Dashboard/Dashboard"
 
 export default function Home() {

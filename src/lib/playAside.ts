@@ -1,5 +1,5 @@
 "use client"
-import { useStoredChoice } from '@/lib/useStoredChoice'
+import { useStoredChoice } from '@/hooks/useStoredChoice'
 
 // Whether the practice screen shows its side panel (word lists and best records). Remembered per browser; shown by default.
 export const PLAY_ASIDE_KEY = 'typle-r:play-aside'

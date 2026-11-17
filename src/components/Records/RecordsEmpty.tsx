@@ -4,7 +4,7 @@ import { History, Keyboard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { EmptyState, EmptyStateIcon } from '@/components/ui/empty-state'
 import { usePracticeName } from '@/components/PracticeName'
-import type { SavedWordList } from '@/core/wordLists'
+import type { SavedWordList } from '@/lib/wordLists'
 import { practicePath } from '@/lib/routes'
 
 export function NoRecords() {

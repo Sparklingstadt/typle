@@ -24,10 +24,10 @@ export interface WorkspaceStore {
   read(): Promise<WorkspaceState>
   /** Rejects with a 409 `WorkspaceError` when `request.revision` is not the stored one. */
   write(request: WorkspaceWrite): Promise<WorkspaceState>
-  /** Adds the run with the rules of `addRecord` (src/core/records.ts) and resolves with the state it was saved in. It
+  /** Adds the run with the rules of `addRecord` (src/lib/records.ts) and resolves with the state it was saved in. It
    * names no revision, so a change saved meanwhile neither refuses it nor is undone by it; sending a run again is safe. */
   addRecord(request: RecordAdd): Promise<WorkspaceState>
-  /** Deletes the run with the rules of `deleteRecord` (src/core/records.ts), without a revision, as `addRecord`. A run
+  /** Deletes the run with the rules of `deleteRecord` (src/lib/records.ts), without a revision, as `addRecord`. A run
    * already gone is not an error. */
   deleteRecord(request: RecordDelete): Promise<WorkspaceState>
   /** A read can finish after a later save (a network request), so a lower revision than the one shown is stale.

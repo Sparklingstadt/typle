@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button"
 import DeleteConfirmation from "@/components/DeleteConfirmation"
 import { useFormat } from "@/i18n/useFormat"
 import { focusAfterRemoval, LIST_FOCUS_TARGETS } from "@/lib/focusAfterRemoval"
-import type { ListOverview } from "@/core/listOverview"
-import type { SavedWordList } from "@/core/wordLists"
+import type { ListOverview } from "@/lib/listOverview"
+import type { SavedWordList } from "@/lib/wordLists"
 
 export default function DeleteListDialog({ state, lonePackName, now, onOpenChange, onExport, onDelete }: {
   state: { open: boolean; item: ListOverview | null; position: number }

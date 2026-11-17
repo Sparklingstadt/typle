@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import { Check, Keyboard, Minus } from "lucide-react"
 import { DeltaText, changeDelta, pointDifference, weekDelta, type Delta } from "@/components/Dashboard/Delta"
 import { useFormat } from "@/i18n/useFormat"
-import type { DashboardSummary } from "@/core/dashboard"
+import type { DashboardSummary } from "@/lib/dashboard"
 
 function Stat({ label, parts, delta }: { label: string; parts: [string, string][]; delta: Delta }) {
   // Languages that put a space between a number and its unit get a little more room; a percent sign stays attached.

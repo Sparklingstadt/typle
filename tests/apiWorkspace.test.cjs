@@ -5,7 +5,7 @@ const { createHmac, hkdfSync, randomInt } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const { answerWorkspace } = require('../src/server/workspace.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
-const { DEFAULT_INTERESTS } = require('../src/core/interests.ts')
+const { DEFAULT_INTERESTS } = require('../src/lib/interests.ts')
 
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL

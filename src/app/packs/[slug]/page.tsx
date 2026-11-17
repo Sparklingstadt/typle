@@ -3,8 +3,8 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
 import OfficialPackPractice from "@/components/OfficialPackPractice"
-import { OFFICIAL_PACK_PAGES, officialPackPage } from "@/core/packs/pages"
-import { PROGRAMMING_CATEGORY } from "@/core/landing"
+import { OFFICIAL_PACK_PAGES, officialPackPage } from "@/lib/packs/pages"
+import { PROGRAMMING_CATEGORY } from "@/lib/landing"
 import { cn } from "@/lib/utils"
 
 // A page for one official pack, built when the app is built, so that a search for its words can find it: its

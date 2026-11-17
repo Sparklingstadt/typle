@@ -1,4 +1,4 @@
-import type { WorkspaceStore } from '../../core/workspaceStore'
+import type { WorkspaceStore } from '../workspaceStore'
 import { cloudStore } from './cloud'
 import { GUEST_ACCOUNT_ID, guestStore } from './guest'
 

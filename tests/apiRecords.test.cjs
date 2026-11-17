@@ -159,7 +159,7 @@ test('every answer is one the contract declares, and every declared one is answe
     declared[method.toUpperCase()] = Object.fromEntries(Object.entries(operation.responses)
       .map(([status, response]) => [status, response.content?.['application/json']?.schema?.properties?.error?.enum ?? ['']]))
   }
-  const { MAX_RECORDS } = require('../src/core/records.ts')
+  const { MAX_RECORDS } = require('../src/lib/records.ts')
   const user = account()
   const full = Array.from({ length: MAX_RECORDS }, (_, n) => ({ id: `r${n}`, time: 1, date: '2026-10-01T00:00:00.000Z' }))
   const lists = ['one', 'full'].map(id => ({ id, name: id, packId: 'p', words: [{ display: 'a', input: 'a', annotation: '' }], records: id === 'full' ? full : [], createdAt: at }))

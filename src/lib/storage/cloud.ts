@@ -1,9 +1,9 @@
-import { AppError, type ErrorKey } from '../../core/appError'
-import { ApiError, api } from '../../core/api'
-import { withoutFollowedWords } from '../../core/followedPacks'
-import { decodeDocument } from '../../core/workspaceDocument'
-import { followed } from '../../core/packs/catalog'
-import { WorkspaceError, type RecordAdd, type RecordDelete, type WorkspaceState, type WorkspaceStore, type WorkspaceWrite } from '../../core/workspaceStore'
+import { AppError, type ErrorKey } from '../appError'
+import { ApiError, api } from '../api'
+import { withoutFollowedWords } from '../followedPacks'
+import { decodeDocument } from '../workspaceDocument'
+import { followed } from '../packs/catalog'
+import { WorkspaceError, type RecordAdd, type RecordDelete, type WorkspaceState, type WorkspaceStore, type WorkspaceWrite } from '../workspaceStore'
 
 type Saved = { lists?: unknown; packs?: unknown; devices?: unknown; interests?: unknown; revision?: unknown; accountId?: unknown }
 

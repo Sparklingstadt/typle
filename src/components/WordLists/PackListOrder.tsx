@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import { DndContext, closestCenter, type Announcements, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core"
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import SortableListRow from "@/components/SortableListRow"
-import type { SavedWordList } from "@/core/wordLists"
+import type { SavedWordList } from "@/lib/wordLists"
 
 // The order of a pack's lists, changed by dragging or with the keyboard.
 export default function PackListOrder({ order, byId, saving, onMove }: {

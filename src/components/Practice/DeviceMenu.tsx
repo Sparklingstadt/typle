@@ -4,7 +4,7 @@ import { ChevronDown, Keyboard, Lock, Monitor } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useDeviceOptions } from '@/components/Devices/useDeviceOptions'
-import type { PracticeDevice } from '@/core/devices'
+import type { PracticeDevice } from '@/lib/devices'
 
 // The device is chosen before the first keystroke and then shown locked, as the record keeps that snapshot.
 export default function DeviceMenu({ devices, device, locked, onChange, onOpenChange, onCloseAutoFocus }: {

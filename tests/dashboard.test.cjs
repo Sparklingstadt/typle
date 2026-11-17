@@ -3,8 +3,8 @@ process.env.TZ = 'Asia/Tokyo'
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { summarize, nextLists, listTrends, continueList, speedScale, accuracyScale, durationParts, dayKind } = require('../src/core/dashboard.ts')
-const { startOfWeek } = require('../src/core/dates.ts')
+const { summarize, nextLists, listTrends, continueList, speedScale, accuracyScale, durationParts, dayKind } = require('../src/lib/dashboard.ts')
+const { startOfWeek } = require('../src/lib/dates.ts')
 
 // Sunday 2026-09-27 21:00 JST
 const now = new Date('2026-09-27T12:00:00Z')
@@ -169,7 +169,7 @@ test('continueList picks the list practised last in any mode, with its normal be
 })
 
 test('weak words count the latest ten normal and recall runs, by runs missed in, and leave out removed words and handwriting', () => {
-  const { weakWords, weakLists } = require('../src/core/dashboard.ts')
+  const { weakWords, weakLists } = require('../src/lib/dashboard.ts')
   const words3 = [{ display: 'a', input: 'a', annotation: '' }, { display: 'b', input: 'b', annotation: '' }, { display: 'c', input: 'c', annotation: '' }]
   const run = (day, missed, extra = {}) => record(`2026-09-${String(day).padStart(2, '0')}T01:00:00Z`, 10, { missed, ...extra })
   const old = Array.from({ length: 10 }, (_, i) => run(i + 10, []))
@@ -187,7 +187,7 @@ test('weak words count the latest ten normal and recall runs, by runs missed in,
 })
 
 test('a review of the weak words starts them again: words typed right there are weak no longer', () => {
-  const { weakWords } = require('../src/core/dashboard.ts')
+  const { weakWords } = require('../src/lib/dashboard.ts')
   const words3 = ['a', 'b', 'c'].map(input => ({ display: input, input, annotation: '' }))
   const run = (day, missed) => record(`2026-09-${String(day).padStart(2, '0')}T01:00:00Z`, 10, { missed })
   const records = [run(20, [{ word: 'a', count: 2 }, { word: 'b', count: 1 }]), run(21, [{ word: 'a', count: 1 }])]

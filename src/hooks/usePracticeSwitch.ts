@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react'
-import type { SavedWordList } from '@/core/wordLists'
-import type { WritingChoice } from './writingMode'
+import type { SavedWordList } from '@/lib/wordLists'
+import type { WritingChoice } from '../lib/writingMode'
 
 type PendingSwitch = { kind: 'list'; index: number } | { kind: 'mode'; mode: WritingChoice }
 

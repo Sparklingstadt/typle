@@ -2,7 +2,7 @@
 import { useTranslations } from "next-intl"
 import { ChevronDown } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { LIST_ORDERS, type ListOrder } from "@/core/listOverview"
+import { LIST_ORDERS, type ListOrder } from "@/lib/listOverview"
 
 export default function OrderMenu({ value, onChange }: { value: ListOrder; onChange: (value: ListOrder) => void }) {
   const t = useTranslations('wordLists.order')

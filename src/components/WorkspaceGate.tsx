@@ -2,7 +2,7 @@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Fragment } from 'react'
 import { useTranslations } from 'next-intl'
-import { useWordLists } from '@/lib/useWordLists'
+import { useWordLists } from '@/hooks/useWordLists'
 import { PageMain } from '@/components/ui/page-layout'
 
 // Remounts the page for another account, so no screen keeps drafts or selections from the previous one.

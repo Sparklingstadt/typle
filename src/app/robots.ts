@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next"
-import { robotsRules } from "@/core/searchIndex"
+import { robotsRules } from "@/lib/searchIndex"
 import { siteUrl } from "@/lib/siteUrl"
 
 export default function robots(): MetadataRoute.Robots {

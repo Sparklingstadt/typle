@@ -1,9 +1,9 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { rankRecords, bestRecords, comparableRecords, listBest } = require('../src/core/records.ts')
-const { recordRows, deviceOptions, matchesDevice, NO_DEVICE } = require('../src/core/recordHistory.ts')
-const { listRanking, sortRankings, rankingStats, rankingQuery } = require('../src/core/rankings.ts')
+const { rankRecords, bestRecords, comparableRecords, listBest } = require('../src/lib/records.ts')
+const { recordRows, deviceOptions, matchesDevice, NO_DEVICE } = require('../src/lib/recordHistory.ts')
+const { listRanking, sortRankings, rankingStats, rankingQuery } = require('../src/lib/rankings.ts')
 
 const mac = { id: 'mac', name: 'MacBook Air', layout: 'JIS' }
 const pad = { id: 'pad', name: 'iPad', layout: '' }

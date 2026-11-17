@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { IMPORT_ACCEPT, encodeWordCsv, isWordCsv, parseWordCsv, wordFilename } = require('../src/core/wordFormat.ts')
+const { IMPORT_ACCEPT, encodeWordCsv, isWordCsv, parseWordCsv, wordFilename } = require('../src/lib/wordFormat.ts')
 const wordCsvFilename = name => wordFilename(name, 'csv')
 
 test('exported CSV round-trips Unicode, exact whitespace, duplicates, quotes and newlines', () => {

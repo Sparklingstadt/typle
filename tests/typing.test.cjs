@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { newSession, typeInput, sessionResult } = require('../src/core/typing.ts')
+const { newSession, typeInput, sessionResult } = require('../src/lib/typing.ts')
 
 test('mistakes require correction; advance and finish exactly once', () => {
   const words = [{ input: 'ab' }, { input: 'c' }]
@@ -23,7 +23,7 @@ test('empty lists and unicode input are handled', () => {
   assert.equal(typeInput(s, [{ input: 'あ😀' }], 'あ😀', 0).attempts, 2)
 })
 test('compareInput marks everything after the first mismatch as an error', () => {
-  const { compareInput } = require('../src/core/typing.ts')
+  const { compareInput } = require('../src/lib/typing.ts')
   assert.deepEqual(compareInput('hoge', '').states, ['current', 'pending', 'pending', 'pending'])
   assert.deepEqual(compareInput('hoge', 'ho').states, ['done', 'done', 'current', 'pending'])
   // The fourth character matches by position but follows a mistake, so it stays an error.
@@ -39,7 +39,7 @@ test('compareInput marks everything after the first mismatch as an error', () =>
   assert.equal(compareInput('あ😀', 'あ😀').errorIndex, -1)
 })
 test('typingSpeed counts correct characters per minute after one second', () => {
-  const { typingSpeed } = require('../src/core/typing.ts')
+  const { typingSpeed } = require('../src/lib/typing.ts')
   const s = { index: 0, input: '', startedAt: 1000, finishedAt: null, attempts: 12, mistakes: 2 }
   assert.equal(typingSpeed({ ...s, startedAt: null }, 5000), null)
   assert.equal(typingSpeed(s, 1500), null)
@@ -47,7 +47,7 @@ test('typingSpeed counts correct characters per minute after one second', () => 
   assert.equal(typingSpeed({ ...s, finishedAt: 31000 }, 99999), 20)
 })
 test('a pause leaves its time out of elapsed time, speed and the result', () => {
-  const { pauseSession, resumeSession, elapsedTime, typingSpeed } = require('../src/core/typing.ts')
+  const { pauseSession, resumeSession, elapsedTime, typingSpeed } = require('../src/lib/typing.ts')
   const words = [{ input: 'ab' }, { input: 'c' }]
   // Nothing to pause before the first character.
   assert.equal(pauseSession(newSession(), 500).pausedAt, null)
@@ -68,7 +68,7 @@ test('a pause leaves its time out of elapsed time, speed and the result', () => 
   assert.equal(pauseSession(s, 66000), s)
 })
 test('typing while paused resumes the clock first', () => {
-  const { pauseSession, elapsedTime } = require('../src/core/typing.ts')
+  const { pauseSession, elapsedTime } = require('../src/lib/typing.ts')
   const words = [{ input: 'abc' }]
   let s = pauseSession(typeInput(newSession(), words, 'a', 1000), 2000)
   s = typeInput(s, words, 'ab', 12000)
@@ -76,7 +76,7 @@ test('typing while paused resumes the clock first', () => {
   assert.equal(elapsedTime(s, 12000), 1000)
 })
 test('a wrong key is a mistake that keeps the position; only matching keys move on', () => {
-  const { compareInput } = require('../src/core/typing.ts')
+  const { compareInput } = require('../src/lib/typing.ts')
   const words = [{ input: 'Hello' }, { input: 'World' }]
   let s = typeInput(newSession(), words, 'Hell', 1000)
   s = typeInput(s, words, 'Hellx', 1100)
@@ -118,7 +118,7 @@ test('accents still count when simple special-character input is off', () => {
   assert.equal(s.input, '')
 })
 test('only Latin letters are folded', () => {
-  const { matchesCharacter } = require('../src/core/typing.ts')
+  const { matchesCharacter } = require('../src/lib/typing.ts')
   const options = { ignoreAccents: true }
   for (const [typed, target] of [['i', 'í'], ['o', 'ó'], ['n', 'ñ'], ['c', 'č'], ['u', 'ů'], ['E', 'É']]) assert.ok(matchesCharacter(typed, target, options), `${typed} ${target}`)
   // Kana also split into a base and a mark, but か is not が; case still counts, and only the plain letter stands in.
@@ -134,7 +134,7 @@ test('ignoring case lets either case stand for the other, and adds the character
   assert.equal(s.input, 'A')
 })
 test('ignoring case combines with simple special-character input', () => {
-  const { matchesCharacter } = require('../src/core/typing.ts')
+  const { matchesCharacter } = require('../src/lib/typing.ts')
   assert.ok(matchesCharacter('é', 'É', { ignoreCase: true }))
   assert.ok(!matchesCharacter('e', 'É', { ignoreCase: true }))
   assert.ok(matchesCharacter('e', 'É', { ignoreCase: true, ignoreAccents: true }))
@@ -207,7 +207,7 @@ test('simple special-character input accepts ? for the Spanish opening question 
 })
 
 test('opening question mark substitution requires simple input and is one-way', () => {
-  const { matchesCharacter } = require('../src/core/typing.ts')
+  const { matchesCharacter } = require('../src/lib/typing.ts')
   for (const options of [{}, { ignoreCase: true }]) {
     const s = typeInput(newSession(), [{ input: '¿' }], '?', 0, options)
     assert.equal(s.input, '')
@@ -269,7 +269,7 @@ test('direct Cyrillic input can complete a pending transliteration without leaki
 })
 
 test('Cyrillic alternatives respect simple-input and case settings', () => {
-  const { matchesCharacter } = require('../src/core/typing.ts')
+  const { matchesCharacter } = require('../src/lib/typing.ts')
   for (const options of [{}, { ignoreCase: true }]) {
     const s = typeInput(newSession(), [{ input: 'я' }], 'ya', 100, options)
     assert.equal(s.finishedAt, null)
@@ -293,7 +293,7 @@ test('Cyrillic alternatives respect simple-input and case settings', () => {
   assert.equal(matchesCharacter('п', 'p', { ignoreAccents: true }), false)
 })
 test('simpleInputKeys lists the characters simple input folds, once each, with their key', () => {
-  const { simpleInputKeys } = require('../src/core/typing.ts')
+  const { simpleInputKeys } = require('../src/lib/typing.ts')
   assert.deepEqual(simpleInputKeys('café crème'), [['é', 'e'], ['è', 'e']])
   assert.deepEqual(simpleInputKeys('Шишка'), [['Ш', 'Sh'], ['и', 'i'], ['ш', 'sh'], ['к', 'k'], ['а', 'a']])
   assert.deepEqual(simpleInputKeys('¿Straße?'), [['¿', '?'], ['ß', 'ss']])
@@ -302,7 +302,7 @@ test('simpleInputKeys lists the characters simple input folds, once each, with t
 })
 
 test('revealAnswer adds the untyped characters to attempts and mistakes once', () => {
-  const { revealAnswer } = require('../src/core/typing.ts')
+  const { revealAnswer } = require('../src/lib/typing.ts')
   const words = [{ input: 'pwd' }]
   let s = typeInput(newSession(), words, 'p', 1000)
   const revealed = revealAnswer(s, words, 1500)
@@ -312,7 +312,7 @@ test('revealAnswer adds the untyped characters to attempts and mistakes once', (
   assert.equal(revealAnswer(revealed, words, 1600), revealed)
 })
 test('typing after revealing still counts wrong keys', () => {
-  const { revealAnswer } = require('../src/core/typing.ts')
+  const { revealAnswer } = require('../src/lib/typing.ts')
   const words = [{ input: 'pwd' }]
   let s = revealAnswer(typeInput(newSession(), words, 'p', 1000), words, 1500)
   const before = s.mistakes
@@ -320,7 +320,7 @@ test('typing after revealing still counts wrong keys', () => {
   assert.equal(s.mistakes, before + 1)
 })
 test('moving to the next word clears revealed', () => {
-  const { revealAnswer } = require('../src/core/typing.ts')
+  const { revealAnswer } = require('../src/lib/typing.ts')
   const words = [{ input: 'ab' }, { input: 'cd' }]
   let s = revealAnswer(newSession(), words, 1000)
   assert.equal(s.revealed, true)
@@ -331,11 +331,11 @@ test('moving to the next word clears revealed', () => {
   assert.equal(again.mistakes, s.mistakes + 2)
 })
 test('revealing starts the clock', () => {
-  const { revealAnswer } = require('../src/core/typing.ts')
+  const { revealAnswer } = require('../src/lib/typing.ts')
   assert.equal(revealAnswer(newSession(), [{ input: 'ab' }], 1234).startedAt, 1234)
 })
 test('concealCharacters hides untyped characters but keeps spaces', () => {
-  const { compareInput, concealCharacters } = require('../src/core/typing.ts')
+  const { compareInput, concealCharacters } = require('../src/lib/typing.ts')
   const part = compareInput('cp -r', 'c')
   assert.deepEqual(concealCharacters(part.characters, part.states), ['c', '＿', ' ', '＿', '＿'])
   const full = compareInput('cp -r', 'cp -r')
@@ -343,7 +343,7 @@ test('concealCharacters hides untyped characters but keeps spaces', () => {
 })
 
 test('wordMistakes keeps each wrong word once, with its first wrong key and every wrong key counted', () => {
-  const { revealAnswer } = require('../src/core/typing.ts')
+  const { revealAnswer } = require('../src/lib/typing.ts')
   const words = [{ input: 'ab' }, { input: 'cd' }, { input: 'ef' }]
   let s = typeInput(newSession(), words, 'a', 1000)
   s = typeInput(s, words, 'ax', 1100)

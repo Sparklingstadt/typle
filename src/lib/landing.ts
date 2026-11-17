@@ -1,6 +1,6 @@
 // Figures the landing page (/) shows about the official lists. Kept free of the UI so it can be unit-tested.
 
-// The category names are data, written in the official lists as they are (see src/core/interests.ts).
+// The category names are data, written in the official lists as they are (see src/lib/interests.ts).
 export const PROGRAMMING_CATEGORY = 'プログラミング' // i18n-ignore
 export const LANGUAGES_CATEGORY = '語学' // i18n-ignore
 

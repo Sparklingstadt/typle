@@ -2,7 +2,7 @@ require('./register.cjs')
 const test = require('node:test')
 const assert = require('node:assert/strict')
 const crypto = require('node:crypto')
-const { decodeLists } = require('../src/core/wordLists.ts')
+const { decodeLists } = require('../src/lib/wordLists.ts')
 const { localDevelopmentEnabled } = require('../src/lib/localDevelopment.ts')
 
 test('local login requires explicit development opt-in, secret and loopback URL', () => {
@@ -22,7 +22,7 @@ test('LAN login only permits an explicitly selected private IPv4 in development'
 })
 
 test('record and list IDs work without secure-context randomUUID', () => {
-  const { randomId } = require('../src/core/randomId.ts')
+  const { randomId } = require('../src/lib/randomId.ts')
   const source = { getRandomValues: array => crypto.webcrypto.getRandomValues(array) }
   const ids = Array.from({ length: 100 }, () => randomId(source))
   assert.equal(new Set(ids).size, 100)
@@ -30,7 +30,7 @@ test('record and list IDs work without secure-context randomUUID', () => {
 })
 
 test('the initial lists are valid saved lists with distinct ids and no records', () => {
-  const { initialLists } = require('../src/core/packs/index.ts')
+  const { initialLists } = require('../src/lib/packs/index.ts')
   const lists = decodeLists(JSON.stringify({ version: 1, lists: initialLists }))
   assert.equal(new Set(lists.map(list => list.id)).size, lists.length)
   assert.ok(lists.some(list => list.id === 'un-member-states-chinese-193-lowercase'))

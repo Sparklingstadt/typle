@@ -13,9 +13,9 @@ import WordListOptions from '@/components/Practice/WordListOptions'
 import PracticeName, { usePracticeName } from '@/components/PracticeName'
 import ListLabels from '@/components/WordLists/ListLabels'
 import WordTable from '@/components/Words/WordTable'
-import { useListChoosers } from '@/lib/useListChoosers'
-import type { SavedWordList } from '@/core/wordLists'
-import type { WordPack } from '@/core/wordPacks'
+import { useListChoosers } from '@/hooks/useListChoosers'
+import type { SavedWordList } from '@/lib/wordLists'
+import type { WordPack } from '@/lib/wordPacks'
 import { editListPath, practicePath } from '@/lib/routes'
 
 // `?list=<id>` keeps the chosen list in the URL, so it can be reloaded or opened from elsewhere. Without it the first

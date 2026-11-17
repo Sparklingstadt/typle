@@ -57,7 +57,7 @@ test('every layout names a known page', () => {
 
 test('the sitemap lists no page that is marked noindex', () => {
   require('./register.cjs')
-  const { INDEXED_PATHS } = require('../src/core/searchIndex.ts')
+  const { INDEXED_PATHS } = require('../src/lib/searchIndex.ts')
   const found = layouts()
   for (const { path: page } of INDEXED_PATHS) {
     assert.ok(!found[page]?.options.includes('personal: true'), `${page} is in the sitemap but noindex`)

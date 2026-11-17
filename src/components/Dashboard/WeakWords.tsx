@@ -4,8 +4,8 @@ import { useTranslations } from "next-intl"
 import { ListRestart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import PracticeName, { usePracticeName } from "@/components/PracticeName"
-import { wordMeaning } from "@/core/landing"
-import type { WeakList } from "@/core/dashboard"
+import { wordMeaning } from "@/lib/landing"
+import type { WeakList } from "@/lib/dashboard"
 import { practicePath } from "@/lib/routes"
 
 const SHOWN_WORDS = 6

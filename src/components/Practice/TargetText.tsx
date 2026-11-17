@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { concealCharacters, type CharacterState } from '@/core/typing'
+import { concealCharacters, type CharacterState } from '@/lib/typing'
 import PracticeText from './PracticeText'
 
 const caret = 'relative after:absolute after:inset-x-0 after:-bottom-[0.08em] after:h-[max(3px,0.06em)] after:rounded-full motion-safe:after:animate-pulse'

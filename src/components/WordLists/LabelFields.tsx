@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Label } from '@/components/ui/label'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import type { Labels } from '@/core/listOverview'
-import { MAX_CATEGORY, MAX_TAG, MAX_TAGS, normalizeLabels } from '@/core/wordLists'
+import type { Labels } from '@/lib/listOverview'
+import { MAX_CATEGORY, MAX_TAG, MAX_TAGS, normalizeLabels } from '@/lib/wordLists'
 
 // A comma (or 、 and ，) ends a tag, so a pasted "Go, CLI" becomes two.
 const separators = /[,、，]/

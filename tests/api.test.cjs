@@ -1,9 +1,9 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { api, ApiError, withQuery } = require('../src/core/api.ts')
+const { api, ApiError, withQuery } = require('../src/lib/api.ts')
 const { addRecord, deleteRecord } = require('../src/lib/storage/cloud.ts')
-const { WorkspaceError } = require('../src/core/workspaceStore.ts')
+const { WorkspaceError } = require('../src/lib/workspaceStore.ts')
 
 test('api reads with GET, sends a body as JSON and resolves with the answer', async t => {
   const fetch = t.mock.method(global, 'fetch', async () => Response.json({ shares: [] }))

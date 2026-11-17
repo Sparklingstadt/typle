@@ -1,6 +1,6 @@
 import type { useTranslations } from "next-intl"
 import { Minus, TrendingDown, TrendingUp, type LucideIcon } from "lucide-react"
-import type { Change } from "@/core/dashboard"
+import type { Change } from "@/lib/dashboard"
 
 export type Delta = { icon: LucideIcon; good: boolean; text: string }
 export type T = ReturnType<typeof useTranslations<'dashboard'>>

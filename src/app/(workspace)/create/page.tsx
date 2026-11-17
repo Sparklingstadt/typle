@@ -5,9 +5,9 @@ import { useTranslations } from "next-intl"
 import WordListEditor from "@/components/WordListEditor"
 import WordListEditorPage from "@/components/WordListEditorPage/WordListEditorPage"
 import { useSaveNotification } from "@/components/SaveNotification"
-import { useWordLists } from "@/lib/useWordLists"
-import { ownPacks } from "@/core/followedPacks"
-import { saveListInPack } from "@/core/packEditing"
+import { useWordLists } from "@/hooks/useWordLists"
+import { ownPacks } from "@/lib/followedPacks"
+import { saveListInPack } from "@/lib/packEditing"
 import { editPackPath } from "@/lib/routes"
 
 export default function Create() {

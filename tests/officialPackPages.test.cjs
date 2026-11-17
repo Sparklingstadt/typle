@@ -3,9 +3,9 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
-const { OFFICIAL_PACK_PAGES, officialPackPage, officialPackPagePaths } = require('../src/core/packs/pages.ts')
-const { officialPacks } = require('../src/core/packs/catalog.ts')
-const { sitemapEntries, PACK_PAGE_PRIORITY } = require('../src/core/searchIndex.ts')
+const { OFFICIAL_PACK_PAGES, officialPackPage, officialPackPagePaths } = require('../src/lib/packs/pages.ts')
+const { officialPacks } = require('../src/lib/packs/catalog.ts')
+const { sitemapEntries, PACK_PAGE_PRIORITY } = require('../src/lib/searchIndex.ts')
 
 test('every page names an official pack, once, under a slug of its own', () => {
   assert.ok(OFFICIAL_PACK_PAGES.length >= 10)

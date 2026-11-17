@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { recallPrompt, recallDisplayHint } = require('../src/core/recallPrompt.ts')
+const { recallPrompt, recallDisplayHint } = require('../src/lib/recallPrompt.ts')
 
 const cases = [
   ['apple', 'apple', 'apple / りんご', 'りんご'],

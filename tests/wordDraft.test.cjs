@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { normalizeWord, savedWords, draftSnapshot, draftProblems, isFilledWord } = require('../src/core/wordDraft.ts')
+const { normalizeWord, savedWords, draftSnapshot, draftProblems, isFilledWord } = require('../src/lib/wordDraft.ts')
 
 test('normalizeWord empties an input equal to the display and defaults the type', () => {
   assert.deepEqual(normalizeWord({ display: 'ls', input: 'ls', annotation: '' }), { display: 'ls', input: '', annotation: '', input_type: 'word' })

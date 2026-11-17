@@ -1,12 +1,12 @@
 "use client"
 import { useEffect, useRef, useState } from 'react'
-import type { PracticeDevice } from '@/core/devices'
-import type { SavedWordList } from '@/core/wordLists'
+import type { PracticeDevice } from '@/lib/devices'
+import type { SavedWordList } from '@/lib/wordLists'
 import type { RecordSave } from './useWordLists'
-import { sessionResult, type TypingSession } from '@/core/typing'
-import { judgeWriting, normalizeWriting, skipWord, startWriting } from '@/core/writing'
+import { sessionResult, type TypingSession } from '@/lib/typing'
+import { judgeWriting, normalizeWriting, skipWord, startWriting } from '@/lib/writing'
 import { useRecordSaving } from './useRecordSaving'
-import { useTypingOptions } from './inputSettings'
+import { useTypingOptions } from '../lib/inputSettings'
 
 // Practice by the OS's handwriting input (pen panel, IME handwriting, handwriting keyboards) into a text field: every
 // change outside IME composition is checked against the word's display, a match moves on, and Enter counts a mistake.

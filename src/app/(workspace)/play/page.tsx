@@ -2,8 +2,8 @@
 import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
-import { useWordLists } from "@/lib/useWordLists"
-import { setWeakReview } from "@/core/records"
+import { useWordLists } from "@/hooks/useWordLists"
+import { setWeakReview } from "@/lib/records"
 import PracticeScreen from "@/components/Practice/PracticeScreen"
 import StarterPacks from "@/components/Practice/StarterPacks"
 

@@ -2,9 +2,9 @@
 import { useId } from "react"
 import { useTranslations } from "next-intl"
 import { SearchField } from "@/components/ui/search-field"
-import { packListChoices } from "@/core/packEditing"
-import type { SavedWordList } from "@/core/wordLists"
-import type { WordPack } from "@/core/wordPacks"
+import { packListChoices } from "@/lib/packEditing"
+import type { SavedWordList } from "@/lib/wordLists"
+import type { WordPack } from "@/lib/wordPacks"
 
 // The lists a new pack is made of, chosen with check boxes. A list's pack is named when the pack holds other lists too,
 // since choosing the list takes it out of that pack.

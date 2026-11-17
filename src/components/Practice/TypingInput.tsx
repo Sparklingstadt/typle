@@ -3,7 +3,7 @@ import type { RefObject } from "react"
 import Link from "next/link"
 import { useTranslations } from "next-intl"
 import { ArrowRight, CircleAlert } from "lucide-react"
-import type { InputComparison, TypingSession } from "@/core/typing"
+import type { InputComparison, TypingSession } from "@/lib/typing"
 import Kbd from "./Kbd"
 
 export default function TypingInput({ inputRef, session, composition, comparison, simpleKeys, onFocus, onBlur, onRestart, onCompositionStart, onCompositionEnd, onChange }: {

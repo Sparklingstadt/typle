@@ -3,7 +3,7 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
-const { officialListCounts, wordMeaning, PROGRAMMING_CATEGORY, LANGUAGES_CATEGORY } = require('../src/core/landing.ts')
+const { officialListCounts, wordMeaning, PROGRAMMING_CATEGORY, LANGUAGES_CATEGORY } = require('../src/lib/landing.ts')
 
 test('lists are counted by category, and the total counts every list', () => {
   const lists = [
@@ -19,7 +19,7 @@ test('no lists means zero everywhere', () => {
 })
 
 test('every official list falls in one of the two categories the landing page names', () => {
-  const dir = path.join(__dirname, '../src/core/packs/commands')
+  const dir = path.join(__dirname, '../src/lib/packs/commands')
   const files = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'))
   const lists = files.map(file => JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8')))
   const counts = officialListCounts(lists)

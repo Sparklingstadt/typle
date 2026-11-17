@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Copy, Download, History, Keyboard, MoreHorizontal, Pencil, Trash2, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useFormat } from '@/i18n/useFormat'
-import { wordPreview, type ListOverview } from '@/core/listOverview'
+import { wordPreview, type ListOverview } from '@/lib/listOverview'
 import { cn } from '@/lib/utils'
 import ListLabels from './ListLabels'
 import { practicePath } from '@/lib/routes'

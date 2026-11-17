@@ -4,9 +4,9 @@ import { getTranslations } from "next-intl/server"
 import { Code, Eye, Keyboard, Languages, Library, ListPlus, TrendingUp, type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import TryWord from "@/components/Landing/TryWord"
-import { officialListCounts, wordMeaning } from "@/core/landing"
-import { initialLists } from "@/core/packs"
-import { officialPackPage } from "@/core/packs/pages"
+import { officialListCounts, wordMeaning } from "@/lib/landing"
+import { initialLists } from "@/lib/packs"
+import { officialPackPage } from "@/lib/packs/pages"
 
 // The landing page for first-time visitors. It renders on the server so search engines see its words,
 // and every visitor sees it: Home (/home) is one link away for people who already use Typle.

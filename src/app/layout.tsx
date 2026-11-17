@@ -7,7 +7,7 @@ import Sidebar from "@/components/Sidebar/Sidebar";
 import Navbar from "@/components/Navbar/Navbar";
 import WebAnalytics from "@/components/WebAnalytics";
 import AuthProvider from "@/components/AuthProvider";
-import { WorkspaceProvider } from "@/lib/useWordLists";
+import { WorkspaceProvider } from "@/hooks/useWordLists";
 import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme/bootstrap";
 import { openGraphLocales } from "@/i18n/config";
 import { clientMessages, type Messages } from "@/i18n/messages";

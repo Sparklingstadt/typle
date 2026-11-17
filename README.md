@@ -37,8 +37,8 @@
 
 どのアプリも、このリポジトリのバックエンド（Next.js の Route Handler）に同じ GitHub ログインでつなぎます。Web は `https://typle.sparklingstadt.com`、iPad・Mac 版は `https://typle-r-six.vercel.app` の `/api/*` を呼びます。Vercel のドメインで始めたログイン（`/api/auth/signin`）は、OAuth の cookie とコールバックを同じホストにするため、`vercel.json` で本番のドメインへ移します（`tests/domainRedirect.test.cjs`）。ほかのリポジトリは、このリポジトリのコードやデータの写しや対応する実装を持っています。ここを変えたら、合わせて直してください。
 
-- 公式の単語リスト（`src/core/packs`）：`commands/` の各 JSON が1リストです。並び順の原本は `commands/manifest.json` です。追加・削除時は JSON と manifest を更新して `npm run packs:generate` を実行すると、Web が読み込む `commands/index.ts` を生成します（v1.5.0 から。v2.46.11 までは Go のバックエンドの埋め込み用コピーも生成していました）。生成し忘れは単体テストで分かります。以前の `commands.json` 形式を使う他アプリには、`commands/manifest.json` の順に各 JSON を配列へまとめて渡してください。
-- iPad 版と Mac 版：typle-ipad の `TypleCore/` は `src/core` の規則の Swift 版で、`catalog.json` は公式の単語リストから作った写しです。公式の単語リストを変えたら、typle-ipad で `node scripts/catalog.cjs ../typle-r` を実行して作り直します。
+- 公式の単語リスト（`src/lib/packs`）：`commands/` の各 JSON が1リストです。並び順の原本は `commands/manifest.json` です。追加・削除時は JSON と manifest を更新して `npm run packs:generate` を実行すると、Web が読み込む `commands/index.ts` を生成します（v1.5.0 から。v2.46.11 までは Go のバックエンドの埋め込み用コピーも生成していました）。生成し忘れは単体テストで分かります。以前の `commands.json` 形式を使う他アプリには、`commands/manifest.json` の順に各 JSON を配列へまとめて渡してください。
+- iPad 版と Mac 版：typle-ipad の `TypleCore/` は `src/lib` の規則の Swift 版で、`catalog.json` は公式の単語リストから作った写しです。公式の単語リストを変えたら、typle-ipad で `node scripts/catalog.cjs ../typle-r` を実行して作り直します。
 - ログイン（`client=ipad|macos|android|windows`）とトークンの形：各アプリが使うので、互換を保ちます。アーカイブした Android 版・Windows 版も、入っているアプリがそのままログインできるよう `android`・`windows` を受け付け続けます。
 - アーカイブした typle-macos・typle-w・typle-a・typle-kotlin-backend は、このリポジトリを変えても直しません。
 
@@ -109,13 +109,16 @@ GitHub Actions の CI は v2.38.1 でやめ、公開の前の検査は手元の 
 
 ## コードの構成
 
-Next.js のアプリは1つで、`src` を層に分けています。依存は上から下への一方向だけで、`eslint.config.mjs` が `src/core` からの逆向きの import をエラーにします。画面（`src/app`・`src/components`）は保存先（`src/lib/storage`）を直接 import できず、ワークスペースと保存場所（`storage`：`browser` / `account`）は `useWordLists()` から受け取ります。
+Next.js の App Router のアプリは1つで、`src` は Next.js でよく使うディレクトリーに分けています（v2.50.0 から。それまでは React・Next.js に依存しない処理を `src/core` に集め、ESLint で import の向きを縛っていました）。`eslint.config.mjs` が縛るのは、画面（`src/app`・`src/components`）から保存先（`src/lib/storage`）とサーバーのコード（`src/server`）への import だけです。画面はワークスペースと保存場所（`storage`：`browser` / `account`）を `useWordLists()` から受け取ります。
 
-| 層 | 場所 | 内容 |
-|---|---|---|
-| サーバー | `src/server`・`src/app/api` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ログインの設定（`settings.ts`）・書き込みの要求の確認（`request.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン（`auth.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub は `github.ts`、FFPF ID は `ffpf.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。`src/core` を使えますが、画面と `src/core` からは import しません |
-| 画面 | `src/app`・`src/components`・`src/i18n`・`src/lib` | ページ、UI、多言語化、React のフック。`useWordLists` は React の状態とブラウザーのイベント（フォーカス・他タブの変更）だけを受け持ち、読み込み・保存は core の `createWorkspaceSession` に任せます。保存先は `src/lib/storage` で、`cloud.ts`（Next.js の Route Handler が答える `/api/workspace` と `/api/workspace/records`）と `guest.ts`（LocalStorage）を `workspaceStore(accountId)` がアカウントに応じて選びます |
-| core | `src/core` | React・Next.js・ブラウザーAPIに依存しない TypeScript。単語リスト・入力判定・記録・集計・ワークスペースのモデルと検証、保存先の型 `WorkspaceStore`（`workspaceStore.ts`、保存場所 `location` を含む）、ワークスペースの読み込み・保存 `createWorkspaceSession`（`workspaceSession.ts`。アカウントの切り替え後に届いた結果の破棄、保存の直列化、409での再読み込み、古いクラウド読み込みの無視）、単語ファイルの CSV の読み書き（`wordFormat.ts`。TSV の読み込みは v2.44.0 でやめました）。`packs/` は公式パック（v0.85.0 から sparklingstadt アカウントの67リストのコピーで、`commands/` に1リスト1ファイルで保存しています。それまではサンプル、国名193か国、コマンドと構文の25種類を初級・中級・上級に分けた85リスト）とそのカタログです |
+| 場所 | 内容 |
+|---|---|
+| `src/app` | ページ・レイアウト・Route Handler（App Router） |
+| `src/components` | UI のコンポーネント（`ui/` は shadcn/ui） |
+| `src/hooks` | React のフック。`useWordLists` は React の状態とブラウザーのイベント（フォーカス・他タブの変更）だけを受け持ち、読み込み・保存は `src/lib/workspaceSession.ts` の `createWorkspaceSession` に任せます |
+| `src/lib` | フック以外の処理。単語リスト・入力判定・記録・集計・ワークスペースのモデルと検証、保存先の型 `WorkspaceStore`（`workspaceStore.ts`、保存場所 `location` を含む）、ワークスペースの読み込み・保存 `createWorkspaceSession`（`workspaceSession.ts`。アカウントの切り替え後に届いた結果の破棄、保存の直列化、409での再読み込み、古いクラウド読み込みの無視）、単語ファイルの CSV の読み書き（`wordFormat.ts`。TSV の読み込みは v2.44.0 でやめました）、ログインの状態（`session.tsx`）など。保存先は `src/lib/storage` で、`cloud.ts`（Next.js の Route Handler が答える `/api/workspace` と `/api/workspace/records`）と `guest.ts`（LocalStorage）を `workspaceStore(accountId)` がアカウントに応じて選びます。`packs/` は公式パック（v0.85.0 から sparklingstadt アカウントの67リストのコピーで、`commands/` に1リスト1ファイルで保存しています。それまではサンプル、国名193か国、コマンドと構文の25種類を初級・中級・上級に分けた85リスト）とそのカタログです |
+| `src/i18n`・`src/messages` | 多言語化（next-intl）と各言語の文言 |
+| `src/server` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`、Sentry）・ログインの設定（`settings.ts`）・書き込みの要求の確認（`request.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン（`auth.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub は `github.ts`、FFPF ID は `ffpf.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。`src/lib` を使えますが、画面（`src/app`・`src/components`）からは import しません |
 
 v2.43.2 まであったプラグインの層（`src/plugins`）と、ファイル形式を差し替えるための拡張口（`WordFormat` と形式の一覧）は v2.43.3 でやめました。読み書きする単語ファイルは CSV だけで、保存先は guest と cloud の2つです。
 

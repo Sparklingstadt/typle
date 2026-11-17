@@ -1,5 +1,5 @@
-import type { SavedWordList } from '../../src/core/wordLists'
-import { convertLibrary } from '../../src/core/wordPacks'
+import type { SavedWordList } from '../../src/lib/wordLists'
+import { convertLibrary } from '../../src/lib/wordPacks'
 
 /**
  * A guest workspace as the app saves it (typle-r:guest-workspace:v1), from lists written as the tests write them:

@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import { RadioGroup } from 'radix-ui'
-import type { RankOrder } from '@/core/records'
+import type { RankOrder } from '@/lib/records'
 
 export default function OrderToggle({ value, onChange }: { value: RankOrder; onChange: (value: RankOrder) => void }) {
   const t = useTranslations('rankings.order')

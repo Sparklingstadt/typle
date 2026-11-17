@@ -5,7 +5,7 @@ const { randomInt } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const { readSavedWorkspace, workspaceAnswer } = require('../src/server/workspace.ts')
 const { withRecords } = require('../src/server/records.ts')
-const { DEFAULT_INTERESTS } = require('../src/core/interests.ts')
+const { DEFAULT_INTERESTS } = require('../src/lib/interests.ts')
 
 const at = '2026-09-07T00:00:00.000Z'
 const word = { display: 'a', input: 'a', annotation: '' }

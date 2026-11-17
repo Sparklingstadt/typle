@@ -1,6 +1,6 @@
 "use client"
 import { useTranslations } from 'next-intl'
-import { INTEREST_OPTIONS, toggleInterest } from '@/core/interests'
+import { INTEREST_OPTIONS, toggleInterest } from '@/lib/interests'
 import { cn } from '@/lib/utils'
 
 type Props = {

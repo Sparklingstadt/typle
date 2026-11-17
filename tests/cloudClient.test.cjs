@@ -1,9 +1,9 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { bestRecords, recentRecords, removeRecord } = require('../src/core/records.ts')
+const { bestRecords, recentRecords, removeRecord } = require('../src/lib/records.ts')
 const { readWorkspace, writeWorkspace } = require('../src/lib/storage/cloud.ts')
-const { WorkspaceError } = require('../src/core/workspaceStore.ts')
+const { WorkspaceError } = require('../src/lib/workspaceStore.ts')
 
 // The backend's answer with the workspace, to a read (GET /api/workspace) or a save (PUT).
 const answer = workspace => Response.json(workspace)
@@ -26,7 +26,7 @@ test('workspace transport validates responses and preserves conflict status', as
   const state = { accountId: 'github:1', revision: 1, lists: [], packs: [], devices: [] }
   const fetch = t.mock.method(global, 'fetch', async () => answer(state))
   // A server that does not know interests leaves them out; they read as the default and are not sent unless the change has them.
-  assert.deepEqual(await readWorkspace(), { ...state, interests: [...require('../src/core/interests.ts').DEFAULT_INTERESTS] })
+  assert.deepEqual(await readWorkspace(), { ...state, interests: [...require('../src/lib/interests.ts').DEFAULT_INTERESTS] })
   assert.equal(fetch.mock.calls[0].arguments[0], '/api/workspace')
   assert.equal(fetch.mock.calls[0].arguments[1].method, 'GET')
   await writeWorkspace(state)
@@ -43,7 +43,7 @@ test('workspace transport validates responses and preserves conflict status', as
   fetch.mock.mockImplementation(async () => answer(state))
   // A server from before profiles were removed also sends its profiles; only the first profile's lists are used.
   fetch.mock.mockImplementation(async () => answer({ ...state, profiles: [{ id: 'default', name: 'メイン', listCount: 0, recordCount: 0 }], profileId: 'default' }))
-  assert.deepEqual(await readWorkspace(), { ...state, interests: [...require('../src/core/interests.ts').DEFAULT_INTERESTS] })
+  assert.deepEqual(await readWorkspace(), { ...state, interests: [...require('../src/lib/interests.ts').DEFAULT_INTERESTS] })
   fetch.mock.mockImplementation(async () => Response.json({ error: 'conflict' }, { status: 409 }))
   await assert.rejects(writeWorkspace(state), error => error instanceof WorkspaceError && error.status === 409 && error.key === 'conflict')
   for (const invalid of [{ revision: -1 }, { lists: [{}] }, { accountId: 1 }]) {
@@ -79,8 +79,8 @@ test('cloud reads drop sharing fields saved by older versions', async t => {
 })
 
 test('cloud reads give followed packs their words from the catalog, and saves send them without', async t => {
-  const { officialPacks, followOfficialPack } = require('../src/core/packs/catalog.ts')
-  const { withoutFollowedWords } = require('../src/core/followedPacks.ts')
+  const { officialPacks, followOfficialPack } = require('../src/lib/packs/catalog.ts')
+  const { withoutFollowedWords } = require('../src/lib/followedPacks.ts')
   const entry = officialPacks()[0]
   const library = followOfficialPack({ packs: [], lists: [] }, entry.catalogId, { pack: 'f', lists: entry.lists.map((_, i) => `f-${i}`) })
   const sent = []

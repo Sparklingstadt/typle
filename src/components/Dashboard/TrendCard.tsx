@@ -8,9 +8,9 @@ import { DeltaText, changeDelta, pointDifference, secondsDifference, type T } fr
 import TrendChart from "@/components/Dashboard/TrendChart"
 import PracticeName, { usePracticeName } from "@/components/PracticeName"
 import { useFormat } from "@/i18n/useFormat"
-import { accuracyScale, speedScale, type ListTrend, type Scale, type Trend } from "@/core/dashboard"
+import { accuracyScale, speedScale, type ListTrend, type Scale, type Trend } from "@/lib/dashboard"
 import { practicePath } from "@/lib/routes"
-import { formatAccuracy } from "@/core/records"
+import { formatAccuracy } from "@/lib/records"
 
 function Metric({ title, trend, scale, withUnit, lowerIsBetter, describe }: {
   title: string

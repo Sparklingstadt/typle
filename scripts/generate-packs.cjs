@@ -1,11 +1,11 @@
-// Makes src/core/packs/commands/index.ts, which imports the official lists in order for the app, from its one source,
+// Makes src/lib/packs/commands/index.ts, which imports the official lists in order for the app, from its one source,
 // commands/manifest.json (the lists in order).
 // With --check it changes nothing and fails when any of them is not what it would make (tests/commands.test.cjs).
 const fs = require('node:fs')
 const path = require('node:path')
 
 const root = path.join(__dirname, '..')
-const source = path.join(root, 'src/core/packs')
+const source = path.join(root, 'src/lib/packs')
 
 function index(names) {
   const imports = names.map((name, i) => `import list${i} from './${name}'`).join('\n')

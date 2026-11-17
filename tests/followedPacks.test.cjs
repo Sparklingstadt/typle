@@ -3,9 +3,9 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
-const { followOfficial, followPack, isFollowed } = require('../src/core/followedPacks.ts')
-const { normalizeLibrary, decodePacks, validateLibrary } = require('../src/core/wordPacks.ts')
-const { decodeLists } = require('../src/core/wordLists.ts')
+const { followOfficial, followPack, isFollowed } = require('../src/lib/followedPacks.ts')
+const { normalizeLibrary, decodePacks, validateLibrary } = require('../src/lib/wordPacks.ts')
+const { decodeLists } = require('../src/lib/wordLists.ts')
 
 const dir = path.join(__dirname, 'fixtures/follow')
 for (const file of fs.readdirSync(dir).filter(name => name.endsWith('.json'))) {
@@ -98,8 +98,8 @@ test('decodeLists keeps a list origin of the right shape and drops the others', 
 })
 
 test('followed packs are saved without their words, and following the catalog gives them back', () => {
-  const { withoutFollowedWords } = require('../src/core/followedPacks.ts')
-  const { officialPacks, followOfficialPack } = require('../src/core/packs/catalog.ts')
+  const { withoutFollowedWords } = require('../src/lib/followedPacks.ts')
+  const { officialPacks, followOfficialPack } = require('../src/lib/packs/catalog.ts')
   const own = { id: 'mine', name: 'Mine', packId: 'p', createdAt: '2026-10-01', words: [{ display: 'a', input: 'a', annotation: '' }], records: [] }
   const entry = officialPacks()[0]
   const ids = { pack: 'f', lists: entry.lists.map((_, i) => `f-${i}`) }

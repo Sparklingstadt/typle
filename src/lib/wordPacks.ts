@@ -139,7 +139,7 @@ function labelsOf(category: string | undefined, tags: string[]) {
   return labels.tags ? { ...labels, tags: labels.tags.slice(0, MAX_TAGS) } : labels
 }
 
-/** Makes packs of lists written with groups, as the catalog's lists (src/core/packs) are: one per group, one for
+/** Makes packs of lists written with groups, as the catalog's lists (src/lib/packs) are: one per group, one for
  * each list without a group. */
 export function convertLibrary(lists: SavedWordList[]): Library {
   const packs: WordPack[] = []

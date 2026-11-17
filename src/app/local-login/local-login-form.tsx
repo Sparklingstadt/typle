@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from '@/lib/session'
-import { api } from '@/core/api'
+import { api } from '@/lib/api'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 

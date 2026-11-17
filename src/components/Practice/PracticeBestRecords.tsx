@@ -1,8 +1,8 @@
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { useFormat } from '@/i18n/useFormat'
-import { bestRecords, formatAccuracy } from '@/core/records'
-import type { SavedWordList } from '@/core/wordLists'
+import { bestRecords, formatAccuracy } from '@/lib/records'
+import type { SavedWordList } from '@/lib/wordLists'
 
 export default function PracticeBestRecords({ records, highlightId }: { records: SavedWordList['records']; highlightId?: string }) {
   const t = useTranslations('practice.best')

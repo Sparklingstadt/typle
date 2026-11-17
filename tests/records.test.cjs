@@ -1,9 +1,9 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { newSession, typeInput } = require('../src/core/typing.ts')
-const { makeRecord, addRecord, deleteRecord, recordMode } = require('../src/core/records.ts')
-const { encodeLists, decodeLists, saveList } = require('../src/core/wordLists.ts')
+const { newSession, typeInput } = require('../src/lib/typing.ts')
+const { makeRecord, addRecord, deleteRecord, recordMode } = require('../src/lib/records.ts')
+const { encodeLists, decodeLists, saveList } = require('../src/lib/wordLists.ts')
 
 test('completed records survive reload and editing; retry never duplicates', () => {
   const list = { id: 'a', name: 'Test', words: [{ display: 'ab', input: 'ab', annotation: '' }], records: [], createdAt: '2026-09-06' }
@@ -23,8 +23,8 @@ test('completed records survive reload and editing; retry never duplicates', () 
   assert.throws(() => makeRecord(newSession(), [{ input: 'a' }], 'incomplete'))
 })
 
-const { recordTimeParts, secondsPerWord, formatAccuracy } = require('../src/core/records.ts')
-const { recordRows, filterRows, groupByDay, NO_DEVICE } = require('../src/core/recordHistory.ts')
+const { recordTimeParts, secondsPerWord, formatAccuracy } = require('../src/lib/records.ts')
+const { recordRows, filterRows, groupByDay, NO_DEVICE } = require('../src/lib/recordHistory.ts')
 const mac = { id: 'mac', name: 'MacBook Air', layout: 'JIS' }
 // Local-time dates, so day grouping does not depend on the machine's time zone.
 const at = (day, hour) => new Date(2026, 8, day, hour).toISOString()
@@ -85,7 +85,7 @@ test('per-word speed and accuracy fall back to a dash for older records', () => 
 })
 
 test('lists to choose from put the most recently practised first and keep the saved order for the rest', () => {
-  const { byRecentPractice } = require('../src/core/records.ts')
+  const { byRecentPractice } = require('../src/lib/records.ts')
   const list = (id, ...dates) => ({ id, records: dates.map(date => ({ date })) })
   const lists = [list('a'), list('b', '2026-10-01T00:00:00Z'), list('c'), list('d', '2026-09-01T00:00:00Z', '2026-10-05T00:00:00Z'), list('e', 'not a date')]
   assert.deepEqual(byRecentPractice(lists).map(item => item.id), ['d', 'b', 'a', 'c', 'e'])
@@ -189,7 +189,7 @@ test('listBest is of the normal runs unless a mode is given', () => {
   const words = [{ display: 'a', input: 'a', annotation: '' }]
   const rec = (id, time, extra = {}) => ({ id, time, date: '2026-09-21T10:00:00Z', mistakes: 0, accuracy: 100, wordCount: 1, ...extra })
   const list = { words, records: [rec('t', 10), rec('w', 1, { mode: 'writing' })] }
-  const { listBest } = require('../src/core/records.ts')
+  const { listBest } = require('../src/lib/records.ts')
   assert.equal(listBest(list).id, 't')
   assert.equal(listBest(list, 'writing').id, 'w')
 })
@@ -220,8 +220,8 @@ test('saved records with an unknown mode are corrupted', () => {
 })
 
 test('a finished run keeps its missed words by their text, most mistakes first, and they survive saving', () => {
-  const { missedWords, isMissedWords, MAX_MISSED_WORDS } = require('../src/core/records.ts')
-  const { revealAnswer } = require('../src/core/typing.ts')
+  const { missedWords, isMissedWords, MAX_MISSED_WORDS } = require('../src/lib/records.ts')
+  const { revealAnswer } = require('../src/lib/typing.ts')
   const words = [{ input: 'ab' }, { input: 'cd' }, { input: 'ef' }]
   let s = typeInput(newSession(), words, 'x', 1000)
   s = typeInput(s, words, 'ab', 1100)
@@ -245,7 +245,7 @@ test('a finished run keeps its missed words by their text, most mistakes first, 
   assert.throws(() => decodeLists(JSON.stringify({ version: 1, lists: [{ ...list, records: [{ time: 1, date: '2026-09-06T00:00:00Z', missed: [{ word: 'a' }] }] }] })), { key: 'savedDataCorrupted' })
 })
 
-const { compareRun, lastPracticedAt } = require('../src/core/records.ts')
+const { compareRun, lastPracticedAt } = require('../src/lib/records.ts')
 
 test('lastPracticedAt is the newest parsable date, or null without one', () => {
   assert.equal(lastPracticedAt([]), null)
@@ -268,7 +268,7 @@ test('compareRun ranks a saved run among runs of its mode at the same word count
 })
 
 test('a finished review of the weak words is kept on its list with the words missed in it', () => {
-  const { weakReviewOf, setWeakReview, isWeakReview, MAX_WEAK_REVIEW_MISSED } = require('../src/core/records.ts')
+  const { weakReviewOf, setWeakReview, isWeakReview, MAX_WEAK_REVIEW_MISSED } = require('../src/lib/records.ts')
   const words = [{ input: 'ab' }, { input: 'cd' }]
   let s = typeInput(newSession(), words, 'ab', 1000)
   s = typeInput(s, words, 'x', 1100)

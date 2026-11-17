@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Gauge, Target, Timer, X } from 'lucide-react'
-import type { PracticeMode } from '@/core/records'
-import { elapsedTime, typingSpeed, type TypingSession } from '@/core/typing'
-import { roundAccuracy } from '@/core/records'
+import type { PracticeMode } from '@/lib/records'
+import { elapsedTime, typingSpeed, type TypingSession } from '@/lib/typing'
+import { roundAccuracy } from '@/lib/records'
 
 // Ticks only while a session is running, for the live elapsed time and speed.
 function useNow(active: boolean) {

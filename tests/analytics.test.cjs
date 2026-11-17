@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { analyticsUrl } = require('../src/core/analytics.ts')
+const { analyticsUrl } = require('../src/lib/analytics.ts')
 
 const site = 'https://typle-r-six.vercel.app'
 

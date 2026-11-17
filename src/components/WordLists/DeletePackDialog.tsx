@@ -3,8 +3,8 @@ import { useRef } from "react"
 import { useTranslations } from "next-intl"
 import DeleteConfirmation from "@/components/DeleteConfirmation"
 import { focusAfterRemoval } from "@/lib/focusAfterRemoval"
-import type { PackOverview } from "@/core/packOverview"
-import type { WordPack } from "@/core/wordPacks"
+import type { PackOverview } from "@/lib/packOverview"
+import type { WordPack } from "@/lib/wordPacks"
 
 export default function DeletePackDialog({ state, onOpenChange, onDelete }: {
   state: { open: boolean; item: PackOverview | null; position: number }

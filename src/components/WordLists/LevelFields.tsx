@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import FieldError from "@/components/WordLists/FieldError"
-import { MAX_LEVEL } from "@/core/wordLists"
+import { MAX_LEVEL } from "@/lib/wordLists"
 
 // The level of a list, such as 初級: one optional input, as a list has one level at most. An empty level is dropped
 // when the list is saved. `error`, a save refused for the level, is shown under it and announced when it appears, and

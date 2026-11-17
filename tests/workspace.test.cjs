@@ -1,7 +1,7 @@
 require('./register.cjs')
 const test = require('node:test')
 const assert = require('node:assert/strict')
-const { validateWorkspaceRequest } = require('../src/core/workspaceRequest.ts')
+const { validateWorkspaceRequest } = require('../src/lib/workspaceRequest.ts')
 const list = { id: 'one', name: 'One', createdAt: '2026-09-06', words: [{ display: 'a', input: 'a', annotation: '' }], records: [] }
 
 test('request validation drops sharing fields sent by older screens', () => {

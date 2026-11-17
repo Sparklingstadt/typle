@@ -31,7 +31,7 @@ export type MissedWord = { word: string; count: number }
 /** The most words a record keeps as missed, so that 10000 records of a list stay small. */
 export const MAX_MISSED_WORDS = 20
 
-/** The most words a review of a list's weak words keeps as missed: every word its WEAK_RUNS runs can name (src/core/dashboard.ts). */
+/** The most words a review of a list's weak words keeps as missed: every word its WEAK_RUNS runs can name (src/lib/dashboard.ts). */
 export const MAX_WEAK_REVIEW_MISSED = 200
 
 /**
@@ -59,7 +59,7 @@ export function missedWords(session: TypingSession, words: { input: string }[], 
  * The last finished practice of a list's weak words alone (/play?list=<id>&review=weak): when it finished and the words
  * that went wrong in it, left out when none did. It is kept on the list, not as a record, so it counts for no best,
  * ranking or statistic. The weak words start again from it: a word typed right in it is weak no longer (`weakWords` in
- * src/core/dashboard.ts).
+ * src/lib/dashboard.ts).
  */
 export type WeakReview = { date: string; missed?: MissedWord[] }
 

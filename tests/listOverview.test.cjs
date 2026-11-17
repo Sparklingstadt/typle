@@ -1,7 +1,7 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { listOverviews, sortOverviews, matchesQuery, wordPreview, currentRecordCount, copyName, duplicateList, MAX_LISTS } = require('../src/core/listOverview.ts')
+const { listOverviews, sortOverviews, matchesQuery, wordPreview, currentRecordCount, copyName, duplicateList, MAX_LISTS } = require('../src/lib/listOverview.ts')
 
 const { words } = require('./helpers.cjs')
 const record = (date, wordCount) => ({ time: 5, date, ...(wordCount ? { wordCount } : {}) })

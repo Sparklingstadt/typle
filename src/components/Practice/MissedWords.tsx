@@ -1,9 +1,9 @@
 "use client"
 import { useId } from 'react'
 import { useTranslations } from 'next-intl'
-import { wordMeaning } from '@/core/landing'
-import type { WordMistake } from '@/core/typing'
-import type { SavedWordList } from '@/core/wordLists'
+import { wordMeaning } from '@/lib/landing'
+import type { WordMistake } from '@/lib/typing'
+import type { SavedWordList } from '@/lib/wordLists'
 
 type Word = SavedWordList['words'][number]
 

@@ -67,7 +67,7 @@ test('lists whose levels overlap are levelsConflict', () => {
 
 // The levels so taken are still checked as saved data is: five at most, each a string within MAX_LEVEL.
 test('lists of several levels are still held to the saved limits', () => {
-  const { MAX_SAVED_LEVELS, MAX_LEVEL } = require('../src/core/wordLists.ts')
+  const { MAX_SAVED_LEVELS, MAX_LEVEL } = require('../src/lib/wordLists.ts')
   const packs = [{ id: 'p', name: 'P', createdAt: at }]
   const levels = count => Array.from({ length: count }, (_, n) => `L${n}`)
   assert.ok('change' in read(body({ packs, lists: [list('a', { packId: 'p', levels: levels(MAX_SAVED_LEVELS) })] })))
