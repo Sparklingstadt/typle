@@ -1,5 +1,7 @@
 # 思い出して打つモード 設計
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 日付: 2026-11-02 ／ 対象: typle-r v2.7.0、typle-ipad v0.62.0
 
 ## 目的

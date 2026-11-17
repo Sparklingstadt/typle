@@ -1,5 +1,7 @@
 # /records（練習記録）デザインレビュー
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 - Figma: https://www.figma.com/design/Ye1CfYsXr0QvtzExjVI22Q?node-id=27-2 （ページ「/records デザインレビュー」）
   - 01 現状（Before）: B1〜B6 の6画面と課題マーカー（オレンジ）、右に課題ノート11項目
   - 02 改善案（After）— Desktop 1440: 一覧、リストで絞り込み、ベスト記録の削除確認、削除した後（青の番号 1〜11）

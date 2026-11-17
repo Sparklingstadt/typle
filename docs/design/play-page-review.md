@@ -1,5 +1,7 @@
 # /play（練習画面）デザインレビュー
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 - Figma: https://www.figma.com/design/Ye1CfYsXr0QvtzExjVI22Q?node-id=14-2 （ページ「/play デザインレビュー」）
   - 01 現状（Before）: B1〜B8 の8画面と課題マーカー（オレンジ）、右に課題ノート13項目
   - 02 改善案（After）— Desktop 練習中（青の番号 1〜8）と、右に改善ノート

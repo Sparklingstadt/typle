@@ -1,5 +1,7 @@
 # /devices（端末）デザインレビュー
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 - Figma: https://www.figma.com/design/Ye1CfYsXr0QvtzExjVI22Q?node-id=70-2 （ページ「/devices デザインレビュー」）
   - 01 現状（Before）: B1〜B5 の5画面と課題マーカー（オレンジ）、右に課題ノート11項目
   - 02 改善案（After）— Desktop 1440: 一覧、編集ダイアログ、追加時のエラー（青の番号 1〜8 と右のノート）

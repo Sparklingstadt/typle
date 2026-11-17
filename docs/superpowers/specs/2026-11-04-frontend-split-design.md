@@ -1,5 +1,7 @@
 # 大きな画面の分割 設計
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 日付: 2026-11-04 ／ 対象: typle-r v2.24.0（`cec6ad3`）
 
 ## 目的

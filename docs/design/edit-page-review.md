@@ -1,5 +1,7 @@
 # /edit（単語リスト）デザインレビュー
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 - Figma: https://www.figma.com/design/Ye1CfYsXr0QvtzExjVI22Q?node-id=51-622 （ページ「/edit デザインレビュー」）
   - 01 現状（Before）: B1 デスクトップ 1440・B2 Mobile 390・B3 スクロールしてから「編集」・B4 削除の確認・B5 読み込みエラーと課題マーカー（オレンジ）、右に課題ノート13項目
   - 02 改善案（After）— Desktop 1440: A1 一覧・A2 編集（単語を1語追加した状態）・A3 削除の確認（青の番号 1〜12 と右のノート）

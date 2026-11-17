@@ -1,5 +1,7 @@
 # /create（単語リストの作成）デザインレビュー
 
+> v2.50.0 で `src/core` は `src/lib` に（公式パックは `src/lib/packs`）、`src/lib` の React のフック（`use*`）は `src/hooks` に移りました。この文書のパスは書いた当時のものです。
+
 - Figma: https://www.figma.com/design/Ye1CfYsXr0QvtzExjVI22Q
   - 01 現状（Before）: 現行画面の再現と課題マーカー（オレンジ）
   - 02 改善案（After）— Desktop 1440
