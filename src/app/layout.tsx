@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
+import { headers } from "next/headers";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import Navbar from "@/components/Navbar/Navbar";
@@ -62,11 +63,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
+  // Set by src/proxy.ts for the script policy; absent only where the proxy does not run.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     // The class on <html> must not change with the language: the theme script adds `dark` there.
     <html lang={locale} suppressHydrationWarning className={`${notoSans.variable} font-sans`}>
       <head>
-        <script id="theme-bootstrap" dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
+        <script id="theme-bootstrap" nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
       </head>
       <body className="bg-muted/40 font-sans text-foreground antialiased">
       <NextIntlClientProvider messages={clientMessages(await getMessages() as Messages)}>
