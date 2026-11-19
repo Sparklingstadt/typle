@@ -6,17 +6,20 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 // Every response: no other site may frame the app (clickjacking of its buttons), and responses are not sniffed into
 // another type or sent with the full URL as the referrer. form-action is left out: Chrome would also apply it to the
-// redirect from the sign-in form to GitHub.
+// redirect from the sign-in form to GitHub. The script policy is only reported for now (src/proxy.ts). The app uses no
+// camera, microphone or location, so no page (or a frame inside it) may ask for them.
 const securityHeaders = [
   { key: 'Content-Security-Policy', value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'" },
   { key: 'X-Frame-Options', value: 'DENY' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+  { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
 ];
 
 /** @type {import('next').NextConfig} */
 const nextConfig = (phase) => withNextIntl({
   // Keep local development and verification separate; Vercel expects .next.
+  poweredByHeader: false,
   distDir: phase === 'phase-development-server' || process.env.VERCEL === '1' ? '.next' : '.next-production',
   headers: () => [{ source: '/:path*', headers: securityHeaders }],
 });

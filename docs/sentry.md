@@ -33,6 +33,10 @@ Vercel の Production と Preview で環境名をそれぞれ設定してくだ�
 追加データ、操作履歴を送信前に除去します。Session Replay・性能トレースは無効です。
 例外メッセージ自体は診断に必要なため残します。入力した単語や秘密情報を例外メッセージに含めないでください。
 
+v2.51.0 から、ページのスクリプトの CSP（`Content-Security-Policy-Report-Only`、`src/proxy.ts`）の違反も、
+ブラウザーが `NEXT_PUBLIC_SENTRY_DSN` のプロジェクトの security エンドポイントへ直接報告します。報告には
+違反したページの URL（クエリーを含むことがあります）と、止められたスクリプトの場所が入ります。
+
 ## 確認方法
 
 1. Preview またはローカルに DSN を設定してビルド・起動します。
