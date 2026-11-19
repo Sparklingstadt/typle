@@ -4,7 +4,8 @@ const fs = require('node:fs')
 const path = require('node:path')
 
 // Every /api path is a Route Handler (src/app/api/<path>/route.ts) since v2.46.10. The only forwards left are the
-// comparison's (scripts/backendCompare.cjs), which a deployment has only when it is built with TYPLE_BACKEND_COMPARE=1.
+// comparison's and the switch to Go (scripts/backendCompare.cjs), which a deployment has only when it is built with
+// TYPLE_BACKEND_COMPARE=1 or TYPLE_BACKEND=go.
 const root = path.join(__dirname, '..')
 const read = file => fs.readFileSync(path.join(root, file), 'utf8')
 

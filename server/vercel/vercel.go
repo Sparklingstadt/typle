@@ -25,7 +25,8 @@ const BackendHeader = "x-typle-backend"
 // with one atomic load; until then each request builds one from what is there, so a request answers 503
 // authUnavailable or databaseUnavailable where the Next.js routes do, and a later one looks at the environment again.
 type Backend struct {
-	// gated is the Vercel function's: every request is a 404 unless TYPLE_BACKEND_COMPARE is 1 at the time.
+	// gated is the Vercel function's: every request is a 404 unless, at the time, TYPLE_BACKEND_COMPARE is 1 or
+	// TYPLE_BACKEND is go (answers reports which).
 	gated  bool
 	getenv func(string) string
 	// open makes the pool; the tests replace it.
@@ -60,7 +61,7 @@ var notFound = web.NotFound()
 // this backend's.
 func (b *Backend) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set(BackendHeader, "go")
-	if b.gated && b.getenv("TYPLE_BACKEND_COMPARE") != "1" {
+	if b.gated && !b.answers() {
 		notFound.ServeHTTP(w, r)
 		return
 	}
@@ -72,6 +73,12 @@ func (b *Backend) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		r.URL = &routed
 	}
 	b.handler().ServeHTTP(w, r)
+}
+
+// answers reports whether the gated function answers: in the comparison (TYPLE_BACKEND_COMPARE=1), and when Go is the
+// backend of the compared paths (TYPLE_BACKEND=go, which next.config.mjs reads too).
+func (b *Backend) answers() bool {
+	return b.getenv("TYPLE_BACKEND_COMPARE") == "1" || b.getenv("TYPLE_BACKEND") == "go"
 }
 
 // routedPath is the path of the Next.js route a request is for. A Vercel rewrite may hand the function the request's

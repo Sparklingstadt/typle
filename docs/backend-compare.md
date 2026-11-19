@@ -1,6 +1,6 @@
 # バックエンドの速度比較（Next.js・Go・Kotlin）
 
-いまの Next.js の Route Handler と、Go（v2.47.0 で消したものを比較用に戻したもの）、Kotlin（Ktor）の速さを、Vercel の上で同じ条件で比べる仕組みです。比べるためだけのもので、本番では Next.js しか動きません。設計は [docs/superpowers/specs/2026-11-19-backend-compare-design.md](superpowers/specs/2026-11-19-backend-compare-design.md) にあります。
+いまの Next.js の Route Handler と、Go（v2.47.0 で消したものを比較用に戻したもの）、Kotlin（Ktor）の速さを、Vercel の上で同じ条件で比べる仕組みです。比べるためだけのもので、本番では Next.js しか動きません（本番でも Go に切り替えるときは [docs/backend-switch.md](backend-switch.md)）。設計は [docs/superpowers/specs/2026-11-19-backend-compare-design.md](superpowers/specs/2026-11-19-backend-compare-design.md) にあります。
 
 ## しくみ
 

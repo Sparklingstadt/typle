@@ -33,8 +33,9 @@ const nextConfig = (phase) => withNextIntl({
     // With TYPLE_BACKEND_COMPARE=1 only: the Next.js answers of the compared paths say they came from Next.js.
     ...backendCompare.nextBackendHeaders(),
   ],
-  // With TYPLE_BACKEND_COMPARE=1 only: x-typle-backend sends a compared path to the Go function or the Kotlin service
-  // (scripts/backendCompare.cjs). Without it there are no rewrites, so the header changes nothing.
+  // With TYPLE_BACKEND_COMPARE=1 only: x-typle-backend sends a compared path to the Go function or the Kotlin service.
+  // TYPLE_BACKEND=go sends those paths to the Go function for every request (scripts/backendCompare.cjs). Without
+  // either there are no rewrites, so the header changes nothing.
   rewrites: async () => ({ beforeFiles: backendCompare.backendRewrites(), afterFiles: [], fallback: [] }),
 });
 

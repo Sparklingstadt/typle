@@ -67,6 +67,14 @@ func TestGate(t *testing.T) {
 			t.Errorf("%q: the database was opened", value)
 		}
 	}
+	// TYPLE_BACKEND=go opens the gate without the comparison; other values do not.
+	for value, want := range map[string]int{"go": http.StatusOK, "next": http.StatusNotFound, "Go": http.StatusNotFound, "": http.StatusNotFound} {
+		opened := 0
+		env := map[string]string{"DATABASE_URL": "postgres://db", "TYPLE_BACKEND": value}
+		if response := serve(backend(true, env, &opened), http.MethodGet, "/api/go?path=health"); response.Code != want {
+			t.Errorf("TYPLE_BACKEND=%q health = %d; want %d", value, response.Code, want)
+		}
+	}
 	// The typle-web command is not gated.
 	opened := 0
 	if response := serve(backend(false, map[string]string{"DATABASE_URL": "postgres://db"}, &opened), http.MethodGet, "/api/health"); response.Code != http.StatusOK {

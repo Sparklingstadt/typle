@@ -21,6 +21,7 @@
 | [docs/sentry.md](docs/sentry.md) | Sentry のエラー監視 |
 | [docs/save-metrics.md](docs/save-metrics.md) | 保存の時間と大きさの計測（`TYPLE_MEASURE_SAVES=1`） |
 | [docs/backend-compare.md](docs/backend-compare.md) | Next.js・Go・Kotlin のバックエンドの速度比較（`TYPLE_BACKEND_COMPARE=1` のプレビューだけ） |
+| [docs/backend-switch.md](docs/backend-switch.md) | workspace と records の API を Go に切り替える（`TYPLE_BACKEND=go`。本番でも使える） |
 | [docs/design/](docs/design) | 画面ごとのデザインレビュー |
 | [docs/roadmap.md](docs/roadmap.md) | これからの進め方（今・次・その先の順番と理由） |
 | [docs/refactoring-roadmap.md](docs/refactoring-roadmap.md) | リファクタリングのロードマップ（負債の棚卸しと直す順番） |
