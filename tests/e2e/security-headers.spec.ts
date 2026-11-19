@@ -1,10 +1,11 @@
 import { test, expect } from '@playwright/test'
 
-// next.config.mjs sends these with every page and Route Handler (every /api path since v2.46.10).
-for (const path of ['/home', '/api/health', '/api/auth/session', '/api/workspace/records', '/api/workspace']) {
+// next.config.mjs sends these with every page, file and Route Handler (every /api path since v2.46.10). Pages get no
+// Content-Security-Policy until the script policy of src/proxy.ts is enforced.
+for (const path of ['/home', '/robots.txt', '/api/health', '/api/auth/session', '/api/workspace/records', '/api/workspace']) {
   test(`${path} cannot be framed by another site`, async ({ request }) => {
     const headers = (await request.get(path)).headers()
-    expect(headers['content-security-policy']).toBe("frame-ancestors 'none'; base-uri 'self'; object-src 'none'")
+    expect(headers['content-security-policy']).toBe(path === '/home' ? undefined : "frame-ancestors 'none'; base-uri 'self'; object-src 'none'")
     expect(headers['x-frame-options']).toBe('DENY')
     expect(headers['x-content-type-options']).toBe('nosniff')
     expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin')
@@ -37,4 +38,14 @@ test('a second page view gets another nonce', async ({ request }) => {
 
 test('Route Handlers get no script policy', async ({ request }) => {
   expect((await request.get('/api/health')).headers()['content-security-policy-report-only']).toBeUndefined()
+})
+
+// In v2.51.0 a page's request on Vercel carried the enforced policy too, and Next.js read that one and found no nonce.
+test('a policy already on the request does not take the nonce away', async ({ request }) => {
+  const response = await request.get('/home', { headers: { 'content-security-policy': "frame-ancestors 'none'" } })
+  const nonce = /'nonce-([^']+)'/.exec(response.headers()['content-security-policy-report-only'] ?? '')?.[1]
+  expect(nonce).toBeTruthy()
+  const scripts = (await response.text()).match(/<script\b[^>]*>/g) ?? []
+  expect(scripts.length).toBeGreaterThan(1)
+  for (const script of scripts) expect(script).toContain(`nonce="${nonce}"`)
 })

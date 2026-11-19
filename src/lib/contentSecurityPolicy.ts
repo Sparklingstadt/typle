@@ -1,7 +1,7 @@
-// The script policy sent as Content-Security-Policy-Report-Only on every page (src/proxy.ts). Only scripts carrying the
+// The policy src/proxy.ts sends with every page as Content-Security-Policy-Report-Only. Only scripts carrying the
 // request's nonce, and scripts those load ('strict-dynamic'), may run; Next.js adds the nonce to its own scripts. It only
-// reports for now: the enforced policy (next.config.mjs) still allows every script. Once the reports are clean, this
-// moves into the enforced header.
+// reports for now. Once the reports are clean, it becomes the page's Content-Security-Policy together with
+// frame-ancestors 'none', which next.config.mjs sends with everything that is not a page.
 
 /** The policy for one request. dev adds 'unsafe-eval', which React needs only in development. */
 export function scriptPolicy(nonce: string, dev: boolean, reportUri: string | null): string {
