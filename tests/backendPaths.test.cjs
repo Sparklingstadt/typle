@@ -3,15 +3,14 @@ const test = require('node:test')
 const fs = require('node:fs')
 const path = require('node:path')
 
-// Every /api path is a Route Handler (src/app/api/<path>/route.ts) since v2.46.10: nothing is forwarded to the Go
-// backend any more, neither by vercel.json on Vercel nor by next.config.mjs locally. A forward left behind would send a
-// path to a backend that no longer answers it.
+// Every /api path is a Route Handler (src/app/api/<path>/route.ts) since v2.46.10. The only forwards left are the
+// comparison's (scripts/backendCompare.cjs), which a deployment has only when it is built with TYPLE_BACKEND_COMPARE=1.
 const root = path.join(__dirname, '..')
 const read = file => fs.readFileSync(path.join(root, file), 'utf8')
 
-test('vercel.json and next.config.mjs forward nothing', () => {
+test('vercel.json forwards nothing, and next.config.mjs only the comparison', () => {
   assert.equal(JSON.parse(read('vercel.json')).rewrites, undefined)
-  assert.doesNotMatch(read('next.config.mjs'), /rewrites|beforeFiles/)
+  assert.match(read('next.config.mjs'), /beforeFiles: backendCompare\.backendRewrites\(\), afterFiles: \[\], fallback: \[\]/)
 })
 
 // The paths the apps (Web, iPad, Mac, Android, Windows) call.
