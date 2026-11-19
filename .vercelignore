@@ -12,3 +12,7 @@ playwright-report
 api-docs/src/.vuepress/dist
 api-docs/src/.vuepress/.temp
 api-docs/src/.vuepress/.cache
+# The comparison of the backends: the Go function needs no tests or local server, and the Kotlin service runs on Cloud Run.
+server/cmd
+*_test.go
+kotlin

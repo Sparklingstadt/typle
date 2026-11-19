@@ -1,5 +1,6 @@
 import { withSentryConfig } from '@sentry/nextjs/config';
 import createNextIntlPlugin from 'next-intl/plugin';
+import backendCompare from './scripts/backendCompare.cjs';
 
 // Messages are chosen per request in src/i18n/request.ts.
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
@@ -29,7 +30,13 @@ const nextConfig = (phase) => withNextIntl({
       source: '/:path((?:api|_next|_vercel)(?:/.*)?|.*\\.[^/]+)',
       headers: [{ key: 'Content-Security-Policy', value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'" }],
     },
+    // With TYPLE_BACKEND_COMPARE=1 only: the Next.js answers of the compared paths say they came from Next.js.
+    ...backendCompare.nextBackendHeaders(),
   ],
+  // With TYPLE_BACKEND_COMPARE=1 only: x-typle-backend sends a compared path to the Go function or the Kotlin service.
+  // TYPLE_BACKEND=go sends those paths to the Go function for every request (scripts/backendCompare.cjs). Without
+  // either there are no rewrites, so the header changes nothing.
+  rewrites: async () => ({ beforeFiles: backendCompare.backendRewrites(), afterFiles: [], fallback: [] }),
 });
 
 export default withSentryConfig(nextConfig, {
