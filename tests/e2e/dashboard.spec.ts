@@ -101,6 +101,8 @@ test('weak words are listed per list from the latest runs, and their button prac
   await input.pressSequentially('gx')
   await input.pressSequentially('amma')
   await expect(page.getByLabel('練習結果', { exact: true })).toContainText('このおさらいは記録しません。ミスなく打てた単語は、苦手な単語から外れます。')
+  // The review is saved after the result appears; leaving before then would drop it.
+  await expect.poll(() => page.evaluate(storageKey => localStorage.getItem(storageKey) ?? '', key)).toContain('"weakReview"')
   await page.goto('/home')
   const after = page.getByRole('list', { name: 'Weak の苦手な単語' }).getByRole('listitem')
   await expect(after).toHaveCount(1)
