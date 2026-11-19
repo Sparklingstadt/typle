@@ -1,4 +1,3 @@
-import { withSentryConfig } from '@sentry/nextjs/config';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 // Messages are chosen per request in src/i18n/request.ts.
@@ -32,14 +31,4 @@ const nextConfig = (phase) => withNextIntl({
   ],
 });
 
-export default withSentryConfig(nextConfig, {
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
-  authToken: process.env.SENTRY_AUTH_TOKEN,
-  silent: !process.env.CI,
-  telemetry: false,
-  sourcemaps: {
-    disable: !process.env.SENTRY_AUTH_TOKEN,
-    deleteSourcemapsAfterUpload: true,
-  },
-});
+export default nextConfig;

@@ -1,7 +1,6 @@
 'use client'
 
-import * as Sentry from '@sentry/nextjs'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { defaultLocale, isLocale, LOCALE_COOKIE, type Locale } from '@/i18n/config'
 import ja from '@/messages/ja/globalError.json'
 import en from '@/messages/en/globalError.json'
@@ -18,8 +17,7 @@ function cookieLocale(): Locale {
   return isLocale(value) ? value : defaultLocale
 }
 
-export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
-  useEffect(() => { Sentry.captureException(error) }, [error])
+export default function GlobalError() {
   const [locale] = useState(() => typeof document === 'undefined' ? defaultLocale : cookieLocale())
   const t = messages[locale]
 
