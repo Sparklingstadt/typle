@@ -60,7 +60,10 @@ export async function setPassword(db: Db, id: string, passwordHash: string): Pro
   await db.query('UPDATE typle_users SET password_hash = $2, updated_at = now() WHERE id = $1', [id, passwordHash])
 }
 
-/** Marks the address verified, only while it is still the account's current address. */
+/**
+ * Marks the address verified, only while it is still the account's current address. A future change-email flow must
+ * reset email_verified_at when it changes the address.
+ */
 export async function markEmailVerified(db: Db, id: string, email: string): Promise<void> {
   await db.query(
     'UPDATE typle_users SET email_verified_at = COALESCE(email_verified_at, now()), updated_at = now() WHERE id = $1 AND email = $2',

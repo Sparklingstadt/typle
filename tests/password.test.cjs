@@ -34,3 +34,20 @@ test('verifyPassword runs scrypt once for a right, a wrong and a missing hash', 
     assert.equal(counter.calls, 1)
   }
 })
+
+test('unreadable or foreign-parameter hashes still run scrypt once and give false', async () => {
+  const stored = await hashPassword('correct horse')
+  const [, , , , salt, key] = stored.split('$')
+  for (const bad of [
+    stored.replace('scrypt$', 'bcrypt$'),
+    `${stored}$extra`,
+    'scrypt$32768$8$1',
+    `scrypt$1048576$8$1$${salt}$${key}`,
+    `scrypt$32768$8$100000$${salt}$${key}`,
+    `scrypt$32768$8$1$${salt}$${key.slice(0, 40)}`,
+  ]) {
+    const { counter, derive } = counting()
+    assert.equal(await verifyPassword('correct horse', bad, derive), false, bad)
+    assert.equal(counter.calls, 1, bad)
+  }
+})

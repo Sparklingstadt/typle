@@ -9,7 +9,7 @@ const SALT_BYTES = 16
 const KEY_BYTES = 64
 const MAXMEM = 64 * 1024 * 1024
 
-/** The scrypt call, injectable so a test can count how many times it ran. */
+/** The scrypt call; injectable for tests only (to count how many times it ran). */
 export type Scrypt = (password: string, salt: Buffer, keyLength: number, options: { N: number; r: number; p: number; maxmem: number }) => Promise<Buffer>
 
 const nodeScrypt: Scrypt = (password, salt, keyLength, options) =>
@@ -26,29 +26,32 @@ export async function hashPassword(password: string, derive: Scrypt = nodeScrypt
 // from a wrong password.
 const DUMMY = { N, r: R, p: P, salt: Buffer.alloc(SALT_BYTES, 1), key: Buffer.alloc(KEY_BYTES, 2) }
 
+/** The salt and hash of a stored string, or null unless every parameter is exactly what hashPassword writes. */
 function parse(stored: string | null) {
   if (stored === null) return null
   const parts = stored.split('$')
   if (parts.length !== 6 || parts[0] !== 'scrypt') return null
-  const [n, r, p] = [Number(parts[1]), Number(parts[2]), Number(parts[3])]
+  if (parts[1] !== String(N) || parts[2] !== String(R) || parts[3] !== String(P)) return null
   const salt = Buffer.from(parts[4], 'base64url')
   const key = Buffer.from(parts[5], 'base64url')
-  if (![n, r, p].every(Number.isInteger) || n < 2 || (n & (n - 1)) !== 0 || r < 1 || p < 1) return null
-  if (salt.length === 0 || key.length === 0) return null
-  return { N: n, r, p, salt, key }
+  if (salt.length !== SALT_BYTES || key.length !== KEY_BYTES) return null
+  return { N, r: R, p: P, salt, key }
 }
 
 /**
- * Whether password matches stored. scrypt runs exactly once whatever stored is (null and unreadable ones run against a
- * fixed dummy and give false).
+ * Whether password matches stored. scrypt runs exactly once whatever stored is (null and unreadable ones, including
+ * any with parameters other than hashPassword's, run against a fixed dummy and give false).
  */
 export async function verifyPassword(password: string, stored: string | null, derive: Scrypt = nodeScrypt): Promise<boolean> {
   const hash = parse(stored)
   const target = hash ?? DUMMY
+  const options = { N: target.N, r: target.r, p: target.p, maxmem: MAXMEM }
   let key: Buffer
   try {
-    key = await derive(password, target.salt, target.key.length, { N: target.N, r: target.r, p: target.p, maxmem: MAXMEM })
+    key = await derive(password, target.salt, target.key.length, options)
   } catch {
+    // Still spend the one scrypt run before refusing.
+    await derive(password, DUMMY.salt, DUMMY.key.length, { N: DUMMY.N, r: DUMMY.r, p: DUMMY.p, maxmem: MAXMEM }).catch(() => undefined)
     return false
   }
   return key.length === target.key.length && timingSafeEqual(key, target.key) && hash !== null
