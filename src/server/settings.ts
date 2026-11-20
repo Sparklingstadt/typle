@@ -7,34 +7,19 @@ import { hkdfSync } from 'node:crypto'
 export type LoginSettings = {
   /** The app's own origin, as a browser writes it in the Origin header. */
   origin: string,
-  /** The keys of the login cookie and of the iPad and Mac apps' token. */
+  /** The key of the login cookie. */
   sessionKey: Buffer,
+  /** The key of the iPad and Mac apps' token, which the Route Handlers still accept until it expires. */
   appKey: Buffer,
-  /** The key of the code a login an app started ends with, which the app trades for its token. */
-  codeKey: Buffer,
-  /** The key of the OAuth cookie, which holds a login in progress. */
-  oauthKey: Buffer,
-  /** The GitHub OAuth App the login goes through, when AUTH_GITHUB_ID and AUTH_GITHUB_SECRET are both set. */
-  github: GitHubSettings | null,
-  /**
-   * The logins that are configured, as /api/auth/session lists them: GitHub, or none. The login with FFPF ID was
-   * removed in v2.54.0.
-   */
-  providers: 'github'[],
-  /** Whether POST /api/auth/local, the made-up login for development on this machine, is on. */
+  /** Whether the made-up login for development on this machine is on. */
   localLogin: boolean,
   /** Whether AUTH_URL is HTTPS, which names the login cookie __Host-. */
   secure: boolean,
 }
 
-/** The GitHub OAuth App and the endpoints of GitHub it is used with (the tests point them elsewhere). */
-export type GitHubSettings = { clientId: string, clientSecret: string, authorizeUrl: string, tokenUrl: string, apiUrl: string }
-
 /** The HKDF info of each key: the same as the Go backend's, so that each kind opens only as itself. */
 const SESSION_INFO = 'typle session v1'
 const APP_INFO = 'typle app session v1'
-const CODE_INFO = 'typle app code v1'
-const OAUTH_INFO = 'typle oauth v1'
 
 /** A key of 32 bytes derived from AUTH_SECRET for one kind of value. */
 const deriveKey = (secret: string, info: string) => Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), info, 32))
@@ -56,15 +41,6 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
     origin: base.origin,
     sessionKey: deriveKey(secret, SESSION_INFO),
     appKey: deriveKey(secret, APP_INFO),
-    codeKey: deriveKey(secret, CODE_INFO),
-    oauthKey: deriveKey(secret, OAUTH_INFO),
-    github: env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET
-      ? {
-          clientId: env.AUTH_GITHUB_ID, clientSecret: env.AUTH_GITHUB_SECRET,
-          authorizeUrl: 'https://github.com/login/oauth/authorize', tokenUrl: 'https://github.com/login/oauth/access_token', apiUrl: 'https://api.github.com',
-        }
-      : null,
-    providers: env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET ? ['github'] : [],
     localLogin: env.VERCEL !== '1' && localLoginAllowed(env, base),
     secure: base.protocol === 'https:',
   }
