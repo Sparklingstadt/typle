@@ -13,7 +13,8 @@ import { readLoginSettings, type LoginSettings } from './settings'
 import { createUser, findUserByLoginId } from './users'
 
 // The account's own requests (/api/account): signing up with an ID and a password, and, after the login, signing out
-// of every device.
+// of every device. Confirming an address, resetting and changing a password and mailing an address's IDs are in
+// src/server/accountRecovery.ts.
 
 /**
  * POST /api/account/signout-everywhere: revokes every login of the account until now (typle_session_revocations) and
@@ -49,18 +50,21 @@ export async function answerSignOutEverywhere(request: Request, open: () => Pool
 /** How long the link that confirms an address can be used: 24 hours. */
 const VERIFY_TTL_SECONDS = 24 * 60 * 60
 
-/** The largest sign-up body read: far more than an ID, an address and a password of the longest allowed. */
-const MAX_SIGNUP_BYTES = 4096
+/** The largest account body read: far more than an ID, an address and passwords of the longest allowed. */
+const MAX_BODY_BYTES = 4096
 
-/** The fields of a sign-up body, or null when it is not a JSON object whose three fields are strings. */
-async function readSignup(request: Request): Promise<{ loginId: string, email: string, password: string } | null> {
+/**
+ * The string fields names of a JSON object body (others are ignored), or null when the body is larger than
+ * MAX_BODY_BYTES, is not a JSON object, or any of the fields is not a string.
+ */
+export async function readFields<Name extends string>(request: Request, names: readonly Name[]): Promise<Record<Name, string> | null> {
   let text: string
   try {
     text = await request.text()
   } catch {
     return null
   }
-  if (new TextEncoder().encode(text).length > MAX_SIGNUP_BYTES) return null
+  if (new TextEncoder().encode(text).length > MAX_BODY_BYTES) return null
   let body: unknown
   try {
     body = JSON.parse(text)
@@ -68,9 +72,19 @@ async function readSignup(request: Request): Promise<{ loginId: string, email: s
     return null
   }
   if (!body || typeof body !== 'object' || Array.isArray(body)) return null
-  const { loginId, email, password } = body as Record<string, unknown>
-  if (typeof loginId !== 'string' || typeof email !== 'string' || typeof password !== 'string') return null
-  return { loginId, email, password }
+  const fields = {} as Record<Name, string>
+  for (const name of names) {
+    const value = (body as Record<string, unknown>)[name]
+    if (typeof value !== 'string') return null
+    fields[name] = value
+  }
+  return fields
+}
+
+/** The language of the reader's locale cookie, Japanese without a valid one. */
+export function readerLocale(request: Request): string {
+  const cookieLocale = cookieValue(request, LOCALE_COOKIE)
+  return isLocale(cookieLocale) ? cookieLocale : defaultLocale
 }
 
 /**
@@ -95,15 +109,14 @@ export async function answerSignup(request: Request, open: () => Pool,
   if (!login) return refuse(503, 'authUnavailable')
   if (request.method !== 'POST') return methodNotAllowed(['POST'])
   if (!sameOrigin(request, login.origin) || !jsonContent(request)) return refuse(403, 'forbiddenRequest')
-  const fields = await readSignup(request)
+  const fields = await readFields(request, ['loginId', 'email', 'password'] as const)
   if (!fields) return refuse(400, 'invalidRequest')
   const loginId = normalizeLoginId(fields.loginId)
   const email = normalizeEmail(fields.email)
   const problem = loginIdProblem(loginId) ?? passwordProblem(fields.password, loginId) ?? emailProblem(email)
   if (problem) return refuse(400, problem)
 
-  const cookieLocale = cookieValue(request, LOCALE_COOKIE)
-  const locale = isLocale(cookieLocale) ? cookieLocale : defaultLocale
+  const locale = readerLocale(request)
   const limit = LIMITS.signupIp(clientIp(request))
   let db: Pool
   let created: { id: string } | 'taken'

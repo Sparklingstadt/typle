@@ -71,5 +71,8 @@
   "passwordSameAsId": "ID と同じパスワードは使えません。",
   "emailFormat": "メールアドレスの形式が正しくありません。",
   "loginIdTaken": "この ID はすでに使われています。別の ID にしてください。",
-  "tooManyRequests": "回数の上限に達しました。しばらくしてから再試行してください。"
+  "tooManyRequests": "回数の上限に達しました。しばらくしてから再試行してください。",
+  "invalidToken": "このリンクは使えません。期限が切れたか、すでに使われています。",
+  "notPasswordAccount": "ID とパスワードでログインしたアカウントでだけ使えます。",
+  "wrongPassword": "今のパスワードが違います。"
 }

@@ -71,5 +71,8 @@
   "passwordSameAsId": "密码不能与 ID 相同。",
   "emailFormat": "电子邮件地址的格式不正确。",
   "loginIdTaken": "此 ID 已被使用，请换一个。",
-  "tooManyRequests": "请求次数过多，请稍后再试。"
+  "tooManyRequests": "请求次数过多，请稍后再试。",
+  "invalidToken": "此链接无法使用，可能已过期或已被使用。",
+  "notPasswordAccount": "仅适用于使用 ID 和密码登录的账号。",
+  "wrongPassword": "当前密码不正确。"
 }

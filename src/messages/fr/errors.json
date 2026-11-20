@@ -71,5 +71,8 @@
   "passwordSameAsId": "Le mot de passe ne peut pas être identique à l’identifiant.",
   "emailFormat": "L’adresse e-mail n’est pas valide.",
   "loginIdTaken": "Cet identifiant est déjà utilisé. Choisissez-en un autre.",
-  "tooManyRequests": "Trop de demandes. Réessayez plus tard."
+  "tooManyRequests": "Trop de demandes. Réessayez plus tard.",
+  "invalidToken": "Ce lien ne peut pas être utilisé : il a expiré ou a déjà servi.",
+  "notPasswordAccount": "Réservé aux comptes qui se connectent avec un identifiant et un mot de passe.",
+  "wrongPassword": "Le mot de passe actuel est incorrect."
 }

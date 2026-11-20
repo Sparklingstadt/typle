@@ -71,5 +71,8 @@
   "passwordSameAsId": "The password cannot be the same as the ID.",
   "emailFormat": "Enter a valid email address.",
   "loginIdTaken": "This ID is already taken. Choose another one.",
-  "tooManyRequests": "Too many requests. Please try again later."
+  "tooManyRequests": "Too many requests. Please try again later.",
+  "invalidToken": "This link cannot be used. It has expired or has already been used.",
+  "notPasswordAccount": "This is only for accounts that sign in with an ID and a password.",
+  "wrongPassword": "The current password is wrong."
 }

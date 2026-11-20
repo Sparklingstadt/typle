@@ -49,9 +49,17 @@ export async function findUserByLoginId(db: Db, loginId: string): Promise<UserRo
   return rows[0] ? toUser(rows[0]) : null
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/** The typle_users.id of an account ID password:<uuid>, or null for any other kind of account (github:, ffpf:). */
+export function accountIdOf(sub: string): string | null {
+  const id = sub.startsWith('password:') ? sub.slice('password:'.length) : ''
+  return UUID.test(id) ? id : null
+}
+
 export async function findUserById(db: Db, id: string): Promise<UserRow | null> {
   // A malformed id is no account; casting it would make the database throw.
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return null
+  if (!UUID.test(id)) return null
   const { rows } = await db.query<Row>(`SELECT ${COLUMNS} FROM typle_users WHERE id = $1`, [id])
   return rows[0] ? toUser(rows[0]) : null
 }

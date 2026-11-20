@@ -41,3 +41,21 @@ export async function consumeToken(
   )
   return rows[0] ? { userId: rows[0].user_id, email: rows[0].email } : null
 }
+
+/**
+ * The owner of a token that consumeToken would still accept, without using it: lets a request check what depends on
+ * the owner (a new password may not be their ID) before it spends the token. Null as consumeToken would answer.
+ */
+export async function peekToken(
+  db: Db,
+  raw: string,
+  kind: TokenKind,
+  now: Date = new Date(),
+): Promise<{ userId: string; email: string } | null> {
+  const { rows } = await db.query<{ user_id: string; email: string }>(
+    `SELECT user_id, email FROM typle_email_tokens
+     WHERE token_hash = $1 AND kind = $2 AND used_at IS NULL AND expires_at > $3::timestamptz`,
+    [hash(raw), kind, now],
+  )
+  return rows[0] ? { userId: rows[0].user_id, email: rows[0].email } : null
+}
