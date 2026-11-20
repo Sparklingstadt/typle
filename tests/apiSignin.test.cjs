@@ -5,17 +5,19 @@ const http = require('node:http')
 const { answerLogin } = require('../src/server/signin.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 const { openOAuth, challengeOf } = require('../src/server/session.ts')
-const { newJwksCache } = require('../src/server/ffpf.ts')
 
-// /api/auth/signin and the callbacks, with the providers GitHub and FFPF ID played at 127.0.0.1:38917. The answers, and
-// the requests the providers got, are the Go backend's at the same fixed time (tests/fixtures/signin-answers.json): the
-// cookies, codes and redirects byte for byte, and the random state, verifier and nonce of a signin by what they open to.
+// /api/auth/signin and the callback, with GitHub played at 127.0.0.1:38917. The answers, and the requests GitHub got, are
+// the Go backend's at the same fixed time (tests/fixtures/signin-answers.json): the cookies, codes and redirects byte for
+// byte, and the random state and verifier of a signin by what they open to. The Go run also played FFPF ID, whose login
+// was removed in v2.54.0: those cases answer otherwise now (the tests at the end).
 const fixture = require('./fixtures/signin-answers.json')
 const PROVIDER = '127.0.0.1:38917'
 // The logins to the administrator's dashboard of the Go run: the dashboard was removed in v2.48.0, and these answer
 // otherwise now (the tests at the end).
 const DASHBOARD_CASES = new Set(['admin, whatever else', 'admin not configured', 'admin at github', 'admin at github, other state',
   'admin', 'admin again', 'not an admin', 'admin refused by ffpf'])
+/** The cases of the Go run that logged in with FFPF ID: a signin with provider=ffpf, or its callback. */
+const isFfpf = q => q.path.startsWith('/api/auth/callback/ffpf') || new URL(q.path, 'http://x').searchParams.get('provider') === 'ffpf'
 
 /** The provider's exchanges the current request is expected to make, and the requests it made. */
 let expected = []
@@ -50,7 +52,7 @@ function settingsOf(config) {
   return login
 }
 
-const paths = { '/api/auth/signin': 'signin', '/api/auth/callback/github': 'github', '/api/auth/callback/ffpf': 'ffpf' }
+const paths = { '/api/auth/signin': 'signin', '/api/auth/callback/github': 'github' }
 
 function requestOf(q) {
   const base = fixture.env[q.config].AUTH_URL
@@ -71,17 +73,15 @@ async function reported(answer) {
   }
 }
 
-test('the Route Handlers answer as the Go backend did, and ask the providers what it asked', async () => {
-  // One FFPF ID client for the whole run, as one Vercel instance keeps one: the JWKS is fetched once, as in the Go run.
-  const jwks = newJwksCache()
+test('the Route Handlers answer as the Go backend did, and ask GitHub what it asked', async () => {
   for (const [n, q] of fixture.requests.entries()) {
-    if (DASHBOARD_CASES.has(q.note)) continue
+    if (DASHBOARD_CASES.has(q.note) || isFfpf(q)) continue
     const want = fixture.answers[n]
     expected = want.provider
     got = []
     const login = settingsOf(q.config)
     const { response, operations } = await reported(() =>
-      answerLogin(paths[q.path.split('?')[0]], requestOf(q), () => login, () => fixture.now, jwks))
+      answerLogin(paths[q.path.split('?')[0]], requestOf(q), () => login, () => fixture.now))
     assert.equal(response.status, want.status, q.note)
     for (const header of ['allow', 'cache-control', 'vary', 'content-type']) assert.equal(response.headers.get(header) ?? undefined, want[header], `${q.note}: ${header}`)
     let location = response.headers.get('Location')
@@ -91,10 +91,9 @@ test('the Route Handlers answer as the Go backend did, and ask the providers wha
       const at = setCookie.findIndex(c => c.startsWith('typle-oauth='))
       const value = setCookie[at].slice('typle-oauth='.length).split(';')[0]
       const pending = openOAuth(login.oauthKey, value, fixture.now)
-      for (const random of [pending.state, pending.verifier, ...(pending.nonce ? [pending.nonce] : [])]) assert.match(random, /^[A-Za-z0-9_-]{43}$/, q.note)
+      for (const random of [pending.state, pending.verifier]) assert.match(random, /^[A-Za-z0-9_-]{43}$/, q.note)
       assert.notEqual(pending.state, pending.verifier)
       location = location.replaceAll(pending.state, 'STATE').replaceAll(challengeOf(pending.verifier), 'CHALLENGE')
-      if (pending.nonce) location = location.replaceAll(pending.nonce, 'NONCE')
       setCookie = setCookie.with(at, 'typle-oauth=OAUTH;' + setCookie[at].split(';').slice(1).join(';'))
       const { admin: _admin, ...oauth } = want.oauth
       assert.deepEqual({ returnTo: pending.returnTo, challenge: pending.challenge, provider: pending.provider, nonce: pending.nonce !== '', exp: pending.expires }, oauth, q.note)
@@ -145,19 +144,28 @@ test('admin=1 is not read any more: the login is the one the rest of the query a
 })
 
 test('a login the old version started for the dashboard ends as an ordinary login, back to where it was to return', async () => {
-  const ffpfFirst = caseOf('ffpf success').want.provider
-  for (const [note, path, exchanges] of [
-    ['admin', 'ffpf', [caseOf('admin').want.provider[0], ffpfFirst[1]]],
-    ['admin at github', 'github', caseOf('github success').want.provider],
-  ]) {
+  const { q } = caseOf('admin at github')
+  expected = caseOf('github success').want.provider
+  got = []
+  const { response } = await reported(() => answerLogin('github', requestOf(q), () => settingsOf(q.config), () => fixture.now))
+  assert.equal(response.status, 302)
+  assert.equal(response.headers.get('Location'), '/admin')
+  const cookies = response.headers.getSetCookie().map(c => c.split('=')[0])
+  assert.ok(cookies.includes('typle-session'), `${cookies}`)
+  assert.ok(!cookies.includes('typle-admin'))
+})
+
+test('provider=ffpf is not read any more: the login is GitHub\'s, the app\'s too', async () => {
+  for (const note of ['ffpf', 'android ffpf', 'ffpf not configured']) {
     const { q } = caseOf(note)
-    expected = exchanges
-    got = []
-    const { response } = await reported(() => answerLogin(path, requestOf(q), () => settingsOf(q.config), () => fixture.now, newJwksCache()))
+    const login = settingsOf(q.config)
+    const response = await answerLogin('signin', requestOf(q), () => login, () => fixture.now)
     assert.equal(response.status, 302, note)
-    assert.equal(response.headers.get('Location'), '/admin', note)
-    const cookies = response.headers.getSetCookie().map(c => c.split('=')[0])
-    assert.ok(cookies.includes('typle-session'), `${note}: ${cookies}`)
-    assert.ok(!cookies.includes('typle-admin'), note)
+    assert.ok(response.headers.get('Location').startsWith('https://github.com/login/oauth/authorize?'), note)
+    const value = response.headers.getSetCookie().find(c => c.startsWith('typle-oauth=')).split(';')[0].slice('typle-oauth='.length)
+    const pending = openOAuth(login.oauthKey, value, fixture.now)
+    assert.deepEqual({ provider: pending.provider, nonce: pending.nonce }, { provider: '', nonce: '' }, note)
+    assert.equal(pending.challenge, note === 'android ffpf' ? fixture.challenge : '', note)
   }
 })
+

@@ -17,8 +17,6 @@ const ALLOW: Record<AuthPath, string[]> = {
   session: ['GET', 'HEAD'], token: ['POST'], signout: ['POST'], local: ['POST'],
 }
 
-/** The cookie that marks a browser that signed out: its next login with FFPF ID asks for the password again. */
-const RELOGIN_COOKIE = 'typle-ffpf-relogin'
 /** The made-up account of the local login. */
 const LOCAL_SUB = 'github:0'
 const LOCAL_NAME = 'ローカル練習用' // i18n-ignore: a stored account name, as the Go backend gave it
@@ -34,7 +32,6 @@ export function cookieHeader(name: string, value: string, path: string, maxAge: 
   return `${name}=${value}; Path=${path}; Max-Age=${maxAge}; HttpOnly${secure ? '; Secure' : ''}; SameSite=${sameSite}`
 }
 
-const relogin = (login: LoginSettings) => cookieHeader(RELOGIN_COOKIE, '1', '/api/auth', SESSION_MAX_AGE, 'Lax', login.secure)
 const dropSession = (login: LoginSettings) => cookieHeader(sessionCookieName(login.secure), '', '/', 0, 'Lax', login.secure)
 
 /** The answer of a request that has nothing to show, with the cookies it sets. */
@@ -153,7 +150,7 @@ async function signout(request: Request, open: () => Pool, login: LoginSettings,
       return refuse(503, 'databaseUnavailable')
     }
   }
-  return noContent(fromApp(request) ? [] : [dropSession(login), relogin(login)])
+  return noContent(fromApp(request) ? [] : [dropSession(login)])
 }
 
 /** POST /api/auth/local: signs in as a made-up account, for practice on a development machine. */

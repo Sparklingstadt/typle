@@ -7,7 +7,10 @@ import { createHash, createHmac, timingSafeEqual } from 'node:crypto'
 /** A signed-in user. Times are Unix seconds; issuedAt is the time of the login, as a session is never sealed again. */
 export type Session = { sub: string, name: string, image: string, issuedAt: number, expires: number }
 
-/** The only subjects accepted: a GitHub account (its numeric id) or an FFPF ID account (its lowercase alphanumeric sub). */
+/**
+ * The only subjects accepted: a GitHub account (its numeric id) or an FFPF ID account (its lowercase alphanumeric sub).
+ * The login with FFPF ID was removed in v2.54.0; its sessions and tokens still open until they expire (30 days).
+ */
 const ACCOUNT_SUB = /^(github:\d+|ffpf:[a-z0-9]{1,64})$/
 
 /** The login cookie's name: __Host- over HTTPS, which makes the browser insist on Secure, Path=/ and no Domain. */
@@ -121,14 +124,14 @@ export function sealCode(key: Buffer, code: AppCode): string {
 /**
  * A login in progress, as the OAuth cookie (typle-oauth) holds it between /api/auth/signin and the callback: the state
  * and the PKCE verifier, where to go afterwards, and when it ends (Unix seconds). challenge is an app's own PKCE challenge
- * when an app started the login, provider "ffpf" for FFPF ID ("" for GitHub), and nonce the OpenID Connect nonce of an
- * FFPF ID login.
+ * when an app started the login. provider and nonce were those of a login with FFPF ID (removed in v2.54.0): "" for GitHub,
+ * and a cookie whose provider is not "" is refused.
  */
 export type PendingLogin = {
   state: string, verifier: string, returnTo: string, challenge: string, provider: string, nonce: string, expires: number,
 }
 
-/** How long a login may take between leaving for GitHub or FFPF ID and coming back. */
+/** How long a login may take between leaving for GitHub and coming back. */
 export const OAUTH_MAX_AGE = 600
 /** The name of the OAuth cookie. */
 export const OAUTH_COOKIE = 'typle-oauth'

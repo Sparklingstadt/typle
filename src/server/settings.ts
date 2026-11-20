@@ -16,10 +16,11 @@ export type LoginSettings = {
   oauthKey: Buffer,
   /** The GitHub OAuth App the login goes through, when AUTH_GITHUB_ID and AUTH_GITHUB_SECRET are both set. */
   github: GitHubSettings | null,
-  /** The FFPF ID client, when FFPF_ID_ISSUER, FFPF_ID_CLIENT_ID and FFPF_ID_CLIENT_SECRET are all set. */
-  ffpf: FfpfSettings | null,
-  /** The logins that are configured, in the order the screen lists them. */
-  providers: ('github' | 'ffpf')[],
+  /**
+   * The logins that are configured, as /api/auth/session lists them: GitHub, or none. The login with FFPF ID was
+   * removed in v2.54.0.
+   */
+  providers: 'github'[],
   /** Whether POST /api/auth/local, the made-up login for development on this machine, is on. */
   localLogin: boolean,
   /** Whether AUTH_URL is HTTPS, which names the login cookie __Host-. */
@@ -28,9 +29,6 @@ export type LoginSettings = {
 
 /** The GitHub OAuth App and the endpoints of GitHub it is used with (the tests point them elsewhere). */
 export type GitHubSettings = { clientId: string, clientSecret: string, authorizeUrl: string, tokenUrl: string, apiUrl: string }
-
-/** The FFPF ID client: the portal's issuer, without one trailing slash, and the client's credentials. */
-export type FfpfSettings = { issuer: string, clientId: string, clientSecret: string }
 
 /** The HKDF info of each key: the same as the Go backend's, so that each kind opens only as itself. */
 const SESSION_INFO = 'typle session v1'
@@ -66,13 +64,7 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
           authorizeUrl: 'https://github.com/login/oauth/authorize', tokenUrl: 'https://github.com/login/oauth/access_token', apiUrl: 'https://api.github.com',
         }
       : null,
-    ffpf: env.FFPF_ID_ISSUER && env.FFPF_ID_CLIENT_ID && env.FFPF_ID_CLIENT_SECRET
-      ? { issuer: env.FFPF_ID_ISSUER.replace(/\/$/, ''), clientId: env.FFPF_ID_CLIENT_ID, clientSecret: env.FFPF_ID_CLIENT_SECRET }
-      : null,
-    providers: [
-      ...(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET ? ['github' as const] : []),
-      ...(env.FFPF_ID_ISSUER && env.FFPF_ID_CLIENT_ID && env.FFPF_ID_CLIENT_SECRET ? ['ffpf' as const] : []),
-    ],
+    providers: env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET ? ['github'] : [],
     localLogin: env.VERCEL !== '1' && localLoginAllowed(env, base),
     secure: base.protocol === 'https:',
   }

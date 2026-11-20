@@ -4,7 +4,9 @@ import { guestWorkspace } from './guestData'
 
 test('removed server routes answer 404', async ({ page }) => {
   for (const path of ['/api/v1/lists', '/api/tokens', '/api/admin/dashboard', '/api/admin/users', '/api/admin/gallery',
-    '/api/shares', '/api/shared?id=0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d', '/api/gallery', '/api/gallery/categories']) {
+    '/api/shares', '/api/shared?id=0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d', '/api/gallery', '/api/gallery/categories',
+    // The login with FFPF ID was removed in v2.54.0.
+    '/api/auth/callback/ffpf?code=c&state=s']) {
     expect((await page.request.get(path)).status(), path).toBe(404)
   }
   // The administrator's dashboard and its API were removed in v2.48.0, sharing a pack and the gallery in v2.49.0.
@@ -12,6 +14,22 @@ test('removed server routes answer 404', async ({ page }) => {
     expect((await page.request.post(path)).status(), path).toBe(404)
   }
   expect((await page.goto('/admin'))!.status()).toBe(404)
+})
+
+// An answer that still lists FFPF ID (an older deployment) offers GitHub alone, and the login asks for no provider.
+test('the sign-in is GitHub alone', async ({ page }) => {
+  await page.route('**/api/auth/session', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ user: null, providers: ['github', 'ffpf'] }) }))
+  const urls: string[] = []
+  await page.route('**/api/auth/signin?**', route => { urls.push(route.request().url()); return route.fulfill({ status: 200, contentType: 'text/html', body: 'ok' }) })
+  await page.goto('/home')
+  await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toBeVisible()
+  await expect(page.getByText('FFPF ID')).toHaveCount(0)
+  await page.getByRole('button', { name: 'GitHubでログイン' }).click()
+  await expect.poll(() => urls.length).toBe(1)
+  const url = new URL(urls[0])
+  expect(url.pathname).toBe('/api/auth/signin')
+  expect(url.searchParams.get('returnTo')).toBe('/home')
+  expect(url.searchParams.has('provider')).toBe(false)
 })
 
 test('a link to a shared pack says sharing has ended, and asks nothing of the server', async ({ page }) => {

@@ -15,7 +15,7 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 | [`DELETE /api/workspace/records`](./workspace.md#記録の追加と削除) | 要 | 記録を1件削除する |
 | [`GET /api/auth/session`](./auth.md#get-api-auth-session) | 任意 | ログイン中のユーザーと、使えるログイン方法 |
 | [`GET /api/auth/signin`](./auth.md#get-api-auth-signin) | — | ログインを始める |
-| [`GET /api/auth/callback/github`・`/api/auth/callback/ffpf`](./auth.md#ログインから戻る先) | — | ログインから戻る先 |
+| [`GET /api/auth/callback/github`](./auth.md#ログインから戻る先) | — | ログインから戻る先 |
 | [`POST /api/auth/token`](./auth.md#post-api-auth-token) | — | アプリのログインのコードをトークンに換える |
 | [`POST /api/auth/signout`](./auth.md#post-api-auth-signout) | — | ログアウト |
 | [`POST /api/auth/local`](./auth.md#post-api-auth-local) | — | 開発用のログイン（有効なときだけ） |
@@ -48,7 +48,7 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 
 ## 認証
 
-アカウントは `github:<GitHubのユーザーID>`、または FFPF ID でログインしたときのアカウントです。ログインの流れは [ログイン](./auth.md) を見てください。
+アカウントは `github:<GitHubのユーザーID>` です（v2.53.1 までに FFPF ID でログインしたセッションは、30日で切れるまで `ffpf:` のアカウントです）。ログインの流れは [ログイン](./auth.md) を見てください。
 
 - `Authorization` ヘッダーがあるリクエストは、アプリ（iPad・Mac・Android・Windows）のものとして `Authorization: Bearer <トークン>` だけで判断し、Cookie は見ません。トークンは [`POST /api/auth/token`](./auth.md#post-api-auth-token) で受け取ります。
 - ないリクエストはセッションの Cookie で判断します。名前は HTTPS では `__Host-` 付きで、`HttpOnly`・`SameSite=Lax`・`Path=/` です。セッションはログインから30日で切れ、使っても延びません。
@@ -66,4 +66,4 @@ Cookie で書き込むリクエストは、`Origin` がアプリの origin（`AU
 
 | 場所 | 内容 |
 |---|---|
-| `src/app/api`・`src/server` | Next.js の Route Handler。すべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/lib/records.ts`、ログインの始まりと戻りは `src/server/signin.ts`・`github.ts`・`ffpf.ts`） |
+| `src/app/api`・`src/server` | Next.js の Route Handler。すべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/lib/records.ts`、ログインの始まりと戻りは `src/server/signin.ts`・`github.ts`） |

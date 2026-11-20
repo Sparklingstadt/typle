@@ -17,7 +17,7 @@ test('vercel.json forwards nothing, and next.config.mjs only the comparison', ()
 // The paths the apps (Web, iPad, Mac, Android, Windows) call.
 const nextRoutes = ['/api/health', '/api/workspace', '/api/workspace/records',
   '/api/auth/session', '/api/auth/token', '/api/auth/signout', '/api/auth/local',
-  '/api/auth/signin', '/api/auth/callback/github', '/api/auth/callback/ffpf']
+  '/api/auth/signin', '/api/auth/callback/github']
 
 test('every path of the API is a Route Handler', () => {
   for (const route of nextRoutes) assert.ok(fs.existsSync(path.join(root, 'src/app', route, 'route.ts')), `${route} has no route.ts`)

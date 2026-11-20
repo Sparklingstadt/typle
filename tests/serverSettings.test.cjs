@@ -18,10 +18,10 @@ test('the providers are the logins whose settings are all there, GitHub first', 
   assert.deepEqual(readLoginSettings(base).providers, [])
   assert.deepEqual(readLoginSettings({ ...base, AUTH_GITHUB_ID: 'i' }).providers, [])
   assert.deepEqual(readLoginSettings({ ...base, AUTH_GITHUB_ID: 'i', AUTH_GITHUB_SECRET: 's' }).providers, ['github'])
+  // The settings of FFPF ID, whose login was removed in v2.54.0, offer nothing.
   const ffpf = { FFPF_ID_ISSUER: 'https://id.example', FFPF_ID_CLIENT_ID: 'c', FFPF_ID_CLIENT_SECRET: 's' }
-  assert.deepEqual(readLoginSettings({ ...base, ...ffpf }).providers, ['ffpf'])
-  assert.deepEqual(readLoginSettings({ ...base, ...ffpf, FFPF_ID_CLIENT_SECRET: '' }).providers, [])
-  assert.deepEqual(readLoginSettings({ ...base, ...ffpf, AUTH_GITHUB_ID: 'i', AUTH_GITHUB_SECRET: 's' }).providers, ['github', 'ffpf'])
+  assert.deepEqual(readLoginSettings({ ...base, ...ffpf }).providers, [])
+  assert.deepEqual(readLoginSettings({ ...base, ...ffpf, AUTH_GITHUB_ID: 'i', AUTH_GITHUB_SECRET: 's' }).providers, ['github'])
 })
 
 test('the local login is on only for plain http to this machine, never on Vercel', () => {
@@ -34,8 +34,8 @@ test('the local login is on only for plain http to this machine, never on Vercel
   assert.equal(on({ AUTH_URL: 'http://127.0.0.1:3101', LOCAL_DEVELOPMENT_LOGIN: '0' }), false)
 })
 
-// The clients of the logins, as the Go backend made them (web.FromEnv, auth.NewOAuth, auth.NewGitHub, auth.NewFFPF).
-test('the GitHub and FFPF ID clients are there when all their settings are', () => {
+// The GitHub client, as the Go backend made it (web.FromEnv, auth.NewOAuth, auth.NewGitHub).
+test('the GitHub client is there when all its settings are', () => {
   const base = { AUTH_SECRET: 's', AUTH_URL: 'https://typle.example' }
   assert.equal(readLoginSettings(base).github, null)
   assert.equal(readLoginSettings({ ...base, AUTH_GITHUB_ID: 'i' }).github, null)
@@ -43,10 +43,5 @@ test('the GitHub and FFPF ID clients are there when all their settings are', () 
     clientId: 'i', clientSecret: 's', authorizeUrl: 'https://github.com/login/oauth/authorize',
     tokenUrl: 'https://github.com/login/oauth/access_token', apiUrl: 'https://api.github.com',
   })
-  const ffpf = { FFPF_ID_ISSUER: 'https://id.example//', FFPF_ID_CLIENT_ID: 'c', FFPF_ID_CLIENT_SECRET: 'x' }
-  assert.equal(readLoginSettings(base).ffpf, null)
-  assert.equal(readLoginSettings({ ...base, ...ffpf, FFPF_ID_CLIENT_ID: '' }).ffpf, null)
-  // Only one trailing slash goes, as strings.TrimSuffix removed it.
-  assert.deepEqual(readLoginSettings({ ...base, ...ffpf }).ffpf, { issuer: 'https://id.example/', clientId: 'c', clientSecret: 'x' })
   assert.equal(readLoginSettings(base).oauthKey.length, 32)
 })

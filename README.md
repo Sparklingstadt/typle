@@ -120,13 +120,13 @@ Next.js の App Router のアプリは1つで、`src` は Next.js でよく使�
 | `src/lib` | フック以外の処理。単語リスト・入力判定・記録・集計・ワークスペースのモデルと検証、保存先の型 `WorkspaceStore`（`workspaceStore.ts`、保存場所 `location` を含む）、ワークスペースの読み込み・保存 `createWorkspaceSession`（`workspaceSession.ts`。アカウントの切り替え後に届いた結果の破棄、保存の直列化、409での再読み込み、古いクラウド読み込みの無視）、単語ファイルの CSV の読み書き（`wordFormat.ts`。TSV の読み込みは v2.44.0 でやめました）、ログインの状態（`session.tsx`）など。保存先は `src/lib/storage` で、`cloud.ts`（Next.js の Route Handler が答える `/api/workspace` と `/api/workspace/records`）と `guest.ts`（LocalStorage）を `workspaceStore(accountId)` がアカウントに応じて選びます。`packs/` は公式パック（v0.85.0 から sparklingstadt アカウントの67リストのコピーで、`commands/` に1リスト1ファイルで保存しています。それまではサンプル、国名193か国、コマンドと構文の25種類を初級・中級・上級に分けた85リスト）とそのカタログです |
 | `src/i18n`・`src/messages` | 多言語化（next-intl）と各言語の文言 |
 | `src/proxy.ts` | ページごとに nonce を作り、スクリプトの CSP（`Content-Security-Policy-Report-Only`。方針は `src/lib/contentSecurityPolicy.ts`）を付けます（v2.51.0 から）。今は報告だけです。止める CSP（フレーム・`base` 要素・`object` 要素）は `next.config.mjs` がページ以外にだけ送り、ページのフレームへの埋め込みは `X-Frame-Options` で止めます（v2.51.1 から。Next.js は proxy が付けたヘッダーを描画するリクエストにも写し、`script-src` のない CSP があるとそちらを読んで nonce を付けないため）。違反はブラウザーのコンソールに出るだけで、どこにも送りません（v2.53.0 から） |
-| `src/server` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`。Vercel の関数のログに出す）・ログインの設定（`settings.ts`）・書き込みの要求の確認（`request.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン（`auth.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub は `github.ts`、FFPF ID は `ffpf.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。`src/lib` を使えますが、画面（`src/app`・`src/components`）からは import しません |
+| `src/server` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`。Vercel の関数のログに出す）・ログインの設定（`settings.ts`）・書き込みの要求の確認（`request.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン（`auth.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub とのやりとりは `github.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。`src/lib` を使えますが、画面（`src/app`・`src/components`）からは import しません |
 
 v2.43.2 まであったプラグインの層（`src/plugins`）と、ファイル形式を差し替えるための拡張口（`WordFormat` と形式の一覧）は v2.43.3 でやめました。読み書きする単語ファイルは CSV だけで、保存先は guest と cloud の2つです。
 
 v2.46.11 まではバックエンドの一部が Go（`server/`、Vercel の Go の関数 `api/index.go`）でした。v2.46.10 で `/api` のすべてのパスを Next.js の Route Handler に移し、v2.47.0 で Go のコードを消しました（設計は `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md`。Go と違うところもそこにあります）。
 
-ログインの Cookie は `HttpOnly`・`SameSite=Lax` で、ログインから30日で切れます（延長しません）。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です。Cookie・アプリのトークン・アプリのログインのコード・ログイン途中の状態（`typle-oauth`）は、`AUTH_SECRET` から HKDF で導いた種類ごとの鍵で HMAC-SHA256 署名します（`src/server/session.ts`・`settings.ts`。形式と鍵は Go のときと同じです）。ログインの始まりと戻りは `src/server/signin.ts`、GitHub と FFPF ID とのやりとりは `github.ts`・`ffpf.ts` です。
+ログインの Cookie は `HttpOnly`・`SameSite=Lax` で、ログインから30日で切れます（延長しません）。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です。Cookie・アプリのトークン・アプリのログインのコード・ログイン途中の状態（`typle-oauth`）は、`AUTH_SECRET` から HKDF で導いた種類ごとの鍵で HMAC-SHA256 署名します（`src/server/session.ts`・`settings.ts`。形式と鍵は Go のときと同じです）。ログインの始まりと戻りは `src/server/signin.ts`、GitHub とのやりとりは `github.ts` です。
 
 ### iPad と Mac と Android と Windows のログイン
 
@@ -163,27 +163,18 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 - `AUTH_SECRET`: 暗号学的にランダムな秘密値
 - `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`: 本番用OAuth Appの認証情報
 - `AUTH_URL`: 本番URL。本番OAuth callbackは `<本番URL>/api/auth/callback/github`（v0.55.0 でも変わりません）。この値のオリジンだけを使います
-- `FFPF_ID_ISSUER`, `FFPF_ID_CLIENT_ID`, `FFPF_ID_CLIENT_SECRET`: FFPF ID（ffpf-portal）の issuer とクライアントの認証情報（任意。3つ揃えたときだけ FFPF ID のログインを使えます）。portal に登録する redirect URI は `<本番URL>/api/auth/callback/ffpf` です
 
 対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/migrate.cjs` が `pg` で適用します（v2.36.19 から Prisma は使いません。アプリの DB の読み書きは Route Handler の `pg`）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](docs/release-workflow.md)）。
 
 公式資料: [GitHub OAuth App](https://docs.github.com/ja/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)、[PostgreSQL Docker image](https://hub.docker.com/_/postgres)。
 
-### FFPF ID でのログインの設定
+### FFPF ID でのログイン（廃止）
 
-FFPF ID（ffpf-portal）は、GitHub と並ぶもう1つのログイン方法です。次の3つの環境変数がすべて設定されているときだけ有効になります（1〜2個だけだと警告を1回ログに書いて無効のままです）。
+FFPF ID（ffpf-portal）でのログインは v2.54.0 でなくしました。ログインは GitHub だけです。
 
-| 環境変数 | 内容 |
-|---|---|
-| `FFPF_ID_ISSUER` | ffpf-portal の issuer（`https://…`。末尾の `/` は付けても外されます） |
-| `FFPF_ID_CLIENT_ID` | portal に登録したクライアントの ID |
-| `FFPF_ID_CLIENT_SECRET` | そのクライアントのシークレット |
-
-- portal に登録する redirect URI は `<AUTH_URL のオリジン>/api/auth/callback/ffpf` です（本番は `https://typle.sparklingstadt.com/api/auth/callback/ffpf`）。portal は redirect URI が登録と完全に一致しないと拒否します。
-- クライアントの登録（client_id・シークレットの作成と redirect URI の登録）は ffpf-portal 側の作業です。手順は ffpf-portal の README と、`docs/superpowers/specs/2026-10-27-ffpf-id-design.md` の「クライアント」を見てください。
-- `.env.example` に3つの変数を載せています。ローカルで試すときは `.env.local` に書きます。Vercel では「Neon / Vercelの構成」の環境変数に足します。
-- ログインした利用者は GitHub のアカウントとは別のアカウントです（アカウント ID は `ffpf:` で始まります）。
-- portal にログインしたままのブラウザでは、FFPF ID のログインはパスワードを聞かずに通ります（SSO）。ただし typle-r でログアウト（`/api/auth/signout`）したブラウザには Cookie `typle-ffpf-relogin`（`/api/auth`、30日）を置き、次の FFPF ID のログインに `prompt=login` を付けて portal のログイン画面を出させます。FFPF ID でログインし終えると消します。アプリ（iPad など）のログアウトでは置きません。
+- `/api/auth/signin?provider=ffpf` は `provider` を読まず、GitHub のログインになります。`/api/auth/callback/ffpf` は 404 です。
+- 環境変数 `FFPF_ID_ISSUER`・`FFPF_ID_CLIENT_ID`・`FFPF_ID_CLIENT_SECRET` は読みません。ログアウトで Cookie `typle-ffpf-relogin` も置きません。
+- v2.53.1 までに FFPF ID でログインしたセッション（アカウント ID が `ffpf:` で始まる）は、ログインから30日で切れるまで使えます。そのあとは、そのアカウントのデータ（DB の行はそのまま残ります）を開く方法はありません。
 
 ### パックの共有とギャラリー
 

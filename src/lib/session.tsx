@@ -4,18 +4,14 @@ import { api } from '@/lib/api'
 
 export type SessionUser = { id: string; name: string; image: string | null }
 type SessionData = { user: SessionUser } | null
-export type Provider = 'github' | 'ffpf'
 type SessionState = {
   data: SessionData
-  /** The logins the backend offers, in the order to list them. GitHub only until the first read has answered. */
-  providers: Provider[]
   status: 'loading' | 'authenticated' | 'unauthenticated'
   /** Reads the session again and resolves with what it is then: the previous state when the read failed. */
   update: () => Promise<SessionData>
 }
 
-const GITHUB_ONLY: Provider[] = ['github']
-const SessionContext = createContext<SessionState>({ data: null, providers: GITHUB_ONLY, status: 'loading', update: async () => null })
+const SessionContext = createContext<SessionState>({ data: null, status: 'loading', update: async () => null })
 
 // The waits before the first read is tried again. When all have failed, the session settles on signed out, so the app is
 // usable as a guest.
@@ -27,37 +23,24 @@ const SESSION_TIMEOUT_MS = 10_000
  * or left out. Anything else (a failed request, one that timed out, another status, a body that is not the session)
  * rejects, since it does not say that the user signed out.
  */
-async function fetchSession(): Promise<{ session: SessionData; providers: Provider[] }> {
+async function fetchSession(): Promise<SessionData> {
   // A request that hangs (a network that is half there) fails after a while, so that it does not stay in flight for good
   // and hold back every later check.
   const response = await fetch('/api/auth/session', { cache: 'no-store', signal: AbortSignal.timeout(SESSION_TIMEOUT_MS) })
   if (response.status !== 200) throw new Error(`session answered ${response.status}`)
   const body: unknown = await response.json()
   if (!body || typeof body !== 'object') throw new Error('session answer is not an object')
-  const providers = providersOf((body as { providers?: unknown }).providers)
   const user = (body as { user?: unknown }).user
-  if (user === null || user === undefined) return { session: null, providers }
+  if (user === null || user === undefined) return null
   if (typeof user !== 'object' || typeof (user as { id?: unknown }).id !== 'string') throw new Error('session user is invalid')
-  return { session: { user: user as SessionUser }, providers }
+  return { user: user as SessionUser }
 }
-
-/**
- * The providers an answer lists, without any this screen does not know. An answer that lists none (an older backend, or
- * none configured) falls back to GitHub, the login the screen always had, so a person is never left without a button.
- */
-function providersOf(value: unknown): Provider[] {
-  const known = Array.isArray(value) ? (['github', 'ffpf'] as const).filter(provider => value.includes(provider)) : []
-  return known.length ? known : GITHUB_ONLY
-}
-
-const sameProviders = (a: Provider[], b: Provider[]) => a.length === b.length && a.every((provider, i) => provider === b[i])
 
 const sameUser = (a: SessionData, b: SessionData) =>
   a?.user.id === b?.user.id && a?.user.name === b?.user.name && a?.user.image === b?.user.image
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<SessionData>(null)
-  const [providers, setProviders] = useState<Provider[]>(GITHUB_ONLY)
   const [loaded, setLoaded] = useState(false)
   // The same as data and loaded, for the callbacks of a read.
   const current = useRef<SessionData>(null)
@@ -69,13 +52,11 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   const retry = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   // The read a retry starts: load, set once it exists.
   const again = useRef(() => {})
-  const settle = useCallback((next: SessionData, offered: Provider[]) => {
+  const settle = useCallback((next: SessionData) => {
     // The same user keeps the same object, so a refresh on focus renders nothing again.
     if (!sameUser(current.current, next)) current.current = next
     settled.current = true
     setData(current.current)
-    // The same list keeps the same array, so a refresh on focus renders nothing again.
-    setProviders(previous => sameProviders(previous, offered) ? previous : offered)
     setLoaded(true)
   }, [])
   // A forced read (update) always starts a new request. Only the newest request started is applied, so an older one that
@@ -88,17 +69,17 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     if (!force && inflight.current) return inflight.current
     const id = ++latest.current
     clearTimeout(retry.current)
-    const request: Promise<SessionData> = fetchSession().then(({ session: next, providers: offered }) => {
+    const request: Promise<SessionData> = fetchSession().then((next) => {
       if (inflight.current === request) inflight.current = null
       if (!mounted.current || id !== latest.current) return current.current
       failures.current = 0
-      settle(next, offered)
+      settle(next)
       return current.current
     }, () => {
       if (inflight.current === request) inflight.current = null
       if (!mounted.current || id !== latest.current || settled.current) return current.current
       const delay = RETRY_DELAYS_MS[failures.current++]
-      if (delay === undefined) settle(null, GITHUB_ONLY)
+      if (delay === undefined) settle(null)
       else retry.current = setTimeout(() => again.current(), delay)
       return current.current
     })
@@ -123,10 +104,9 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }, [load])
   const value = useMemo<SessionState>(() => ({
     data,
-    providers,
     status: !loaded ? 'loading' : data ? 'authenticated' : 'unauthenticated',
     update: refresh,
-  }), [data, providers, loaded, refresh])
+  }), [data, loaded, refresh])
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }
 
@@ -134,14 +114,11 @@ export function useSession(): SessionState {
   return useContext(SessionContext)
 }
 
-/**
- * Goes to the provider and comes back to the page being viewed. GitHub is the login without a `provider`, so its
- * address stays what it always was.
- */
-export function signIn(provider: Provider = 'github'): void {
-  // A full navigation: the sign-in route is a Route Handler that redirects to the provider, not a page of the Next.js router.
+/** Goes to GitHub and comes back to the page being viewed. */
+export function signIn(): void {
+  // A full navigation: the sign-in route is a Route Handler that redirects to GitHub, not a page of the Next.js router.
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-  location.assign('/api/auth/signin?returnTo=' + encodeURIComponent(location.pathname + location.search) + (provider === 'ffpf' ? '&provider=ffpf' : ''))
+  location.assign('/api/auth/signin?returnTo=' + encodeURIComponent(location.pathname + location.search))
 }
 
 /**

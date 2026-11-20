@@ -1,7 +1,6 @@
 import { randomBytes, timingSafeEqual } from 'node:crypto'
 import { cookieValue } from './account'
 import { cookieHeader } from './auth'
-import { exchangeFfpfCode, ffpfAuthorizeUrl, FfpfError, type FfpfUser, type JwksCache } from './ffpf'
 import { exchangeGitHubCode, githubAuthorizeUrl, githubUser } from './github'
 import { encodeValues, parseQuery, safeReturnTo, trimSpace, DEFAULT_RETURN_TO } from './goUrl'
 import { reportFailure } from './report'
@@ -12,17 +11,15 @@ import {
 } from './session'
 import { readLoginSettings, type LoginSettings } from './settings'
 
-// The login itself: /api/auth/signin sends the browser to GitHub or FFPF ID, and the provider sends it back to
-// /api/auth/callback/github or /api/auth/callback/ffpf, which signs it in. A login an app (iPad, Mac, Android, Windows)
-// starts ends at typle-r://login with a code the app trades for its token (/api/auth/token). As the Go backend answered
-// them, without the login to the administrator's dashboard (admin=1), which was removed in v2.48.0.
+// The login itself: /api/auth/signin sends the browser to GitHub, and GitHub sends it back to /api/auth/callback/github,
+// which signs it in. A login an app (iPad, Mac, Android, Windows) starts ends at typle-r://login with a code the app
+// trades for its token (/api/auth/token). As the Go backend answered them, without the login to the administrator's
+// dashboard (admin=1), which was removed in v2.48.0, and without the login with FFPF ID (provider=ffpf and
+// /api/auth/callback/ffpf), which was removed in v2.54.0: provider=ffpf is not read, so it is a login with GitHub.
 
-export type LoginPath = 'signin' | 'github' | 'ffpf'
-type Provider = 'github' | 'ffpf'
+export type LoginPath = 'signin' | 'github'
 
-const CALLBACK: Record<Provider, string> = { github: '/api/auth/callback/github', ffpf: '/api/auth/callback/ffpf' }
-/** The cookie that marks a browser that signed out: its next login with FFPF ID asks for the password again. */
-const RELOGIN_COOKIE = 'typle-ffpf-relogin'
+const CALLBACK = '/api/auth/callback/github'
 /** Where a login an app started ends: the apps wait for this scheme and take the URL. */
 const APP_RETURN = 'typle-r://login'
 /** The clients of a login an app starts. Every app logs in the same way. */
@@ -48,14 +45,10 @@ function goTo(location: string, cookies: string[] = []): Response {
 const toApp = (key: 'code' | 'error', value: string) => `${APP_RETURN}?${encodeValues({ [key]: value })}`
 
 const oauthCookie = (login: LoginSettings, value: string, maxAge: number) => cookieHeader(OAUTH_COOKIE, value, '/api/auth', maxAge, 'Lax', login.secure)
-const dropRelogin = (login: LoginSettings) => cookieHeader(RELOGIN_COOKIE, '', '/api/auth', 0, 'Lax', login.secure)
 
-/** Whether the provider's login is configured. */
-const ready = (login: LoginSettings, provider: Provider) => provider === 'ffpf' ? login.ffpf !== null : login.github !== null
-
-/** The answer when the provider's login is not configured. It is only logged: a missing setting is not a failure to report. */
-function unavailable(request: Request, provider: Provider): Response {
-  console.warn(`${request.method} ${new URL(request.url).pathname}: the ${provider} login is not configured`)
+/** The answer when the GitHub login is not configured. It is only logged: a missing setting is not a failure to report. */
+function unavailable(request: Request): Response {
+  console.warn(`${request.method} ${new URL(request.url).pathname}: the github login is not configured`)
   return refuse(503, 'authUnavailable')
 }
 
@@ -66,33 +59,25 @@ function queryOf(request: Request): (key: string) => string {
 }
 
 /**
- * GET /api/auth/signin: sends the browser to GitHub, or with provider=ffpf to FFPF ID, with a state and a PKCE challenge
- * (and for FFPF ID a nonce), and keeps them, the verifier and where to return to in the OAuth cookie. With client=ipad,
- * macos, android or windows and the app's own S256 code_challenge, the login is that app's. admin=1, which asked for a
- * login to the removed dashboard, is not read.
+ * GET /api/auth/signin: sends the browser to GitHub with a state and a PKCE challenge, and keeps them, the verifier and
+ * where to return to in the OAuth cookie. With client=ipad, macos, android or windows and the app's own S256
+ * code_challenge, the login is that app's. admin=1 and provider=ffpf, which asked for logins that were removed, are not
+ * read.
  */
 function signin(request: Request, login: LoginSettings, now: number): Response {
   const get = queryOf(request)
-  const provider: Provider = get('provider') === 'ffpf' ? 'ffpf' : 'github'
-  if (!ready(login, provider)) return unavailable(request, provider)
+  if (!login.github) return unavailable(request)
   const returnTo = safeReturnTo(get('returnTo'))
   let challenge = ''
   if (APP_CLIENTS.has(get('client'))) {
     challenge = get('code_challenge')
     if (!PKCE_CHALLENGE.test(challenge)) return goTo(toApp('error', 'loginFailed'))
   }
+  // provider and nonce were FFPF ID's, and stay empty.
   const pending: PendingLogin = {
-    state: random(), verifier: random(), returnTo, challenge, provider: provider === 'ffpf' ? 'ffpf' : '', nonce: '',
-    expires: Math.floor(now) + OAUTH_MAX_AGE,
+    state: random(), verifier: random(), returnTo, challenge, provider: '', nonce: '', expires: Math.floor(now) + OAUTH_MAX_AGE,
   }
-  let location: string
-  if (provider === 'ffpf') {
-    pending.nonce = random()
-    const signedOut = cookieValue(request, RELOGIN_COOKIE) !== null
-    location = ffpfAuthorizeUrl(login.ffpf!, pending.state, challengeOf(pending.verifier), pending.nonce, login.origin + CALLBACK.ffpf, signedOut)
-  } else {
-    location = githubAuthorizeUrl(login.github!, pending.state, challengeOf(pending.verifier), login.origin + CALLBACK.github)
-  }
+  const location = githubAuthorizeUrl(login.github, pending.state, challengeOf(pending.verifier), login.origin + CALLBACK)
   return goTo(location, [oauthCookie(login, sealOAuth(login.oauthKey, pending), OAUTH_MAX_AGE)])
 }
 
@@ -107,13 +92,13 @@ function sameText(a: string, b: string): boolean {
 type SignedIn = { sub: string, name: string, image: string }
 
 /**
- * GET /api/auth/callback/github and /api/auth/callback/ffpf: where the provider sends the browser back to. Whatever
- * happens, the OAuth cookie is spent and the browser goes back to the page it left, signed in only if everything checked
- * out: the cookie was started for this provider, its state matches, and the provider vouches for the account. A login an
+ * GET /api/auth/callback/github: where GitHub sends the browser back to. Whatever happens, the OAuth cookie is spent and
+ * the browser goes back to the page it left, signed in only if everything checked out: the cookie was started for GitHub
+ * (one an older version started for FFPF ID is not), its state matches, and GitHub vouches for the account. A login an
  * app started goes back to the app, with a code or loginFailed, and no cookie.
  */
-async function callback(provider: Provider, request: Request, login: LoginSettings, now: number, jwks?: JwksCache): Promise<Response> {
-  if (!ready(login, provider)) return unavailable(request, provider)
+async function callback(request: Request, login: LoginSettings, now: number): Promise<Response> {
+  if (!login.github) return unavailable(request)
   const cookies = [oauthCookie(login, '', 0)]
   const value = cookieValue(request, OAUTH_COOKIE)
   const pending = value === null ? null : openOAuth(login.oauthKey, value, now)
@@ -122,34 +107,20 @@ async function callback(provider: Provider, request: Request, login: LoginSettin
   const get = queryOf(request)
   const state = get('state')
   const code = get('code')
-  // The cookie of a GitHub login has no provider, and that of an FFPF ID login "ffpf".
-  if (!pending || (pending.provider || 'github') !== provider || get('error') !== '' || !state || !code || !sameText(state, pending.state)) return fail()
-  const redirectUri = login.origin + CALLBACK[provider]
+  // The cookie of a GitHub login has no provider; one an older version started for FFPF ID has "ffpf".
+  if (!pending || pending.provider !== '' || get('error') !== '' || !state || !code || !sameText(state, pending.state)) return fail()
   let user: SignedIn
-  if (provider === 'ffpf') {
-    let ffpfUser: FfpfUser
-    try {
-      ffpfUser = await exchangeFfpfCode(login.ffpf!, code, pending.verifier, redirectUri, pending.nonce, now, jwks)
-    } catch (error) {
-      // A refusal comes of what the user did, such as a code used twice, and is not the app's failure.
-      if (!(error instanceof FfpfError && error.kind === 'rejected')) reportFailure(request, error, 'auth.callback')
-      return fail()
-    }
-    user = { sub: `ffpf:${ffpfUser.sub}`, name: trimSpace(ffpfUser.name), image: '' }
-  } else {
-    try {
-      const token = await exchangeGitHubCode(login.github!, code, pending.verifier, redirectUri)
-      const githubAccount = await githubUser(login.github!, token)
-      // The profile name if it says anything, else the login.
-      const name = trimSpace(githubAccount.name) !== '' ? githubAccount.name : githubAccount.login
-      user = { sub: `github:${githubAccount.id}`, name: trimSpace(name), image: githubAccount.avatarUrl }
-    } catch (error) {
-      reportFailure(request, error, 'auth.callback')
-      return fail()
-    }
+  try {
+    const token = await exchangeGitHubCode(login.github, code, pending.verifier, login.origin + CALLBACK)
+    const githubAccount = await githubUser(login.github, token)
+    // The profile name if it says anything, else the login.
+    const name = trimSpace(githubAccount.name) !== '' ? githubAccount.name : githubAccount.login
+    user = { sub: `github:${githubAccount.id}`, name: trimSpace(name), image: githubAccount.avatarUrl }
+  } catch (error) {
+    reportFailure(request, error, 'auth.callback')
+    return fail()
   }
   if (pending.challenge) return goTo(toApp('code', sealCode(login.codeKey, newCode(user.sub, user.name, user.image, pending.challenge, now))), cookies)
-  if (provider === 'ffpf') cookies.push(dropRelogin(login))
   const session = sealSession(login.sessionKey, newSession(user.sub, user.name, user.image, now))
   cookies.push(cookieHeader(sessionCookieName(login.secure), session, '/', SESSION_MAX_AGE, 'Lax', login.secure))
   return goTo(returnTo, cookies)
@@ -157,13 +128,13 @@ async function callback(provider: Provider, request: Request, login: LoginSettin
 
 /**
  * Answers path of the login: the settings first (503 authUnavailable without them), then the method (GET only: the
- * login steps set cookies and call the providers, which a HEAD must not do), then whether the provider is configured.
+ * login steps set cookies and call GitHub, which a HEAD must not do), then whether the GitHub login is configured.
  */
 export async function answerLogin(path: LoginPath, request: Request,
-  settings: () => LoginSettings | null = readLoginSettings, clock: () => number = () => Date.now() / 1000, jwks?: JwksCache): Promise<Response> {
+  settings: () => LoginSettings | null = readLoginSettings, clock: () => number = () => Date.now() / 1000): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (request.method !== 'GET') return methodNotAllowed(['GET'])
   const now = clock()
-  return path === 'signin' ? signin(request, login, now) : callback(path, request, login, now, jwks)
+  return path === 'signin' ? signin(request, login, now) : callback(request, login, now)
 }
