@@ -95,10 +95,14 @@ test('the limits are the documented ones', () => {
   assert.deepEqual(LIMITS.mailDaily('e2e', '2026-11-20'), { key: 'mail:global:e2e:2026-11-20', max: 80, windowSeconds: 86400 })
 })
 
-test('the client IP is the first x-forwarded-for value', () => {
+test('the client IP is the last x-forwarded-for value, the one the load balancer added', () => {
   const request = value => new Request('http://localhost/', value === undefined ? {} : { headers: { 'x-forwarded-for': value } })
-  assert.equal(clientIp(request('1.2.3.4, 5.6.7.8')), '1.2.3.4')
+  assert.equal(clientIp(request('1.2.3.4, 5.6.7.8')), '5.6.7.8')
+  // A value the client sent itself comes first; the load balancer appends the address it saw.
+  assert.equal(clientIp(request('1.1.1.1, 203.0.113.7')), '203.0.113.7')
   assert.equal(clientIp(request('  9.9.9.9  ')), '9.9.9.9')
+  assert.equal(clientIp(request('1.2.3.4, ')), '1.2.3.4')
+  assert.equal(clientIp(request(' , ')), 'unknown')
   assert.equal(clientIp(request()), 'unknown')
   assert.equal(clientIp(request('')), 'unknown')
 })
@@ -106,7 +110,7 @@ test('the client IP is the first x-forwarded-for value', () => {
 test('an IPv6 client is known by its /64, an IPv4 one by its address', () => {
   const request = value => new Request('http://localhost/', { headers: { 'x-forwarded-for': value } })
   assert.equal(clientIp(request('2001:db8:1:2:3:4:5:6')), '2001:db8:1:2::/64')
-  assert.equal(clientIp(request('2001:DB8:0001:0002::9, 1.1.1.1')), '2001:db8:1:2::/64')
+  assert.equal(clientIp(request('1.1.1.1, 2001:DB8:0001:0002::9')), '2001:db8:1:2::/64')
   assert.equal(clientIp(request('2001:db8::1')), '2001:db8:0:0::/64')
   assert.equal(clientIp(request('::1')), '0:0:0:0::/64')
   assert.equal(clientIp(request('fe80::1%en0')), 'fe80:0:0:0::/64')
