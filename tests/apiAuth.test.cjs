@@ -46,9 +46,22 @@ function requestOf(q) {
   return new Request(`${base.origin}${q.path}`, { method: q.method, headers, body: q.body || undefined })
 }
 
+/**
+ * The Go run's answer as it is since v2.54.0, which removed the login with FFPF ID: the session lists GitHub alone, and a
+ * sign-out no longer leaves the cookie that made the next FFPF ID login ask for the password again.
+ */
+function withoutFfpf(want) {
+  const body = want.body ? JSON.parse(want.body) : null
+  if (body && Array.isArray(body.providers)) body.providers = body.providers.filter(provider => provider !== 'ffpf')
+  return {
+    ...want, setCookie: want.setCookie.filter(cookie => !cookie.startsWith('typle-ffpf-relogin=')),
+    body: body ? JSON.stringify(body) : want.body,
+  }
+}
+
 test('the Route Handlers answer as the Go backend did, cookies and tokens included', database, async () => {
   for (const [n, q] of fixture.requests.entries()) {
-    const want = fixture.answers[n]
+    const want = withoutFfpf(fixture.answers[n])
     const [path] = q.path.split('?')
     // The dashboard's signout of the Go run: removed in v2.48.0, a 404 of Next.js now.
     if (!(path in paths)) continue

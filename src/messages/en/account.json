@@ -2,8 +2,6 @@
   "checking": "Checking sign-in status",
   "signIn": "Sign in",
   "signInWithGitHub": "Sign in with GitHub",
-  "signInWithFfpf": "Sign in with FFPF ID",
-  "chooseSignIn": "Choose how to sign in",
   "githubUser": "GitHub user",
   "ffpfUser": "FFPF ID user",
   "menu": "Account menu",

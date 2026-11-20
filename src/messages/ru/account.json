@@ -2,8 +2,6 @@
   "checking": "Проверка статуса входа",
   "signIn": "Войти",
   "signInWithGitHub": "Войти через GitHub",
-  "signInWithFfpf": "Войти через FFPF ID",
-  "chooseSignIn": "Войти: выбрать способ входа",
   "githubUser": "Пользователь GitHub",
   "ffpfUser": "Пользователь FFPF ID",
   "menu": "Меню аккаунта",

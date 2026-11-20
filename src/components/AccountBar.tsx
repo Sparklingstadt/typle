@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
-import { ChevronDown, LogIn, LogOut, Monitor } from 'lucide-react'
+import { LogIn, LogOut, Monitor } from 'lucide-react'
 import { Avatar } from 'radix-ui'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
@@ -21,30 +21,18 @@ function UserAvatar({ name, image, className }: { name: string; image?: string |
 }
 
 export default function AccountBar() {
-  const { data: session, providers, status } = useSession()
+  const { data: session, status } = useSession()
   const t = useTranslations('account')
   const [signOutFailed, setSignOutFailed] = useState(false)
   // Same size as the avatar button so the top bar does not shift once the session is known.
   if (status === 'loading') return <div className="flex size-10 items-center justify-center"><Skeleton className="size-8 rounded-full" /><span className="sr-only">{t('checking')}</span></div>
   if (!session?.user) {
-    if (providers.length > 1) return <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="lg" className="gap-2 px-3" aria-label={t('chooseSignIn')}>
-          <LogIn aria-hidden="true" /><span>{t('signIn')}</span><ChevronDown aria-hidden="true" className="hidden size-4 text-muted-foreground sm:block" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" sideOffset={8} className="w-56 border-border">
-        {providers.map(provider => <DropdownMenuItem key={provider} variant="bare" className={itemClass} onSelect={() => signIn(provider)}>
-          <LogIn aria-hidden="true" />{t(provider === 'ffpf' ? 'signInWithFfpf' : 'signInWithGitHub')}
-        </DropdownMenuItem>)}
-      </DropdownMenuContent>
-    </DropdownMenu>
-    const only = providers[0]
-    const label = t(only === 'ffpf' ? 'signInWithFfpf' : 'signInWithGitHub')
-    return <Button variant="outline" size="lg" className="gap-2 px-3" aria-label={label} onClick={() => signIn(only)}>
+    const label = t('signInWithGitHub')
+    return <Button variant="outline" size="lg" className="gap-2 px-3" aria-label={label} onClick={() => signIn()}>
       <LogIn aria-hidden="true" /><span className="sm:hidden">{t('signIn')}</span><span className="hidden sm:inline">{label}</span>
     </Button>
   }
+  // A login with FFPF ID made before v2.54.0 still opens until it expires (the login itself was removed then).
   const viaFfpf = session.user.id.startsWith('ffpf:')
   // A name that is empty (an FFPF ID without one) is no name, so it falls back too.
   const name = session.user.name || t(viaFfpf ? 'ffpfUser' : 'githubUser')
