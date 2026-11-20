@@ -32,9 +32,9 @@ ID とパスワードのアカウントの API です。書き込みは `Origin`
 | `POST /api/account/verify` | `{ token }` | メールのリンクのトークンでアドレスを確認済みにする（24時間・1回だけ）。`200 {}`、誤りは `400 invalidToken` |
 | `POST /api/account/resend-verification` | `{}` | ログイン中のアカウントに確認のメールを送り直す。`200 { mailSent }`（確認済みなら `{ alreadyVerified: true }`）、`429 tooManyRequests` |
 | `POST /api/account/forgot-password` | `{ loginId }` | 確認済みのアドレスがあれば再設定のリンク（30分・1回だけ）を送る。ID があってもなくても、形が正しければ `200 {}` |
-| `POST /api/account/reset-password` | `{ token, password }` | 新しいパスワードを決める。アドレスを確認済みにし、そのアカウントの以前のログインを無効にする。`200 { loginId }`（画面は続けてログインする）、`400 invalidToken`・`passwordLength`・`passwordSameAsId` |
+| `POST /api/account/reset-password` | `{ token, password }` | 新しいパスワードを決める。アドレスを確認済みにし、そのアカウントの以前のログインと、ほかの再設定のリンクを無効にし、その ID のログインの失敗の数を消す。`200 { loginId }`（画面は続けてログインする）、`400 invalidToken`・`passwordLength`・`passwordSameAsId` |
 | `POST /api/account/forgot-id` | `{ email }` | そのアドレスで確認済みのアカウントの ID を送る。あってもなくても、形が正しければ `200 {}` |
-| `POST /api/account/change-password` | `{ currentPassword, newPassword }` | ログイン中のアカウントのパスワードを変え、以前のログインを無効にする。`200 { loginId }`、`400 wrongPassword`・`passwordLength`・`passwordSameAsId`・`notPasswordAccount` |
+| `POST /api/account/change-password` | `{ currentPassword, newPassword }` | ログイン中のアカウントのパスワードを変え、以前のログインと再設定のリンクを無効にする。`200 { loginId }`、`400 wrongPassword`・`passwordLength`・`passwordSameAsId`・`notPasswordAccount`、ID か IP のログインが止まっていれば `429 tooManyRequests` |
 | `GET /api/account/me` | — | ログイン中のアカウント。`200 { loginId, email, emailVerified }`、`401 loginRequired`、GitHub のログインには `400 notPasswordAccount` |
 | `POST /api/account/signout-everywhere` | — | このアカウントのそれまでのすべてのログインを無効にし、この端末の Cookie も消す。`204`。`Origin` が必要。無効にされたあとのセッションからは `401 loginRequired`、DB に書けなければ `503 databaseUnavailable` |
 
@@ -53,8 +53,9 @@ ID とパスワードのアカウントの API です。書き込みは `Origin`
   | 登録 | IP | 5件まで | 1時間 |
   | メール（再設定・ID の通知・確認の送り直し） | ID かアドレス | 3通まで | 1時間 |
   | メール（同上） | IP | 10回まで | 1時間 |
+  | すべてのメール（登録の確認も含む） | 全体 | 80通まで | UTC の1日 |
 
-  IP は `x-forwarded-for` の最初の値です。止まっている間は、正しいパスワードでもログインの失敗と同じ答えになります。
+  登録とメールは、仕事の前に1回分を数えてから進めるので、同時に送った要求もこの数を超えません。1日の上限を超えたメールは送らず、登録は `201 { mailSent: false }`、確認の送り直しは `429`、`forgot-*` は `200 {}` で答えます。IP は `x-forwarded-for` の最初の値で、IPv6 は /64 ごとに数えます。止まっている間は、正しいパスワードでもログインの失敗と同じ答えになります。
 
 ## 開発用のログイン
 

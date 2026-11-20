@@ -139,7 +139,7 @@ v2.46.11 まではバックエンドの一部が Go（`server/`、Vercel の Go 
 セッションは JWT で、DB のセッションも adapter も使いません。API（workspace など）は Cookie を `signedIn`（`src/server/account.ts`）で読み、「すべての端末からログアウト」の表（`typle_session_revocations`）を確かめます。この操作は `POST /api/account/signout-everywhere` です（v2.54.0 までの `POST /api/auth/signout?everywhere=1` と、`Authorization: Bearer` のアプリのトークンは使えません。`Authorization` ヘッダーは読みません）。
 
 - ID は `^[a-z0-9_-]{3,32}$`（大文字小文字は区別しない）、パスワードは10〜128文字で、ハッシュは `crypto.scrypt` です。
-- 回数の制限は表 `typle_auth_limits` に持ちます（ログインの失敗は同じ ID で15分に5回・同じ IP で30回、登録は IP ごとに1時間に5件、メールは ID かアドレスごとに1時間に3通・IP ごとに10回）。IP は `x-forwarded-for` の最初の値です。
+- 回数の制限は表 `typle_auth_limits` に持ちます（ログインの失敗は同じ ID で15分に5回・同じ IP で30回、登録は IP ごとに1時間に5件、メールは ID かアドレスごとに1時間に3通・IP ごとに10回、すべてのメールを合わせて UTC の1日に80通）。登録とメールは、仕事の前に1回分を数えてから進めます。IP は `x-forwarded-for` の最初の値で、IPv6 は /64 ごとに数えます。1日より前に終わった制限と使えなくなったリンクの行は、登録のときに消します。
 - 登録の確認のメールは24時間、再設定は30分で切れ、どちらも1回だけ使えます。トークンは32バイトの乱数で、DB には SHA-256 だけを持ちます。再設定とパスワードの変更では、ほかの端末のログインを無効にします。
 - 注意：ブラウザーの Cookie の `Expires` は、Auth.js がセッションを読むたびに「今から30日」に書き直されます。切れるかどうかは Cookie の中身の `exp`（ログインから30日で固定）で決まるので、延長にはなりません。
 - 注意：**本番では `AUTH_REDIRECT_PROXY_URL` を設定しないでください。** Auth.js はこの値があると、GitHub のログインの callback をそのアドレスのプロキシへ向けます（`redirectProxyUrl` は手元の開発のときだけ値を決めますが、環境変数が残っていれば Auth.js が読みます）。

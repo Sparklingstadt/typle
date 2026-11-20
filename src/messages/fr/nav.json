@@ -31,7 +31,7 @@
     "label": "Enregistrement : ",
     "account": "Enregistré sur votre compte",
     "browser": "Enregistré dans ce navigateur",
-    "accountDetail": "Enregistré sur votre compte GitHub et synchronisé sur les appareils où vous êtes connecté.",
+    "accountDetail": "Enregistré sur votre compte et synchronisé sur les appareils où vous êtes connecté.",
     "browserDetail": "Vous n’êtes pas connecté : les données sont enregistrées uniquement dans ce navigateur."
   },
   "theme": {

@@ -31,7 +31,7 @@
     "label": "保存先：",
     "account": "アカウントに保存",
     "browser": "このブラウザーに保存",
-    "accountDetail": "GitHubアカウントに保存し、ログインした端末で同期します。",
+    "accountDetail": "アカウントに保存し、ログインした端末で同期します。",
     "browserDetail": "ログインしていないため、このブラウザーだけに保存します。"
   },
   "theme": {
