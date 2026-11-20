@@ -3,7 +3,7 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const {
   githubProfile, authorizeLocal, LOCAL_USER, jwtCallback, sessionCallback, redirectCallback,
-  redirectProxyUrl, authPathKnown,
+  redirectProxyUrl, authPathKnown, authErrorLogger,
 } = require('../src/server/authOptions.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 const { githubConfigured } = require('../src/lib/githubLogin.ts')
@@ -109,4 +109,18 @@ test('Auth.js answers its own paths and the providers in use; every other /api/a
     assert.equal(authPathKnown(path, providers), false, path)
   }
   assert.equal(authPathKnown('/api/auth/callback/github', ['local']), false)
+})
+
+test('the Auth.js logger skips CredentialsSignin and logs every other error', () => {
+  const lines = []
+  const log = authErrorLogger((...args) => lines.push(args.join(' ')))
+  const wrong = Object.assign(new Error('Read more at https://errors.authjs.dev#credentialssignin'), { type: 'CredentialsSignin' })
+  log(wrong)
+  assert.deepEqual(lines, [])
+  const other = Object.assign(new Error('boom'), { type: 'AdapterError' })
+  log(other)
+  assert.equal(lines[0], '[auth][error] AdapterError: boom')
+  assert.ok(lines.length >= 2)
+  log(new TypeError('plain'))
+  assert.ok(lines.includes('[auth][error] TypeError: plain'))
 })

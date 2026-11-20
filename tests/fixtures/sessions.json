@@ -22,6 +22,16 @@
       }
     },
     {
+      "value": "eyJzdWIiOiJwYXNzd29yZDoxMjNlNDU2Ny1lODliLTQyZDMtYTQ1Ni00MjY2MTQxNzQwMDAiLCJuYW1lIjoiSGFuYWtvIiwiaW1hZ2UiOiIiLCJpYXQiOjE3OTAwMDAwMDAsImV4cCI6NDEwMjQ0NDgwMH0.q3zpRU3DY3JITPmQztJ1eqkQCV2PnUdT6aRmifZUX2Q",
+      "session": {
+        "sub": "password:123e4567-e89b-42d3-a456-426614174000",
+        "name": "Hanako",
+        "image": "",
+        "iat": 1790000000,
+        "exp": 4102444800
+      }
+    },
+    {
       "value": "eyJzdWIiOiJnaXRodWI6MiIsIm5hbWUiOiJPbGQiLCJpbWFnZSI6IiIsImlhdCI6MTAwMCwiZXhwIjoxMDAwfQ.p8Gn9NYGS6Qo-BEWDZXb7oMTM62Mo7kWgGijzBzy7_s",
       "session": null
     },

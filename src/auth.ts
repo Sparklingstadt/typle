@@ -4,7 +4,7 @@ import Credentials from 'next-auth/providers/credentials'
 import GitHub from 'next-auth/providers/github'
 import { revokedSoon } from './server/account'
 import {
-  authorizeLocal, githubProfile, jwtCallback, redirectCallback, redirectProxyUrl, sessionCallback,
+  authErrorLogger, authorizeLocal, githubProfile, jwtCallback, redirectCallback, redirectProxyUrl, sessionCallback,
 } from './server/authOptions'
 import { githubConfigured } from './lib/githubLogin'
 import { decodeSession, encodeSession } from './server/authJwt'
@@ -62,6 +62,8 @@ if (settings?.localLogin) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
+  // Quiet the CredentialsSignin Auth.js logs, with a stack, for every wrong password; other errors are still logged.
+  logger: { error: authErrorLogger() },
   providers,
   // The app's own sign-in page instead of Auth.js's: a login that fails (or providers that cannot be read) comes back
   // to it with ?error=<type>, which it shows as a failed login.

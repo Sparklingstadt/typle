@@ -66,6 +66,10 @@ export default async function About() {
         <p className="max-w-2xl text-sm text-muted-foreground">{t("analytics.text")}</p>
       </Section>
 
+      <Section id="email-heading" title={t("email.title")}>
+        <p className="max-w-2xl text-sm text-muted-foreground">{t("email.text")}</p>
+      </Section>
+
       <Section id="version-heading" title={t("version.title")}>
         <dl className="divide-y rounded-xl border bg-card text-sm">
           <div className="grid gap-1 px-4 py-3 sm:grid-cols-[10rem_1fr] sm:gap-4">

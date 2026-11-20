@@ -96,3 +96,22 @@ export function authPathKnown(pathname: string, providers: readonly string[]): b
   if (action === 'callback') return provider !== undefined && providers.includes(provider)
   return false
 }
+
+/**
+ * The Auth.js logger's error method. A wrong ID or password makes Auth.js log CredentialsSignin as an error with a
+ * stack on every attempt; that is an ordinary answer, not a failure, so it is not logged (the limits and the response
+ * already handle it). Every other error is logged as Auth.js's own logger does, with its cause when it has one.
+ */
+export function authErrorLogger(write: (...args: unknown[]) => void = console.error) {
+  return (error: Error) => {
+    const name = (error as { type?: string }).type ?? error.name
+    if (name === 'CredentialsSignin') return
+    write(`[auth][error] ${name}: ${error.message}`)
+    const cause = error.cause
+    if (cause && typeof cause === 'object' && 'err' in cause && (cause as { err: unknown }).err instanceof Error) {
+      write('[auth][cause]:', (cause as { err: Error }).err.stack)
+    } else if (error.stack) {
+      write(error.stack.replace(/.*/, '').substring(1))
+    }
+  }
+}
