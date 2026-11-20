@@ -1,12 +1,14 @@
-# The build context of Dockerfile: the app's sources only. Never secrets (.env*, keys) or local builds.
+# The build context of Dockerfile: the app's sources only. Never secrets (.env*, keys) or local builds, anywhere in the
+# tree: a pattern without **/ matches only at the root, and .claude holds session worktrees (whole repository copies).
 .git
-node_modules
-.next
-.next-production
-.env*
-*.pem
-.vercel
+.claude
 .superpowers
+**/node_modules
+**/.next
+**/.next-production
+**/.vercel
+**/.env*
+**/*.pem
 kotlin
 server
 api
