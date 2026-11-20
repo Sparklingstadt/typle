@@ -1,0 +1,23 @@
+{
+  "name": "typle-r-infra",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.ts",
+    "synth": "cdk synth -q -c appTag=v0.0.0-synth -c githubClientId=synth -c mailFrom=synth@example.com",
+    "cdk": "cdk"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.277.0",
+    "constructs": "10.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3",
+    "aws-cdk": "2.1149.0",
+    "typescript": "6.0.3"
+  }
+}

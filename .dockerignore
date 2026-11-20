@@ -13,6 +13,7 @@ kotlin
 server
 api
 api-docs
+infra
 tests
 test-results
 playwright-report
