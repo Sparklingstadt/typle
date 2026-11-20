@@ -1,0 +1,4 @@
+node_modules/
+cdk.out/
+# The deploy's own settings (GitHub client ID, mail sender, alarm mail): scripts/deploy-aws.cjs reads them.
+cdk.context.local.json

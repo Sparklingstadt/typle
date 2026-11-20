@@ -40,16 +40,19 @@ function ipv6Groups(address: string): number[] {
 }
 
 /**
- * The client of request as the per-IP limits know it: the first value of x-forwarded-for, trimmed ('unknown' when
- * there is none). An IPv6 client is known by its /64 (as 2001:db8:1:2::/64), because one connection is usually given a
- * whole /64 and could otherwise take a new address for every request; an IPv4 address written as IPv6
- * (::ffff:192.0.2.1) is that IPv4 address. Anything else is kept as written.
+ * The client of request as the per-IP limits know it: the last non-empty value of x-forwarded-for, trimmed ('unknown'
+ * when there is none). Vercel replaces the header with the one address it saw, and an AWS load balancer appends the
+ * address it saw to whatever the client sent, so the last value is the one a client cannot forge on either.
+ * An IPv6 client is known by its /64 (as 2001:db8:1:2::/64), because one connection is usually given a whole /64 and
+ * could otherwise take a new address for every request; an IPv4 address written as IPv6 (::ffff:192.0.2.1) is that
+ * IPv4 address. Anything else is kept as written.
  */
 export function clientIp(request: Request): string {
-  const first = request.headers.get('x-forwarded-for')?.split(',')[0].trim()
-  if (!first) return 'unknown'
-  if (!isIPv6(first)) return first
-  const groups = ipv6Groups(first)
+  const values = (request.headers.get('x-forwarded-for') ?? '').split(',').map(value => value.trim()).filter(Boolean)
+  const last = values.at(-1)
+  if (!last) return 'unknown'
+  if (!isIPv6(last)) return last
+  const groups = ipv6Groups(last)
   if (groups.slice(0, 5).every(group => group === 0) && groups[5] === 0xffff) {
     return [groups[6] >> 8, groups[6] & 255, groups[7] >> 8, groups[7] & 255].join('.')
   }

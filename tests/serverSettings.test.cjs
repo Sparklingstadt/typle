@@ -23,5 +23,8 @@ test('the local login is on only for plain http to this machine, never on Vercel
   assert.equal(on({ AUTH_URL: 'http://192.168.1.2:3000', LOCAL_DEVELOPMENT_LAN_HOST: '192.168.1.2' }), true)
   assert.equal(on({ AUTH_URL: 'http://8.8.8.8', LOCAL_DEVELOPMENT_LAN_HOST: '8.8.8.8' }), false)
   assert.equal(on({ AUTH_URL: 'http://127.0.0.1:3101', VERCEL: '1' }), false)
+  // Off in production anywhere, not only on Vercel: the site is https and not this machine.
+  assert.equal(on({ AUTH_URL: 'https://typle.sparklingstadt.com' }), false)
+  assert.equal(on({ AUTH_URL: 'https://typle.sparklingstadt.com', NODE_ENV: 'production' }), false)
   assert.equal(on({ AUTH_URL: 'http://127.0.0.1:3101', LOCAL_DEVELOPMENT_LOGIN: '0' }), false)
 })

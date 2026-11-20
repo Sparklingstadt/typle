@@ -1,6 +1,7 @@
 // Runs, in order, every check a commit must pass before it is released (docs/release-workflow.md), and stops at the
 // first failure: the migrations on the local database, the migration tests, the type check, the unit tests, lint,
-// knip, the production build, the end-to-end tests, and the API documentation's build and link check. Until v2.38.0 GitHub Actions ran these as `verify`; since v2.38.1 they run here, on the
+// knip, the production build, the AWS infrastructure's (infra/) type check, tests and synth, the end-to-end tests,
+// and the API documentation's build and link check. Until v2.38.0 GitHub Actions ran these as `verify`; since v2.38.1 they run here, on the
 // developer's machine, before a PR is opened and again on the merged main commit before it is released.
 //
 //   npm run verify            every check
@@ -25,6 +26,7 @@ if (!databaseUrl) {
 }
 const testDatabaseUrl = process.env.TYPLE_TEST_DATABASE_URL || databaseUrl
 const docsDir = path.join(root, 'api-docs')
+const infraDir = path.join(root, 'infra')
 
 /** @type {{ name: string, command: string, args: string[], env?: Record<string, string>, cwd?: string }[]} */
 const steps = [
@@ -36,6 +38,13 @@ const steps = [
   { name: 'knip', command: 'npm', args: ['run', 'knip'] },
   { name: 'build', command: 'npm', args: ['run', 'build'] },
 ]
+// infra/ (the AWS CDK app) is its own npm project, as api-docs/ is; its checks are quick, so --fast keeps them.
+if (!fs.existsSync(path.join(infraDir, 'node_modules'))) {
+  steps.push({ name: 'infra: npm ci', command: 'npm', args: ['ci'], cwd: infraDir })
+}
+steps.push({ name: 'infra: typecheck', command: 'npm', args: ['run', 'typecheck'], cwd: infraDir })
+steps.push({ name: 'infra: tests', command: 'npm', args: ['test'], cwd: infraDir })
+steps.push({ name: 'infra: synth', command: 'npm', args: ['run', 'synth'], cwd: infraDir })
 if (!fast) {
   steps.push({ name: 'end-to-end tests', command: 'npm', args: ['run', 'test:e2e'], env: { DATABASE_URL: databaseUrl } })
   if (!fs.existsSync(path.join(docsDir, 'node_modules'))) {

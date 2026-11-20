@@ -17,6 +17,8 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = (phase) => withNextIntl({
   poweredByHeader: false,
+  // The container image (Dockerfile) builds a standalone server; Vercel and `next start` (verify, E2E) do not.
+  output: process.env.TYPLE_STANDALONE === '1' ? 'standalone' : undefined,
   // Keep local development and verification separate; Vercel expects .next.
   distDir: phase === 'phase-development-server' || process.env.VERCEL === '1' ? '.next' : '.next-production',
   headers: () => [

@@ -1,7 +1,8 @@
 import { Pool } from 'pg'
 
 // The database of the Route Handlers. Each server instance keeps one small pool: on Vercel many instances can run at
-// once, and DATABASE_URL is Neon's pooled connection.
+// once (DATABASE_URL is Neon's pooled connection), and on AWS each ECS task is one instance. On Amazon RDS, DATABASE_URL
+// carries sslmode=verify-full and sslrootcert (the CA bundle in the image, see Dockerfile), so the server is verified.
 
 /**
  * A pool of connections to the database at url. Connecting and each query give up after timeoutMs, so a database that
@@ -14,7 +15,8 @@ export function createPool(url: string, timeoutMs = 5_000): Pool {
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: timeoutMs,
     query_timeout: timeoutMs,
-    // On Vercel an instance can sleep with idle connections open; keep-alive finds the dead ones.
+    // An instance can sleep (Vercel) or lose a connection silently (a restart, a network path timing out); keep-alive
+    // finds the dead ones.
     keepAlive: true,
   })
   // The database closing an idle connection (a restart, an idle timeout) is emitted here. Unheard, the event would

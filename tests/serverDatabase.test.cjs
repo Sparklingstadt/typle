@@ -66,3 +66,21 @@ test('the pool survives an error on an idle connection', async () => {
     assert.doesNotThrow(() => db.emit('error', new Error('terminating connection due to administrator command')))
   } finally { await db.end() }
 })
+
+// On RDS, DATABASE_URL names the CA bundle in the image (Dockerfile): the server's certificate is verified with it.
+test('an RDS URL verifies the server with the CA bundle it names', () => {
+  const fs = require('node:fs'), os = require('node:os'), path = require('node:path')
+  const { Client } = require('pg')
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'typle-ca-'))
+  const ca = path.join(dir, 'bundle.pem')
+  fs.writeFileSync(ca, '-----BEGIN CERTIFICATE-----\nTEST\n-----END CERTIFICATE-----\n')
+  try {
+    const client = new Client({ connectionString: `postgres://u:p@db.example:5432/typle?sslmode=verify-full&sslrootcert=${ca}` })
+    const ssl = client.connectionParameters.ssl
+    assert.equal(typeof ssl, 'object')
+    assert.match(String(ssl.ca), /BEGIN CERTIFICATE/)
+    assert.notEqual(ssl.rejectUnauthorized, false)
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true })
+  }
+})

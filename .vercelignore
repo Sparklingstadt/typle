@@ -16,3 +16,5 @@ api-docs/src/.vuepress/.cache
 server/cmd
 *_test.go
 kotlin
+# The AWS infrastructure (CDK) is its own npm project and is not part of the app.
+infra

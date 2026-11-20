@@ -17,6 +17,8 @@
 | [docs/features.md](docs/features.md) | 画面ごとの機能の仕様（ログインなしでの利用・表示言語・入力・ダッシュボード・単語リスト・CSV・端末・ベスト記録など） |
 | [docs/word-list-sources.md](docs/word-list-sources.md) | 公式の単語リスト（国名・コマンド・構文）の出典と検証 |
 | [docs/release-workflow.md](docs/release-workflow.md) | PR から本番公開までの手順 |
+| [docs/aws/](docs/aws/README.md) | AWS の練習環境をコンソールで作って消す手順書（AWS への移行と CLF-C02 の学習のため） |
+| [docs/aws/production.md](docs/aws/production.md) | 本番を `infra/`（AWS CDK）で作る手順（切り替えの前まで） |
 | [api-docs/](api-docs/src/README.md) | アプリの API の仕様（VuePress。`cd api-docs && npm ci && npm run docs:dev`） |
 | [docs/save-metrics.md](docs/save-metrics.md) | 保存の時間と大きさの計測（`TYPLE_MEASURE_SAVES=1`） |
 | [docs/backend-compare.md](docs/backend-compare.md) | Next.js・Go・Kotlin のバックエンドの速度比較（`TYPLE_BACKEND_COMPARE=1` のプレビューだけ） |
@@ -98,6 +100,7 @@ npm run typecheck
 npm test
 npm run lint
 npm run build
+(cd infra && npm ci && npm run typecheck && npm test && npm run synth)   # AWS の CDK（--fast でも流れる）
 npx playwright install chromium
 npm run test:e2e
 ```
@@ -187,6 +190,21 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/migrate.cjs` が `pg` で適用します（v2.36.19 から Prisma は使いません。アプリの DB の読み書きは Route Handler の `pg`）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](docs/release-workflow.md)）。
 
 公式資料: [GitHub OAuth App](https://docs.github.com/ja/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)、[PostgreSQL Docker image](https://hub.docker.com/_/postgres)。
+
+### コンテナのイメージ
+
+AWS への移行（[設計](docs/superpowers/specs/2026-11-20-aws-migration-design.md)）のため、本番のイメージをリポジトリのルートの `Dockerfile` で作れます（v2.55.2 から）。AWS での動かし方は、後の手順書に書きます。
+
+```bash
+docker build --build-arg SITE_URL=https://typle.sparklingstadt.com -t typle-r .
+```
+
+- `SITE_URL` は必須です。`sitemap.xml`・`robots.txt`・ページのメタデータはビルドの時点で URL を埋め込むため、ないとビルドが止まります。
+- イメージの中では `TYPLE_STANDALONE=1` で standalone のビルドをし、`node server.js` が `:3000` で受けます。Vercel と `next start`（verify・E2E）のビルドは今までどおりです。
+- `.env*` と `*.pem` は `.dockerignore` でイメージに入りません。設定は実行のときに環境変数で渡します。
+- マイグレーションは同じイメージで `node scripts/migrate.cjs` を実行します。
+- Amazon RDS につなぐときは、`DATABASE_URL` の末尾に `?sslmode=verify-full&sslrootcert=/app/certs/rds-global-bundle.pem` を付けます（RDS の CA バンドルはイメージに入っています）。
+- 接続元の IP（回数制限）は `x-forwarded-for` の最後の値です。Vercel も AWS のロードバランサーも、最後に自分が見た接続元を置くためです。
 
 ### FFPF ID でのログイン（廃止）
 
