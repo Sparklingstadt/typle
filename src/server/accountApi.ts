@@ -10,7 +10,7 @@ import { reportFailure } from './report'
 import { jsonContent, sameOrigin } from './request'
 import { methodNotAllowed, refuse, reply } from './response'
 import { readLoginSettings, type LoginSettings } from './settings'
-import { createUser } from './users'
+import { createUser, findUserByLoginId } from './users'
 
 // The account's own requests (/api/account): signing up with an ID and a password, and, after the login, signing out
 // of every device.
@@ -81,12 +81,16 @@ async function readSignup(request: Request): Promise<{ loginId: string, email: s
  *
  * Answers 400 with the first rule the fields break (loginIdFormat, passwordLength, passwordSameAsId, emailFormat, or
  * invalidRequest for a body of another shape), 429 tooManyRequests once the address has created 5 accounts in the
- * hour, 409 loginIdTaken, and otherwise 201 { loginId, mailSent }. Only accounts created count toward the limit, so a
- * mistyped form does not use it up. A mail that cannot be sent does not undo the account: mailSent is false and the
- * user can ask for the link again after signing in. The screen signs in with the same ID and password afterwards.
+ * hour, 409 loginIdTaken, and otherwise 201 { loginId, mailSent }. Both a created account and a taken ID count toward
+ * the limit, so the 409s cannot be used without bound to find which IDs exist; a form refused with 400 does not count,
+ * so typing mistakes do not use it up. A taken ID is looked up before the password is hashed, so a 409 costs no hash
+ * (one that is created between the look-up and the insert is still answered 409 and counted). A mail that cannot be
+ * sent does not undo the account: mailSent is false and the user can ask for the link again after signing in. The
+ * screen signs in with the same ID and password afterwards. hash is replaceable for tests only (to count its runs).
  */
 export async function answerSignup(request: Request, open: () => Pool,
-  settings: () => LoginSettings | null = readLoginSettings): Promise<Response> {
+  settings: () => LoginSettings | null = readLoginSettings,
+  hash: (password: string) => Promise<string> = hashPassword): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (request.method !== 'POST') return methodNotAllowed(['POST'])
@@ -106,18 +110,19 @@ export async function answerSignup(request: Request, open: () => Pool,
   try {
     db = open()
     if (await isBlocked(db, limit.key)) return refuse(429, 'tooManyRequests')
-    created = await createUser(db, { loginId, email, passwordHash: await hashPassword(fields.password), locale })
+    created = await findUserByLoginId(db, loginId) ? 'taken'
+      : await createUser(db, { loginId, email, passwordHash: await hash(fields.password), locale })
   } catch (error) {
     reportFailure(request, error, 'account.signup')
     return refuse(503, 'databaseUnavailable')
   }
-  if (created === 'taken') return refuse(409, 'loginIdTaken')
   try {
     await countHit(db, limit)
   } catch (error) {
-    // The account exists; a hit that could not be counted only lets this address create one more.
+    // A hit that could not be counted only lets this address make one more attempt.
     reportFailure(request, error, 'account.signup')
   }
+  if (created === 'taken') return refuse(409, 'loginIdTaken')
 
   let mailSent = false
   try {

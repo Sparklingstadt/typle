@@ -5,8 +5,8 @@ const { randomUUID } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const { answerSignup } = require('../src/server/accountApi.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
-const { findUserByLoginId } = require('../src/server/users.ts')
-const { verifyPassword } = require('../src/server/password.ts')
+const { createUser, findUserByLoginId } = require('../src/server/users.ts')
+const { hashPassword, verifyPassword } = require('../src/server/password.ts')
 const { fakeResend } = require('./fakeResendServer.cjs')
 
 // POST /api/account/signup against a real database and a fake Resend. Runs as npm run verify does:
@@ -41,7 +41,18 @@ function signup(body, { ip = newIp(), headers = {} } = {}) {
     body: typeof body === 'string' ? body : JSON.stringify(body),
   })
 }
-const call = request => resend.withEnv(() => answerSignup(request, open, withSettings))
+const call = (request, hash) => resend.withEnv(() => answerSignup(request, open, withSettings, hash))
+
+/** hashPassword, counting its runs; before each run it calls beforeHash (if any). */
+function countedHash(beforeHash) {
+  const hash = async password => {
+    hash.runs++
+    if (beforeHash) await beforeHash()
+    return hashPassword(password)
+  }
+  hash.runs = 0
+  return hash
+}
 
 test('a sign-up creates the account and mails the confirmation link in the reader\'s language', database, async () => {
   await resend.ready
@@ -83,6 +94,37 @@ test('the sixth sign-up from one address in an hour is refused', database, async
   assert.equal(sixth.status, 429)
   assert.deepEqual(await sixth.json(), { error: 'tooManyRequests' })
   assert.equal(await findUserByLoginId(db, `${prefix}lim6`), null)
+})
+
+test('a taken ID is answered without hashing the password, and five of them use up the limit', database, async () => {
+  const taken = await call(signup({ loginId: `${prefix}owner`, email: `${prefix}owner@example.com`, password: PASSWORD }))
+  assert.equal(taken.status, 201)
+  const ip = newIp()
+  const hash = countedHash()
+  for (let i = 1; i <= 5; i++) {
+    const response = await call(signup({ loginId: `${prefix}OWNER`, email: `${prefix}t${i}@example.com`, password: PASSWORD }, { ip }), hash)
+    assert.equal(response.status, 409, `attempt ${i}`)
+    assert.deepEqual(await response.json(), { error: 'loginIdTaken' })
+  }
+  assert.equal(hash.runs, 0)
+  const fresh = await call(signup({ loginId: `${prefix}fresh`, email: `${prefix}fresh@example.com`, password: PASSWORD }, { ip }), hash)
+  assert.equal(fresh.status, 429)
+  assert.deepEqual(await fresh.json(), { error: 'tooManyRequests' })
+  assert.equal(hash.runs, 0)
+  assert.equal(await findUserByLoginId(db, `${prefix}fresh`), null)
+})
+
+test('an ID taken between the look-up and the insert is answered 409 and counted', database, async () => {
+  const ip = newIp()
+  const loginId = `${prefix}race`
+  // Another sign-up takes the ID while this one hashes its password.
+  const hash = countedHash(() => createUser(db, { loginId, email: `${prefix}other@example.com`, passwordHash: 'h', locale: 'ja' }))
+  const response = await call(signup({ loginId, email: `${prefix}race@example.com`, password: PASSWORD }, { ip }), hash)
+  assert.equal(hash.runs, 1)
+  assert.equal(response.status, 409)
+  assert.deepEqual(await response.json(), { error: 'loginIdTaken' })
+  const { rows } = await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [`signup:ip:${ip}`])
+  assert.deepEqual(rows.map(row => row.count), [1])
 })
 
 test('refused shapes are answered with their key and do not count', database, async () => {
