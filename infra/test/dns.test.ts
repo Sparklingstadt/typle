@@ -22,3 +22,9 @@ test('the zone is kept even if the stack is deleted', () => {
   const zone = Object.values(template({ phase: 'dns' }).findResources('AWS::Route53::HostedZone'))[0]
   assert.equal(zone.DeletionPolicy, 'Retain')
 })
+
+test('the image repository exists from the dns phase, so the first image can be pushed before the service needs it', () => {
+  const t = template({ phase: 'dns' })
+  t.resourceCountIs('AWS::ECR::Repository', 1)
+  t.hasOutput('RepositoryUri', {})
+})

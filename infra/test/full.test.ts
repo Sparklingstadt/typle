@@ -151,3 +151,7 @@ test('the apex stays one record, ApexRecord, whether it points at Vercel or at t
   assert.ok(aws.Properties.AliasTarget.DNSName)
   assert.equal(aws.Properties.Type, 'A')
 })
+
+test('the first deploy can start the service with no task, before the secrets and the database are ready', () => {
+  template({ ...fullContext, appCount: '0' }).hasResourceProperties('AWS::ECS::Service', { DesiredCount: 0 })
+})

@@ -22,31 +22,24 @@ const CREATE_APP_USER = [
 type Secrets = Record<'databaseUrl' | 'authSecret' | 'githubSecret' | 'resendApiKey' | 'appDbPassword' | 'neonDirectUrl', secretsmanager.Secret>
 
 /**
- * The image repository, the secrets, and on the cluster: the app's service behind the load balancer, and three task
+ * The secrets, and on the cluster: the app's service behind the load balancer, and three task
  * definitions run as one-off tasks (the migrations, creating the app's database user, copying the data from Neon).
  * Each task definition has its own execution role, which may read only the secrets that task is given.
  */
 export class App extends Construct {
-  readonly repository: ecr.Repository
   readonly loadBalancer: elbv2.ApplicationLoadBalancer
   readonly targetGroup: elbv2.ApplicationTargetGroup
   readonly service: ecs.FargateService
 
   constructor(scope: Construct, id: string, props: {
-    config: Config, vpc: ec2.IVpc, zone: route53.IHostedZone, database: rds.DatabaseInstance,
+    config: Config, vpc: ec2.IVpc, zone: route53.IHostedZone, database: rds.DatabaseInstance, repository: ecr.IRepository,
     loadBalancerGroup: ec2.ISecurityGroup, taskGroup: ec2.ISecurityGroup,
   }) {
     super(scope, id)
     const { config, vpc, database } = props
     const site = `https://${config.domain}`
 
-    this.repository = new ecr.Repository(this, 'Repository', {
-      repositoryName: 'typle',
-      imageTagMutability: ecr.TagMutability.IMMUTABLE,
-      imageScanOnPush: true,
-      lifecycleRules: [{ description: 'Keep the last 10 images', maxImageCount: 10 }],
-      removalPolicy: RemovalPolicy.RETAIN,
-    })
+    const { repository } = props
 
     // Created with a random placeholder; the real values are put with `aws secretsmanager put-secret-value`.
     const secret = (key: string, name: string, description: string) =>
@@ -73,7 +66,7 @@ export class App extends Construct {
 
     const app = new ecs.FargateTaskDefinition(this, 'AppTask', { family: 'typle-app', cpu: 512, memoryLimitMiB: 1024, runtimePlatform: arm64 })
     app.addContainer('app', {
-      image: ecs.ContainerImage.fromEcrRepository(this.repository, config.appTag),
+      image: ecs.ContainerImage.fromEcrRepository(repository, config.appTag),
       portMappings: [{ containerPort: 3000 }],
       environment: {
         AUTH_URL: site,
@@ -92,7 +85,7 @@ export class App extends Construct {
 
     const migrate = new ecs.FargateTaskDefinition(this, 'MigrateTask', { family: 'typle-migrate', cpu: 256, memoryLimitMiB: 512, runtimePlatform: arm64 })
     migrate.addContainer('migrate', {
-      image: ecs.ContainerImage.fromEcrRepository(this.repository, config.migrateTag),
+      image: ecs.ContainerImage.fromEcrRepository(repository, config.migrateTag),
       command: ['node', 'scripts/migrate.cjs'],
       secrets: { DATABASE_URL: fromSecret(secrets.databaseUrl) },
       logging: logging('migrate'),
@@ -123,7 +116,7 @@ export class App extends Construct {
       cluster,
       serviceName: 'app',
       taskDefinition: app,
-      desiredCount: 1,
+      desiredCount: config.appCount,
       assignPublicIp: true,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },
       securityGroups: [props.taskGroup],
@@ -161,7 +154,6 @@ export class App extends Construct {
     output('DataMoveTaskDefinitionArn', datamove.taskDefinitionArn)
     output('TaskSubnetIds', Fn.join(',', vpc.publicSubnets.map(subnet => subnet.subnetId)))
     output('TaskSecurityGroupId', props.taskGroup.securityGroupId)
-    output('RepositoryUri', this.repository.repositoryUri)
     output('LoadBalancerDnsName', this.loadBalancer.loadBalancerDnsName)
     output('DatabaseEndpoint', database.dbInstanceEndpointAddress)
   }

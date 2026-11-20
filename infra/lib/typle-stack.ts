@@ -1,4 +1,5 @@
-import { Stack, type StackProps } from 'aws-cdk-lib'
+import { CfnOutput, RemovalPolicy, Stack, type StackProps } from 'aws-cdk-lib'
+import { aws_ecr as ecr } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import { App } from './app.ts'
 import type { Config } from './config.ts'
@@ -20,12 +21,21 @@ export class TypleStack extends Stack {
     super(scope, id, props)
     const { config } = props
     this.dns = new Dns(this, 'Dns', { domain: config.domain })
+    // From the dns phase on, so that the first image is in ECR before the service is created.
+    const repository = new ecr.Repository(this, 'Repository', {
+      repositoryName: 'typle',
+      imageTagMutability: ecr.TagMutability.IMMUTABLE,
+      imageScanOnPush: true,
+      lifecycleRules: [{ description: 'Keep the last 10 images', maxImageCount: 10 }],
+      removalPolicy: RemovalPolicy.RETAIN,
+    })
+    new CfnOutput(this, 'RepositoryUri', { key: 'RepositoryUri', value: repository.repositoryUri })
     if (config.phase === 'dns') return
 
     const network = new Network(this, 'Network')
     const database = new Database(this, 'Database', { vpc: network.vpc, securityGroup: network.databaseGroup })
     const app = new App(this, 'App', {
-      config, vpc: network.vpc, zone: this.dns.zone, database: database.instance,
+      config, vpc: network.vpc, zone: this.dns.zone, database: database.instance, repository,
       loadBalancerGroup: network.loadBalancerGroup, taskGroup: network.taskGroup,
     })
     new Monitoring(this, 'Monitoring', {

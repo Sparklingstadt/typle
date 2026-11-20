@@ -42,3 +42,13 @@ test('the alarm mail is optional', () => {
   assert.equal(readConfig(app(full)).alarmEmail, undefined)
   assert.equal(readConfig(app({ ...full, alarmEmail: 'ops@example.com' })).alarmEmail, 'ops@example.com')
 })
+
+test('the service runs one task unless the first deploy asks for none', () => {
+  assert.equal(readConfig(app(full)).appCount, 1)
+  assert.equal(readConfig(app({ ...full, appCount: '0' })).appCount, 0)
+  assert.throws(() => readConfig(app({ ...full, appCount: '2' })), /appCount/)
+})
+
+test('the apex cannot point at a load balancer the dns phase does not make', () => {
+  assert.throws(() => readConfig(app({ phase: 'dns', dnsTarget: 'aws' })), /dnsTarget/)
+})

@@ -18,6 +18,8 @@ export type Config = {
   mailFrom?: string
   /** Where the alarms are mailed; no subscription without it. */
   alarmEmail?: string
+  /** Tasks of the service: 0 only for the first deploy, before the secrets and the database user exist. */
+  appCount: 0 | 1
   domain: 'typle.sparklingstadt.com'
   region: 'ap-northeast-1'
 }
@@ -43,9 +45,11 @@ export function readConfig(app: App): Config {
     githubClientId: optional(app, 'githubClientId'),
     mailFrom: optional(app, 'mailFrom'),
     alarmEmail: optional(app, 'alarmEmail'),
+    appCount: choice(app, 'appCount', ['0', '1'] as const, '1') === '0' ? 0 : 1,
     domain: 'typle.sparklingstadt.com',
     region: 'ap-northeast-1',
   }
+  if (phase === 'dns' && config.dnsTarget === 'aws') throw new Error('dnsTarget=aws needs the full phase: the dns phase has no load balancer')
   if (phase === 'full') {
     for (const key of ['appTag', 'githubClientId', 'mailFrom'] as const) {
       if (!config[key]) throw new Error(`Pass -c ${key}=… for the full phase`)
