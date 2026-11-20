@@ -1,6 +1,6 @@
 # 概要と共通事項
 
-Typle 本体（Web版と iPad・Mac・Android・Windows 版）が使う、アプリ自身のバックエンドです。v2.46.10 から、すべてのパスを Next.js の Route Handler（`src/app/api`・`src/server`）が答えます。v2.47.0 で消した Go のバックエンド（`server/`）と同じ答えを返します（違いは設計書 `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md` の「移した後も Go と違うところ」）。
+Typle 本体（Web版。iPad・Mac 版も `/api/workspace` などを呼びますが、v2.55.0 からログインはできません）が使う、アプリ自身のバックエンドです。v2.46.10 から、すべてのパスを Next.js の Route Handler（`src/app/api`・`src/server`）が答えます。v2.47.0 で消した Go のバックエンド（`server/`）と同じ答えを返します（違いは設計書 `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md` の「移した後も Go と違うところ」）。
 
 Web版は v2.41.1 から、ワークスペース・記録を下の REST のパスで読み書きします（v2.14.0〜v2.41.0 は GraphQL）。iPad・Mac 版も 11/13 に REST へ戻りました。GraphQL（`POST /api/graphql`）は v2.43.0 で消しました。
 
@@ -13,12 +13,8 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 | [`PUT /api/workspace`](./workspace.md#put-api-workspace) | 要 | ワークスペースを保存する |
 | [`POST /api/workspace/records`](./workspace.md#記録の追加と削除) | 要 | 記録を1件追加する |
 | [`DELETE /api/workspace/records`](./workspace.md#記録の追加と削除) | 要 | 記録を1件削除する |
-| [`GET /api/auth/session`](./auth.md#get-api-auth-session) | 任意 | ログイン中のユーザーと、使えるログイン方法 |
-| [`GET /api/auth/signin`](./auth.md#get-api-auth-signin) | — | ログインを始める |
-| [`GET /api/auth/callback/github`](./auth.md#ログインから戻る先) | — | ログインから戻る先 |
-| [`POST /api/auth/token`](./auth.md#post-api-auth-token) | — | アプリのログインのコードをトークンに換える |
-| [`POST /api/auth/signout`](./auth.md#post-api-auth-signout) | — | ログアウト |
-| [`POST /api/auth/local`](./auth.md#post-api-auth-local) | — | 開発用のログイン（有効なときだけ） |
+| [`/api/auth/*`](./auth.md#auth-js-の経路-api-auth) | — | Auth.js（セッション・CSRF・プロバイダー・ログイン・ログアウト） |
+| [`/api/account/*`](./auth.md#post-api-account) | 一部要 | ID とパスワードのアカウント（登録・確認・再設定・パスワードの変更・すべての端末からのログアウト） |
 
 ## 共通事項
 
@@ -48,22 +44,21 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 
 ## 認証
 
-アカウントは `github:<GitHubのユーザーID>` です（v2.53.1 までに FFPF ID でログインしたセッションは、30日で切れるまで `ffpf:` のアカウントです）。ログインの流れは [ログイン](./auth.md) を見てください。
+アカウントは `github:<GitHubのユーザーID>` か `password:<UUID>`（ID とパスワードのアカウント）です（v2.53.1 までに FFPF ID でログインしたセッションは、30日で切れるまで `ffpf:` のアカウントです）。ログインの流れは [ログイン](./auth.md) を見てください。
 
-- `Authorization` ヘッダーがあるリクエストは、アプリ（iPad・Mac・Android・Windows）のものとして `Authorization: Bearer <トークン>` だけで判断し、Cookie は見ません。トークンは [`POST /api/auth/token`](./auth.md#post-api-auth-token) で受け取ります。
-- ないリクエストはセッションの Cookie で判断します。名前は HTTPS では `__Host-` 付きで、`HttpOnly`・`SameSite=Lax`・`Path=/` です。セッションはログインから30日で切れ、使っても延びません。
-- データを読み書きするリクエストは、そのたびにセッションが無効にされていないか（`POST /api/auth/signout?everywhere=1` の後のログインか）をDBで確かめます。無効なら `401 loginRequired` で、Cookie を消します。確かめられなければ `503 databaseUnavailable` です。
+- リクエストはセッションの Cookie で判断します（v2.55.0 から `Authorization: Bearer` のアプリのトークンは読みません）。名前は HTTPS では `__Host-` 付きで、`HttpOnly`・`SameSite=Lax`・`Path=/` です。セッションはログインから30日で切れ、使っても延びません。
+- データを読み書きするリクエストは、そのたびにセッションが無効にされていないか（`POST /api/account/signout-everywhere` の後のログインか）をDBで確かめます。無効なら `401 loginRequired` で、Cookie を消します。確かめられなければ `503 databaseUnavailable` です。
 
 ### 書き込みの制限（CSRF 対策）
 
 Cookie で書き込むリクエストは、`Origin` がアプリの origin（`AUTH_URL`。小文字、既定のポートなし）と同じで、`Content-Type` の `;` より前が `application/json` のときだけ受け付けます。違えば `403 forbiddenRequest` です。
 
 ::: tip
-ほかのサイトのフォームはこの `Content-Type` を送れないため、他サイトから Cookie で保存されることはありません。アプリのトークンはブラウザーが勝手に送らないため、トークンのリクエストに `Origin` は要りません（`Content-Type` は要ります）。
+ほかのサイトのフォームはこの `Content-Type` を送れないため、他サイトから Cookie で保存されることはありません。
 :::
 
 ## コードの構成
 
 | 場所 | 内容 |
 |---|---|
-| `src/app/api`・`src/server` | Next.js の Route Handler。すべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/lib/records.ts`、ログインの始まりと戻りは `src/server/signin.ts`・`github.ts`） |
+| `src/app/api`・`src/server` | Next.js の Route Handler。すべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/lib/records.ts`、ログインは `src/auth.ts`・`src/server/authOptions.ts`、アカウントの API は `src/server/accountApi.ts`・`accountRecovery.ts`） |

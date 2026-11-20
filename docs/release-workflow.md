@@ -71,12 +71,12 @@ GitHub Proへ変更した場合は、上記のmain保護ルールを追加して
    そのあと `npm run check:production`（`scripts/check-production.cjs`）で次を確かめます。1つでも失敗すれば終了コード1です。
    本番（`https://typle.sparklingstadt.com`）のホームの成功応答、Vercel のドメインのページが本番へ308で移ること（クエリも残す）、
    両方のドメインで Route Handler（`src/app/api/health/route.ts`）が返す`/api/health`の200（本番DBへの接続を含む）と匿名APIアクセスの401。
-   ログインの関数も確かめます。`/api/auth/session`が200で、本文の`user`が`null`、`providers`が`"github"`を含む配列であること、
-   `/api/auth/signin`がリダイレクトを辿らずに302を返し、`Location`が`https://github.com/login/oauth/authorize?`で始まり
-   本番の`redirect_uri`（`https://typle.sparklingstadt.com/api/auth/callback/github`）を含むことです。
+   ログインの関数（Auth.js）も確かめます。`/api/auth/session`が200で、本文に`user`がないこと、`/api/auth/providers`が`github`と`password`を含むこと、
+   `/api/auth/csrf`でCSRFトークンとCookieをもらい、それを付けた`POST /api/auth/signin/github`がリダイレクトを辿らずに302を返し、
+   `Location`が`https://github.com/login/oauth/authorize?`で始まり本番の`redirect_uri`（`https://typle.sparklingstadt.com/api/auth/callback/github`）を含むことです。
    これにより、本番の関数で`AUTH_SECRET`・`AUTH_URL`・`AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET`が揃って設定されていることまで確かめます。
-   Vercel のドメインで始めたログイン（iPad・Mac 版）が、クエリを残したまま本番の`/api/auth/signin`へ307で移ることと、
-   iPad のログインの`POST /api/auth/token`が Vercel のドメインで本文`{}`に`400`と`{"error":"loginFailed"}`を返すことも確かめます。
+   メールの送信（`RESEND_API_KEY`・`TYPLE_MAIL_FROM`）は、この確認には含みません。公開のあと、本番で登録して確認のメールが届くことを手で確かめます。
+   v2.55.0 でアプリのログイン（Vercel のドメインの`/api/auth/signin?client=…`と`POST /api/auth/token`）をなくしたので、その確認も外しました。
    v2.38.0 までは CI の deploy ジョブが同じ確認をしていました。
 9. API の文書（`api-docs/`）は、v2.25.2 から CI では公開せず、必要なときに手で公開します。Vercel のデプロイが成功した後、
    Actions の「Docs deploy」を main で実行します（Run workflow。`docs-deploy.yml`、main 以外では何もしません）。

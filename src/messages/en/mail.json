@@ -1,0 +1,14 @@
+{
+  "verify": {
+    "subject": "Typle: Confirm your email address",
+    "body": "Thank you for signing up for Typle.\n\nOpen the link below to confirm your email address (valid for 24 hours).\n\n{link}\n\nIf you did not expect this email, you can safely delete it."
+  },
+  "reset": {
+    "subject": "Typle: Reset your password",
+    "body": "We received a request to reset your password.\n\nOpen the link below to set a new password (valid for 30 minutes, usable once).\n\n{link}\n\nIf you did not request this, you can safely delete this email. Your password has not changed."
+  },
+  "loginIds": {
+    "subject": "Typle: Your login IDs",
+    "body": "The login IDs registered with this email address are:\n\n{ids}\n\nIf you did not expect this email, you can safely delete it."
+  }
+}

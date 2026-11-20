@@ -7,7 +7,7 @@
 - 本番: https://typle.sparklingstadt.com （v2.33.0 から。`https://typle-r-six.vercel.app` のページはここへ移ります）
 - リポジトリ: https://github.com/Sparklingstadt/typle-r （公開）
 
-本番はGitHub認証とNeon DB、ローカル/LANは開発用アカウントとDocker DBを使用します。開発ログインは本番では無効です。
+本番は GitHub と ID・パスワードのログイン、Neon DB、ローカル/LANは開発用アカウントとDocker DBを使用します。開発ログインは本番では無効です。
 
 ## 文書
 
@@ -36,11 +36,11 @@
 | [typle-a](https://github.com/Sparklingstadt/typle-a) | Android タブレット版（Kotlin・Jetpack Compose）。v2.6.9 でアーカイブし、開発を止めました |
 | [typle-kotlin-backend](https://github.com/Sparklingstadt/typle-kotlin-backend) | 以前の Go のバックエンドと同じ API の Kotlin（Ktor）版。v2.6.10 でアーカイブし、`TYPLE_BACKEND=kotlin` の切り替えも外しました |
 
-どのアプリも、このリポジトリのバックエンド（Next.js の Route Handler）に同じ GitHub ログインでつなぎます。Web は `https://typle.sparklingstadt.com`、iPad・Mac 版は `https://typle-r-six.vercel.app` の `/api/*` を呼びます。Vercel のドメインで始めたログイン（`/api/auth/signin`）は、OAuth の cookie とコールバックを同じホストにするため、`vercel.json` で本番のドメインへ移します（`tests/domainRedirect.test.cjs`）。ほかのリポジトリは、このリポジトリのコードやデータの写しや対応する実装を持っています。ここを変えたら、合わせて直してください。
+Web 版は `https://typle.sparklingstadt.com` の Next.js の Route Handler（`/api/*`）につながります。iPad・Mac 版は `https://typle-r-six.vercel.app` の `/api/workspace` などを呼びますが、**v2.55.0 からログインできません**（アプリのトークンと `/api/auth/token` をなくしたため。端末内の保存だけで使います。アプリ側の「ログイン」の表示を消すのは typle-ipad の別の作業です）。Vercel のドメインのページは、`vercel.json` で本番のドメインへ移します（`tests/domainRedirect.test.cjs`）。ほかのリポジトリは、このリポジトリのコードやデータの写しや対応する実装を持っています。ここを変えたら、合わせて直してください。
 
 - 公式の単語リスト（`src/lib/packs`）：`commands/` の各 JSON が1リストです。並び順の原本は `commands/manifest.json` です。追加・削除時は JSON と manifest を更新して `npm run packs:generate` を実行すると、Web が読み込む `commands/index.ts` を生成します（v1.5.0 から。v2.46.11 までは Go のバックエンドの埋め込み用コピーも生成していました）。生成し忘れは単体テストで分かります。以前の `commands.json` 形式を使う他アプリには、`commands/manifest.json` の順に各 JSON を配列へまとめて渡してください。
 - iPad 版と Mac 版：typle-ipad の `TypleCore/` は `src/lib` の規則の Swift 版で、`catalog.json` は公式の単語リストから作った写しです。公式の単語リストを変えたら、typle-ipad で `node scripts/catalog.cjs ../typle-r` を実行して作り直します。
-- ログイン（`client=ipad|macos|android|windows`）とトークンの形：各アプリが使うので、互換を保ちます。アーカイブした Android 版・Windows 版も、入っているアプリがそのままログインできるよう `android`・`windows` を受け付け続けます。
+- ログイン：v2.55.0 でアプリのログイン（`client=…`・トークン）をなくしました。アプリが必要とするなら、Auth.js の上で作り直します。
 - アーカイブした typle-macos・typle-w・typle-a・typle-kotlin-backend は、このリポジトリを変えても直しません。
 
 ## 開発環境のセットアップ
@@ -120,33 +120,49 @@ Next.js の App Router のアプリは1つで、`src` は Next.js でよく使�
 | `src/lib` | フック以外の処理。単語リスト・入力判定・記録・集計・ワークスペースのモデルと検証、保存先の型 `WorkspaceStore`（`workspaceStore.ts`、保存場所 `location` を含む）、ワークスペースの読み込み・保存 `createWorkspaceSession`（`workspaceSession.ts`。アカウントの切り替え後に届いた結果の破棄、保存の直列化、409での再読み込み、古いクラウド読み込みの無視）、単語ファイルの CSV の読み書き（`wordFormat.ts`。TSV の読み込みは v2.44.0 でやめました）、ログインの状態（`session.tsx`）など。保存先は `src/lib/storage` で、`cloud.ts`（Next.js の Route Handler が答える `/api/workspace` と `/api/workspace/records`）と `guest.ts`（LocalStorage）を `workspaceStore(accountId)` がアカウントに応じて選びます。`packs/` は公式パック（v0.85.0 から sparklingstadt アカウントの67リストのコピーで、`commands/` に1リスト1ファイルで保存しています。それまではサンプル、国名193か国、コマンドと構文の25種類を初級・中級・上級に分けた85リスト）とそのカタログです |
 | `src/i18n`・`src/messages` | 多言語化（next-intl）と各言語の文言 |
 | `src/proxy.ts` | ページごとに nonce を作り、スクリプトの CSP（`Content-Security-Policy-Report-Only`。方針は `src/lib/contentSecurityPolicy.ts`）を付けます（v2.51.0 から）。今は報告だけです。止める CSP（フレーム・`base` 要素・`object` 要素）は `next.config.mjs` がページ以外にだけ送り、ページのフレームへの埋め込みは `X-Frame-Options` で止めます（v2.51.1 から。Next.js は proxy が付けたヘッダーを描画するリクエストにも写し、`script-src` のない CSP があるとそちらを読んで nonce を付けないため）。違反はブラウザーのコンソールに出るだけで、どこにも送りません（v2.53.0 から） |
-| `src/server` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`。Vercel の関数のログに出す）・ログインの設定（`settings.ts`）・書き込みの要求の確認（`request.ts`）・ログインの Cookie・アプリのトークン・アプリのコード・ログイン途中の状態を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）・ログインとすべての端末からのログアウトの確認（`account.ts`）・ログインのセッション・アプリのトークン・ログアウト（すべての端末からも）・ローカル開発のログイン（`auth.ts`）・ログインの始まりと戻り（`signin.ts`。GitHub とのやりとりは `github.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。`src/lib` を使えますが、画面（`src/app`・`src/components`）からは import しません |
+| `src/server` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`。Vercel の関数のログに出す）・ログインの設定（`settings.ts`）・書き込みの要求の確認（`request.ts`）・ログインの Cookie を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）と、それを Auth.js の JWT にする `authJwt.ts`・Auth.js のコールバック（`authOptions.ts`）・ログインの確認とすべての端末からのログアウトの失効（`account.ts`）・ID とパスワードのアカウント（`users.ts`・`password.ts`・`passwordLogin.ts`・`emailTokens.ts`・`mail.ts`・`limits.ts`、API は `accountApi.ts`・`accountRecovery.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。`src/lib` を使えますが、画面（`src/app`・`src/components`）からは import しません |
 
 v2.43.2 まであったプラグインの層（`src/plugins`）と、ファイル形式を差し替えるための拡張口（`WordFormat` と形式の一覧）は v2.43.3 でやめました。読み書きする単語ファイルは CSV だけで、保存先は guest と cloud の2つです。
 
 v2.46.11 まではバックエンドの一部が Go（`server/`、Vercel の Go の関数 `api/index.go`）でした。v2.46.10 で `/api` のすべてのパスを Next.js の Route Handler に移し、v2.47.0 で Go のコードを消しました（設計は `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md`。Go と違うところもそこにあります）。
 
-ログインの Cookie は `HttpOnly`・`SameSite=Lax` で、ログインから30日で切れます（延長しません）。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です。Cookie・アプリのトークン・アプリのログインのコード・ログイン途中の状態（`typle-oauth`）は、`AUTH_SECRET` から HKDF で導いた種類ごとの鍵で HMAC-SHA256 署名します（`src/server/session.ts`・`settings.ts`。形式と鍵は Go のときと同じです）。ログインの始まりと戻りは `src/server/signin.ts`、GitHub とのやりとりは `github.ts` です。
+ログインの Cookie は `HttpOnly`・`SameSite=Lax` で、ログインから30日で切れます（延長しません）。名前は `AUTH_URL` が HTTPS なら `__Host-typle-session`、HTTP なら `typle-session` です。中身は `{sub,name,image,iat,exp}` を、`AUTH_SECRET` から HKDF（info `typle session v1`）で導いた鍵で HMAC-SHA256 署名したもので、v2.46.11 までの Go と同じ形です（`src/server/session.ts`・`settings.ts`）。v2.55.0 から Auth.js（next-auth v5）がこの Cookie を作ります（`src/auth.ts`、`jwt.encode`・`jwt.decode` を差し替えて同じ形にしています）。
 
-### iPad と Mac と Android と Windows のログイン
+### ログインのしくみ（Auth.js）
 
-Android 版（typle-a）と Windows 版（typle-w）は v2.6.9 でアーカイブしました。サーバーは今も `client=android`・`windows` を受け付けます。この節の Android・Windows の動作は、アーカイブした時点のものです。
+ログインは Auth.js（next-auth v5）で、`/api/auth/*` は `src/app/api/auth/[...nextauth]/route.ts` が答えます（知らないパスは 404。`authPathKnown`）。プロバイダーは次の3つです。
 
-iPad アプリと Mac アプリ（どちらも [typle-ipad](https://github.com/Sparklingstadt/typle-ipad) リポジトリ）・Android アプリ（[typle-a](https://github.com/Sparklingstadt/typle-a) リポジトリ）・Windows アプリ（[typle-w](https://github.com/Sparklingstadt/typle-w) リポジトリ）は、Web版と同じ GitHub OAuth App でログインし、Cookie の代わりにトークンを使います（RFC 8252 のネイティブアプリの形）。サーバーの側は `client` が `ipad`・`macos`・`android`・`windows` のどれかだけが違い、流れは同じです。
+- **GitHub**（`AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET` が揃っているとき）：アカウントは `github:<GitHub のユーザー番号>`。
+- **ID とパスワード**（Credentials、id `password`）：アカウントは `password:<小文字の UUID>`（`typle_users.id`）、名前は ID。登録・メールの確認・再設定・ID の通知は `/api/account/*`（`src/server/accountApi.ts`・`accountRecovery.ts`。仕様は [api-docs](api-docs/src/app/auth.md)）と、画面 `/signin`・`/signup`・`/verify-email`・`/forgot-password`・`/reset-password`・`/forgot-id`、設定の「アカウント」です。
+- **開発用**（Credentials、id `local`）：`github:0`。「開発用ログインで起動」の条件を満たすときだけ有効です。
 
-1. アプリが32バイトの乱数から検証値（verifier）を作り、システムのログイン画面（iPad と Mac は `ASWebAuthenticationSession`、Android は Custom Tabs、Windows は既定のブラウザー）で `/api/auth/signin?client=<ipad|macos|android|windows>&code_challenge=<S256>` を開きます。チャレンジは OAuth の Cookie に入り、GitHub にはサーバー自身の PKCE を使います。
-2. `callback/github` は Cookie を発行せず、`typle-r://login?code=<コード>` へリダイレクトします。コードはユーザーとチャレンジに署名したもので、2分で切れます。失敗・キャンセルは `typle-r://login?error=loginFailed` です。Android は `MainActivity` の intent-filter（scheme `typle-r`・host `login`）で、Windows は起動のたびに登録するプロトコル（`typle-r`、この Windows ユーザーの `HKEY_CURRENT_USER`）でこの URL を受け取ります。Windows では、ブラウザーが開いた2つ目の Typle が、動いている Typle にこの URL を渡して終わります。アプリを離れてコールバックが来なかったときは、何も起きなかったものとして戻ります（Windows は「ログインをやめる」で待つのをやめます）。
-3. アプリが `POST /api/auth/token`（`{"code","verifier"}`）を呼び、検証値の SHA-256 がチャレンジと一致すれば `{"token","user"}` を返します。コードを横取りしても、検証値がなければトークンにできません。間違いはすべて `400 loginFailed` です。Android と Windows は、ログインを始めてから10分たったログイン途中の状態は無効とし、ログインに失敗したものとして扱います。
-4. アプリは `Authorization: Bearer <トークン>` で `/api/auth/session` と `/api/workspace` を呼びます。トークンは Cookie と別の鍵で署名した、ログインから30日で切れる（延長しない）値で、Cookie の値をトークンとして、トークンを Cookie として使うことはできません。`Authorization` ヘッダーがある要求はトークンだけで判断し（Cookie は見ません）、ブラウザーが自動では付けないため、`PUT /api/workspace` の Origin の確認は要りません（`Content-Type` の確認は残ります）。
-5. トークンは更新されません（v0.107.0 から。それまでは発行から24時間で `/api/auth/session` の応答の `token` で新しくなっていました）。切れたら `401` になるので、もう一度ログインします。ログアウトはアプリがトークンを消すだけですが、`POST /api/auth/signout?everywhere=1` を `Authorization: Bearer <トークン>` で呼ぶと、そのアカウントのすべての端末のログインを無効にできます（`typle_session_revocations`）。トークンは iPad と Mac では Keychain に、Android では Android Keystore の鍵で暗号化して、Windows では Windows のデータ保護（DPAPI）で暗号化して保存します。
+セッションは JWT で、DB のセッションも adapter も使いません。API（workspace など）は Cookie を `signedIn`（`src/server/account.ts`）で読み、「すべての端末からログアウト」の表（`typle_session_revocations`）を確かめます。この操作は `POST /api/account/signout-everywhere` です（v2.54.0 までの `POST /api/auth/signout?everywhere=1` と、`Authorization: Bearer` のアプリのトークンは使えません。`Authorization` ヘッダーは読みません）。
 
-Android のエミュレーターから手元の `npm run dev` で試すときは、サーバー URL に `http://10.0.2.2:<ポート>`（エミュレーターから見たホストの `localhost`）を入れます。ただし GitHub の OAuth App の callback URL は `AUTH_URL` に合わせたもの（`<AUTH_URL>/api/auth/callback/github`）でなければならず、開発用ログイン（`POST /api/auth/local`）はアプリでは使えません。
+- ID は `^[a-z0-9_-]{3,32}$`（大文字小文字は区別しない）、パスワードは10〜128文字で、ハッシュは `crypto.scrypt` です。
+- 回数の制限は表 `typle_auth_limits` に持ちます（ログインの失敗は同じ ID で15分に5回・同じ IP で30回、登録は IP ごとに1時間に5件、メールは ID かアドレスごとに1時間に3通・IP ごとに10回、すべてのメールを合わせて UTC の1日に80通）。登録とメールは、仕事の前に1回分を数えてから進めます。IP は `x-forwarded-for` の最初の値で、IPv6 は /64 ごとに数えます。1日より前に終わった制限と使えなくなったリンクの行は、登録のときに消します。
+- 登録の確認のメールは24時間、再設定は30分で切れ、どちらも1回だけ使えます。トークンは32バイトの乱数で、DB には SHA-256 だけを持ちます。再設定とパスワードの変更では、ほかの端末のログインを無効にします。
+- 注意：ブラウザーの Cookie の `Expires` は、Auth.js がセッションを読むたびに「今から30日」に書き直されます。切れるかどうかは Cookie の中身の `exp`（ログインから30日で固定）で決まるので、延長にはなりません。
+- 注意：**本番では `AUTH_REDIRECT_PROXY_URL` を設定しないでください。** Auth.js はこの値があると、GitHub のログインの callback をそのアドレスのプロキシへ向けます（`redirectProxyUrl` は手元の開発のときだけ値を決めますが、環境変数が残っていれば Auth.js が読みます）。
 
-画面は `src/lib/session.tsx` の `useSession`・`signIn`・`signOut` で `/api/auth/*` を呼びます。ログイン状態は `/api/auth/session` の 200 の答えだけで決め、確認が失敗したとき（通信の失敗、200 以外の答え、読めない本文）は前の状態のままにします。最初の確認だけは 1・2・4 秒後にやり直し、すべて失敗したら未ログインとして扱います。`/api/*` はどれも Next.js の Route Handler が答えます。サーバーの失敗は Vercel の関数のログに出します。エラーを外のサービスに送ることはしません（Sentry は v2.53.0 でやめました）。
+#### メール（Resend）
+
+確認・再設定・ID の通知のメールは Resend（`https://api.resend.com/emails`）へ fetch で送ります（SDK は使いません）。用意するもの：
+
+1. Resend で送信元のドメインを登録し、DNS のレコードを足して確認します。
+2. API キーを作ります。
+3. `RESEND_API_KEY` と `TYPLE_MAIL_FROM`（例 `Typle <no-reply@sparklingstadt.com>`）を Vercel の環境変数（Production と Preview）に足します。
+
+どちらかがなければメールは送れず、登録は成功したまま「送れなかった」と出ます（失敗はログに残ります）。`TYPLE_RESEND_URL` はテストのための送り先の差し替えで、本番では設定しません。Resend の無料枠は1日100通なので、上の制限でメールの送信を抑えています。
+
+#### iPad・Mac のアプリ
+
+v2.55.0 から、iPad・Mac のアプリは Typle にログインできません。`/api/auth/token`・`/api/auth/signin?client=…&code_challenge=…`・アプリのトークンをなくしたためです。v2.54.0 までに発行したトークンは、`/api/workspace` などでもう通りません（`TYPLE_BACKEND=go` のときだけ Go が受け付けます。[docs/backend-switch.md](docs/backend-switch.md)）。
+
+画面は `src/lib/session.tsx` の `useSession`・`signIn`・`signOut` で Auth.js の `/api/auth/*` を呼びます。ログイン状態は `/api/auth/session` の 200 の答えだけで決め、確認が失敗したとき（通信の失敗、200 以外の答え、読めない本文）は前の状態のままにします。最初の確認だけは 1・2・4 秒後にやり直し、すべて失敗したら未ログインとして扱います。`/api/*` はどれも Next.js の Route Handler が答えます。サーバーの失敗は Vercel の関数のログに出します（Auth.js が出す `CredentialsSignin`、つまりパスワードの間違いは、毎回ログに出ないよう `src/auth.ts` の `logger` で外しています）。エラーを外のサービスに送ることはしません（Sentry は v2.53.0 でやめました）。
 
 ## 保存とアクセス制御
 
-`typle_workspaces` テーブルにユーザーごとのJSONBスナップショットとrevisionを保持します。APIとログインは Next.js の Route Handler（`src/app/api`・`src/server`）が提供し、所有者はサーバーがログインセッション（iPad はトークン）のGitHubユーザーIDから決定します。APIは未認証アクセスを拒否し、書き込みでOrigin（Cookie のとき）、アカウント一致、形式、最大1MiBのサイズを検証します。共有ランキングはありません。
+`typle_workspaces` テーブルにユーザーごとのJSONBスナップショットとrevisionを保持します。APIとログインは Next.js の Route Handler（`src/app/api`・`src/server`）が提供し、所有者はサーバーがログインセッションのアカウントID（`github:…`・`password:…`）から決定します。APIは未認証アクセスを拒否し、書き込みでOrigin、アカウント一致、形式、最大1MiBのサイズを検証します。共有ランキングはありません。
 
 次の段落は v2.0.0 より前の記録です（v2.0.0 でホームの「以前のデータを移行」をなくしました）。
 
@@ -163,6 +179,8 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 - `AUTH_SECRET`: 暗号学的にランダムな秘密値
 - `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`: 本番用OAuth Appの認証情報
 - `AUTH_URL`: 本番URL。本番OAuth callbackは `<本番URL>/api/auth/callback/github`（v0.55.0 でも変わりません）。この値のオリジンだけを使います
+- `RESEND_API_KEY`, `TYPLE_MAIL_FROM`: ID・パスワードのアカウントのメール（確認・再設定・ID の通知）を送る Resend の API キーと送信元（上の「メール（Resend」）
+- `AUTH_REDIRECT_PROXY_URL`: **設定しません**（Auth.js が読んで GitHub の callback の向きを変えてしまうため）
 
 対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/migrate.cjs` が `pg` で適用します（v2.36.19 から Prisma は使いません。アプリの DB の読み書きは Route Handler の `pg`）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](docs/release-workflow.md)）。
 
@@ -170,9 +188,9 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 
 ### FFPF ID でのログイン（廃止）
 
-FFPF ID（ffpf-portal）でのログインは v2.54.0 でなくしました。ログインは GitHub だけです。
+FFPF ID（ffpf-portal）でのログインは v2.54.0 でなくしました。ログインは GitHub と ID・パスワードです（v2.55.0 から）。
 
-- `/api/auth/signin?provider=ffpf` は `provider` を読まず、GitHub のログインになります。`/api/auth/callback/ffpf` は 404 です。
+- `/api/auth/signin/ffpf`・`/api/auth/callback/ffpf` は Auth.js のプロバイダーがないので 404 です。
 - 環境変数 `FFPF_ID_ISSUER`・`FFPF_ID_CLIENT_ID`・`FFPF_ID_CLIENT_SECRET` は読みません。ログアウトで Cookie `typle-ffpf-relogin` も置きません。
 - v2.53.1 までに FFPF ID でログインしたセッション（アカウント ID が `ffpf:` で始まる）は、ログインから30日で切れるまで使えます。そのあとは、そのアカウントのデータ（DB の行はそのまま残ります）を開く方法はありません。
 
