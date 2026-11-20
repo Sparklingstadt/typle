@@ -36,7 +36,7 @@ After the merge, on the main commit, after the user confirms each step that publ
 3. Deploy that same commit with `vercel deploy --prod --yes` from the same checkout (it needs Vercel credentials;
    cloud sessions have none, so hand this step to the user with the exact commands). Wait until the production
    domain serves the new deployment, then run `npm run check:production` (`scripts/check-production.cjs`), which
-   checks `https://typle.sparklingstadt.com` and the Vercel domain `https://typle-r-six.vercel.app`.
+   checks `https://typle.sparklingstadt.com` (including the Auth.js sign-in) and the Vercel domain `https://typle-r-six.vercel.app`.
 4. When `api-docs/` changed, run the "Docs deploy" workflow on main (`docs-deploy.yml`).
 
 ## コードとコミットの規約

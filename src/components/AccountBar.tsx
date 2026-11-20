@@ -1,10 +1,11 @@
 "use client"
 import { useState } from 'react'
-import { signIn, signOut, useSession } from '@/lib/session'
+import { signOut, useSession } from '@/lib/session'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 import { LogIn, LogOut, Monitor } from 'lucide-react'
 import { Avatar } from 'radix-ui'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -24,16 +25,26 @@ export default function AccountBar() {
   const { data: session, status } = useSession()
   const t = useTranslations('account')
   const [signOutFailed, setSignOutFailed] = useState(false)
+  const pathname = usePathname()
+  const router = useRouter()
   // Same size as the avatar button so the top bar does not shift once the session is known.
   if (status === 'loading') return <div className="flex size-10 items-center justify-center"><Skeleton className="size-8 rounded-full" /><span className="sr-only">{t('checking')}</span></div>
   if (!session?.user) {
-    const label = t('signInWithGitHub')
-    return <Button variant="outline" size="lg" className="gap-2 px-3" aria-label={label} onClick={() => signIn()}>
-      <LogIn aria-hidden="true" /><span className="sm:hidden">{t('signIn')}</span><span className="hidden sm:inline">{label}</span>
+    // The sign-in page comes back to the page being viewed. The link names its path; a click adds the query (as in
+    // /play?list=…), which useSearchParams would read only under a Suspense boundary in the layout.
+    const signInPath = (returnTo: string) => `/signin?returnTo=${encodeURIComponent(returnTo)}`
+    return <Button asChild variant="outline" size="lg" className="gap-2 px-3">
+      <Link href={signInPath(pathname)} onClick={event => {
+        if (!location.search || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+        event.preventDefault()
+        router.push(signInPath(location.pathname + location.search))
+      }}><LogIn aria-hidden="true" />{t('signIn')}</Link>
     </Button>
   }
   // A login with FFPF ID made before v2.54.0 still opens until it expires (the login itself was removed then).
   const viaFfpf = session.user.id.startsWith('ffpf:')
+  // An account with an ID and a password is named by its ID.
+  const viaPassword = session.user.id.startsWith('password:')
   // A name that is empty (an FFPF ID without one) is no name, so it falls back too.
   const name = session.user.name || t(viaFfpf ? 'ffpfUser' : 'githubUser')
   return <div className="relative">
@@ -48,7 +59,7 @@ export default function AccountBar() {
           <UserAvatar name={name} image={session.user.image} className="size-9" />
           <span className="grid min-w-0">
             <span className="truncate text-sm font-medium">{name}</span>
-            <span className="text-xs text-muted-foreground">{t(viaFfpf ? 'signedInWithFfpf' : 'signedInWithGitHub')}</span>
+            <span className="text-xs text-muted-foreground">{t(viaPassword ? 'signedInWithPassword' : viaFfpf ? 'signedInWithFfpf' : 'signedInWithGitHub')}</span>
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="-mx-1" />

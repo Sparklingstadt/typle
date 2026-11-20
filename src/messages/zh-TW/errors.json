@@ -65,5 +65,14 @@
   "sharedPackNotFound": "此分享已結束。",
   "invalidPage": "頁碼無效。",
   "importInputTypeInvalid": "第 {line} 行的 input_type 必須是 command、code 或 word。",
-  "invalidRequest": "請求內容無效。"
+  "invalidRequest": "請求內容無效。",
+  "loginIdFormat": "ID 請使用3到32個半形英文字母、數字、「_」或「-」。",
+  "passwordLength": "密碼請使用10到128個字元。",
+  "passwordSameAsId": "密碼不能與 ID 相同。",
+  "emailFormat": "電子郵件地址的格式不正確。",
+  "loginIdTaken": "此 ID 已被使用，請換一個。",
+  "tooManyRequests": "請求次數過多，請稍後再試。",
+  "invalidToken": "此連結無法使用，可能已過期或已被使用。",
+  "notPasswordAccount": "僅適用於使用 ID 和密碼登入的帳號。",
+  "wrongPassword": "目前的密碼不正確。"
 }

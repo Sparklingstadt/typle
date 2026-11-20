@@ -14,10 +14,8 @@ test('vercel.json forwards nothing, and next.config.mjs only the comparison', ()
   assert.match(read('next.config.mjs'), /beforeFiles: backendCompare\.backendRewrites\(\), afterFiles: \[\], fallback: \[\]/)
 })
 
-// The paths the apps (Web, iPad, Mac, Android, Windows) call.
-const nextRoutes = ['/api/health', '/api/workspace', '/api/workspace/records',
-  '/api/auth/session', '/api/auth/token', '/api/auth/signout', '/api/auth/local',
-  '/api/auth/signin', '/api/auth/callback/github']
+// The paths the apps (Web, iPad, Mac, Android, Windows) call. Every /api/auth path is Auth.js's (src/auth.ts).
+const nextRoutes = ['/api/health', '/api/workspace', '/api/workspace/records', '/api/auth/[...nextauth]']
 
 test('every path of the API is a Route Handler', () => {
   for (const route of nextRoutes) assert.ok(fs.existsSync(path.join(root, 'src/app', route, 'route.ts')), `${route} has no route.ts`)

@@ -13,7 +13,7 @@ import { signedIn } from './account'
 import { measureSave } from './metrics'
 import { recordRows, syncRecords, withRecords } from './records'
 import { reportFailure } from './report'
-import { fromAppOrOrigin, jsonContent } from './request'
+import { sameOrigin, jsonContent } from './request'
 import { refuse, reply } from './response'
 import { readLoginSettings, type LoginSettings } from './settings'
 
@@ -334,13 +334,13 @@ async function saveWorkspaceAnswer(request: Request, db: Pool, login: LoginSetti
 
 /**
  * /api/workspace: GET (and HEAD) reads the owner's workspace, PUT saves a change of it by revision. A save must come
- * from the app; both need the login. Saves are measured when env turns it on (src/server/metrics.ts).
+ * from the app's own page; both need the login. Saves are measured when env turns it on (src/server/metrics.ts).
  */
 export async function answerWorkspace(request: Request, open: () => Pool, settings: () => LoginSettings | null = readLoginSettings,
   env: Record<string, string | undefined> = process.env): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
-  if (request.method === 'PUT' && (!fromAppOrOrigin(request, login.origin) || !jsonContent(request))) return refuse(403, 'forbiddenRequest')
+  if (request.method === 'PUT' && (!sameOrigin(request, login.origin) || !jsonContent(request))) return refuse(403, 'forbiddenRequest')
   let db: Pool
   try {
     db = open()
@@ -436,7 +436,7 @@ export async function answerRecords(request: Request, open: () => Pool, settings
   env: Record<string, string | undefined> = process.env): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
-  if (!fromAppOrOrigin(request, login.origin) || !jsonContent(request)) return refuse(403, 'forbiddenRequest')
+  if (!sameOrigin(request, login.origin) || !jsonContent(request)) return refuse(403, 'forbiddenRequest')
   let db: Pool
   try {
     db = open()

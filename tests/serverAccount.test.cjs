@@ -22,15 +22,10 @@ const cookie = sub => seal('typle session v1', claimsFor(sub))
 const token = sub => seal('typle app session v1', claimsFor(sub))
 const request = headers => new Request('http://localhost/api/workspace', { headers })
 
-test('the user is read from the cookie, or from an app\'s token alone', () => {
+test('the user is read from the cookie alone', () => {
   assert.equal(currentUser(request({ Cookie: `typle-session=${cookie('github:1')}` }), http).sub, 'github:1')
   assert.equal(currentUser(request({ Cookie: `other=x; __Host-typle-session=${cookie('github:1')}` }), https).sub, 'github:1')
   assert.equal(currentUser(request({ Cookie: `typle-session=${cookie('github:1')}` }), https), null)
-  assert.equal(currentUser(request({ Authorization: `Bearer ${token('ffpf:abc')}` }), http).sub, 'ffpf:abc')
-  // A token is never stood in for by a cookie: a request with a bad token is signed out, cookie or not.
-  for (const authorization of ['Bearer broken', 'Basic x', 'Bearer ', `Bearer ${token('github:1')} x`, `Bearer ${cookie('github:1')}`]) {
-    assert.equal(currentUser(request({ Authorization: authorization, Cookie: `typle-session=${cookie('github:1')}` }), http), null, authorization)
-  }
   assert.equal(currentUser(request({ Cookie: `typle-session=${token('github:1')}` }), http), null)
   assert.equal(currentUser(request({}), http), null)
 })
@@ -67,9 +62,6 @@ test('a revoked session is signed out, and a browser loses its cookie', database
   assert.equal(browser.refusal.headers.get('set-cookie'), 'typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax')
   const secure = await signedIn(request({ Cookie: `__Host-typle-session=${cookie(owner)}` }), db, https)
   assert.equal(secure.refusal.headers.get('set-cookie'), '__Host-typle-session=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax')
-  const app = await signedIn(request({ Authorization: `Bearer ${token(owner)}` }), db, http)
-  assert.equal(app.refusal.status, 401)
-  assert.equal(app.refusal.headers.get('set-cookie'), null)
 })
 
 test('a login after the revocation is signed in', database, async () => {

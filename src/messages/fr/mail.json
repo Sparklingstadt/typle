@@ -1,0 +1,14 @@
+{
+  "verify": {
+    "subject": "Typle : confirmez votre adresse e-mail",
+    "body": "Merci de vous être inscrit sur Typle.\n\nOuvrez le lien ci-dessous pour confirmer votre adresse e-mail (valable 24 heures).\n\n{link}\n\nSi vous n’attendiez pas cet e-mail, vous pouvez le supprimer."
+  },
+  "reset": {
+    "subject": "Typle : réinitialisez votre mot de passe",
+    "body": "Nous avons reçu une demande de réinitialisation de votre mot de passe.\n\nOuvrez le lien ci-dessous pour choisir un nouveau mot de passe (valable 30 minutes, utilisable une seule fois).\n\n{link}\n\nSi vous n’êtes pas à l’origine de cette demande, vous pouvez supprimer cet e-mail. Votre mot de passe n’a pas changé."
+  },
+  "loginIds": {
+    "subject": "Typle : vos identifiants de connexion",
+    "body": "Les identifiants de connexion enregistrés avec cette adresse e-mail sont :\n\n{ids}\n\nSi vous n’attendiez pas cet e-mail, vous pouvez le supprimer."
+  }
+}

@@ -186,7 +186,7 @@
     },
     "account": {
       "title": "Enregistré sur votre compte",
-      "when": "Quand vous êtes connecté avec GitHub",
+      "when": "Quand vous êtes connecté (avec GitHub ou un identifiant et un mot de passe)",
       "p1": "Les données sont enregistrées sur un serveur dédié à votre compte : une fois connecté, vous retrouvez les mêmes données sur tous vos appareils.",
       "p2": "L’enregistrement nécessite une connexion Internet."
     },

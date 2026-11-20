@@ -27,20 +27,20 @@ test('user menu signs out and returns to home', async ({ page }) => {
   await menu.press('Enter')
   await page.getByRole('menuitem', { name: 'ログアウト', exact: true }).click()
   await expect(page).toHaveURL(/\/home$/)
-  await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()
   await page.reload()
-  await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()
 })
 
 test('a failed sign-out keeps the user signed in and says so', async ({ page }) => {
-  await page.route('**/api/auth/signout', route => route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"databaseUnavailable"}' }))
+  await page.route('**/api/auth/signout', route => route.fulfill({ status: 500, contentType: 'application/json', body: '{"message":"There was a problem with the server configuration."}' }))
   await page.goto('/home')
   await page.getByRole('button', { name: 'アカウントメニュー', exact: true }).click()
   await page.getByRole('menuitem', { name: 'ログアウト', exact: true }).click()
   await expect(page.getByRole('alert').filter({ hasText: 'ログアウトできませんでした' })).toBeVisible()
   await expect(page).toHaveURL(/\/home$/)
   await expect(page.getByRole('button', { name: 'アカウントメニュー', exact: true })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toHaveCount(0)
+  await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toHaveCount(0)
 })
 
 test('real API rejects anonymous, cross-origin, account spoofing and stale writes', async ({ page, context }) => {
@@ -98,7 +98,7 @@ test('a failed session check keeps the signed-in user and the cloud lists', asyn
       await page.waitForTimeout(500)
       await expect(menu, `${name} on ${trigger}`).toBeVisible()
       await expect(list, `${name} on ${trigger}`).toBeVisible()
-      await expect(page.getByRole('button', { name: 'GitHubでログイン' }), `${name} on ${trigger}`).toHaveCount(0)
+      await expect(page.getByRole('link', { name: 'ログイン', exact: true }), `${name} on ${trigger}`).toHaveCount(0)
     }
     await page.unroute('**/api/auth/session', fail)
   }
@@ -118,7 +118,7 @@ test('a session check that keeps failing settles on signed out', async ({ page }
   let calls = 0
   await page.route('**/api/auth/session', route => { calls++; return route.abort() })
   await page.goto('/home')
-  await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()
   expect(calls).toBe(4)
 })
 

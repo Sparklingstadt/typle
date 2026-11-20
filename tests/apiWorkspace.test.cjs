@@ -83,11 +83,12 @@ test('a save is refused as the Go backend refused it', database, async () => {
   await expectError(await answerWorkspace(put(user, good), () => { throw new Error('not opened') }, () => null), 503, 'authUnavailable')
 })
 
-test('an app saves with its token and without an Origin', database, async () => {
+test('a Bearer token does not stand in for the Origin or the login', database, async () => {
   const user = account()
-  const request = new Request(`${origin}/api/workspace`, { method: 'PUT', body: JSON.stringify({ revision: 0, accountId: user.owner, ...library('one') }),
-    headers: { Authorization: `Bearer ${user.token}`, 'Content-Type': 'application/json' } })
-  assert.equal((await answerWorkspace(request, open, withSettings)).status, 200)
+  const body = JSON.stringify({ revision: 0, accountId: user.owner, ...library('one') })
+  const headers = { Authorization: `Bearer ${user.token}`, 'Content-Type': 'application/json' }
+  await expectError(await answerWorkspace(new Request(`${origin}/api/workspace`, { method: 'PUT', body, headers }), open, withSettings), 403, 'forbiddenRequest')
+  await expectError(await answerWorkspace(new Request(`${origin}/api/workspace`, { method: 'PUT', body, headers: { ...headers, Origin: origin } }), open, withSettings), 401, 'loginRequired')
 })
 
 test('a revoked login can neither read nor save, and a browser loses its cookie', database, async () => {

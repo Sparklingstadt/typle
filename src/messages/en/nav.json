@@ -31,7 +31,7 @@
     "label": "Saved to: ",
     "account": "Saved to your account",
     "browser": "Saved in this browser",
-    "accountDetail": "Saved to your GitHub account and synced across the devices you sign in on.",
+    "accountDetail": "Saved to your account and synced across the devices you sign in on.",
     "browserDetail": "You are not signed in, so data is saved only in this browser."
   },
   "theme": {
