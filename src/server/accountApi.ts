@@ -1,11 +1,19 @@
 import type { Pool } from 'pg'
-import { dropCookie, signedIn } from './account'
+import { defaultLocale, isLocale, LOCALE_COOKIE } from '../i18n/config'
+import { emailProblem, loginIdProblem, normalizeEmail, normalizeLoginId, passwordProblem } from '../lib/accountRules'
+import { cookieValue, dropCookie, signedIn } from './account'
+import { issueToken } from './emailTokens'
+import { clientIp, countHit, isBlocked, LIMITS } from './limits'
+import { sendMail, verifyMail } from './mail'
+import { hashPassword } from './password'
 import { reportFailure } from './report'
-import { sameOrigin } from './request'
-import { methodNotAllowed, refuse } from './response'
+import { jsonContent, sameOrigin } from './request'
+import { methodNotAllowed, refuse, reply } from './response'
 import { readLoginSettings, type LoginSettings } from './settings'
+import { createUser } from './users'
 
-// The account's own requests (/api/account), which the screen makes after the login: today, signing out of every device.
+// The account's own requests (/api/account): signing up with an ID and a password, and, after the login, signing out
+// of every device.
 
 /**
  * POST /api/account/signout-everywhere: revokes every login of the account until now (typle_session_revocations) and
@@ -36,4 +44,90 @@ export async function answerSignOutEverywhere(request: Request, open: () => Pool
   }
   const response = new Response(null, { status: 204, headers: { 'Cache-Control': 'private, no-store', Vary: 'Cookie' } })
   return dropCookie(response, login)
+}
+
+/** How long the link that confirms an address can be used: 24 hours. */
+const VERIFY_TTL_SECONDS = 24 * 60 * 60
+
+/** The largest sign-up body read: far more than an ID, an address and a password of the longest allowed. */
+const MAX_SIGNUP_BYTES = 4096
+
+/** The fields of a sign-up body, or null when it is not a JSON object whose three fields are strings. */
+async function readSignup(request: Request): Promise<{ loginId: string, email: string, password: string } | null> {
+  let text: string
+  try {
+    text = await request.text()
+  } catch {
+    return null
+  }
+  if (new TextEncoder().encode(text).length > MAX_SIGNUP_BYTES) return null
+  let body: unknown
+  try {
+    body = JSON.parse(text)
+  } catch {
+    return null
+  }
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return null
+  const { loginId, email, password } = body as Record<string, unknown>
+  if (typeof loginId !== 'string' || typeof email !== 'string' || typeof password !== 'string') return null
+  return { loginId, email, password }
+}
+
+/**
+ * POST /api/account/signup { loginId, email, password }: creates an account that signs in with an ID and a password,
+ * and mails the link that confirms its address. It needs the app's own Origin and a JSON body. The ID and the address
+ * are kept normalized (lower case, trimmed), the password as a hash, and the language of the reader's locale cookie,
+ * in which later mails are written.
+ *
+ * Answers 400 with the first rule the fields break (loginIdFormat, passwordLength, passwordSameAsId, emailFormat, or
+ * invalidRequest for a body of another shape), 429 tooManyRequests once the address has created 5 accounts in the
+ * hour, 409 loginIdTaken, and otherwise 201 { loginId, mailSent }. Only accounts created count toward the limit, so a
+ * mistyped form does not use it up. A mail that cannot be sent does not undo the account: mailSent is false and the
+ * user can ask for the link again after signing in. The screen signs in with the same ID and password afterwards.
+ */
+export async function answerSignup(request: Request, open: () => Pool,
+  settings: () => LoginSettings | null = readLoginSettings): Promise<Response> {
+  const login = settings()
+  if (!login) return refuse(503, 'authUnavailable')
+  if (request.method !== 'POST') return methodNotAllowed(['POST'])
+  if (!sameOrigin(request, login.origin) || !jsonContent(request)) return refuse(403, 'forbiddenRequest')
+  const fields = await readSignup(request)
+  if (!fields) return refuse(400, 'invalidRequest')
+  const loginId = normalizeLoginId(fields.loginId)
+  const email = normalizeEmail(fields.email)
+  const problem = loginIdProblem(loginId) ?? passwordProblem(fields.password, loginId) ?? emailProblem(email)
+  if (problem) return refuse(400, problem)
+
+  const cookieLocale = cookieValue(request, LOCALE_COOKIE)
+  const locale = isLocale(cookieLocale) ? cookieLocale : defaultLocale
+  const limit = LIMITS.signupIp(clientIp(request))
+  let db: Pool
+  let created: { id: string } | 'taken'
+  try {
+    db = open()
+    if (await isBlocked(db, limit.key)) return refuse(429, 'tooManyRequests')
+    created = await createUser(db, { loginId, email, passwordHash: await hashPassword(fields.password), locale })
+  } catch (error) {
+    reportFailure(request, error, 'account.signup')
+    return refuse(503, 'databaseUnavailable')
+  }
+  if (created === 'taken') return refuse(409, 'loginIdTaken')
+  try {
+    await countHit(db, limit)
+  } catch (error) {
+    // The account exists; a hit that could not be counted only lets this address create one more.
+    reportFailure(request, error, 'account.signup')
+  }
+
+  let mailSent = false
+  try {
+    const token = await issueToken(db, { userId: created.id, kind: 'verify', email, ttlSeconds: VERIFY_TTL_SECONDS })
+    const mail = verifyMail(locale, `${login.origin}/verify-email?token=${token}`)
+    await sendMail(email, mail.subject, mail.text)
+    mailSent = true
+  } catch (error) {
+    // sendMail's errors never hold the mail, so the link's token is not in the log.
+    reportFailure(request, error, 'mail.send')
+  }
+  return reply(201, { loginId, mailSent })
 }

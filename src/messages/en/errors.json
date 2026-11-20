@@ -65,5 +65,11 @@
   "sharedPackNotFound": "This share has ended.",
   "invalidPage": "The page number is not valid.",
   "importInputTypeInvalid": "Line {line}: input_type must be command, code or word.",
-  "invalidRequest": "The request is not valid."
+  "invalidRequest": "The request is not valid.",
+  "loginIdFormat": "Use 3 to 32 letters, digits, \"_\" or \"-\" for the ID.",
+  "passwordLength": "Use 10 to 128 characters for the password.",
+  "passwordSameAsId": "The password cannot be the same as the ID.",
+  "emailFormat": "Enter a valid email address.",
+  "loginIdTaken": "This ID is already taken. Choose another one.",
+  "tooManyRequests": "Too many requests. Please try again later."
 }

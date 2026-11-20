@@ -65,5 +65,11 @@
   "sharedPackNotFound": "Общий доступ закончился.",
   "invalidPage": "Неверный номер страницы.",
   "importInputTypeInvalid": "Строка {line}: input_type должен быть command, code или word.",
-  "invalidRequest": "Запрос составлен неверно."
+  "invalidRequest": "Запрос составлен неверно.",
+  "loginIdFormat": "ID должен содержать от 3 до 32 латинских букв, цифр, «_» или «-».",
+  "passwordLength": "Пароль должен содержать от 10 до 128 символов.",
+  "passwordSameAsId": "Пароль не может совпадать с ID.",
+  "emailFormat": "Неверный формат адреса электронной почты.",
+  "loginIdTaken": "Этот ID уже занят. Выберите другой.",
+  "tooManyRequests": "Слишком много запросов. Повторите попытку позже."
 }
