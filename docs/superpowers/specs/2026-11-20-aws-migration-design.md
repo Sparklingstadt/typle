@@ -69,7 +69,7 @@ typle の本番（`https://typle.sparklingstadt.com`）を、Vercel（アプリ�
 | ② 最初から CDK | 早いが、中身がコードに隠れて学びが薄い |
 | ③ コンソールだけ | 再現できない |
 
-①の具体化（提案・下の「決まっていないこと」1）: コンソールで作るのは**練習環境**とし、本番は CDK で作る。
+①の具体化（持ち主の判断として作る人が決めた）: コンソールで作るのは**練習環境**とし、本番は CDK で作る。
 コンソールで作った本番を後から CDK に取り込む（`cdk import`）と、取り込めないリソースが出て手間が大きく、
 CDK で作り直すと本番の切り替えが2回になる。練習環境なら、作って、壊して、消すことも学びになる。
 
@@ -121,7 +121,15 @@ CDK で作り直すと本番の切り替えが2回になる。練習環境なら
 - **費用**: AWS Budgets で月の予算（$80、通知だけで止めはしない）を作り、実績の 80%・予測の 100% でメール。最初に作る。
 - **アカウント**: root には MFA を付けて普段は使わない。IAM Identity Center のユーザーで作業し、Mac の `aws` CLI も
   `aws configure sso` のプロファイルで使う（長期のアクセスキーを作らない）。
-- **リージョン**: `ap-northeast-1`（東京）。今の Vercel は `sin1` だが、利用者は日本と考える（持ち主の判断・下の「決まっていないこと」）。
+- **DNS**: ドメイン `sparklingstadt.com` は Cloudflare Registrar で取ってあり、Cloudflare Registrar のドメインはネームサーバーを
+  Cloudflare から変えられない。そこで、Cloudflare に NS レコードを足して**サブドメイン `typle.sparklingstadt.com` だけを
+  Route 53 のホストゾーンに委任する**（持ち主の判断として作る人が決めた。Route 53 のホストゾーン・エイリアスレコード・ACM の DNS 検証を
+  本番で使えるため）。ゾーンの頂点の `typle.sparklingstadt.com` は ALB へのエイリアス（A・AAAA）。
+  委任すると、Cloudflare にある `typle.sparklingstadt.com` とその下のレコード（Resend の SPF・DKIM・MX が `TYPLE_MAIL_FROM` の
+  ドメインにあれば、それも）は効かなくなるので、委任の前に一覧にして Route 53 に写す。Cloudflare のプロキシ（オレンジの雲）は通らなくなる
+  （通すと `x-forwarded-for` の末尾が Cloudflare の IP になり、回数制限が壊れる）。練習環境は、同じように `aws-lab.sparklingstadt.com`
+  を委任する（使い終わったら NS レコードを消す）。
+- **リージョン**: `ap-northeast-1`（東京）。持ち主が決めた。`sin1` は Neon の近くに置くためだったので、RDS に移せば理由がなくなる。
 
 月額の目安（東京、オンデマンド）: ALB 約 $20、Fargate ARM 0.5vCPU/1GB 約 $15、RDS db.t4g.micro + 20GB 約 $20、
 パブリック IPv4（ALB 2・タスク 1）約 $11、Secrets Manager・Route 53・CloudWatch で数ドル。合計 約 $60〜70。
@@ -138,7 +146,7 @@ CDK で作り直すと本番の切り替えが2回になる。練習環境なら
 3. **DB の接続**: `src/server/database.ts` の Vercel・Neon 前提のコメントを直す。プールの大きさ（`max: 5`）は、タスク1つなら
    RDS の上限に対して十分小さいのでそのまま。
 4. **Vercel Web Analytics を外す**: `WebAnalytics.tsx`・`src/lib/analytics.ts`・`@vercel/analytics`、`layout.tsx` の `onVercel`、
-   `proxy.ts` と CSP の `_vercel` を消す。紹介ページの「アクセス解析」の節は（決まっていないこと）。
+   `proxy.ts` と CSP の `_vercel` を消す。紹介ページの「アクセス解析」の節は、6言語とも節ごと消す（持ち主が決めた）。
 5. **`VERCEL` の判定**: `settings.ts` の開発ログインは、`localLoginAllowed` が `LOCAL_DEVELOPMENT_LOGIN=1` と http の loopback・LAN の
    `AUTH_URL` を求めるので、本番（`https://typle.sparklingstadt.com`）では `VERCEL` の判定がなくても無効になる。`NODE_ENV` で
    判定してはいけない（E2E は本番ビルドで開発ログインを使う）。変更はせず、「https の `AUTH_URL` では `LOCAL_DEVELOPMENT_LOGIN=1` でも
@@ -170,7 +178,7 @@ CDK にしたあとは、イメージのタグを CDK の入力にするか、CD
 
 前もって:
 
-- 本番のドメインの DNS の TTL を 60 秒に下げておく（1日以上前）。
+- Route 53 への委任は、切り替えの前に済ませる。最初は Route 53 のゾーンに、今の Vercel を指すレコードを写して委任し（利用者には何も変わらない）、TTL を 60 秒にしておく。切り替えの当日は、そのレコードを ALB へのエイリアスに変えるだけにする。
 - 練習環境で、Neon のコピーを使って移行を一度通しで行い、かかる時間と行数の確かめ方を決めておく。
 
 当日（目安 15〜30 分止まる）:
