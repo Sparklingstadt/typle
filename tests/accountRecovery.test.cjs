@@ -66,6 +66,22 @@ function post(path, body, { ip = newIp(), headers = {} } = {}) {
   })
 }
 const call = (answer, request) => resend.withEnv(() => answer(request, open, withSettings))
+
+/** A Defer that holds the tasks until run() runs them, in order. */
+function collector() {
+  const tasks = []
+  const defer = task => { tasks.push(task) }
+  defer.tasks = tasks
+  defer.run = async () => { while (tasks.length) await tasks.shift()() }
+  return defer
+}
+/** call for forgot-password and forgot-id: their deferred work is run before the answer is returned. */
+const callDeferred = (answer, request) => resend.withEnv(async () => {
+  const defer = collector()
+  const response = await answer(request, open, withSettings, defer)
+  await defer.run()
+  return response
+})
 const mailsTo = address => resend.received.filter(mail => mail.body.to[0] === address)
 const tokenIn = mail => mail.body.text.match(/token=([A-Za-z0-9_-]{43})/)[1]
 
@@ -98,7 +114,7 @@ test('forgot-password answers 200 {} for every ID and mails only a verified addr
   const unverified = await account('fpun')
   const verified = await account('fpok', { verified: true })
   for (const loginId of [`${prefix}fpnone`, unverified.loginId, verified.loginId.toUpperCase(), 'x']) {
-    const response = await call(answerForgotPassword, post('forgot-password', { loginId }))
+    const response = await callDeferred(answerForgotPassword, post('forgot-password', { loginId }))
     assert.equal(response.status, 200, loginId)
     assert.deepEqual(await response.json(), {})
   }
@@ -114,11 +130,80 @@ test('the fourth forgot-password in an hour for one ID sends no mail', database,
   await resend.ready
   const user = await account('fplim', { verified: true })
   for (let i = 1; i <= 4; i++) {
-    const response = await call(answerForgotPassword, post('forgot-password', { loginId: user.loginId }))
+    const response = await callDeferred(answerForgotPassword, post('forgot-password', { loginId: user.loginId }))
     assert.equal(response.status, 200, `request ${i}`)
     assert.deepEqual(await response.json(), {})
   }
   assert.equal(mailsTo(user.email).length, 3)
+})
+
+test('forgot-password and forgot-id answer before the token, the mail and the counting', database, async () => {
+  await resend.ready
+  const user = await account('defer', { verified: true })
+  for (const [answer, path, body] of [
+    [answerForgotPassword, 'forgot-password', { loginId: user.loginId }],
+    [answerForgotId, 'forgot-id', { email: user.email }],
+  ]) {
+    const ip = newIp()
+    const defer = collector()
+    const sent = mailsTo(user.email).length
+    const response = await resend.withEnv(() => answer(post(path, body, { ip }), open, withSettings, defer))
+    assert.equal(response.status, 200, path)
+    assert.deepEqual(await response.json(), {})
+    assert.equal(defer.tasks.length, 1, path)
+    assert.equal(mailsTo(user.email).length, sent, path)
+    const { rows } = await db.query('SELECT 1 FROM typle_auth_limits WHERE key = $1', [`mail:ip:${ip}`])
+    assert.equal(rows.length, 0, path)
+    await resend.withEnv(defer.run)
+    assert.equal(mailsTo(user.email).length, sent + 1, path)
+    assert.equal((await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [`mail:ip:${ip}`])).rows[0].count, 1)
+  }
+  // An unknown ID defers the same one task (the counting), so both paths answer alike.
+  const defer = collector()
+  await answerForgotPassword(post('forgot-password', { loginId: `${prefix}nobody` }), open, withSettings, defer)
+  assert.equal(defer.tasks.length, 1)
+  await defer.run()
+})
+
+test('the fourth forgot-id in an hour for one address sends no mail', database, async () => {
+  await resend.ready
+  const user = await account('idlim', { verified: true })
+  for (let i = 1; i <= 4; i++) {
+    const response = await callDeferred(answerForgotId, post('forgot-id', { email: user.email }))
+    assert.equal(response.status, 200, `request ${i}`)
+  }
+  assert.equal(mailsTo(user.email).length, 3)
+})
+
+test('a reset whose writes fail leaves the password and the link as they were', database, async () => {
+  const user = await account('resetfail')
+  const token = await issueToken(db, { userId: user.id, kind: 'reset', email: user.email, ttlSeconds: 1800 })
+  // A pool whose connections fail on the revocation, the last write of the transaction.
+  const failing = {
+    query: (...args) => db.query(...args),
+    connect: async () => {
+      const client = await db.connect()
+      return {
+        query: (sql, ...rest) => /typle_session_revocations/.test(sql) ? Promise.reject(new Error('revocation failed')) : client.query(sql, ...rest),
+        release: destroy => client.release(destroy),
+      }
+    },
+  }
+  const errors = []
+  const original = console.error
+  console.error = (...args) => errors.push(args.map(String).join(' '))
+  let response
+  try {
+    response = await resend.withEnv(() => answerResetPassword(post('reset-password', { token, password: NEW_PASSWORD }), () => failing, withSettings))
+  } finally {
+    console.error = original
+  }
+  assert.equal(response.status, 503)
+  assert.ok(errors.some(line => line.includes('account.resetPassword')), errors.join('\n'))
+  assert.ok(errors.every(line => !line.includes(token)), errors.join('\n'))
+  assert.ok(await authorizePassword(db, { loginId: user.loginId, password: PASSWORD }, newIp()))
+  const retry = await call(answerResetPassword, post('reset-password', { token, password: NEW_PASSWORD }))
+  assert.equal(retry.status, 200)
 })
 
 test('reset-password sets the new password, verifies the address and revokes the logins before it', database, async () => {
@@ -166,7 +251,7 @@ test('forgot-id mails the IDs of a verified address in the reader\'s language, a
   const b = await account('idb', { verified: true, email })
   await account('idc', { email })
   const lone = await account('idlone')
-  const response = await call(answerForgotId, post('forgot-id', { email: ` ${email.toUpperCase()} ` }, { headers: { Cookie: 'NEXT_LOCALE=en' } }))
+  const response = await callDeferred(answerForgotId, post('forgot-id', { email: ` ${email.toUpperCase()} ` }, { headers: { Cookie: 'NEXT_LOCALE=en' } }))
   assert.equal(response.status, 200)
   assert.deepEqual(await response.json(), {})
   const mails = mailsTo(email)
@@ -175,7 +260,7 @@ test('forgot-id mails the IDs of a verified address in the reader\'s language, a
   assert.equal(mails[0].body.subject, expected.subject)
   assert.equal(mails[0].body.text, expected.text)
   for (const address of [lone.email, `${prefix}nobody@example.com`, 'not-an-address']) {
-    const other = await call(answerForgotId, post('forgot-id', { email: address }))
+    const other = await callDeferred(answerForgotId, post('forgot-id', { email: address }))
     assert.equal(other.status, 200, address)
     assert.deepEqual(await other.json(), {})
   }

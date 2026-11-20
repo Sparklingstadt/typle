@@ -1,11 +1,14 @@
+import { after } from 'next/server'
 import { answerForgotId } from '../../../../server/accountRecovery'
 import { pool } from '../../../../server/database'
 import { methodNotAllowed } from '../../../../server/response'
+import { readLoginSettings } from '../../../../server/settings'
 
 // /api/account/forgot-id: POST mails the IDs whose confirmed address is the one given.
 
 export async function POST(request: Request) {
-  return answerForgotId(request, pool)
+  // The mail is sent after the answer, so the time to answer does not tell whether the account exists.
+  return answerForgotId(request, pool, readLoginSettings, after)
 }
 
 const onlyPost = async () => methodNotAllowed(['POST'])

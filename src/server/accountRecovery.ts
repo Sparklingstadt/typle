@@ -1,4 +1,4 @@
-import type { Pool } from 'pg'
+import type { Pool, PoolClient } from 'pg'
 import { emailProblem, loginIdProblem, normalizeEmail, normalizeLoginId, passwordProblem } from '../lib/accountRules'
 import { signedIn } from './account'
 import { readerLocale, readFields } from './accountApi'
@@ -20,12 +20,20 @@ import { accountIdOf, findUserById, findUserByLoginId, findVerifiedLoginIdsByEma
 // The mails are limited to 3 an hour for one ID or address and 10 an hour for one IP (LIMITS.mailTarget, mailIp): a
 // limit is checked before the work and counted after the attempt to send. forgot-password and forgot-id always answer
 // 200 {}, also when limited or when there is nothing to send, so they never tell whether an ID or an address exists.
+// For the same reason their token, mail and counting run after the answer (Defer: next/server's after in the routes),
+// so the time to answer does not tell either.
 
 /** How long the link that confirms an address can be used: 24 hours. */
 const VERIFY_TTL_SECONDS = 24 * 60 * 60
 
 /** How long the link that sets a new password can be used: 30 minutes. */
 const RESET_TTL_SECONDS = 30 * 60
+
+/**
+ * Schedules work to run after the answer is sent: next/server's after in the routes (waitUntil on Vercel), a collector
+ * the tests can await. The task catches and reports its own failures.
+ */
+export type Defer = (task: () => Promise<void>) => void
 
 type Accepted<Name extends string> = { login: LoginSettings, fields: Record<Name, string> }
 
@@ -83,9 +91,10 @@ async function trySend(request: Request, address: string, mail: () => Promise<Ma
  * seconds; the screen signs in again right after this answer, so writing now() would revoke that new login too when it
  * falls in the same second. revoked_at is therefore written one second back: every login of an earlier second is
  * still revoked, the new one is not, and only a login made in the second just before the change could outlive it.
- * GREATEST keeps a later revocation (a sign-out of every device in that second) from being moved back.
+ * GREATEST keeps a later revocation (a sign-out of every device in that second) from being moved back. iat comes from
+ * the app's clock and revoked_at from the database's, so a skew between them of a second or more moves this window.
  */
-async function revokeEarlierLogins(db: Pool, sub: string): Promise<void> {
+async function revokeEarlierLogins(db: Pick<Pool, 'query'>, sub: string): Promise<void> {
   await db.query(`INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now() - interval '1 second')
     ON CONFLICT (owner_id) DO UPDATE
     SET revoked_at = GREATEST(typle_session_revocations.revoked_at, EXCLUDED.revoked_at)`, [sub])
@@ -110,6 +119,25 @@ async function signedInAccount(request: Request, db: Pool, login: LoginSettings,
     return { refusal: refuse(503, 'databaseUnavailable') }
   }
   return user ? { user, sub: session.user.sub } : { refusal: refuse(401, 'loginRequired') }
+}
+
+/**
+ * Runs work in one transaction on one connection of db: committed when it returns true, rolled back when it returns
+ * false or throws (the error is thrown on).
+ */
+async function inTransaction(db: Pool, work: (client: PoolClient) => Promise<boolean>): Promise<boolean> {
+  const client = await db.connect()
+  try {
+    await client.query('BEGIN')
+    const commit = await work(client)
+    await client.query(commit ? 'COMMIT' : 'ROLLBACK')
+    client.release()
+    return commit
+  } catch (error) {
+    await client.query('ROLLBACK').catch(() => {})
+    client.release(true)
+    throw error
+  }
 }
 
 /** The pool of open, or the answer 503 databaseUnavailable when there is none. */
@@ -183,10 +211,10 @@ export async function answerResendVerification(request: Request, open: () => Poo
  * POST /api/account/forgot-password { loginId }: mails the link that sets a new password (30 minutes) in the account's
  * language, when the ID has an account with a confirmed address and the mail limits (counted for the ID) allow it.
  * Always 200 {} for a well-formed body, also for an unknown ID; each such request that is not limited counts against
- * the limits, whether or not a mail was sent.
+ * the limits, whether or not a mail was sent. The token, the mail and the counting run in defer, after the answer.
  */
 export async function answerForgotPassword(request: Request, open: () => Pool,
-  settings: () => LoginSettings | null = readLoginSettings): Promise<Response> {
+  settings: () => LoginSettings | null, defer: Defer): Promise<Response> {
   const accepted = await accept(request, settings, ['loginId'] as const)
   if ('refusal' in accepted) return accepted.refusal
   const { login } = accepted
@@ -207,14 +235,17 @@ export async function answerForgotPassword(request: Request, open: () => Pool,
     reportFailure(request, error, 'account.forgotPassword')
     return refuse(503, 'databaseUnavailable')
   }
-  if (user?.emailVerifiedAt) {
-    const { id, email, locale } = user
-    await trySend(request, email, async () => {
-      const token = await issueToken(db, { userId: id, kind: 'reset', email, ttlSeconds: RESET_TTL_SECONDS })
-      return resetMail(locale, `${login.origin}/reset-password?token=${token}`)
-    })
-  }
-  await countMail(db, request, limits, 'account.forgotPassword')
+  const recipient = user?.emailVerifiedAt ? user : null
+  defer(async () => {
+    if (recipient) {
+      const { id, email, locale } = recipient
+      await trySend(request, email, async () => {
+        const token = await issueToken(db, { userId: id, kind: 'reset', email, ttlSeconds: RESET_TTL_SECONDS })
+        return resetMail(locale, `${login.origin}/reset-password?token=${token}`)
+      })
+    }
+    await countMail(db, request, limits, 'account.forgotPassword')
+  })
   return reply(200, {})
 }
 
@@ -239,13 +270,17 @@ export async function answerResetPassword(request: Request, open: () => Pool,
     const problem = passwordProblem(password, user.loginId)
     if (problem) return refuse(400, problem)
     const passwordHash = await hashPassword(password)
-    // Used only now, so that two requests with one link cannot both set a password.
-    const token = await consumeToken(db, raw, 'reset')
-    if (!token || token.userId !== user.id) return refuse(400, 'invalidToken')
-    await setPassword(db, user.id, passwordHash)
-    await markEmailVerified(db, user.id, token.email)
-    await revokeEarlierLogins(db, `password:${user.id}`)
-    return reply(200, { loginId: user.loginId })
+    const done = await inTransaction(db, async client => {
+      // Used only now, so that two requests with one link cannot both set a password; in the one transaction with the
+      // writes, so that the link is spent only when all of them land.
+      const token = await consumeToken(client, raw, 'reset')
+      if (!token || token.userId !== user.id) return false
+      await setPassword(client, user.id, passwordHash)
+      await markEmailVerified(client, user.id, token.email)
+      await revokeEarlierLogins(client, `password:${user.id}`)
+      return true
+    })
+    return done ? reply(200, { loginId: user.loginId }) : refuse(400, 'invalidToken')
   } catch (error) {
     reportFailure(request, error, 'account.resetPassword')
     return refuse(503, 'databaseUnavailable')
@@ -255,10 +290,11 @@ export async function answerResetPassword(request: Request, open: () => Pool,
 /**
  * POST /api/account/forgot-id { email }: mails the IDs of the accounts whose confirmed address it is, in the reader's
  * language (the locale cookie), when there is one and the mail limits (counted for the address) allow it. Always
- * 200 {} for a well-formed body; each such request that is not limited counts against the limits.
+ * 200 {} for a well-formed body; each such request that is not limited counts against the limits. The mail and the
+ * counting run in defer, after the answer.
  */
 export async function answerForgotId(request: Request, open: () => Pool,
-  settings: () => LoginSettings | null = readLoginSettings): Promise<Response> {
+  settings: () => LoginSettings | null, defer: Defer): Promise<Response> {
   const accepted = await accept(request, settings, ['email'] as const)
   if ('refusal' in accepted) return accepted.refusal
   const email = normalizeEmail(accepted.fields.email)
@@ -277,11 +313,11 @@ export async function answerForgotId(request: Request, open: () => Pool,
     reportFailure(request, error, 'account.forgotId')
     return refuse(503, 'databaseUnavailable')
   }
-  if (ids.length > 0) {
-    const locale = readerLocale(request)
-    await trySend(request, email, async () => loginIdsMail(locale, ids))
-  }
-  await countMail(db, request, limits, 'account.forgotId')
+  const locale = readerLocale(request)
+  defer(async () => {
+    if (ids.length > 0) await trySend(request, email, async () => loginIdsMail(locale, ids))
+    await countMail(db, request, limits, 'account.forgotId')
+  })
   return reply(200, {})
 }
 
