@@ -40,15 +40,16 @@ function counted() {
   return derive
 }
 
-/** Whether scrypt ran against a stored hash rather than the dummy (whose salt is all ones). */
+/** The real scrypt, counting all its runs and, as real, those against a stored hash rather than the dummy (salt all ones). */
 function realRuns() {
-  const derive = counted()
-  const inner = derive
+  const inner = counted()
   const wrapped = (password, salt, keyLength, options) => {
     if (!salt.equals(Buffer.alloc(16, 1))) wrapped.real++
+    wrapped.runs++
     return inner(password, salt, keyLength, options)
   }
   wrapped.real = 0
+  wrapped.runs = 0
   return wrapped
 }
 
@@ -90,10 +91,25 @@ test('after five failures even the right password is refused, still after one sc
 test('a blocked IP is refused even with the right password', database, async () => {
   const { loginId } = await account('ipblock')
   for (let i = 0; i < 30; i++) await countHit(db, LIMITS.loginFailIp(ip('blocked')))
-  const derive = counted()
-  assert.equal(await authorizePassword(db, { loginId, password: PASSWORD }, ip('blocked'), undefined, derive), null)
-  assert.equal(derive.runs, 1)
+  for (const id of [loginId, `${prefix}ipnobody`]) {
+    const derive = realRuns()
+    assert.equal(await authorizePassword(db, { loginId: id, password: PASSWORD }, ip('blocked'), undefined, derive), null)
+    assert.equal(derive.runs, 1)
+    assert.equal(derive.real, 0)
+    // A blocked IP cannot lock accounts: the ID's count is left alone.
+    assert.equal(await failures(LIMITS.loginFailId(id).key), 0)
+  }
   assert.notEqual(await authorizePassword(db, { loginId, password: PASSWORD }, ip('other')), null)
+})
+
+test('an attempt on a blocked ID leaves the IP\'s count as it was', database, async () => {
+  const { loginId } = await account('idblock')
+  for (let i = 0; i < 5; i++) await authorizePassword(db, { loginId, password: `wrong ${i} password` }, ip(`idblock${i}`))
+  const derive = realRuns()
+  assert.equal(await authorizePassword(db, { loginId, password: PASSWORD }, ip('idblock-late'), undefined, derive), null)
+  assert.equal(derive.runs, 1)
+  assert.equal(derive.real, 0)
+  assert.equal(await failures(LIMITS.loginFailIp(ip('idblock-late')).key), 0)
 })
 
 test('signing in forgets the ID\'s failures', database, async () => {
