@@ -1,13 +1,11 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { scriptPolicy, sentryReportUri } from '@/lib/contentSecurityPolicy'
-
-const reportUri = sentryReportUri(process.env.NEXT_PUBLIC_SENTRY_DSN)
+import { scriptPolicy } from '@/lib/contentSecurityPolicy'
 
 // A fresh nonce for each page. Next.js reads it from the request's policy header and adds it to its own scripts; the
 // root layout reads x-nonce for the theme script.
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
-  const policy = scriptPolicy(nonce, process.env.NODE_ENV === 'development', reportUri)
+  const policy = scriptPolicy(nonce, process.env.NODE_ENV === 'development')
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-nonce', nonce)
   // Next.js takes the nonce from content-security-policy when there is one, and only then from the report-only header.

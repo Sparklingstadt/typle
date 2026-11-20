@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "About Typle | Typle",
-    "description": "What you can do with Typle, where your data is saved, what is sent in error reports, and the version."
+    "description": "What you can do with Typle, where your data is saved, what is sent for analytics, and the version."
   },
   "title": "About Typle",
   "intro": "A typing app for practicing with word lists you create yourself. Add any words you like, practice them, and track your progress with your best records.",
@@ -44,10 +44,9 @@
       "p3": "Saving requires an internet connection"
     }
   },
-  "reports": {
-    "title": "Error reports",
-    "text": "To investigate problems, we may send details of errors and the environment where they occurred (browser, OS, and so on). Before sending, request contents such as word lists, cookies, user information, and the history of your actions are removed.",
-    "analytics": "To see which pages are viewed and how often, page views are counted with Vercel Web Analytics. Only the page address (without anything after ?), the referrer, the browser, the OS and the country are sent. No cookies are used, and your word lists and practice records are never sent."
+  "analytics": {
+    "title": "Analytics",
+    "text": "To see which pages are viewed and how often, page views are counted with Vercel Web Analytics. Only the page address (without anything after ?), the referrer, the browser, the OS and the country are sent. No cookies are used, and your word lists and practice records are never sent."
   },
   "version": {
     "title": "Version and development",

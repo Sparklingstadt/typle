@@ -62,9 +62,8 @@ export default async function About() {
         <p className="text-sm">{t.rich("storage.more", { link: chunks => <Link href="/guide#storage" className="underline underline-offset-3 hover:text-muted-foreground">{chunks}</Link> })}</p>
       </Section>
 
-      <Section id="reports-heading" title={t("reports.title")}>
-        <p className="max-w-2xl text-sm text-muted-foreground">{t("reports.text")}</p>
-        <p className="max-w-2xl text-sm text-muted-foreground">{t("reports.analytics")}</p>
+      <Section id="analytics-heading" title={t("analytics.title")}>
+        <p className="max-w-2xl text-sm text-muted-foreground">{t("analytics.text")}</p>
       </Section>
 
       <Section id="version-heading" title={t("version.title")}>

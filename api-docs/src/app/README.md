@@ -44,7 +44,7 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 | 503 | `workspaceSaveFailed` | DBの障害（書き込み） |
 | 503 | `authUnavailable` | ログインの設定がない、またはログインを始められない |
 
-503 で答えた失敗は、操作名（`workspace.read` など）を付けて Sentry に送ります（[docs/sentry.md](https://github.com/Sparklingstadt/typle-r/blob/main/docs/sentry.md)）。
+503 で答えた失敗は、操作名（`workspace.read` など）を付けてサーバーのログに出します。
 
 ## 認証
 

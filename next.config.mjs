@@ -1,4 +1,3 @@
-import { withSentryConfig } from '@sentry/nextjs/config';
 import createNextIntlPlugin from 'next-intl/plugin';
 import backendCompare from './scripts/backendCompare.cjs';
 
@@ -39,14 +38,4 @@ const nextConfig = (phase) => withNextIntl({
   rewrites: async () => ({ beforeFiles: backendCompare.backendRewrites(), afterFiles: [], fallback: [] }),
 });
 
-export default withSentryConfig(nextConfig, {
-  org: process.env.SENTRY_ORG,
-  project: process.env.SENTRY_PROJECT,
-  authToken: process.env.SENTRY_AUTH_TOKEN,
-  silent: !process.env.CI,
-  telemetry: false,
-  sourcemaps: {
-    disable: !process.env.SENTRY_AUTH_TOKEN,
-    deleteSourcemapsAfterUpload: true,
-  },
-});
+export default nextConfig;
