@@ -15,28 +15,44 @@ ECR のイメージを ECS（Fargate）で動かし、ALB（Application Load Bal
 ## 6-1. タスク実行ロールを作る
 
 ECS がタスクを起動するときに使うロールです。イメージの取得、ログの書き込み、シークレットの読み取りに使います。
+アプリ用と、DB のユーザーを作る単発のタスク用に、**2つ**作ります。読めるシークレットを分けるためです。
 
 1. **IAM** → **ロール** → **ロールを作成**を開きます。
 2. 信頼されたエンティティは **AWS のサービス**、ユースケースは **Elastic Container Service** → **Elastic Container Service Task** を選びます。
 3. 許可ポリシーに `AmazonECSTaskExecutionRolePolicy` を付け、名前を `typle-lab-task-execution` にして作ります。
-4. 作ったロールの**許可を追加** → **インラインポリシーを作成**で、JSON に次を入れ、名前を `read-typle-lab-secrets` にします。
+4. 作ったロールの**許可を追加** → **インラインポリシーを作成**で、JSON に次を入れ、名前を `typle-lab-app-runtime` にします。
 
    ```json
    {
      "Version": "2012-10-17",
-     "Statement": [{
-       "Effect": "Allow",
-       "Action": "secretsmanager:GetSecretValue",
-       "Resource": [
-         "arn:aws:secretsmanager:ap-northeast-1:<アカウントID>:secret:typle-lab/*",
-         "<RDS のマスター認証情報のシークレットの ARN>"
-       ]
-     }]
+     "Statement": [
+       {
+         "Effect": "Allow",
+         "Action": "secretsmanager:GetSecretValue",
+         "Resource": [
+           "arn:aws:secretsmanager:ap-northeast-1:<アカウントID>:secret:typle-lab/DATABASE_URL-*",
+           "arn:aws:secretsmanager:ap-northeast-1:<アカウントID>:secret:typle-lab/AUTH_SECRET-*",
+           "arn:aws:secretsmanager:ap-northeast-1:<アカウントID>:secret:typle-lab/AUTH_GITHUB_SECRET-*"
+         ]
+       },
+       {
+         "Effect": "Allow",
+         "Action": "logs:CreateLogGroup",
+         "Resource": "arn:aws:logs:ap-northeast-1:<アカウントID>:log-group:/ecs/typle-lab:*"
+       }
+     ]
    }
    ```
 
-読めるシークレットを `typle-lab/` のものと RDS のものだけに絞っています（最小権限）。
-アプリそのものは AWS の API を呼ばないので、タスクロール（アプリが使うロール）は作りません。
+5. 1〜4 と同じやり方で、2つ目のロール `typle-lab-dbuser-execution` を作ります。許可ポリシーは同じ `AmazonECSTaskExecutionRolePolicy`、インラインポリシーは名前を `typle-lab-dbuser-runtime` にして、`secretsmanager:GetSecretValue` の `Resource` だけを次の2つに変えます（`logs:CreateLogGroup` の文はそのまま）。
+   - `<RDS のマスター認証情報のシークレットの ARN>`
+   - `arn:aws:secretsmanager:ap-northeast-1:<アカウントID>:secret:typle-lab/APP_DB_PASSWORD-*`
+
+シークレットの ARN の末尾には、AWS が付けたランダムな6文字（`-AbCdEf`）があります。そのため、名前のあとに `-*` を付けて指定します。
+
+- アプリのタスクが読めるのは、アプリの3つのシークレットだけです。DB のマスターパスワードは読めません（**最小権限**）。
+- `logs:CreateLogGroup` を許すのは、新しいコンソールがタスク定義のログの設定に `awslogs-create-group` を自動で付けるためです。この権限がないと、ロググループがすでにあってもタスクが起動できません。
+- アプリそのものは AWS の API を呼ばないので、タスクロール（アプリが使うロール）は作りません。
 
 ## 6-2. クラスターを作る
 
@@ -89,7 +105,7 @@ DB はプライベートサブネットにあるので、Mac からは直接つ�
 | ファミリー | `typle-lab-dbuser` |
 | 起動タイプ、OS・アーキテクチャ | Fargate、Linux/ARM64 |
 | CPU、メモリ | 0.25 vCPU、0.5 GB |
-| タスク実行ロール | `typle-lab-task-execution` |
+| タスク実行ロール | `typle-lab-dbuser-execution` |
 | コンテナの名前 | `psql` |
 | イメージ URI | `public.ecr.aws/docker/library/postgres:17` |
 | ログ | `/ecs/typle-lab` |
@@ -191,7 +207,8 @@ curl -i http://<ALB の DNS 名>/api/health    # 200
 | 症状 | 見るところ |
 |---|---|
 | タスクがすぐ止まる、`CannotPullContainerError` | パブリック IP がオンか、イメージのアーキテクチャが ARM64 か |
-| `ResourceInitializationError`（シークレット） | 実行ロールのインラインポリシーの ARN |
+| `ResourceInitializationError`（シークレット） | 実行ロールのインラインポリシーの ARN（末尾の `-*`）と、タスク定義で選んだ実行ロール |
+| `ResourceInitializationError`（`CreateLogGroup` の `AccessDenied`） | 実行ロールのインラインポリシーに `logs:CreateLogGroup` があるか |
 | ターゲットが unhealthy | `typle-lab-app` が `typle-lab-alb` からの 3000 を許しているか。ログの `/api/health` のエラー |
 | `/api/health` が 503 | `typle-lab-db` が `typle-lab-app` からの 5432 を許しているか。`DATABASE_URL` の書き方 |
 

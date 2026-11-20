@@ -19,16 +19,20 @@
 | 6 | ターゲットグループ `typle-lab-app` | EC2 → ターゲットグループ → 削除 |
 | 7 | Route 53 の A レコードと、ACM の検証用 CNAME | Route 53 → `aws-lab.sparklingstadt.com` → レコードを選んで削除（NS と SOA は残る） |
 | 8 | ACM の証明書 | Certificate Manager → 削除（ALB を消したあとでないと消せない） |
-| 9 | ホストゾーン `aws-lab.sparklingstadt.com` | Route 53 → ホストゾーン → 削除（月 0.50 ドル） |
-| 10 | Cloudflare の NS レコード4つ（`aws-lab`） | Cloudflare → DNS → Records |
+| 9 | Cloudflare の NS レコード4つ（`aws-lab`） | Cloudflare → DNS → Records。消したら `dig +short NS aws-lab.sparklingstadt.com` が何も返さないことを確かめる |
+| 10 | ホストゾーン `aws-lab.sparklingstadt.com` | Route 53 → ホストゾーン → 削除（月 0.50 ドル）。**必ず 9 のあと** |
 | 11 | RDS `typle-lab` | RDS → データベース → 削除。**最終スナップショットは作らない**、**自動バックアップを保持しない**にチェック |
 | 12 | DB サブネットグループ `typle-lab-db` | RDS → サブネットグループ → 削除 |
 | 13 | シークレット `typle-lab/` の4つ | Secrets Manager → 削除（下の CLI ですぐに消せる）。RDS のシークレットは、RDS を消すと一緒に消える |
 | 14 | ECR のリポジトリ `typle-lab` | ECR → リポジトリ → 削除（中のイメージも消える） |
 | 15 | ロググループ `/ecs/typle-lab` | CloudWatch → ロググループ → 削除 |
 | 16 | VPC `typle-lab-vpc` | VPC → VPC → 削除（サブネット・ルートテーブル・インターネットゲートウェイ・セキュリティグループも一緒に消える） |
-| 17 | ロール `typle-lab-task-execution` | IAM → ロール → 削除 |
+| 17 | ロール `typle-lab-task-execution`・`typle-lab-dbuser-execution` | IAM → ロール → 削除 |
 | 18 | 練習用の GitHub OAuth App `typle-lab` | GitHub → Developer settings → OAuth Apps → Delete application |
+
+NS レコード（9）をホストゾーン（10）より先に消すのは、安全のためです。
+逆にすると、Cloudflare が「`aws-lab` は Route 53 のこのネームサーバーに聞け」と案内したまま、そこにゾーンがなくなります。
+すると、ほかの人が自分のアカウントで同じ名前のゾーンを作り、サブドメインを乗っ取れることがあります（このサブドメインは GitHub のログインの戻り先にも使っていました）。
 
 シークレットは、画面から消すと最低7日の**削除の待機期間**に入ります。待たずにすぐ消すときは、CLI を使います。
 
