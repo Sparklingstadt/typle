@@ -16,3 +16,7 @@ api-docs/src/.vuepress/.cache
 server/cmd
 *_test.go
 kotlin
+# The container image and the AWS stack (docs/aws.md) are not used on Vercel.
+Dockerfile
+.dockerignore
+infra

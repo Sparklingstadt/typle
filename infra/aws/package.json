@@ -1,0 +1,25 @@
+{
+  "name": "typle-r-aws",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Typle on AWS: ECS Fargate behind an Application Load Balancer, and Amazon RDS for PostgreSQL (docs/aws.md).",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "synth": "cdk synth",
+    "diff": "cdk diff",
+    "deploy": "cdk deploy"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.277.0",
+    "constructs": "10.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.3",
+    "aws-cdk": "2.1149.0",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}

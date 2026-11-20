@@ -1,0 +1,10 @@
+{
+  "app": "node --import tsx bin/typle.ts",
+  "watch": {
+    "include": ["bin/**", "lib/**"]
+  },
+  "context": {
+    "region": "ap-northeast-1",
+    "domainName": "aws.typle.sparklingstadt.com"
+  }
+}

@@ -19,6 +19,9 @@ const nextConfig = (phase) => withNextIntl({
   poweredByHeader: false,
   // Keep local development and verification separate; Vercel expects .next.
   distDir: phase === 'phase-development-server' || process.env.VERCEL === '1' ? '.next' : '.next-production',
+  // The container image for AWS (Dockerfile, infra/aws) runs the minimal server.js of a standalone build. Only that build
+  // sets TYPLE_STANDALONE, so Vercel and local builds are unchanged.
+  ...(process.env.TYPLE_STANDALONE === '1' ? { output: 'standalone' } : {}),
   headers: () => [
     { source: '/:path*', headers: securityHeaders },
     // No other site may frame the app (clickjacking of its buttons), and no <base> or plugin content. form-action is left
