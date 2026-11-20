@@ -1,0 +1,79 @@
+require('./register.cjs')
+const { test, after } = require('node:test')
+const assert = require('node:assert/strict')
+const { randomUUID } = require('node:crypto')
+const { createPool } = require('../src/server/database.ts')
+const { isBlocked, countHit, clearHits, clientIp, LIMITS } = require('../src/server/limits.ts')
+
+// Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
+const url = process.env.TYPLE_TEST_DATABASE_URL
+const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
+const db = url ? createPool(url) : null
+const prefix = `t${randomUUID().slice(0, 8).replace(/-/g, '')}`
+after(async () => {
+  if (!db) return
+  await db.query('DELETE FROM typle_auth_limits WHERE key LIKE $1', [`%${prefix}%`])
+  await db.end()
+})
+const T0 = new Date('2026-01-01T00:00:00Z')
+const after_ = (base, seconds) => new Date(base.getTime() + seconds * 1000)
+
+test('five failures for an ID block it for 15 minutes', database, async () => {
+  const limit = LIMITS.loginFailId(`${prefix}a`)
+  for (let i = 0; i < 4; i++) assert.deepEqual(await countHit(db, limit, T0), { blocked: false })
+  assert.equal(await isBlocked(db, limit.key, T0), false)
+  assert.deepEqual(await countHit(db, limit, T0), { blocked: true })
+  assert.equal(await isBlocked(db, limit.key, T0), true)
+  assert.equal(await isBlocked(db, limit.key, after_(T0, 15 * 60 - 1)), true)
+  assert.equal(await isBlocked(db, limit.key, after_(T0, 15 * 60 + 1)), false)
+})
+
+test('a window that has passed starts again from one', database, async () => {
+  const limit = LIMITS.loginFailId(`${prefix}b`)
+  for (let i = 0; i < 4; i++) await countHit(db, limit, T0)
+  // The 5th failure comes after the window: it is the first of a new one.
+  assert.deepEqual(await countHit(db, limit, after_(T0, 15 * 60 + 1)), { blocked: false })
+  const { rows } = await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [limit.key])
+  assert.equal(rows[0].count, 1)
+})
+
+test('hits while blocked change nothing, and blockSeconds can outlast the window', database, async () => {
+  const limit = { key: `limit:${prefix}c`, max: 2, windowSeconds: 60, blockSeconds: 600 }
+  await countHit(db, limit, T0)
+  assert.deepEqual(await countHit(db, limit, T0), { blocked: true })
+  // Still blocked after the window: the hit neither resets the count nor extends the block.
+  assert.deepEqual(await countHit(db, limit, after_(T0, 120)), { blocked: true })
+  assert.equal(await isBlocked(db, limit.key, after_(T0, 599)), true)
+  assert.equal(await isBlocked(db, limit.key, after_(T0, 601)), false)
+})
+
+test('concurrent hits are all counted', database, async () => {
+  const limit = { key: `limit:${prefix}d`, max: 100, windowSeconds: 60 }
+  await Promise.all(Array.from({ length: 20 }, () => countHit(db, limit, T0)))
+  const { rows } = await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [limit.key])
+  assert.equal(rows[0].count, 20)
+})
+
+test('clearHits forgets the failures', database, async () => {
+  const limit = LIMITS.loginFailId(`${prefix}e`)
+  for (let i = 0; i < 5; i++) await countHit(db, limit, T0)
+  await clearHits(db, limit.key)
+  assert.equal(await isBlocked(db, limit.key, T0), false)
+  assert.deepEqual(await countHit(db, limit, T0), { blocked: false })
+})
+
+test('the limits are the documented ones', () => {
+  assert.deepEqual(LIMITS.loginFailId('a'), { key: 'login-fail:id:a', max: 5, windowSeconds: 900 })
+  assert.deepEqual(LIMITS.loginFailIp('1.2.3.4'), { key: 'login-fail:ip:1.2.3.4', max: 30, windowSeconds: 900 })
+  assert.deepEqual(LIMITS.signupIp('1.2.3.4'), { key: 'signup:ip:1.2.3.4', max: 5, windowSeconds: 3600 })
+  assert.deepEqual(LIMITS.mailTarget('a@example.com'), { key: 'mail:target:a@example.com', max: 3, windowSeconds: 3600 })
+  assert.deepEqual(LIMITS.mailIp('1.2.3.4'), { key: 'mail:ip:1.2.3.4', max: 10, windowSeconds: 3600 })
+})
+
+test('the client IP is the first x-forwarded-for value', () => {
+  const request = value => new Request('http://localhost/', value === undefined ? {} : { headers: { 'x-forwarded-for': value } })
+  assert.equal(clientIp(request('1.2.3.4, 5.6.7.8')), '1.2.3.4')
+  assert.equal(clientIp(request('  9.9.9.9  ')), '9.9.9.9')
+  assert.equal(clientIp(request()), 'unknown')
+  assert.equal(clientIp(request('')), 'unknown')
+})
