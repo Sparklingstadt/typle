@@ -49,6 +49,18 @@ test('/signin has the GitHub button, and the login comes back to the page', asyn
   await expect(page).toHaveURL(/\/home$/)
 })
 
+// A login that cannot start (Auth.js answers with an error) stays on /signin and says so, instead of going on as if it
+// had worked.
+test('a GitHub login that fails to start stays on /signin and says so', async ({ page }) => {
+  await page.route(url => url.pathname === '/api/auth/signin/github', route =>
+    route.fulfill({ status: 500, contentType: 'application/json', body: '{"message":"There was a problem with the server configuration."}' }))
+  await page.goto('/signin?returnTo=%2Fplay')
+  await page.getByRole('button', { name: 'GitHubでログイン' }).click()
+  await expect(page.getByRole('alert').filter({ hasText: 'ログインできませんでした' })).toBeVisible()
+  await expect(page).toHaveURL(/\/signin\?returnTo=%2Fplay$/)
+  await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toBeEnabled()
+})
+
 // Auth.js answers at the address the app is served at (AUTH_URL), not at localhost, which Next.js makes of 127.0.0.1.
 test('the GitHub login comes back to AUTH_URL', async ({ page }) => {
   const { csrfToken } = await (await page.request.get('/api/auth/csrf')).json()

@@ -118,11 +118,14 @@ export function useSession(): SessionState {
 }
 
 /**
- * Goes to GitHub, and comes back to returnTo, a path of this site. Rejects, staying on the page, when the request that
- * starts the login fails; next-auth/react itself goes to Auth.js's error page when it cannot read the providers.
+ * Goes to GitHub, and comes back to returnTo, a path of this site. Rejects, staying on the page, when the login cannot
+ * be started: the request fails, or Auth.js answers with an error (a 500, a refused CSRF token) or with no URL to go to.
  */
 export async function signInWithGitHub(returnTo: string): Promise<void> {
-  await authSignIn('github', { redirectTo: returnTo })
+  // redirect: false, so that a failed answer rejects here instead of being followed to returnTo or the error page.
+  const result = await authSignIn('github', { redirectTo: returnTo, redirect: false })
+  if (!result?.ok || result.error || !result.url) throw new Error('GitHub sign-in could not start')
+  location.assign(result.url)
 }
 
 /**
