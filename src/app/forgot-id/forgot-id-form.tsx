@@ -8,7 +8,7 @@ import { api } from '@/lib/api'
 
 // Asks for the IDs of an address by mail. The answer is the same whether an account has the address or not, so the
 // page says the same thing either way.
-export default function ForgotIdForm() {
+export default function ForgotIdForm({ returnTo }: { returnTo: string }) {
   const t = useTranslations('auth')
   const errorText = useApiErrorText()
   const [email, setEmail] = useState('')
@@ -30,6 +30,6 @@ export default function ForgotIdForm() {
     <FormField label={t('fields.email')} name="email" type="email" autoComplete="email" value={email} onChange={setEmail} disabled={busy} />
     <Button type="submit" size="lg" disabled={busy || !email.trim()}>{t('send')}</Button>
     {outcome && <FormMessage kind={outcome.kind}>{outcome.text}</FormMessage>}
-    <p className="text-sm"><Link className="underline underline-offset-4" href="/signin">{t('backToSignIn')}</Link></p>
+    <p className="text-sm"><Link className="underline underline-offset-4" href={`/signin?returnTo=${encodeURIComponent(returnTo)}`}>{t('backToSignIn')}</Link></p>
   </form>
 }

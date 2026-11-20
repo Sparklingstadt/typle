@@ -163,6 +163,24 @@ test('the sign-up form shows each field\'s problem, and /signin links to it', as
   await expect(page.getByText('この ID はすでに使われています。別の ID にしてください。')).toBeVisible()
 })
 
+test('/signin comes back only to a path of this site', async ({ page }) => {
+  await signUp(page)
+  await signOut(page)
+  // Browsers drop the tab, so "/\t/evil.com" would be "//evil.com", another site: it is home instead.
+  await page.goto('/signin?returnTo=%2F%09%2Fevil.com')
+  await page.getByLabel('ID', { exact: true }).fill(loginId)
+  await page.getByLabel('パスワード', { exact: true }).fill(PASSWORD)
+  await page.getByRole('button', { name: 'ログイン', exact: true }).click()
+  await expect(page).toHaveURL('http://127.0.0.1:3101/home')
+  await signOut(page)
+  // Auth.js's callbackUrl of the app's own origin is taken when there is no returnTo, and kept on the account links.
+  await page.goto('/signin?callbackUrl=http%3A%2F%2F127.0.0.1%3A3101%2Frecords')
+  await expect(page.getByRole('link', { name: 'パスワードを忘れた', exact: true })).toHaveAttribute('href', '/forgot-password?returnTo=%2Frecords')
+  await expect(page.getByRole('link', { name: 'ID を忘れた', exact: true })).toHaveAttribute('href', '/forgot-id?returnTo=%2Frecords')
+  await page.goto('/signin?callbackUrl=https%3A%2F%2Fevil.com%2Frecords')
+  await expect(page.getByRole('link', { name: '新しく登録する', exact: true })).toHaveAttribute('href', '/signup')
+})
+
 test('an Auth.js error sent to /signin is shown as a failed login', async ({ page }) => {
   await page.goto('/signin?error=Configuration')
   await expect(page.getByRole('alert').filter({ hasText: 'ログインできませんでした。もう一度お試しください。' })).toBeVisible()

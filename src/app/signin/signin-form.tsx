@@ -50,8 +50,8 @@ export default function SignInForm({ returnTo, github, authError }: { returnTo: 
     {failure && <FormMessage kind="error">{failure === 'refused' ? auth('signIn.refused') : t('signInFailed')}</FormMessage>}
     <ul className="space-y-1 text-sm">
       <li><Link className="underline underline-offset-4" href={`/signup${keep(returnTo)}`}>{auth('signIn.signUp')}</Link></li>
-      <li><Link className="underline underline-offset-4" href="/forgot-password">{auth('signIn.forgotPassword')}</Link></li>
-      <li><Link className="underline underline-offset-4" href="/forgot-id">{auth('signIn.forgotId')}</Link></li>
+      <li><Link className="underline underline-offset-4" href={`/forgot-password${keep(returnTo)}`}>{auth('signIn.forgotPassword')}</Link></li>
+      <li><Link className="underline underline-offset-4" href={`/forgot-id${keep(returnTo)}`}>{auth('signIn.forgotId')}</Link></li>
     </ul>
     {github && <div className="space-y-3 border-t pt-6">
       <p className="text-sm text-muted-foreground">{auth('signIn.or')}</p>

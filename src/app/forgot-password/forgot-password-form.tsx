@@ -8,7 +8,7 @@ import { api } from '@/lib/api'
 
 // Asks for the link that sets a new password. The answer is the same whether the ID exists or not, so the page says
 // the same thing either way.
-export default function ForgotPasswordForm() {
+export default function ForgotPasswordForm({ returnTo }: { returnTo: string }) {
   const t = useTranslations('auth')
   const errorText = useApiErrorText()
   const [loginId, setLoginId] = useState('')
@@ -30,7 +30,7 @@ export default function ForgotPasswordForm() {
     <FormField label={t('fields.loginId')} name="loginId" autoComplete="username" value={loginId} onChange={setLoginId} disabled={busy} />
     <Button type="submit" size="lg" disabled={busy || !loginId.trim()}>{t('send')}</Button>
     {outcome && <FormMessage kind={outcome.kind}>{outcome.text}</FormMessage>}
-    <p className="text-sm"><Link className="underline underline-offset-4" href="/forgot-id">{t('signIn.forgotId')}</Link></p>
-    <p className="text-sm"><Link className="underline underline-offset-4" href="/signin">{t('backToSignIn')}</Link></p>
+    <p className="text-sm"><Link className="underline underline-offset-4" href={`/forgot-id?returnTo=${encodeURIComponent(returnTo)}`}>{t('signIn.forgotId')}</Link></p>
+    <p className="text-sm"><Link className="underline underline-offset-4" href={`/signin?returnTo=${encodeURIComponent(returnTo)}`}>{t('backToSignIn')}</Link></p>
   </form>
 }
