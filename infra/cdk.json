@@ -1,6 +1,7 @@
 {
   "app": "node bin/typle.ts",
   "context": {
+    "dnsTarget": "vercel",
     "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": true,
     "@aws-cdk/core:newStyleStackSynthesis": true,
     "@aws-cdk/core:stackRelativeExports": true,

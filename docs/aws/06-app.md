@@ -124,10 +124,12 @@ DB はプライベートサブネットにあるので、Mac からは直接つ�
 **コマンド**には、次をカンマ区切りで1つのフィールドに入れます。
 
 ```
-sh,-c,printf '%s\n' "CREATE ROLE typle_app LOGIN PASSWORD :'pw';" "GRANT ALL ON DATABASE typle TO typle_app;" "GRANT ALL ON SCHEMA public TO typle_app;" | psql -v ON_ERROR_STOP=1 -v pw="$APP_PASSWORD"
+sh,-c,printf '%s\n' "SELECT 'CREATE ROLE typle_app LOGIN' WHERE NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'typle_app') \gexec" "ALTER ROLE typle_app LOGIN PASSWORD :'pw';" "GRANT ALL ON DATABASE typle TO typle_app;" "GRANT ALL ON SCHEMA public TO typle_app;" | psql -v ON_ERROR_STOP=1 -v pw="$APP_PASSWORD"
 ```
 
-パスワードを `psql` の変数（`:'pw'`）で渡しているので、パスワードがコマンドやログに出ません。
+- パスワードを `psql` の変数（`:'pw'`）で渡しているので、パスワードがコマンドやタスクのログに出ません。
+- ユーザーがなければパスワードなしで作り、そのあと `ALTER ROLE` でパスワードを設定します。何度動かしても失敗しません（2回目以降はパスワードの入れ替えになります）。
+- 失敗した SQL の文は、その文面ごと RDS のログに残ります。パスワードを含む `ALTER ROLE` が、もう一度動かしたときに失敗しない形にしてあるのはそのためです。
 
 動かし方:
 

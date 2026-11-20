@@ -1,7 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { Match } from 'aws-cdk-lib/assertions'
-import { template, fullContext } from './helpers.ts'
+import { template, templates, fullContext } from './helpers.ts'
 
 const t = template({ ...fullContext })
 const resources = t.toJSON().Resources as Record<string, { Type: string, Properties: any, DeletionPolicy?: string }>
@@ -110,7 +110,7 @@ test('the secrets are created as empty shells: no value is in the template', () 
 })
 
 test('the image repository keeps tags immutable and outlives the stack', () => {
-  const [[, repository]] = ofType('AWS::ECR::Repository')
+  const [repository] = Object.values(templates(fullContext).base.findResources('AWS::ECR::Repository')) as { Properties: any, DeletionPolicy: string }[]
   assert.equal(repository.Properties.ImageTagMutability, 'IMMUTABLE')
   assert.equal(repository.DeletionPolicy, 'Retain')
   assert.match(repository.Properties.LifecyclePolicy.LifecyclePolicyText, /"countNumber":10/)
@@ -119,7 +119,12 @@ test('the image repository keeps tags immutable and outlives the stack', () => {
 test('the one-off tasks: the database user and the data move', () => {
   const dbuser = taskDefinition('typle-dbuser').ContainerDefinitions[0]
   assert.match(dbuser.Image, /postgres:17$/)
-  assert.match(dbuser.Command.join(' '), /CREATE ROLE typle_app LOGIN PASSWORD :'pw'/)
+  const sql = dbuser.Command.join(' ')
+  // Rerunnable, and the password is only in an ALTER ROLE that does not fail on a rerun (a failed statement is logged).
+  assert.match(sql, /CREATE ROLE typle_app LOGIN' WHERE NOT EXISTS/)
+  assert.match(sql, /\\gexec/)
+  assert.match(sql, /ALTER ROLE typle_app LOGIN PASSWORD :'pw'/)
+  assert.doesNotMatch(sql, /CREATE ROLE typle_app LOGIN PASSWORD/)
   const datamove = taskDefinition('typle-datamove').ContainerDefinitions[0]
   assert.match(datamove.Command.join(' '), /pg_restore --clean --if-exists/)
   const env = Object.fromEntries(datamove.Environment.map((e: { Name: string, Value: string }) => [e.Name, e.Value]))
@@ -136,20 +141,9 @@ test('logs are kept 30 days, and five alarms watch the site and the database', (
 
 test('what the deploy script reads is in the outputs', () => {
   for (const key of ['ClusterName', 'ServiceName', 'MigrateTaskDefinitionArn', 'DbUserTaskDefinitionArn', 'DataMoveTaskDefinitionArn',
-    'TaskSubnetIds', 'TaskSecurityGroupId', 'RepositoryUri', 'LoadBalancerDnsName', 'DatabaseEndpoint', 'NameServers']) {
+    'TaskSubnetIds', 'TaskSecurityGroupId', 'LoadBalancerDnsName', 'DatabaseEndpoint']) {
     t.hasOutput(key, {})
   }
-})
-
-test('the apex stays one record, ApexRecord, whether it points at Vercel or at the load balancer', () => {
-  const vercel = template({ ...fullContext }).toJSON().Resources.ApexRecord
-  const aws = template({ ...fullContext, dnsTarget: 'aws' }).toJSON().Resources.ApexRecord
-  assert.deepEqual(vercel.Properties.ResourceRecords, ['76.76.21.21'])
-  assert.equal(aws.Type, 'AWS::Route53::RecordSet')
-  assert.equal(aws.Properties.ResourceRecords, undefined)
-  assert.equal(aws.Properties.TTL, undefined)
-  assert.ok(aws.Properties.AliasTarget.DNSName)
-  assert.equal(aws.Properties.Type, 'A')
 })
 
 test('the first deploy can start the service with no task, before the secrets and the database are ready', () => {

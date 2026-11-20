@@ -1,5 +1,5 @@
 import { CfnOutput, Duration, Fn, RemovalPolicy } from 'aws-cdk-lib'
-import { aws_elasticloadbalancingv2 as elbv2, aws_route53 as route53 } from 'aws-cdk-lib'
+import { aws_route53 as route53, aws_ssm as ssm } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 
 /** Vercel's address for a zone apex (https://vercel.com/docs/domains): the site until the cutover. */
@@ -9,8 +9,11 @@ const VERCEL_APEX = '76.76.21.21'
  * The hosted zone of the site's name, which Cloudflare delegates to Route 53 with NS records (the domain is registered at
  * Cloudflare Registrar, so its own name servers cannot move). The apex record is one resource, ApexRecord, whether it
  * points at Vercel or at the load balancer, so the cutover is an in-place change of that record and the name never
- * goes missing.
+ * goes missing. The load balancer lives in the other stack (Typle), which names it in SSM parameters; reading them at
+ * deploy time keeps the two stacks free of a cycle.
  */
+export const LOAD_BALANCER_PARAMETERS = { dnsName: '/typle/load-balancer/dns-name', hostedZoneId: '/typle/load-balancer/hosted-zone-id' }
+
 export class Dns extends Construct {
   readonly zone: route53.PublicHostedZone
   private readonly apex: route53.CfnRecordSet
@@ -36,9 +39,12 @@ export class Dns extends Construct {
   }
 
   /** Points the apex at the load balancer instead of Vercel (dnsTarget=aws: the cutover). */
-  aliasToLoadBalancer(alb: elbv2.IApplicationLoadBalancer): void {
+  aliasToLoadBalancer(): void {
     this.apex.ttl = undefined
     this.apex.resourceRecords = undefined
-    this.apex.aliasTarget = { dnsName: alb.loadBalancerDnsName, hostedZoneId: alb.loadBalancerCanonicalHostedZoneId }
+    this.apex.aliasTarget = {
+      dnsName: ssm.StringParameter.valueForStringParameter(this, LOAD_BALANCER_PARAMETERS.dnsName),
+      hostedZoneId: ssm.StringParameter.valueForStringParameter(this, LOAD_BALANCER_PARAMETERS.hostedZoneId),
+    }
   }
 }

@@ -3,17 +3,21 @@ import { CfnOutput, Duration, Fn, RemovalPolicy } from 'aws-cdk-lib'
 import {
   aws_certificatemanager as acm, aws_ec2 as ec2, aws_ecr as ecr, aws_ecs as ecs,
   aws_elasticloadbalancingv2 as elbv2, aws_logs as logs, aws_rds as rds, aws_route53 as route53,
-  aws_secretsmanager as secretsmanager,
+  aws_secretsmanager as secretsmanager, aws_ssm as ssm,
 } from 'aws-cdk-lib'
+import { LOAD_BALANCER_PARAMETERS } from './dns.ts'
 import { Construct } from 'constructs'
 import type { Config } from './config.ts'
 
 const POSTGRES_IMAGE = 'public.ecr.aws/docker/library/postgres:17'
 
-/** Creates typle_app with the password in APP_PASSWORD; the password goes in as a psql variable, never in the command. */
+/** Creates typle_app or sets its password to APP_PASSWORD (a psql variable, never in the command) and grants it the database. */
 const CREATE_APP_USER = [
   'printf \'%s\\n\'',
-  '"CREATE ROLE typle_app LOGIN PASSWORD :\'pw\';"',
+  // Rerunnable: the role is created without a password if missing, then given the password. A failed statement goes
+  // to the server log with its text, so the password is only in a statement that does not fail on a rerun.
+  '"SELECT \'CREATE ROLE typle_app LOGIN\' WHERE NOT EXISTS (SELECT FROM pg_roles WHERE rolname = \'typle_app\') \\gexec"',
+  '"ALTER ROLE typle_app LOGIN PASSWORD :\'pw\';"',
   '"GRANT ALL ON DATABASE typle TO typle_app;"',
   '"GRANT ALL ON SCHEMA public TO typle_app;"',
   '| psql -v ON_ERROR_STOP=1 -v pw="$APP_PASSWORD"',
@@ -145,6 +149,13 @@ export class App extends Construct {
       deregistrationDelay: Duration.seconds(30),
     })
     this.loadBalancer.addRedirect({ sourcePort: 80, targetPort: 443 })
+    // TypleBase reads these at the cutover (dnsTarget=aws) to alias the apex.
+    new ssm.StringParameter(this, 'LoadBalancerDnsNameParameter', {
+      parameterName: LOAD_BALANCER_PARAMETERS.dnsName, stringValue: this.loadBalancer.loadBalancerDnsName,
+    })
+    new ssm.StringParameter(this, 'LoadBalancerZoneIdParameter', {
+      parameterName: LOAD_BALANCER_PARAMETERS.hostedZoneId, stringValue: this.loadBalancer.loadBalancerCanonicalHostedZoneId,
+    })
 
     const output = (key: string, value: string) => new CfnOutput(this, key, { key, value })
     output('ClusterName', cluster.clusterName)

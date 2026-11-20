@@ -4,14 +4,20 @@ import { App } from 'aws-cdk-lib'
 import { readConfig } from '../lib/config.ts'
 
 const app = (context: Record<string, string>) => new App({ context })
-const full = { appTag: 'v1.2.3', githubClientId: 'id', mailFrom: 'Typle <no-reply@example.com>' }
+const full = { dnsTarget: 'vercel', appTag: 'v1.2.3', githubClientId: 'id', mailFrom: 'Typle <no-reply@example.com>' }
 
-test('phase is full and the apex points at Vercel unless told otherwise', () => {
+test('the domain and the region are fixed, and the DNS target is read as given', () => {
   const config = readConfig(app(full))
-  assert.equal(config.phase, 'full')
   assert.equal(config.dnsTarget, 'vercel')
+  assert.equal(readConfig(app({ ...full, dnsTarget: 'aws' })).dnsTarget, 'aws')
   assert.equal(config.domain, 'typle.sparklingstadt.com')
   assert.equal(config.region, 'ap-northeast-1')
+})
+
+test('the DNS target has no default: it comes from infra/cdk.json, so a deploy cannot point the name back by leaving it out', () => {
+  const context: Record<string, string> = { ...full }
+  delete context.dnsTarget
+  assert.throws(() => readConfig(app(context)), /dnsTarget/)
 })
 
 test('the migration image is the app image unless given', () => {
@@ -19,7 +25,7 @@ test('the migration image is the app image unless given', () => {
   assert.equal(readConfig(app({ ...full, migrateTag: 'v1.2.4' })).migrateTag, 'v1.2.4')
 })
 
-test('the full phase needs the image tag, the GitHub client and the mail sender', () => {
+test('a deploy needs the image tag, the GitHub client and the mail sender', () => {
   for (const missing of ['appTag', 'githubClientId', 'mailFrom']) {
     const context: Record<string, string> = { ...full }
     delete context[missing]
@@ -27,14 +33,7 @@ test('the full phase needs the image tag, the GitHub client and the mail sender'
   }
 })
 
-test('the dns phase needs nothing else', () => {
-  const config = readConfig(app({ phase: 'dns' }))
-  assert.equal(config.phase, 'dns')
-  assert.equal(config.appTag, undefined)
-})
-
-test('an unknown phase or DNS target is refused', () => {
-  assert.throws(() => readConfig(app({ ...full, phase: 'Full' })), /phase/)
+test('an unknown DNS target is refused', () => {
   assert.throws(() => readConfig(app({ ...full, dnsTarget: 'cloudflare' })), /dnsTarget/)
 })
 
@@ -49,6 +48,6 @@ test('the service runs one task unless the first deploy asks for none', () => {
   assert.throws(() => readConfig(app({ ...full, appCount: '2' })), /appCount/)
 })
 
-test('the apex cannot point at a load balancer the dns phase does not make', () => {
-  assert.throws(() => readConfig(app({ phase: 'dns', dnsTarget: 'aws' })), /dnsTarget/)
+test('there is no phase any more: no context value leaves resources out of a stack', () => {
+  assert.equal((readConfig(app({ ...full, phase: 'dns' })) as Record<string, unknown>).phase, undefined)
 })

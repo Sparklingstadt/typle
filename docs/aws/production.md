@@ -37,11 +37,23 @@ Cloudflare の `sparklingstadt.com` の **DNS** → **Records** で、名前が 
   - これらは CDK の管理の外です。スタックを更新しても消えません。
 - `TYPLE_MAIL_FROM` のドメインが `sparklingstadt.com` そのものなら、メールのレコードは `typle` の下にないので、何もしなくて構いません。
 
-## 3. ホストゾーンと ECR を作る（`phase=dns`）
+## 3. ホストゾーンと ECR を作る（スタック `TypleBase`）
+
+CDK のアプリには、スタックが2つあります。
+
+| スタック | 中身 | deploy するとき |
+|---|---|---|
+| `TypleBase` | ホストゾーン、頂点の A レコード、ECR | 最初と、切り替えの当日だけ |
+| `Typle` | VPC・RDS・ECS・ALB・秘密・監視 | 最初と、リリースのたび（`scripts/deploy-aws.cjs`） |
+
+分けてあるので、リリースでドメインの向き先が変わることはありません。また、どのスタックを deploy しても、もう一方のリソースは消えません。
+どちらのスタックも削除保護（termination protection）付きです。
+
+まず `TypleBase` だけを作ります。CDK はアプリ全体を組み立てるので、`Typle` 用の値も要ります。ここではまだ使わないので、仮の値を渡します。
 
 ```bash
 cd infra
-npx cdk deploy Typle -c phase=dns --profile typle
+npx cdk deploy TypleBase --exclusively --profile typle -c appTag=unused -c githubClientId=unused -c mailFrom=unused
 ```
 
 できるもの:
@@ -52,15 +64,15 @@ npx cdk deploy Typle -c phase=dns --profile typle
 
 出力の `NameServers`（4つ）と `RepositoryUri` を控えます。
 
-> **注意**: `-c phase=dns` を付けた deploy は、本番ができたあとには**二度と実行しない**でください。DNS 以外がすべて消える変更になります。
-> DB は削除保護があるので、その deploy は途中で失敗して止まります。それでも、途中までに消えたものは戻りません。
+頂点のレコードが Vercel と AWS のどちらを向くかは、`infra/cdk.json` の `"dnsTarget": "vercel"` で決まります。
+コミットされた値なので、だれがどこで deploy しても同じです。切り替えの当日の PR で `aws` に変えます。
 
 ## 4. Cloudflare から委任する
 
 委任のあいだも Vercel の本番が見え続けることを、先に確かめます。
 
 ```bash
-NS=$(aws cloudformation describe-stacks --profile typle --region ap-northeast-1 --stack-name Typle \
+NS=$(aws cloudformation describe-stacks --profile typle --region ap-northeast-1 --stack-name TypleBase \
   --query "Stacks[0].Outputs[?OutputKey=='NameServers'].OutputValue" --output text | cut -d, -f1)
 dig +short typle.sparklingstadt.com @$NS     # 76.76.21.21
 ```
@@ -84,7 +96,7 @@ cd .. && npm run check:production          # Vercel の本番がそのまま通�
 
 ```bash
 # リポジトリのルートで
-REPO=$(aws cloudformation describe-stacks --profile typle --region ap-northeast-1 --stack-name Typle \
+REPO=$(aws cloudformation describe-stacks --profile typle --region ap-northeast-1 --stack-name TypleBase \
   --query "Stacks[0].Outputs[?OutputKey=='RepositoryUri'].OutputValue" --output text)
 TAG=v$(node -p "require('./package.json').version")
 aws ecr get-login-password --profile typle --region ap-northeast-1 | docker login --username AWS --password-stdin ${REPO%%/*}
@@ -102,12 +114,11 @@ docker push $REPO:$TAG
 {
   "githubClientId": "<本番の GitHub OAuth App の Client ID（Vercel の AUTH_GITHUB_ID と同じ）>",
   "mailFrom": "<Vercel の TYPLE_MAIL_FROM と同じ>",
-  "dnsTarget": "vercel",
   "alarmEmail": "<アラームを受け取るメールアドレス>"
 }
 ```
 
-`dnsTarget` は、切り替えの当日まで `vercel` のままにします。
+7・9・11 のコマンドは、5 で作った `$TAG` と、7 で作る `$S`、9 で作る関数 `out`・`runtask` を使います。新しいターミナルを開いたときは、もう一度定義してください（ないと、CDK が値の不足でエラーにして止まります）。
 
 ## 7. 本番のリソースを作る（タスク 0 で）
 
@@ -117,10 +128,10 @@ docker push $REPO:$TAG
 ```bash
 cd infra
 S=cdk.context.local.json
-npx cdk deploy Typle --profile typle -c appCount=0 -c appTag=$TAG \
+npx cdk deploy Typle --exclusively --profile typle -c appCount=0 -c appTag=$TAG \
   -c githubClientId="$(node -p "require('./$S').githubClientId")" \
   -c mailFrom="$(node -p "require('./$S').mailFrom")" \
-  -c dnsTarget=vercel -c alarmEmail="$(node -p "require('./$S').alarmEmail")"
+  -c alarmEmail="$(node -p "require('./$S').alarmEmail")"
 ```
 
 - RDS と証明書の検証で、20〜30 分ほどかかります。
@@ -180,7 +191,8 @@ runtask DbUserTaskDefinitionArn     # 0
 runtask MigrateTaskDefinitionArn    # 0
 ```
 
-0 でなければ、ログを見ます。
+0 でなければ、ログを見て直してから、同じコマンドをもう一度実行します。
+`DbUserTaskDefinitionArn` は何度動かしても構いません（`APP_DB_PASSWORD` を変えたときも、これでパスワードが入れ替わります。そのときは `DATABASE_URL` も合わせて変え、11 の deploy でタスクを入れ替えます）。
 
 ```bash
 aws logs tail /ecs/typle --profile typle --region ap-northeast-1 --since 30m
@@ -208,10 +220,10 @@ aws logs tail /ecs/typle --profile typle --region ap-northeast-1 --since 30m
 
 ```bash
 cd infra
-npx cdk deploy Typle --profile typle -c appTag=$TAG \
+npx cdk deploy Typle --exclusively --profile typle -c appTag=$TAG \
   -c githubClientId="$(node -p "require('./$S').githubClientId")" \
   -c mailFrom="$(node -p "require('./$S').mailFrom")" \
-  -c dnsTarget=vercel -c alarmEmail="$(node -p "require('./$S').alarmEmail")"
+  -c alarmEmail="$(node -p "require('./$S').alarmEmail")"
 ```
 
 名前はまだ Vercel を向いているので、ALB の IP アドレスを指定して確かめます。

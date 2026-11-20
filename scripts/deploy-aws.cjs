@@ -10,9 +10,11 @@
 //   4. run the migration as a one-off task and require exit code 0
 //   5. cdk deploy with the new image for the service too (CloudFormation waits until the service is stable)
 //   6. npm run check:production
+// Only the stack Typle is deployed (--exclusively), never TypleBase: a release cannot change where the name points
+// (dnsTarget, committed in infra/cdk.json, changes only at the cutover).
 // The deploy settings that are not secret but not in the repository either (the GitHub OAuth client ID, the mail
-// sender, where the apex points, the alarm mail) come from infra/cdk.context.local.json, which git ignores:
-//   { "githubClientId": "…", "mailFrom": "Typle <no-reply@…>", "dnsTarget": "vercel" | "aws", "alarmEmail": "…" }
+// sender, the alarm mail) come from infra/cdk.context.local.json, which git ignores:
+//   { "githubClientId": "…", "mailFrom": "Typle <no-reply@…>", "alarmEmail": "…" }
 const { spawnSync } = require('node:child_process')
 const fs = require('node:fs')
 const path = require('node:path')
@@ -21,6 +23,7 @@ const root = path.join(__dirname, '..')
 const infra = path.join(root, 'infra')
 const SITE_URL = 'https://typle.sparklingstadt.com'
 const STACK = 'Typle'
+const BASE_STACK = 'TypleBase'
 
 /** Runs a command and returns its status and output; stdout is captured, stderr goes to the terminal. */
 function runCommand(command, args, options = {}) {
@@ -38,7 +41,7 @@ function runCommand(command, args, options = {}) {
  * Rejects with the step that failed.
  */
 async function deploy({ run, version, profile, settings, log = console.log }) {
-  for (const key of ['githubClientId', 'mailFrom', 'dnsTarget']) {
+  for (const key of ['githubClientId', 'mailFrom']) {
     if (!settings[key]) throw new Error(`infra/cdk.context.local.json needs ${key}`)
   }
   const tag = `v${version}`
@@ -56,10 +59,10 @@ async function deploy({ run, version, profile, settings, log = console.log }) {
     throw new Error('HEAD is not origin/main: run git switch main && git pull --ff-only first.')
   }
 
-  const outputs = () => Object.fromEntries(
-    json('aws', ['cloudformation', 'describe-stacks', '--stack-name', STACK, '--query', 'Stacks[0].Outputs', ...aws])
+  const outputs = (name = STACK) => Object.fromEntries(
+    json('aws', ['cloudformation', 'describe-stacks', '--stack-name', name, '--query', 'Stacks[0].Outputs', ...aws])
       .map(output => [output.OutputKey, output.OutputValue]))
-  const stack = outputs()
+  const stack = { ...outputs(BASE_STACK), ...outputs() }
   const image = `${stack.RepositoryUri}:${tag}`
 
   log(`== 2. the image ${image}`)
@@ -79,9 +82,9 @@ async function deploy({ run, version, profile, settings, log = console.log }) {
     .taskDefinition.containerDefinitions[0].image
   const runningTag = running.slice(running.lastIndexOf(':') + 1)
 
-  const cdkDeploy = appTag => must('npx', ['cdk', 'deploy', STACK, '--require-approval', 'never', '--profile', profile,
+  const cdkDeploy = appTag => must('npx', ['cdk', 'deploy', STACK, '--exclusively', '--require-approval', 'never', '--profile', profile,
     '-c', `appTag=${appTag}`, '-c', `migrateTag=${tag}`,
-    '-c', `githubClientId=${settings.githubClientId}`, '-c', `mailFrom=${settings.mailFrom}`, '-c', `dnsTarget=${settings.dnsTarget}`,
+    '-c', `githubClientId=${settings.githubClientId}`, '-c', `mailFrom=${settings.mailFrom}`,
     ...(settings.alarmEmail ? ['-c', `alarmEmail=${settings.alarmEmail}`] : [])], { cwd: infra, capture: false })
 
   log(`== 3. the migration task gets ${tag} (the service keeps ${runningTag})`)

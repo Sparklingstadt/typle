@@ -6,7 +6,7 @@ const outputs = {
   ClusterName: 'typle', ServiceName: 'app', RepositoryUri: '111.dkr.ecr.ap-northeast-1.amazonaws.com/typle',
   MigrateTaskDefinitionArn: 'arn:migrate:7', TaskSubnetIds: 'subnet-a,subnet-b', TaskSecurityGroupId: 'sg-tasks',
 }
-const settings = { githubClientId: 'gh', mailFrom: 'Typle <no-reply@example.com>', dnsTarget: 'aws' }
+const settings = { githubClientId: 'gh', mailFrom: 'Typle <no-reply@example.com>' }
 
 /** A fake of the commands: records each call, and answers the ones whose output the deploy reads. */
 function fake({ dirty = false, behind = false, imageExists = false, migrateExit = 0, failOn } = {}) {
@@ -55,7 +55,9 @@ test('a release builds and pushes, migrates with the new image while the service
   assert.match(calls[migrate], /--task-definition arn:migrate:7/)
   assert.match(calls[migrate], /subnets=\[subnet-a,subnet-b\],securityGroups=\[sg-tasks\],assignPublicIp=ENABLED/)
   for (const at of [first, second]) {
-    assert.match(calls[at], /-c dnsTarget=aws/)
+    // Only the app stack, never TypleBase (the zone and the apex): a release cannot move the name.
+    assert.match(calls[at], /cdk deploy Typle --exclusively /)
+    assert.doesNotMatch(calls[at], /TypleBase|dnsTarget/)
     assert.match(calls[at], /-c githubClientId=gh/)
     assert.match(calls[at], /--profile typle/)
   }
@@ -89,8 +91,8 @@ test('any failing command stops the release', async () => {
   assert.equal(index(calls, 'cdk deploy'), -1)
 })
 
-test('the deploy settings must name the GitHub client, the mail sender and the DNS target', async () => {
-  for (const key of ['githubClientId', 'mailFrom', 'dnsTarget']) {
+test('the deploy settings must name the GitHub client and the mail sender', async () => {
+  for (const key of ['githubClientId', 'mailFrom']) {
     const partial = { ...settings }
     delete partial[key]
     const { calls, run } = fake()
