@@ -8,10 +8,11 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 export type Session = { sub: string, name: string, image: string, issuedAt: number, expires: number }
 
 /**
- * The only subjects accepted: a GitHub account (its numeric id) or an FFPF ID account (its lowercase alphanumeric sub).
- * The login with FFPF ID was removed in v2.54.0; its sessions and tokens still open until they expire (30 days).
+ * The only subjects accepted: a GitHub account (its numeric id), an ID-and-password account (its lowercase UUID) or an
+ * FFPF ID account (its lowercase alphanumeric sub). The login with FFPF ID was removed in v2.54.0; its sessions and
+ * tokens still open until they expire (30 days).
  */
-const ACCOUNT_SUB = /^(github:\d+|ffpf:[a-z0-9]{1,64})$/
+const ACCOUNT_SUB = /^(github:\d+|password:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|ffpf:[a-z0-9]{1,64})$/
 
 /** The login cookie's name: __Host- over HTTPS, which makes the browser insist on Secure, Path=/ and no Domain. */
 export function sessionCookieName(secure: boolean): string {
@@ -47,7 +48,7 @@ function openClaims(key: Buffer, value: string): Record<string, unknown> | null 
   return claims && typeof claims === 'object' && !Array.isArray(claims) ? claims as Record<string, unknown> : null
 }
 
-/** The session in value if it was sealed with key, has not expired at now, and is for a GitHub or FFPF ID account. */
+/** The session in value if it was sealed with key, has not expired at now, and is for an account ACCOUNT_SUB accepts. */
 export function openSession(key: Buffer, value: string, now: number = Date.now() / 1000): Session | null {
   const claims = openClaims(key, value)
   if (!claims) return null
