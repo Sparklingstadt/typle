@@ -27,6 +27,52 @@ async function request(url, init = {}) {
   throw error
 }
 
+/**
+ * The Auth.js checks against site, as {ok, message, detail} results; send is a fetch that does not follow redirects
+ * (replaceable, so that tests/checkProduction.test.cjs runs without a network).
+ */
+async function authResults(site, send) {
+  const results = []
+  const add = (ok, message, detail) => results.push({ ok, message, detail })
+  const origin = site
+  // Auth.js (src/auth.ts): no session for an anonymous visitor (the body is null), GitHub and the ID and password among
+  // the providers.
+  const session = await send(`${origin}/api/auth/session`)
+  const sessionBody = await session.text()
+  let parsed
+  try { parsed = JSON.parse(sessionBody) } catch { parsed = undefined }
+  add(session.status === 200 && (parsed === null || (typeof parsed === 'object' && !Array.isArray(parsed) && !parsed.user)),
+    `anonymous ${origin}/api/auth/session answers 200 without a user`, `HTTP ${session.status} ${sessionBody}`)
+
+  const providersResponse = await send(`${origin}/api/auth/providers`)
+  const providersBody = await providersResponse.text()
+  let providers
+  try { providers = JSON.parse(providersBody) } catch { providers = null }
+  add(providersResponse.status === 200 && providers !== null && typeof providers === 'object' &&
+    Object.hasOwn(providers, 'github') && Object.hasOwn(providers, 'password'),
+  `${origin}/api/auth/providers lists github and password`, `HTTP ${providersResponse.status} ${providersBody}`)
+
+  // Signing in with GitHub is a POST with Auth.js's CSRF token (and the cookie that came with it); the answer is a 302
+  // to GitHub's authorize page, which carries the production callback as its redirect_uri.
+  const csrf = await send(`${origin}/api/auth/csrf`)
+  let csrfToken
+  try { csrfToken = (await csrf.json()).csrfToken } catch { csrfToken = undefined }
+  const csrfCookies = csrf.headers.getSetCookie().map(cookie => cookie.split(';')[0]).join('; ')
+  add(csrf.status === 200 && typeof csrfToken === 'string' && csrfToken !== '' && csrfCookies !== '',
+    `${origin}/api/auth/csrf gives a token and its cookie`, `HTTP ${csrf.status}`)
+  const signin = await send(`${origin}/api/auth/signin/github`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Origin: origin, Cookie: csrfCookies },
+    body: new URLSearchParams({ csrfToken: csrfToken ?? '', callbackUrl: `${origin}/home` }),
+  })
+  const signinTarget = signin.headers.get('location') ?? ''
+  add(signin.status === 302 && signinTarget.startsWith('https://github.com/login/oauth/authorize?') &&
+    signinTarget.includes(`redirect_uri=${encodeURIComponent(`${origin}/api/auth/callback/github`)}`),
+  `POST ${origin}/api/auth/signin/github with the CSRF token redirects (302) to GitHub with the production callback`,
+  `HTTP ${signin.status} ${signinTarget}`)
+  return results
+}
+
 async function main() {
   const home = await request(`${SITE}/home`, { redirect: 'follow' })
   check(home.ok, `GET ${SITE}/home succeeds`, `HTTP ${home.status}`)
@@ -43,40 +89,7 @@ async function main() {
     check(workspace.status === 401, `anonymous GET ${origin}/api/workspace answers 401`, `HTTP ${workspace.status}`)
   }
 
-  // Auth.js (src/auth.ts): no session for an anonymous visitor, GitHub and the ID and password among the providers.
-  const session = await request(`${SITE}/api/auth/session`)
-  const sessionBody = await session.text()
-  let parsed
-  try { parsed = JSON.parse(sessionBody) } catch { parsed = null }
-  check(session.status === 200 && parsed !== null && typeof parsed === 'object' && !parsed.user,
-    `anonymous ${SITE}/api/auth/session answers 200 without a user`, `HTTP ${session.status} ${sessionBody}`)
-
-  const providersResponse = await request(`${SITE}/api/auth/providers`)
-  const providersBody = await providersResponse.text()
-  let providers
-  try { providers = JSON.parse(providersBody) } catch { providers = null }
-  check(providersResponse.status === 200 && providers !== null && typeof providers === 'object' &&
-    Object.hasOwn(providers, 'github') && Object.hasOwn(providers, 'password'),
-  `${SITE}/api/auth/providers lists github and password`, `HTTP ${providersResponse.status} ${providersBody}`)
-
-  // Signing in with GitHub is a POST with Auth.js's CSRF token (and the cookie that came with it); the answer is a 302
-  // to GitHub's authorize page, which carries the production callback as its redirect_uri.
-  const csrf = await request(`${SITE}/api/auth/csrf`)
-  let csrfToken
-  try { csrfToken = (await csrf.json()).csrfToken } catch { csrfToken = undefined }
-  const csrfCookies = csrf.headers.getSetCookie().map(cookie => cookie.split(';')[0]).join('; ')
-  check(csrf.status === 200 && typeof csrfToken === 'string' && csrfToken !== '' && csrfCookies !== '',
-    `${SITE}/api/auth/csrf gives a token and its cookie`, `HTTP ${csrf.status}`)
-  const signin = await request(`${SITE}/api/auth/signin/github`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Origin: SITE, Cookie: csrfCookies },
-    body: new URLSearchParams({ csrfToken: csrfToken ?? '', callbackUrl: `${SITE}/home` }),
-  })
-  const signinTarget = signin.headers.get('location') ?? ''
-  check(signin.status === 302 && signinTarget.startsWith('https://github.com/login/oauth/authorize?') &&
-    signinTarget.includes('redirect_uri=https%3A%2F%2Ftyple.sparklingstadt.com%2Fapi%2Fauth%2Fcallback%2Fgithub'),
-  `POST ${SITE}/api/auth/signin/github with the CSRF token redirects (302) to GitHub with the production callback`,
-  `HTTP ${signin.status} ${signinTarget}`)
+  for (const { ok, message, detail } of await authResults(SITE, request)) check(ok, message, detail)
 
   if (failures.length) {
     console.error(`\n${failures.length} production check(s) failed`)
@@ -85,7 +98,11 @@ async function main() {
   console.log('\nProduction checks passed')
 }
 
-main().catch(error => {
-  console.error(error)
-  process.exit(1)
-})
+if (require.main === module) {
+  main().catch(error => {
+    console.error(error)
+    process.exit(1)
+  })
+}
+
+module.exports = { authResults, SITE }
