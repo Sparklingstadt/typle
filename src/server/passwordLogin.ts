@@ -1,12 +1,13 @@
 import type { Pool } from 'pg'
 import { loginIdProblem, normalizeLoginId } from '../lib/accountRules'
-import { clearHits, countHit, isBlocked, LIMITS } from './limits'
+import { clearHits, countHit, LIMITS, undoHit } from './limits'
 import { verifyPassword, type Scrypt } from './password'
 import { findUserByLoginId } from './users'
 
-// The sign-in with an ID and a password (the Credentials provider "password" in src/auth.ts). Every attempt that gets
-// past the shape check runs scrypt exactly once, so the time taken does not tell a blocked ID, an unknown ID and a
-// wrong password apart.
+// The sign-in with an ID and a password (the Credentials provider "password" in src/auth.ts). Each attempt is counted as a
+// failure for its ID and its IP before the password is checked, so attempts sent together cannot all pass the limit
+// while scrypt runs; a success takes its hits back. Every attempt that gets past the shape check runs scrypt exactly
+// once, so the time taken does not tell a blocked ID, an unknown ID and a wrong password apart.
 
 type Db = Pick<Pool, 'query'>
 
@@ -14,9 +15,11 @@ type Db = Pick<Pool, 'query'>
 const MAX_PASSWORD_LENGTH = 128
 
 /**
- * The user of the account whose ID and password are given, or null. A blocked ID or IP is refused (after one scrypt run
- * against nothing); a failure is counted for both the ID and the IP; a success forgets the ID's failures. The account ID
- * is password:<uuid>, and the name is the (normalized) login ID.
+ * The user of the account whose ID and password are given, or null. The attempt is first reserved as a failure of the
+ * ID and of the IP; when either is already blocked, scrypt runs once against nothing and the answer is null. Otherwise
+ * the password is checked once: a failure keeps the reserved hits, and a success forgets the ID's failures and takes
+ * back the IP's hit. The attempt that reaches a limit is still checked; the ones after it are refused. The account ID is
+ * password:<uuid>, and the name is the (normalized) login ID.
  */
 export async function authorizePassword(
   db: Db,
@@ -33,17 +36,14 @@ export async function authorizePassword(
 
   const idLimit = LIMITS.loginFailId(loginId)
   const ipLimit = LIMITS.loginFailIp(ip)
-  if (await isBlocked(db, idLimit.key, now) || await isBlocked(db, ipLimit.key, now)) {
+  const [idHit, ipHit] = await Promise.all([countHit(db, idLimit, now), countHit(db, ipLimit, now)])
+  if (!idHit.counted || !ipHit.counted) {
     await verifyPassword(password, null, derive)
     return null
   }
 
   const user = await findUserByLoginId(db, loginId)
-  if (!await verifyPassword(password, user?.passwordHash ?? null, derive) || !user) {
-    await countHit(db, idLimit, now)
-    await countHit(db, ipLimit, now)
-    return null
-  }
-  await clearHits(db, idLimit.key)
+  if (!await verifyPassword(password, user?.passwordHash ?? null, derive) || !user) return null
+  await Promise.all([clearHits(db, idLimit.key), undoHit(db, ipLimit.key, now)])
   return { id: `password:${user.id}`, name: user.loginId, image: '' }
 }

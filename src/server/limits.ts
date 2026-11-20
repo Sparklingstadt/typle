@@ -30,9 +30,10 @@ export async function isBlocked(db: Db, key: string, now: Date = new Date()): Pr
 /**
  * Counts one hit in a single upsert, so concurrent hits are never lost. A window that has passed starts again from 1.
  * Reaching `max` blocks the key until now + (blockSeconds ?? windowSeconds). While the key is blocked a hit changes
- * nothing: the count is not reset by a passed window and the block is not extended.
+ * nothing: the count is not reset by a passed window and the block is not extended. `counted` tells whether this hit
+ * was recorded (true also for the hit that reaches max), so a caller can reserve an attempt before doing it.
  */
-export async function countHit(db: Db, limit: Limit, now: Date = new Date()): Promise<{ blocked: boolean }> {
+export async function countHit(db: Db, limit: Limit, now: Date = new Date()): Promise<{ blocked: boolean, counted: boolean }> {
   const { rows } = await db.query<{ blocked: boolean }>(
     `INSERT INTO typle_auth_limits AS l (key, count, window_start, blocked_until)
      VALUES ($1, 1, $2::timestamptz,
@@ -48,7 +49,19 @@ export async function countHit(db: Db, limit: Limit, now: Date = new Date()): Pr
     [limit.key, now, limit.max, limit.windowSeconds, limit.blockSeconds ?? limit.windowSeconds],
   )
   // No row: the key was already blocked, so the upsert left it alone.
-  return { blocked: rows.length === 0 ? true : rows[0].blocked }
+  return rows.length === 0 ? { blocked: true, counted: false } : { blocked: rows[0].blocked, counted: true }
+}
+
+/**
+ * Takes back one hit reserved with countHit for an attempt that turned out not to count (a successful sign-in): the
+ * count goes down by one, never below zero. A blocked key is left as it is, so this never lifts a block.
+ */
+export async function undoHit(db: Db, key: string, now: Date = new Date()): Promise<void> {
+  await db.query(
+    `UPDATE typle_auth_limits SET count = GREATEST(count - 1, 0)
+     WHERE key = $1 AND (blocked_until IS NULL OR blocked_until <= $2::timestamptz)`,
+    [key, now],
+  )
 }
 
 /** Forgets the hits of key (a successful sign-in clears that ID's failures). */

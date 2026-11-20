@@ -3,7 +3,7 @@ const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
 const { randomUUID } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
-const { isBlocked, countHit, clearHits, clientIp, LIMITS } = require('../src/server/limits.ts')
+const { isBlocked, countHit, undoHit, clearHits, clientIp, LIMITS } = require('../src/server/limits.ts')
 
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
@@ -20,10 +20,11 @@ const after_ = (base, seconds) => new Date(base.getTime() + seconds * 1000)
 
 test('five failures for an ID block it for 15 minutes', database, async () => {
   const limit = LIMITS.loginFailId(`${prefix}a`)
-  for (let i = 0; i < 4; i++) assert.deepEqual(await countHit(db, limit, T0), { blocked: false })
+  for (let i = 0; i < 4; i++) assert.deepEqual(await countHit(db, limit, T0), { blocked: false, counted: true })
   assert.equal(await isBlocked(db, limit.key, T0), false)
-  assert.deepEqual(await countHit(db, limit, T0), { blocked: true })
+  assert.deepEqual(await countHit(db, limit, T0), { blocked: true, counted: true })
   assert.equal(await isBlocked(db, limit.key, T0), true)
+  assert.deepEqual(await countHit(db, limit, T0), { blocked: true, counted: false })
   assert.equal(await isBlocked(db, limit.key, after_(T0, 15 * 60 - 1)), true)
   assert.equal(await isBlocked(db, limit.key, after_(T0, 15 * 60 + 1)), false)
 })
@@ -32,7 +33,7 @@ test('a window that has passed starts again from one', database, async () => {
   const limit = LIMITS.loginFailId(`${prefix}b`)
   for (let i = 0; i < 4; i++) await countHit(db, limit, T0)
   // The 5th failure comes after the window: it is the first of a new one.
-  assert.deepEqual(await countHit(db, limit, after_(T0, 15 * 60 + 1)), { blocked: false })
+  assert.deepEqual(await countHit(db, limit, after_(T0, 15 * 60 + 1)), { blocked: false, counted: true })
   const { rows } = await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [limit.key])
   assert.equal(rows[0].count, 1)
 })
@@ -40,9 +41,9 @@ test('a window that has passed starts again from one', database, async () => {
 test('hits while blocked change nothing, and blockSeconds can outlast the window', database, async () => {
   const limit = { key: `limit:${prefix}c`, max: 2, windowSeconds: 60, blockSeconds: 600 }
   await countHit(db, limit, T0)
-  assert.deepEqual(await countHit(db, limit, T0), { blocked: true })
+  assert.deepEqual(await countHit(db, limit, T0), { blocked: true, counted: true })
   // Still blocked after the window: the hit neither resets the count nor extends the block.
-  assert.deepEqual(await countHit(db, limit, after_(T0, 120)), { blocked: true })
+  assert.deepEqual(await countHit(db, limit, after_(T0, 120)), { blocked: true, counted: false })
   assert.equal(await isBlocked(db, limit.key, after_(T0, 599)), true)
   assert.equal(await isBlocked(db, limit.key, after_(T0, 601)), false)
 })
@@ -59,7 +60,29 @@ test('clearHits forgets the failures', database, async () => {
   for (let i = 0; i < 5; i++) await countHit(db, limit, T0)
   await clearHits(db, limit.key)
   assert.equal(await isBlocked(db, limit.key, T0), false)
-  assert.deepEqual(await countHit(db, limit, T0), { blocked: false })
+  assert.deepEqual(await countHit(db, limit, T0), { blocked: false, counted: true })
+})
+
+const countOf = async key => (await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [key])).rows[0]?.count
+
+test('undoHit takes back one hit, never below zero', database, async () => {
+  const limit = { key: `limit:${prefix}f`, max: 5, windowSeconds: 60 }
+  for (let i = 0; i < 2; i++) await countHit(db, limit, T0)
+  await undoHit(db, limit.key, T0)
+  assert.equal(await countOf(limit.key), 1)
+  await undoHit(db, limit.key, T0)
+  await undoHit(db, limit.key, T0)
+  assert.equal(await countOf(limit.key), 0)
+  await undoHit(db, `limit:${prefix}none`, T0)
+  assert.equal(await countOf(`limit:${prefix}none`), undefined)
+})
+
+test('undoHit leaves a blocked key as it is', database, async () => {
+  const limit = { key: `limit:${prefix}g`, max: 2, windowSeconds: 60 }
+  for (let i = 0; i < 2; i++) await countHit(db, limit, T0)
+  await undoHit(db, limit.key, T0)
+  assert.equal(await countOf(limit.key), 2)
+  assert.equal(await isBlocked(db, limit.key, T0), true)
 })
 
 test('the limits are the documented ones', () => {

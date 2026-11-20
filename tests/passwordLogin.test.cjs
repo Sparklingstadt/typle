@@ -40,6 +40,18 @@ function counted() {
   return derive
 }
 
+/** Whether scrypt ran against a stored hash rather than the dummy (whose salt is all ones). */
+function realRuns() {
+  const derive = counted()
+  const inner = derive
+  const wrapped = (password, salt, keyLength, options) => {
+    if (!salt.equals(Buffer.alloc(16, 1))) wrapped.real++
+    return inner(password, salt, keyLength, options)
+  }
+  wrapped.real = 0
+  return wrapped
+}
+
 const ip = name => `ip-${prefix}-${name}`
 const failures = async key => (await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [key])).rows[0]?.count ?? 0
 
@@ -88,8 +100,35 @@ test('signing in forgets the ID\'s failures', database, async () => {
   const { loginId } = await account('clear')
   for (let i = 0; i < 3; i++) await authorizePassword(db, { loginId, password: 'wrong password' }, ip('clear'))
   assert.equal(await failures(LIMITS.loginFailId(loginId).key), 3)
+  assert.equal(await failures(LIMITS.loginFailIp(ip('clear')).key), 3)
   assert.notEqual(await authorizePassword(db, { loginId, password: PASSWORD }, ip('clear')), null)
   assert.equal(await failures(LIMITS.loginFailId(loginId).key), 0)
+  // The attempt reserved before scrypt is taken back from the IP's count.
+  assert.equal(await failures(LIMITS.loginFailIp(ip('clear')).key), 3)
+})
+
+test('attempts sent together get no more than five guesses at the password', database, async () => {
+  const { loginId } = await account('parallel')
+  const derive = realRuns()
+  const answers = await Promise.all(Array.from({ length: 10 }, (_, i) =>
+    authorizePassword(db, { loginId, password: `wrong ${i} password` }, ip(`parallel${i}`), undefined, derive)))
+  assert.deepEqual(answers, Array(10).fill(null))
+  assert.equal(derive.real, 5)
+  const late = realRuns()
+  assert.equal(await authorizePassword(db, { loginId, password: PASSWORD }, ip('parallel-ok'), undefined, late), null)
+  assert.equal(late.real, 0)
+})
+
+test('the right password sent together with wrong ones cannot get past the block', database, async () => {
+  const { loginId } = await account('race')
+  for (let i = 0; i < 4; i++) await authorizePassword(db, { loginId, password: `wrong ${i} password` }, ip('race'))
+  // One slot is left: of a wrong and a right password sent together, at most one is checked against the hash.
+  const derive = realRuns()
+  await Promise.all([
+    authorizePassword(db, { loginId, password: 'wrong 9 password' }, ip('race'), undefined, derive),
+    authorizePassword(db, { loginId, password: PASSWORD }, ip('race'), undefined, derive),
+  ])
+  assert.equal(derive.real, 1)
 })
 
 test('credentials of the wrong shape are refused without a lookup', async () => {
