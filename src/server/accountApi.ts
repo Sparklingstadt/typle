@@ -2,9 +2,10 @@ import type { Pool } from 'pg'
 import { defaultLocale, isLocale, LOCALE_COOKIE } from '../i18n/config'
 import { emailProblem, loginIdProblem, normalizeEmail, normalizeLoginId, passwordProblem } from '../lib/accountRules'
 import { cookieValue, dropCookie, signedIn } from './account'
-import { issueToken } from './emailTokens'
-import { clientIp, countHit, isBlocked, LIMITS } from './limits'
+import { issueToken, pruneTokens } from './emailTokens'
+import { clientIp, countHit, LIMITS, pruneLimits } from './limits'
 import { sendMail, verifyMail } from './mail'
+import { reserveDailyMail } from './mailLimits'
 import { hashPassword } from './password'
 import { reportFailure } from './report'
 import { jsonContent, sameOrigin } from './request'
@@ -94,13 +95,16 @@ export function readerLocale(request: Request): string {
  * in which later mails are written.
  *
  * Answers 400 with the first rule the fields break (loginIdFormat, passwordLength, passwordSameAsId, emailFormat, or
- * invalidRequest for a body of another shape), 429 tooManyRequests once the address has created 5 accounts in the
- * hour, 409 loginIdTaken, and otherwise 201 { loginId, mailSent }. Both a created account and a taken ID count toward
- * the limit, so the 409s cannot be used without bound to find which IDs exist; a form refused with 400 does not count,
- * so typing mistakes do not use it up. A taken ID is looked up before the password is hashed, so a 409 costs no hash
- * (one that is created between the look-up and the insert is still answered 409 and counted). A mail that cannot be
- * sent does not undo the account: mailSent is false and the user can ask for the link again after signing in. The
- * screen signs in with the same ID and password afterwards. hash is replaceable for tests only (to count its runs).
+ * invalidRequest for a body of another shape), 429 tooManyRequests once the client has made 5 attempts in the hour,
+ * 409 loginIdTaken, and otherwise 201 { loginId, mailSent }. An attempt is reserved against the limit (counted) after
+ * the fields are checked and before the look-up and the hash, so sign-ups sent together cannot all pass it; a created
+ * account and a taken ID both use it, so the 409s cannot be used without bound to find which IDs exist, and a form
+ * refused with 400 does not, so typing mistakes do not use it up. A taken ID is looked up before the password is
+ * hashed, so a 409 costs no hash (one that is created between the look-up and the insert is still answered 409). The
+ * mail is sent only when the day's cap of all mail allows it; a mail that is not sent does not undo the account:
+ * mailSent is false and the user can ask for the link again after signing in. A created account also prunes the
+ * limits and the links that ended over a day ago. The screen signs in with the same ID and password afterwards. hash
+ * is replaceable for tests only (to count its runs).
  */
 export async function answerSignup(request: Request, open: () => Pool,
   settings: () => LoginSettings | null = readLoginSettings,
@@ -122,23 +126,24 @@ export async function answerSignup(request: Request, open: () => Pool,
   let created: { id: string } | 'taken'
   try {
     db = open()
-    if (await isBlocked(db, limit.key)) return refuse(429, 'tooManyRequests')
+    if (!(await countHit(db, limit)).counted) return refuse(429, 'tooManyRequests')
     created = await findUserByLoginId(db, loginId) ? 'taken'
       : await createUser(db, { loginId, email, passwordHash: await hash(fields.password), locale })
   } catch (error) {
     reportFailure(request, error, 'account.signup')
     return refuse(503, 'databaseUnavailable')
   }
-  try {
-    await countHit(db, limit)
-  } catch (error) {
-    // A hit that could not be counted only lets this address make one more attempt.
-    reportFailure(request, error, 'account.signup')
-  }
   if (created === 'taken') return refuse(409, 'loginIdTaken')
 
+  try {
+    // Sign-ups are few and limited, so this is a cheap point to keep the tables small.
+    await Promise.all([pruneLimits(db), pruneTokens(db)])
+  } catch (error) {
+    reportFailure(request, error, 'account.prune')
+  }
   let mailSent = false
   try {
+    if (!await reserveDailyMail(db, login.mailCapScope)) return reply(201, { loginId, mailSent })
     const token = await issueToken(db, { userId: created.id, kind: 'verify', email, ttlSeconds: VERIFY_TTL_SECONDS })
     const mail = verifyMail(locale, `${login.origin}/verify-email?token=${token}`)
     await sendMail(email, mail.subject, mail.text)

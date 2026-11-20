@@ -1,3 +1,4 @@
+import { isIPv6 } from 'node:net'
 import type { Pool } from 'pg'
 
 // Throttles sign-in, sign-up and mail with counters in typle_auth_limits. Every function takes `now` so tests can move
@@ -14,12 +15,45 @@ export const LIMITS = {
   signupIp: (ip: string): Limit => ({ key: `signup:ip:${ip}`, max: 5, windowSeconds: 60 * 60 }),
   mailTarget: (idOrEmail: string): Limit => ({ key: `mail:target:${idOrEmail}`, max: 3, windowSeconds: 60 * 60 }),
   mailIp: (ip: string): Limit => ({ key: `mail:ip:${ip}`, max: 10, windowSeconds: 60 * 60 }),
+  /**
+   * Every mail the app sends in a UTC day (YYYY-MM-DD), kept below Resend's free 100 a day so that one client cannot
+   * use up the mail of everyone's password reset. scope (TYPLE_MAIL_CAP_SCOPE, empty in production) keeps the tests'
+   * mails apart from each other's.
+   */
+  mailDaily: (scope: string, day: string): Limit =>
+    ({ key: `mail:global:${scope ? `${scope}:` : ''}${day}`, max: 80, windowSeconds: 24 * 60 * 60 }),
 }
 
-/** The first value of x-forwarded-for, trimmed; 'unknown' when there is none. */
+/** The eight 16-bit groups of an IPv6 address that isIPv6 accepts (a zone after % is left out). */
+function ipv6Groups(address: string): number[] {
+  let text = address.split('%')[0].toLowerCase()
+  // A dotted IPv4 tail (::ffff:192.0.2.1) is its last two groups.
+  const v4 = /(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(text)
+  if (v4) {
+    const [a, b, c, d] = v4.slice(1).map(Number)
+    text = `${text.slice(0, v4.index)}${((a << 8) | b).toString(16)}:${((c << 8) | d).toString(16)}`
+  }
+  const [head, tail] = text.includes('::') ? text.split('::') : [text, '']
+  const left = head ? head.split(':') : []
+  const right = tail ? tail.split(':') : []
+  return [...left, ...Array(8 - left.length - right.length).fill('0'), ...right].map(group => parseInt(group, 16))
+}
+
+/**
+ * The client of request as the per-IP limits know it: the first value of x-forwarded-for, trimmed ('unknown' when
+ * there is none). An IPv6 client is known by its /64 (as 2001:db8:1:2::/64), because one connection is usually given a
+ * whole /64 and could otherwise take a new address for every request; an IPv4 address written as IPv6
+ * (::ffff:192.0.2.1) is that IPv4 address. Anything else is kept as written.
+ */
 export function clientIp(request: Request): string {
   const first = request.headers.get('x-forwarded-for')?.split(',')[0].trim()
-  return first || 'unknown'
+  if (!first) return 'unknown'
+  if (!isIPv6(first)) return first
+  const groups = ipv6Groups(first)
+  if (groups.slice(0, 5).every(group => group === 0) && groups[5] === 0xffff) {
+    return [groups[6] >> 8, groups[6] & 255, groups[7] >> 8, groups[7] & 255].join('.')
+  }
+  return `${groups.slice(0, 4).map(group => group.toString(16)).join(':')}::/64`
 }
 
 export async function isBlocked(db: Db, key: string, now: Date = new Date()): Promise<boolean> {
@@ -67,4 +101,18 @@ export async function undoHit(db: Db, key: string, now: Date = new Date()): Prom
 /** Forgets the hits of key (a successful sign-in clears that ID's failures). */
 export async function clearHits(db: Db, key: string): Promise<void> {
   await db.query('DELETE FROM typle_auth_limits WHERE key = $1', [key])
+}
+
+/**
+ * Deletes the rows whose window and block both ended over a day before now, so that the table holds only the limits
+ * that are still in use. The longest window is a day (mailDaily), so a row whose window started over two days ago has
+ * no window left.
+ */
+export async function pruneLimits(db: Db, now: Date = new Date()): Promise<void> {
+  await db.query(
+    `DELETE FROM typle_auth_limits
+     WHERE window_start < $1::timestamptz - interval '2 days'
+       AND (blocked_until IS NULL OR blocked_until < $1::timestamptz - interval '1 day')`,
+    [now],
+  )
 }

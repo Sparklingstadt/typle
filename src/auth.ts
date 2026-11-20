@@ -62,7 +62,8 @@ if (settings?.localLogin) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  // Quiet the CredentialsSignin Auth.js logs, with a stack, for every wrong password; other errors are still logged.
+  // Quiet the CredentialsSignin Auth.js logs, with a stack, for every wrong password, and the JWTSessionError of an
+  // unreadable or expired cookie; other errors are still logged.
   logger: { error: authErrorLogger() },
   providers,
   // The app's own sign-in page instead of Auth.js's: a login that fails (or providers that cannot be read) comes back

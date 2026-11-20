@@ -7,6 +7,7 @@ const { answerSignup } = require('../src/server/accountApi.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 const { createUser, findUserByLoginId } = require('../src/server/users.ts')
 const { hashPassword, verifyPassword } = require('../src/server/password.ts')
+const { LIMITS } = require('../src/server/limits.ts')
 const { fakeResend } = require('./fakeResendServer.cjs')
 
 // POST /api/account/signup against a real database and a fake Resend. Runs as npm run verify does:
@@ -16,7 +17,8 @@ const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
 const db = url ? createPool(url) : null
 const prefix = `t${randomUUID().slice(0, 8).replace(/-/g, '')}`
 const origin = 'http://127.0.0.1:3102'
-const settings = readLoginSettings({ AUTH_SECRET: 'typle-signup-test-secret', AUTH_URL: origin })
+// The daily cap of all mail is kept under this run's own key, so that the runs of a day do not add up.
+const settings = readLoginSettings({ AUTH_SECRET: 'typle-signup-test-secret', AUTH_URL: origin, TYPLE_MAIL_CAP_SCOPE: prefix })
 const withSettings = () => settings
 const open = () => db
 const resend = fakeResend()
@@ -185,4 +187,42 @@ test('the sign-up answers 503 without the login settings and 405 to another meth
   assert.deepEqual(await unset.json(), { error: 'authUnavailable' })
   const get = await answerSignup(new Request(`${origin}/api/account/signup`), open, withSettings)
   assert.equal(get.status, 405)
+})
+
+test('sign-ups sent together from one address create no more than five accounts', database, async () => {
+  await resend.ready
+  const ip = newIp()
+  // One fake Resend environment for all of them: withEnv puts the environment back when it returns.
+  const answers = await resend.withEnv(() => Promise.all(Array.from({ length: 8 }, (_, i) =>
+    answerSignup(signup({ loginId: `${prefix}par${i}`, email: `${prefix}par${i}@example.com`, password: PASSWORD }, { ip }), open, withSettings))))
+  assert.equal(answers.filter(response => response.status === 201).length, 5)
+  assert.equal(answers.filter(response => response.status === 429).length, 3)
+  const { rows } = await db.query('SELECT 1 FROM typle_users WHERE login_id LIKE $1', [`${prefix}par%`])
+  assert.equal(rows.length, 5)
+  assert.equal(resend.received.filter(mail => mail.body.to[0].startsWith(`${prefix}par`)).length, 5)
+})
+
+test('IPv6 clients of one /64 share the sign-up limit', database, async () => {
+  const hextet = text => parseInt(text, 16).toString(16)
+  const net = `2001:db8:${hextet(prefix.slice(1, 5))}:${hextet(prefix.slice(5, 9))}`
+  for (let i = 1; i <= 5; i++) {
+    const response = await call(signup({ loginId: `${prefix}v6${i}`, email: `${prefix}v6${i}@example.com`, password: PASSWORD }, { ip: `${net}::${i}` }))
+    assert.equal(response.status, 201, `sign-up ${i}`)
+  }
+  const sixth = await call(signup({ loginId: `${prefix}v66`, email: `${prefix}v66@example.com`, password: PASSWORD }, { ip: `${net}:1:2:3:4` }))
+  assert.equal(sixth.status, 429)
+  await db.query('DELETE FROM typle_auth_limits WHERE key = $1', [LIMITS.signupIp(`${net}::/64`).key])
+})
+
+test('once the day\'s cap of all mail is reached, a sign-up creates the account but sends no mail', database, async () => {
+  await resend.ready
+  const scope = `${prefix}full`
+  const full = readLoginSettings({ AUTH_SECRET: 'typle-signup-test-secret', AUTH_URL: origin, TYPLE_MAIL_CAP_SCOPE: scope })
+  await db.query(`INSERT INTO typle_auth_limits (key, count, window_start, blocked_until)
+    VALUES ($1, 80, now(), now() + interval '1 day')`, [LIMITS.mailDaily(scope, new Date().toISOString().slice(0, 10)).key])
+  const response = await resend.withEnv(() => answerSignup(
+    signup({ loginId: `${prefix}capped`, email: `${prefix}capped@example.com`, password: PASSWORD }), open, () => full))
+  assert.equal(response.status, 201)
+  assert.deepEqual(await response.json(), { loginId: `${prefix}capped`, mailSent: false })
+  assert.equal(resend.received.filter(mail => mail.body.to[0] === `${prefix}capped@example.com`).length, 0)
 })

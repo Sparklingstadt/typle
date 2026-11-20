@@ -124,3 +124,16 @@ test('the Auth.js logger skips CredentialsSignin and logs every other error', ()
   log(new TypeError('plain'))
   assert.ok(lines.includes('[auth][error] TypeError: plain'))
 })
+
+test('the Auth.js logger leaves out the unreadable session cookie, and only that JWTSessionError', () => {
+  const lines = []
+  const log = authErrorLogger((...args) => lines.push(args.join(' ')))
+  // Auth.js's session action throws Error('Invalid JWT') when decode answers null, and logs it as a JWTSessionError.
+  const sessionError = err => Object.assign(new Error('Read more at https://errors.authjs.dev#jwtsessionerror'),
+    { type: 'JWTSessionError', cause: { err } })
+  log(sessionError(new Error('Invalid JWT')))
+  assert.deepEqual(lines, [])
+  log(sessionError(new Error('database is down')))
+  assert.equal(lines[0], '[auth][error] JWTSessionError: Read more at https://errors.authjs.dev#jwtsessionerror')
+  assert.ok(lines.some(line => line.includes('database is down')))
+})

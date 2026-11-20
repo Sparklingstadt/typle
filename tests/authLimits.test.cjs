@@ -3,7 +3,7 @@ const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
 const { randomUUID } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
-const { isBlocked, countHit, undoHit, clearHits, clientIp, LIMITS } = require('../src/server/limits.ts')
+const { isBlocked, countHit, undoHit, clearHits, clientIp, pruneLimits, LIMITS } = require('../src/server/limits.ts')
 
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
@@ -91,6 +91,8 @@ test('the limits are the documented ones', () => {
   assert.deepEqual(LIMITS.signupIp('1.2.3.4'), { key: 'signup:ip:1.2.3.4', max: 5, windowSeconds: 3600 })
   assert.deepEqual(LIMITS.mailTarget('a@example.com'), { key: 'mail:target:a@example.com', max: 3, windowSeconds: 3600 })
   assert.deepEqual(LIMITS.mailIp('1.2.3.4'), { key: 'mail:ip:1.2.3.4', max: 10, windowSeconds: 3600 })
+  assert.deepEqual(LIMITS.mailDaily('', '2026-11-20'), { key: 'mail:global:2026-11-20', max: 80, windowSeconds: 86400 })
+  assert.deepEqual(LIMITS.mailDaily('e2e', '2026-11-20'), { key: 'mail:global:e2e:2026-11-20', max: 80, windowSeconds: 86400 })
 })
 
 test('the client IP is the first x-forwarded-for value', () => {
@@ -99,4 +101,34 @@ test('the client IP is the first x-forwarded-for value', () => {
   assert.equal(clientIp(request('  9.9.9.9  ')), '9.9.9.9')
   assert.equal(clientIp(request()), 'unknown')
   assert.equal(clientIp(request('')), 'unknown')
+})
+
+test('an IPv6 client is known by its /64, an IPv4 one by its address', () => {
+  const request = value => new Request('http://localhost/', { headers: { 'x-forwarded-for': value } })
+  assert.equal(clientIp(request('2001:db8:1:2:3:4:5:6')), '2001:db8:1:2::/64')
+  assert.equal(clientIp(request('2001:DB8:0001:0002::9, 1.1.1.1')), '2001:db8:1:2::/64')
+  assert.equal(clientIp(request('2001:db8::1')), '2001:db8:0:0::/64')
+  assert.equal(clientIp(request('::1')), '0:0:0:0::/64')
+  assert.equal(clientIp(request('fe80::1%en0')), 'fe80:0:0:0::/64')
+  // An IPv4 address written as IPv6 is the IPv4 client.
+  assert.equal(clientIp(request('::ffff:192.0.2.1')), '192.0.2.1')
+  assert.equal(clientIp(request('192.0.2.1')), '192.0.2.1')
+  // Anything else is kept as it is written.
+  assert.equal(clientIp(request('not-an-ip')), 'not-an-ip')
+})
+
+test('pruneLimits deletes the rows whose window and block ended over a day ago', database, async () => {
+  const now = new Date('2026-06-10T00:00:00Z')
+  const rows = [
+    [`prune:${prefix}old`, after_(now, -3 * 86400), null],
+    [`prune:${prefix}oldblock`, after_(now, -3 * 86400), after_(now, -2 * 86400)],
+    [`prune:${prefix}blocked`, after_(now, -3 * 86400), after_(now, -3600)],
+    [`prune:${prefix}window`, after_(now, -86400), null],
+  ]
+  for (const [key, start, blocked] of rows) {
+    await db.query('INSERT INTO typle_auth_limits (key, count, window_start, blocked_until) VALUES ($1, 1, $2, $3)', [key, start, blocked])
+  }
+  await pruneLimits(db, now)
+  const { rows: left } = await db.query('SELECT key FROM typle_auth_limits WHERE key LIKE $1 ORDER BY key', [`prune:${prefix}%`])
+  assert.deepEqual(left.map(row => row.key), [`prune:${prefix}blocked`, `prune:${prefix}window`])
 })

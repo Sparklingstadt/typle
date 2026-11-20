@@ -6,7 +6,7 @@ const { createPool } = require('../src/server/database.ts')
 const { createUser } = require('../src/server/users.ts')
 const { hashPassword } = require('../src/server/password.ts')
 const { countHit, LIMITS } = require('../src/server/limits.ts')
-const { authorizePassword } = require('../src/server/passwordLogin.ts')
+const { authorizePassword, checkPassword } = require('../src/server/passwordLogin.ts')
 const { openSession, sealSession, newSession } = require('../src/server/session.ts')
 
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
@@ -88,14 +88,14 @@ test('after five failures even the right password is refused, still after one sc
   assert.equal(derive.runs, 1)
 })
 
-test('a blocked IP is refused even with the right password', database, async () => {
+test('a blocked IP is refused even with the right password, without scrypt', database, async () => {
   const { loginId } = await account('ipblock')
   for (let i = 0; i < 30; i++) await countHit(db, LIMITS.loginFailIp(ip('blocked')))
   for (const id of [loginId, `${prefix}ipnobody`]) {
     const derive = realRuns()
     assert.equal(await authorizePassword(db, { loginId: id, password: PASSWORD }, ip('blocked'), undefined, derive), null)
-    assert.equal(derive.runs, 1)
-    assert.equal(derive.real, 0)
+    // A blocked IP tells nothing about the ID, so no scrypt is run to hide it.
+    assert.equal(derive.runs, 0)
     // A blocked IP cannot lock accounts: the ID's count is left alone.
     assert.equal(await failures(LIMITS.loginFailId(id).key), 0)
   }
@@ -172,4 +172,16 @@ test('the password provider\'s callback, where next-auth/react posts the credent
   const { authPathKnown } = require('../src/server/authOptions.ts')
   assert.equal(authPathKnown('/api/auth/callback/password', ['github', 'password']), true)
   assert.equal(authPathKnown('/api/auth/signin/password', ['github', 'password']), true)
+})
+
+test('checkPassword tells a refusal by the limits from a wrong password', database, async () => {
+  const { loginId } = await account('why')
+  assert.deepEqual(await checkPassword(db, { loginId, password: 'not the password' }, ip('why')), { refused: 'wrong' })
+  for (let i = 0; i < 4; i++) await authorizePassword(db, { loginId, password: `wrong ${i} password` }, ip(`why${i}`))
+  assert.deepEqual(await checkPassword(db, { loginId, password: PASSWORD }, ip('why-late')), { refused: 'limited' })
+  assert.deepEqual(await checkPassword(db, { loginId: `${prefix}whyx`, password: PASSWORD }, ip('why-other')), { refused: 'wrong' })
+  for (let i = 0; i < 30; i++) await countHit(db, LIMITS.loginFailIp(ip('why-blocked')))
+  assert.deepEqual(await checkPassword(db, { loginId: `${prefix}whyx`, password: PASSWORD }, ip('why-blocked')), { refused: 'limited' })
+  const { account: signed } = await checkPassword(db, { loginId: (await account('why2')).loginId, password: PASSWORD }, ip('why2'))
+  assert.match(signed.id, /^password:/)
 })

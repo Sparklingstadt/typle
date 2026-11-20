@@ -37,6 +37,8 @@ export default defineConfig({
         RESEND_API_KEY: 'e2e',
         TYPLE_MAIL_FROM: 'Typle <e2e@example.test>',
         TYPLE_RESEND_URL: 'http://127.0.0.1:3198/emails',
+        // This run's own key for the day's cap of all mail, so that the runs of a day do not add up to it.
+        TYPLE_MAIL_CAP_SCOPE: `e2e-${Date.now()}`,
       },
       command: 'node node_modules/next/dist/bin/next start -p 3101 -H 127.0.0.1',
       url: 'http://127.0.0.1:3101',

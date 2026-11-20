@@ -84,6 +84,8 @@ test('signing up, confirming the address, signing in and resetting the password 
   // 2. The mailed link confirms the address, which the account section of the settings then says.
   await page.goto(await linkIn(email, '/verify-email'))
   await expect(page.getByText('メールアドレスを確認できました。')).toBeVisible()
+  // The token is taken out of the address bar (and so out of the history) once the page has read it.
+  await expect(page).toHaveURL(/\/verify-email$/)
   await page.goto('/settings')
   const account = page.getByRole('region', { name: 'アカウント', exact: true })
   await expect(account).toContainText(loginId)
@@ -109,6 +111,7 @@ test('signing up, confirming the address, signing in and resetting the password 
   await page.getByRole('button', { name: '送る', exact: true }).click()
   await expect(page.getByRole('status').filter({ hasText: '再設定のリンクを送りました' })).toBeVisible()
   await page.goto(await linkIn(email, '/reset-password'))
+  await expect(page).toHaveURL(/\/reset-password$/)
   await page.getByLabel('新しいパスワード', { exact: true }).fill(NEW_PASSWORD)
   await page.getByRole('button', { name: '設定する', exact: true }).click()
   await expect(accountMenu(page)).toHaveAttribute('title', loginId)

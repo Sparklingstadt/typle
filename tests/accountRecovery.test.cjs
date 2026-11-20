@@ -9,6 +9,7 @@ const {
 } = require('../src/server/accountRecovery.ts')
 const { revokedSoon } = require('../src/server/account.ts')
 const { issueToken } = require('../src/server/emailTokens.ts')
+const { LIMITS } = require('../src/server/limits.ts')
 const { loginIdsMail } = require('../src/server/mail.ts')
 const { hashPassword } = require('../src/server/password.ts')
 const { authorizePassword } = require('../src/server/passwordLogin.ts')
@@ -24,7 +25,8 @@ const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
 const db = url ? createPool(url) : null
 const prefix = `t${randomUUID().slice(0, 8).replace(/-/g, '')}`
 const origin = 'http://127.0.0.1:3103'
-const settings = readLoginSettings({ AUTH_SECRET: 'typle-recovery-test-secret', AUTH_URL: origin })
+// The daily cap of all mail is kept under this run's own key, so that the runs of a day do not add up.
+const settings = readLoginSettings({ AUTH_SECRET: 'typle-recovery-test-secret', AUTH_URL: origin, TYPLE_MAIL_CAP_SCOPE: prefix })
 const withSettings = () => settings
 const open = () => db
 const resend = fakeResend()
@@ -76,13 +78,17 @@ function collector() {
   defer.run = async () => { while (tasks.length) await tasks.shift()() }
   return defer
 }
-/** call for forgot-password and forgot-id: their deferred work is run before the answer is returned. */
-const callDeferred = (answer, request) => resend.withEnv(async () => {
+/** Answers forgot-password or forgot-id and runs their deferred work before returning the answer. */
+async function answerDeferred(answer, request, login = withSettings) {
   const defer = collector()
-  const response = await answer(request, open, withSettings, defer)
+  const response = await answer(request, open, login, defer)
   await defer.run()
   return response
-})
+}
+/** call for forgot-password and forgot-id: their deferred work is run before the answer is returned. */
+const callDeferred = (answer, request) => resend.withEnv(() => answerDeferred(answer, request))
+/** Runs requests together, in one fake Resend environment (withEnv puts the environment back when it returns). */
+const together = (count, run) => resend.withEnv(() => Promise.all(Array.from({ length: count }, (_, i) => run(i))))
 const mailsTo = address => resend.received.filter(mail => mail.body.to[0] === address)
 const tokenIn = mail => mail.body.text.match(/token=([A-Za-z0-9_-]{43})/)[1]
 
@@ -153,13 +159,12 @@ test('forgot-password and forgot-id answer before the token, the mail and the co
     assert.deepEqual(await response.json(), {})
     assert.equal(defer.tasks.length, 1, path)
     assert.equal(mailsTo(user.email).length, sent, path)
-    const { rows } = await db.query('SELECT 1 FROM typle_auth_limits WHERE key = $1', [`mail:ip:${ip}`])
-    assert.equal(rows.length, 0, path)
+    // The limits are counted before the answer, so that requests sent together cannot all pass them.
+    assert.equal((await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [`mail:ip:${ip}`])).rows[0].count, 1)
     await resend.withEnv(defer.run)
     assert.equal(mailsTo(user.email).length, sent + 1, path)
-    assert.equal((await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [`mail:ip:${ip}`])).rows[0].count, 1)
   }
-  // An unknown ID defers the same one task (the counting), so both paths answer alike.
+  // An unknown ID defers the same one task, so both paths answer alike.
   const defer = collector()
   await answerForgotPassword(post('forgot-password', { loginId: `${prefix}nobody` }), open, withSettings, defer)
   assert.equal(defer.tasks.length, 1)
@@ -389,4 +394,149 @@ test('each request answers 503 without the login settings, 405 to GET, and 403 w
     const text = await answer(post(path, {}, { headers: { 'Content-Type': 'text/plain' } }), open, withSettings)
     assert.equal(text.status, 403, path)
   }
+})
+
+/** The day's cap of all mail, as LIMITS.mailDaily keys it today, under scope. */
+const dailyKey = scope => LIMITS.mailDaily(scope, new Date().toISOString().slice(0, 10)).key
+
+test('forgot-password requests sent together for one ID send no more than three mails', database, async () => {
+  await resend.ready
+  const user = await account('fppar', { verified: true })
+  const answers = await together(8, () => answerDeferred(answerForgotPassword, post('forgot-password', { loginId: user.loginId })))
+  assert.deepEqual(answers.map(response => response.status), Array(8).fill(200))
+  assert.equal(mailsTo(user.email).length, 3)
+})
+
+test('forgot-id requests sent together for one address send no more than three mails', database, async () => {
+  await resend.ready
+  const user = await account('idpar', { verified: true })
+  await together(8, () => answerDeferred(answerForgotId, post('forgot-id', { email: user.email })))
+  assert.equal(mailsTo(user.email).length, 3)
+})
+
+test('the eleventh resend-verification from one IP in an hour is refused, whatever the account', database, async () => {
+  await resend.ready
+  const ip = newIp()
+  const users = []
+  for (let i = 0; i < 4; i++) users.push(await account(`rsip${i}`))
+  const statuses = []
+  for (let i = 0; i < 11; i++) {
+    const user = users[Math.floor(i / 3)]
+    const response = await call(answerResendVerification, post('resend-verification', {}, { ip, headers: { Cookie: cookieOf(user.sub) } }))
+    statuses.push(response.status)
+  }
+  assert.deepEqual(statuses, [...Array(10).fill(200), 429])
+  assert.equal(mailsTo(users[3].email).length, 1)
+})
+
+test('resend-verification requests sent together send no more than three mails', database, async () => {
+  await resend.ready
+  const user = await account('rspar')
+  const cookie = cookieOf(user.sub)
+  const answers = await together(8, () =>
+    answerResendVerification(post('resend-verification', {}, { headers: { Cookie: cookie } }), open, withSettings))
+  assert.equal(answers.filter(response => response.status === 200).length, 3)
+  assert.equal(answers.filter(response => response.status === 429).length, 5)
+  assert.equal(mailsTo(user.email).length, 3)
+})
+
+test('once the day\'s cap of all mail is reached, no mail is sent', database, async () => {
+  await resend.ready
+  const scope = `${prefix}full`
+  const full = readLoginSettings({ AUTH_SECRET: 'typle-recovery-test-secret', AUTH_URL: origin, TYPLE_MAIL_CAP_SCOPE: scope })
+  await db.query(`INSERT INTO typle_auth_limits (key, count, window_start, blocked_until)
+    VALUES ($1, 80, now(), now() + interval '1 day')`, [dailyKey(scope)])
+  const user = await account('cap', { verified: true })
+  const unverified = await account('capun')
+  const run = (answer, request) => resend.withEnv(() => answerDeferred(answer, request, () => full))
+  const forgot = await run(answerForgotPassword, post('forgot-password', { loginId: user.loginId }))
+  assert.equal(forgot.status, 200)
+  assert.deepEqual(await forgot.json(), {})
+  const ids = await run(answerForgotId, post('forgot-id', { email: user.email }))
+  assert.equal(ids.status, 200)
+  assert.equal(mailsTo(user.email).length, 0)
+  const again = await run(answerResendVerification, post('resend-verification', {}, { headers: { Cookie: cookieOf(unverified.sub) } }))
+  assert.equal(again.status, 429)
+  assert.deepEqual(await again.json(), { error: 'tooManyRequests' })
+  assert.equal(mailsTo(unverified.email).length, 0)
+})
+
+test('each mail counts toward the day\'s cap of all mail', database, async () => {
+  await resend.ready
+  const user = await account('capcount', { verified: true })
+  const before = (await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [dailyKey(prefix)])).rows[0]?.count ?? 0
+  await callDeferred(answerForgotPassword, post('forgot-password', { loginId: user.loginId }))
+  // An unknown ID sends nothing, so it takes nothing from the cap.
+  await callDeferred(answerForgotPassword, post('forgot-password', { loginId: `${prefix}capnobody` }))
+  const { rows } = await db.query('SELECT count FROM typle_auth_limits WHERE key = $1', [dailyKey(prefix)])
+  assert.equal(rows[0].count, before + 1)
+})
+
+test('a reset lifts the lockout of the ID, so the new password signs in', database, async () => {
+  const user = await account('unlock', { verified: true })
+  for (let i = 0; i < 5; i++) await authorizePassword(db, { loginId: user.loginId, password: `wrong ${i} password` }, newIp())
+  assert.equal(await authorizePassword(db, { loginId: user.loginId, password: PASSWORD }, newIp()), null)
+  const token = await issueToken(db, { userId: user.id, kind: 'reset', email: user.email, ttlSeconds: 1800 })
+  const response = await call(answerResetPassword, post('reset-password', { token, password: NEW_PASSWORD }))
+  assert.equal(response.status, 200)
+  assert.deepEqual(await authorizePassword(db, { loginId: user.loginId, password: NEW_PASSWORD }, newIp()),
+    { id: user.sub, name: user.loginId, image: '' })
+})
+
+test('a reset spends the account\'s other reset links', database, async () => {
+  const user = await account('spend')
+  const first = await issueToken(db, { userId: user.id, kind: 'reset', email: user.email, ttlSeconds: 1800 })
+  const second = await issueToken(db, { userId: user.id, kind: 'reset', email: user.email, ttlSeconds: 1800 })
+  const verify = await issueToken(db, { userId: user.id, kind: 'verify', email: user.email, ttlSeconds: 3600 })
+  assert.equal((await call(answerResetPassword, post('reset-password', { token: first, password: NEW_PASSWORD }))).status, 200)
+  const other = await call(answerResetPassword, post('reset-password', { token: second, password: PASSWORD }))
+  assert.equal(other.status, 400)
+  assert.deepEqual(await other.json(), { error: 'invalidToken' })
+  // A link that confirms the address is not a reset link: it stays usable.
+  assert.equal((await call(answerVerify, post('verify', { token: verify }))).status, 200)
+})
+
+test('a change of password spends the account\'s reset links', database, async () => {
+  const user = await account('chgspend')
+  const token = await issueToken(db, { userId: user.id, kind: 'reset', email: user.email, ttlSeconds: 1800 })
+  const changed = await call(answerChangePassword, post('change-password',
+    { currentPassword: PASSWORD, newPassword: NEW_PASSWORD }, { headers: { Cookie: cookieOf(user.sub) } }))
+  assert.equal(changed.status, 200)
+  const reset = await call(answerResetPassword, post('reset-password', { token, password: 'another long password' }))
+  assert.equal(reset.status, 400)
+  assert.deepEqual(await reset.json(), { error: 'invalidToken' })
+})
+
+test('change-password of a locked ID is answered tooManyRequests', database, async () => {
+  const user = await account('chglock')
+  for (let i = 0; i < 5; i++) await authorizePassword(db, { loginId: user.loginId, password: `wrong ${i} password` }, newIp())
+  const response = await call(answerChangePassword, post('change-password',
+    { currentPassword: PASSWORD, newPassword: NEW_PASSWORD }, { headers: { Cookie: cookieOf(user.sub) } }))
+  assert.equal(response.status, 429)
+  assert.deepEqual(await response.json(), { error: 'tooManyRequests' })
+})
+
+test('a change of password whose writes fail leaves the password as it was', database, async () => {
+  const user = await account('chgfail')
+  const failing = {
+    query: (...args) => db.query(...args),
+    connect: async () => {
+      const client = await db.connect()
+      return {
+        query: (sql, ...rest) => /typle_session_revocations/.test(sql) ? Promise.reject(new Error('revocation failed')) : client.query(sql, ...rest),
+        release: destroy => client.release(destroy),
+      }
+    },
+  }
+  const original = console.error
+  console.error = () => {}
+  let response
+  try {
+    response = await resend.withEnv(() => answerChangePassword(post('change-password',
+      { currentPassword: PASSWORD, newPassword: NEW_PASSWORD }, { headers: { Cookie: cookieOf(user.sub) } }), () => failing, withSettings))
+  } finally {
+    console.error = original
+  }
+  assert.equal(response.status, 503)
+  assert.ok(await authorizePassword(db, { loginId: user.loginId, password: PASSWORD }, newIp()))
 })

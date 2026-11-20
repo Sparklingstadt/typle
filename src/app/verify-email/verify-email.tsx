@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { FormMessage, useApiErrorText } from '@/components/AccountForm'
 import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
+import { dropLinkToken } from '@/lib/linkToken'
 
 // Confirms the address of the mailed link once the page is open in a browser: the request is sent by the page, not by
 // opening the link, so a mail scanner that only fetches the link does not use it up.
@@ -17,6 +18,7 @@ export default function VerifyEmail({ token }: { token: string }) {
   // The link can be used once: an effect run twice (React's development checks) sends it once.
   const sent = useRef(false)
   useEffect(() => {
+    dropLinkToken()
     if (!token || sent.current) return
     sent.current = true
     api('/api/account/verify', { method: 'POST', body: { token } }).then(

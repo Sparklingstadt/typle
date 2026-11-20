@@ -2,7 +2,6 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 
 // The login session, as the Go backend sealed it until v2.47.0: base64url(JSON) + "." +
 // base64url(HMAC-SHA256 of that text), without padding, under a key derived from AUTH_SECRET (src/server/settings.ts).
-// The cookie and the iPad and Mac apps' token are the same JSON under different keys, so one never opens as the other.
 
 /** A signed-in user. Times are Unix seconds; issuedAt is the time of the login, as a session is never sealed again. */
 export type Session = { sub: string, name: string, image: string, issuedAt: number, expires: number }
@@ -76,7 +75,7 @@ function seal(key: Buffer, claims: Record<string, string | number | boolean>): s
   return `${payload}.${createHmac('sha256', key).update(payload).digest('base64url')}`
 }
 
-/** The login cookie (with the session key) or an app's token (with the app key) of session. */
+/** The login cookie of session, sealed with the session key. */
 export function sealSession(key: Buffer, session: Session): string {
   return seal(key, { sub: session.sub, name: session.name, image: session.image, iat: session.issuedAt, exp: session.expires })
 }

@@ -59,3 +59,23 @@ export async function peekToken(
   )
   return rows[0] ? { userId: rows[0].user_id, email: rows[0].email } : null
 }
+
+/**
+ * Marks every unused reset link of the account used, after its password was reset or changed, so that a link mailed
+ * before cannot set the password again.
+ */
+export async function spendResetTokens(db: Db, userId: string, now: Date = new Date()): Promise<void> {
+  await db.query(
+    "UPDATE typle_email_tokens SET used_at = $2::timestamptz WHERE user_id = $1 AND kind = 'reset' AND used_at IS NULL",
+    [userId, now],
+  )
+}
+
+/** Deletes the tokens that expired or were used over a day before now: none of them can be used again. */
+export async function pruneTokens(db: Db, now: Date = new Date()): Promise<void> {
+  await db.query(
+    `DELETE FROM typle_email_tokens
+     WHERE expires_at < $1::timestamptz - interval '1 day' OR used_at < $1::timestamptz - interval '1 day'`,
+    [now],
+  )
+}

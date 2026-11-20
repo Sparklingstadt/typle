@@ -1,5 +1,5 @@
 "use client"
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
@@ -7,6 +7,7 @@ import { FormField, FormMessage, useApiErrorText } from '@/components/AccountFor
 import { Button } from '@/components/ui/button'
 import { api, ApiError } from '@/lib/api'
 import { passwordProblem } from '@/lib/accountRules'
+import { dropLinkToken } from '@/lib/linkToken'
 import { signInWithPassword, useSession } from '@/lib/session'
 
 // Sets a new password with the mailed link, then signs in with it (the server has signed out every device).
@@ -20,6 +21,8 @@ export default function ResetPasswordForm({ token }: { token: string }) {
   const [problem, setProblem] = useState('')
   const [failure, setFailure] = useState<{ text: string, signIn?: boolean } | null>(null)
   const [busy, setBusy] = useState(false)
+  // The token came in as a prop, so the address bar no longer needs it.
+  useEffect(dropLinkToken, [])
   return <form className="max-w-sm space-y-4" noValidate onSubmit={async event => {
     event.preventDefault()
     if (busy) return

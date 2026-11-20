@@ -4,7 +4,7 @@ const assert = require('node:assert/strict')
 const { randomUUID } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const { createUser } = require('../src/server/users.ts')
-const { issueToken, consumeToken } = require('../src/server/emailTokens.ts')
+const { issueToken, consumeToken, pruneTokens } = require('../src/server/emailTokens.ts')
 
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
@@ -62,4 +62,20 @@ test('concurrent consumption succeeds exactly once', database, async () => {
   const raw = await issueToken(db, { userId: id, kind: 'reset', email, ttlSeconds: 60 })
   const results = await Promise.all(Array.from({ length: 5 }, () => consumeToken(db, raw, 'reset')))
   assert.equal(results.filter(Boolean).length, 1)
+})
+
+test('pruneTokens deletes the tokens that expired or were used over a day ago', database, async () => {
+  const { id, email } = await user('prune')
+  const insert = (hash, expires, used) => db.query(
+    "INSERT INTO typle_email_tokens (token_hash, user_id, kind, email, expires_at, used_at) VALUES ($1, $2, 'reset', $3, $4, $5)",
+    [hash, id, email, expires, used])
+  const now = new Date()
+  const ago = seconds => new Date(now.getTime() - seconds * 1000)
+  await insert(`${prefix}expired`, ago(2 * 86400), null)
+  await insert(`${prefix}used`, new Date(now.getTime() + 3600_000), ago(2 * 86400))
+  await insert(`${prefix}recent`, ago(3600), ago(3600))
+  await insert(`${prefix}live`, new Date(now.getTime() + 3600_000), null)
+  await pruneTokens(db, now)
+  const { rows } = await db.query('SELECT token_hash FROM typle_email_tokens WHERE user_id = $1 ORDER BY token_hash', [id])
+  assert.deepEqual(rows.map(row => row.token_hash), [`${prefix}live`, `${prefix}recent`])
 })

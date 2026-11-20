@@ -98,14 +98,28 @@ export function authPathKnown(pathname: string, providers: readonly string[]): b
 }
 
 /**
+ * Whether error is the JWTSessionError Auth.js logs when the session cookie cannot be read: its decode (decodeSession)
+ * answered null, for a cookie that expired, was sealed with another key or was changed, and Auth.js threw
+ * Error('Invalid JWT') for it. The cookie is removed and the reader is signed out, which is all there is to do.
+ */
+function unreadableCookie(name: string, error: Error): boolean {
+  if (name !== 'JWTSessionError') return false
+  const cause = error.cause
+  const err = cause && typeof cause === 'object' && 'err' in cause ? (cause as { err: unknown }).err : null
+  return err instanceof Error && err.message === 'Invalid JWT'
+}
+
+/**
  * The Auth.js logger's error method. A wrong ID or password makes Auth.js log CredentialsSignin as an error with a
- * stack on every attempt; that is an ordinary answer, not a failure, so it is not logged (the limits and the response
- * already handle it). Every other error is logged as Auth.js's own logger does, with its cause when it has one.
+ * stack on every attempt, and an expired or unreadable login cookie a JWTSessionError on every read of the session;
+ * those are ordinary answers, not failures, so they are not logged (the limits and the response already handle them).
+ * Every other error, including any other JWTSessionError, is logged as Auth.js's own logger does, with its cause when
+ * it has one.
  */
 export function authErrorLogger(write: (...args: unknown[]) => void = console.error) {
   return (error: Error) => {
     const name = (error as { type?: string }).type ?? error.name
-    if (name === 'CredentialsSignin') return
+    if (name === 'CredentialsSignin' || unreadableCookie(name, error)) return
     write(`[auth][error] ${name}: ${error.message}`)
     const cause = error.cause
     if (cause && typeof cause === 'object' && 'err' in cause && (cause as { err: unknown }).err instanceof Error) {
