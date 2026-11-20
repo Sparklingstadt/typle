@@ -122,12 +122,12 @@ export function signIn(): void {
 }
 
 /**
- * Signs out of every device, this browser included, and goes home: every session and app token of a login until now
+ * Signs out of every device, this browser included, and goes home: every login until now
  * stops working, such as one that was stolen. Rejects, and stays on the page signed in, when the request fails or is
  * refused.
  */
 export async function signOutEverywhere(): Promise<void> {
-  await api('/api/auth/signout?everywhere=1', { method: 'POST' })
+  await api('/api/account/signout-everywhere', { method: 'POST' })
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
   location.assign('/home')
 }

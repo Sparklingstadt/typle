@@ -9,17 +9,14 @@ export type LoginSettings = {
   origin: string,
   /** The key of the login cookie. */
   sessionKey: Buffer,
-  /** The key of the iPad and Mac apps' token, which the Route Handlers still accept until it expires. */
-  appKey: Buffer,
   /** Whether the made-up login for development on this machine is on. */
   localLogin: boolean,
   /** Whether AUTH_URL is HTTPS, which names the login cookie __Host-. */
   secure: boolean,
 }
 
-/** The HKDF info of each key: the same as the Go backend's, so that each kind opens only as itself. */
+/** The HKDF info of the key: the same as the Go backend's. */
 const SESSION_INFO = 'typle session v1'
-const APP_INFO = 'typle app session v1'
 
 /** A key of 32 bytes derived from AUTH_SECRET for one kind of value. */
 const deriveKey = (secret: string, info: string) => Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), info, 32))
@@ -40,7 +37,6 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
   return {
     origin: base.origin,
     sessionKey: deriveKey(secret, SESSION_INFO),
-    appKey: deriveKey(secret, APP_INFO),
     localLogin: env.VERCEL !== '1' && localLoginAllowed(env, base),
     secure: base.protocol === 'https:',
   }

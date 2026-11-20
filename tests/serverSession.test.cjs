@@ -10,15 +10,13 @@ const fixture = require('./fixtures/sessions.json')
 const settings = readLoginSettings({ AUTH_SECRET: fixture.secret, AUTH_URL: 'https://typle.example' })
 const claimsOf = session => session && { sub: session.sub, name: session.name, image: session.image, iat: session.issuedAt, exp: session.expires }
 
-test('the Go backend\'s cookies and app tokens open as they did there', () => {
+test('the Go backend\'s cookies open as they did there', () => {
   for (const { value, session } of fixture.cookies) assert.deepEqual(claimsOf(openSession(settings.sessionKey, value, fixture.now)), session, value)
-  for (const { value, session } of fixture.tokens) assert.deepEqual(claimsOf(openSession(settings.appKey, value, fixture.now)), session, value)
 })
 
 test('a cookie opens with its own key only', () => {
   const [cookie] = fixture.cookies
   const [token] = fixture.tokens
-  assert.equal(openSession(settings.appKey, cookie.value, fixture.now), null)
   assert.equal(openSession(settings.sessionKey, token.value, fixture.now), null)
   const other = readLoginSettings({ AUTH_SECRET: 'another-secret', AUTH_URL: 'https://typle.example' })
   assert.equal(openSession(other.sessionKey, cookie.value, fixture.now), null)
@@ -57,7 +55,6 @@ const MONTH = 30 * 24 * 3600
 test('a session is sealed with the same bytes as the Go backend\'s', () => {
   const alice = { sub: 'github:9100000001', name: 'Alice', image: 'https://avatars.example/u/1', issuedAt: login, expires: login + MONTH }
   assert.equal(sealSession(authSettings.sessionKey, alice), auth.values.alice)
-  assert.equal(sealSession(authSettings.appKey, alice), auth.values['alice-app'])
   const bob = { sub: 'github:9100000002', name: '<b&o> b  😀', image: '', issuedAt: login, expires: login + MONTH }
   assert.equal(sealSession(authSettings.sessionKey, bob), auth.values.bob)
   assert.deepEqual(openSession(authSettings.sessionKey, auth.values.bob, auth.now), bob)

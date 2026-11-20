@@ -1,6 +1,8 @@
 import NextAuth from 'next-auth'
 import GitHub from 'next-auth/providers/github'
+import { revokedSoon } from './server/account'
 import { decodeSession, encodeSession } from './server/authJwt'
+import { pool } from './server/database'
 import { SESSION_MAX_AGE, sessionCookieName } from './server/session'
 import { readLoginSettings } from './server/settings'
 
@@ -44,10 +46,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     decode: ({ token }) => token ? decodeSession(token, sessionKey()) : null,
   },
   callbacks: {
-    jwt({ token, account }) {
+    async jwt({ token, account }) {
       // At a login the account is the provider's: for OAuth, Auth.js gives the user a random id and keeps the id of
       // profile() (github:<number>) as providerAccountId, which is the account ID.
-      if (account) token.sub = account.providerAccountId
+      if (account) {
+        token.sub = account.providerAccountId
+        return token
+      }
+      // A session read from the cookie: null, which Auth.js answers with no session and the cookie removed, when the
+      // account signed out of every device since this login. It is kept when that cannot be told in time.
+      if (token.sub && typeof token.iat === 'number' && await revokedSoon(pool, token.sub, token.iat) === true) return null
       return token
     },
     session({ session, token }) {
