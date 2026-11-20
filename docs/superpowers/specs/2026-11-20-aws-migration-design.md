@@ -193,7 +193,16 @@ CDK にしたあとは、イメージのタグを CDK の入力にするか、CD
    5 が通ったら、そこが**戻れない点**。そのあとは利用者の書き込みが RDS にだけあるので Neon には戻さず、問題は RDS のまま
    直す（必要なら RDS のスナップショットから戻す）。テスト用アカウントの行は 5 のあとに消す。（持ち主の判断として作る人が決めた）
 
-Neon と Vercel のプロジェクトは、切り替えから2週間は消さずに残し、そのあと消す。
+Vercel と Neon は切り替えのあとも消さずに、**予備として今のまま動かし続ける**（持ち主が決めた）。
+
+- 予備の Vercel は切り替えた時点のコードのまま止め、そのあとのリリースでは更新しない（作る人の判断。リリースのたびに AWS と Vercel の
+  両方に出すと手間が倍になり、Neon のマイグレーションも要る）。`.vercel/` のリンクは持ち主の Mac に残す。
+- 利用者は `typle.sparklingstadt.com`（AWS）に来る。`typle-r-six.vercel.app` のページは `vercel.json` で本番ドメインへ移り、
+  ログイン（Auth.js の Cookie）は本番ドメインにしか付かないので、予備の Vercel から Neon に利用者の書き込みが入る道はない。
+  Vercel に残るのは iPad・Mac 版が呼ぶ `/api/*` だけで、ログインできないアプリには 401 を返す。
+- 予備に戻せるのは「戻れない点」（データの移行の 5）より前だけ。そのあとの Neon は切り替えの時点で止まった古い写しなので、
+  Vercel に DNS を戻すと、切り替えのあとの登録と保存が見えなくなる。持ち主にこのことを伝えてある。
+- 費用: Vercel と Neon のプランの料金はそのままかかる。
 
 ## 手順書（練習環境）
 
@@ -221,10 +230,10 @@ Neon と Vercel のプロジェクトは、切り替えから2週間は消さず
 
 ## リポジトリの後片付け（切り替えのあと）
 
-- `vercel.json`、`docs/release-workflow.md` の Vercel の段、`CLAUDE.md` の Release workflow の 3、README の「Neon / Vercel の構成」を AWS に書き換える。
+- `docs/release-workflow.md` の Vercel の段（予備の Vercel の扱いを書き足す。`vercel.json` は予備のために残す）、`CLAUDE.md` の Release workflow の 3、README の「Neon / Vercel の構成」を AWS に書き換える。
   README の「Go は v2.47.0 で消した」という記述は、`api/go.go` が残っている今と食い違うので合わせて直す。
 - `scripts/bench-backends.cjs` など、Vercel のプレビューを前提にした比較の道具は使えなくなる。消すかは Go のコードと一緒に別の PR で決める。
-- `scripts/check-production.cjs` から `typle-r-six.vercel.app` を外す（下の「決まっていないこと」2 による）。
+- `scripts/check-production.cjs` は、本番ドメインを AWS として確かめ、`typle-r-six.vercel.app` の確認（ページが本番へ 308 で移ること、`/api/health`）は残す。
 - `.env.example` の `DIRECT_URL`（Neon）を整理する。
 
 ## 作業の順序
@@ -235,7 +244,6 @@ Neon と Vercel のプロジェクトは、切り替えから2週間は消さず
    データの移行のリハーサルもこのスタックで行い、終わったら RDS のテーブルを空に戻す
 4. 持ち主: 切り替えの当日の手順
 5. PR: 後片付け（アプリの変更 4・6 を含む）とリリース手順の書き換え
-6. 持ち主: 2週間後に Vercel と Neon を消す
 
 ## 作る人に任せること
 
@@ -244,6 +252,6 @@ Neon と Vercel のプロジェクトは、切り替えから2週間は消さず
 - CloudWatch のアラームのしきい値。
 - 行数の比べ方の SQL。
 
-## 決まっていないこと（持ち主に聞く）
+## 決まっていないこと
 
-（設計の確認のあとに埋める）
+なし（2026-11-20 に持ち主と確認した）。
