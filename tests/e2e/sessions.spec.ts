@@ -24,7 +24,7 @@ test('signing out of every device signs out the other browsers too', async ({ br
     const dialog = page.getByRole('alertdialog', { name: 'すべての端末からログアウトしますか？' })
     await dialog.getByRole('button', { name: 'ログアウトする' }).click()
     await expect(page).toHaveURL(/\/home$/)
-    await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()
 
     // The other browser still holds its cookie, but it no longer reaches the account's data, and the cookie is removed.
     const refused = await other.request.get('/api/workspace')

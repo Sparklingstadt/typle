@@ -2,6 +2,7 @@
   "checking": "Checking sign-in status",
   "signIn": "Sign in",
   "signInWithGitHub": "Sign in with GitHub",
+  "signInFailed": "Could not sign in. Please try again.",
   "githubUser": "GitHub user",
   "ffpfUser": "FFPF ID user",
   "menu": "Account menu",

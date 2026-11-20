@@ -1,14 +1,21 @@
 import NextAuth from 'next-auth'
+import type { Provider } from 'next-auth/providers'
+import Credentials from 'next-auth/providers/credentials'
 import GitHub from 'next-auth/providers/github'
 import { revokedSoon } from './server/account'
+import {
+  authorizeLocal, githubConfigured, githubProfile, jwtCallback, redirectCallback, redirectProxyUrl, sessionCallback,
+} from './server/authOptions'
 import { decodeSession, encodeSession } from './server/authJwt'
 import { pool } from './server/database'
 import { SESSION_MAX_AGE, sessionCookieName } from './server/session'
 import { readLoginSettings } from './server/settings'
 
-// The login, by Auth.js: GitHub, under /api/auth (src/app/api/auth/[...nextauth]/route.ts). The session is Auth.js's JWT
-// one, but its cookie keeps the name and the form of the login cookie the Go backend sealed (src/server/session.ts), so
-// the logins made before keep working, and the Route Handlers and the Go and Kotlin backends read it as they did.
+// The login, by Auth.js: GitHub, and the made-up local login for development, under /api/auth
+// (src/app/api/auth/[...nextauth]/route.ts). The session is Auth.js's JWT one, but its cookie keeps the name and the
+// form of the login cookie the Go backend sealed (src/server/session.ts), so the logins made before keep working, and
+// the Route Handlers and the Go and Kotlin backends read it as they did. What the callbacks decide is in
+// src/server/authOptions.ts.
 
 /** The key the login cookie is sealed with, from AUTH_SECRET and AUTH_URL; without them no session is read or made. */
 function sessionKey(): Buffer {
@@ -17,21 +24,34 @@ function sessionKey(): Buffer {
   return settings.sessionKey
 }
 
-const secure = readLoginSettings()?.secure ?? false
+const settings = readLoginSettings()
+const secure = settings?.secure ?? false
+
+const providers: Provider[] = []
+/** The ids of the providers in use, which name the paths /api/auth/signin/<id> and /api/auth/callback/<id>. */
+export const providerIds: string[] = []
+if (githubConfigured()) {
+  providers.push(GitHub({
+    // No scope: the app only needs to know who the user is, as the login before Auth.js asked for nothing more.
+    authorization: { params: { scope: '' } },
+    profile: githubProfile,
+    redirectProxyUrl: redirectProxyUrl(settings),
+  }))
+  providerIds.push('github')
+}
+if (settings?.localLogin) {
+  providers.push(Credentials({
+    id: 'local',
+    credentials: {},
+    // authorize reads the settings again, so that it never signs in once the local login is off.
+    authorize: () => authorizeLocal(),
+  }))
+  providerIds.push('local')
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  providers: [
-    GitHub({
-      // No scope: the app only needs to know who the user is, as the login before Auth.js asked for nothing more.
-      authorization: { params: { scope: '' } },
-      profile(profile) {
-        // The profile name if it says anything, else the login, as the login before Auth.js named the account.
-        const name = profile.name?.trim() ? profile.name.trim() : profile.login.trim()
-        return { id: `github:${profile.id}`, name, image: profile.avatar_url }
-      },
-    }),
-  ],
+  providers,
   session: { strategy: 'jwt', maxAge: SESSION_MAX_AGE },
   cookies: {
     sessionToken: {
@@ -46,24 +66,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     decode: ({ token }) => token ? decodeSession(token, sessionKey()) : null,
   },
   callbacks: {
-    async jwt({ token, account }) {
-      // At a login the account is the provider's: for OAuth, Auth.js gives the user a random id and keeps the id of
-      // profile() (github:<number>) as providerAccountId, which is the account ID.
-      if (account) {
-        token.sub = account.providerAccountId
-        return token
-      }
-      // A session read from the cookie: null, which Auth.js answers with no session and the cookie removed, when the
-      // account signed out of every device since this login. It is kept when that cannot be told in time.
-      if (token.sub && typeof token.iat === 'number' && await revokedSoon(pool, token.sub, token.iat) === true) return null
-      return token
-    },
-    session({ session, token }) {
-      if (token.sub) session.user.id = token.sub
-      session.user.image = token.picture || null
-      // Auth.js dates the session 30 days from now each time it is read; the login ends at the cookie's own exp.
-      if (typeof token.exp === 'number') session.expires = new Date(token.exp * 1000).toISOString() as typeof session.expires
-      return session
-    },
+    jwt: jwtCallback((sub, issuedAt) => revokedSoon(pool, sub, issuedAt)),
+    session: ({ session, token }) => sessionCallback({ session, token }),
+    ...(settings ? { redirect: redirectCallback(settings.origin) } : {}),
   },
 })

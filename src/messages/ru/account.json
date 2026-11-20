@@ -2,6 +2,7 @@
   "checking": "Проверка статуса входа",
   "signIn": "Войти",
   "signInWithGitHub": "Войти через GitHub",
+  "signInFailed": "Не удалось войти. Повторите попытку.",
   "githubUser": "Пользователь GitHub",
   "ffpfUser": "Пользователь FFPF ID",
   "menu": "Меню аккаунта",

@@ -2,6 +2,7 @@
   "checking": "正在確認登入狀態",
   "signIn": "登入",
   "signInWithGitHub": "使用 GitHub 登入",
+  "signInFailed": "無法登入。請再試一次。",
   "githubUser": "GitHub 使用者",
   "ffpfUser": "FFPF ID 使用者",
   "menu": "帳號選單",

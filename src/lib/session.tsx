@@ -1,5 +1,6 @@
 "use client"
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { signIn as authSignIn, signOut as authSignOut } from 'next-auth/react'
 import { api } from '@/lib/api'
 
 export type SessionUser = { id: string; name: string; image: string | null }
@@ -19,9 +20,9 @@ const RETRY_DELAYS_MS = [1000, 2000, 4000]
 const SESSION_TIMEOUT_MS = 10_000
 
 /**
- * Reads the signed-in user from /api/auth/session. Only a 200 answer says who is signed in: null when its `user` is null
- * or left out. Anything else (a failed request, one that timed out, another status, a body that is not the session)
- * rejects, since it does not say that the user signed out.
+ * Reads the signed-in user from /api/auth/session, Auth.js's answer. Only a 200 answer says who is signed in: null when
+ * the body is null or has no `user`. Anything else (a failed request, one that timed out, another status, a body that is
+ * not the session) rejects, since it does not say that the user signed out.
  */
 async function fetchSession(): Promise<SessionData> {
   // A request that hangs (a network that is half there) fails after a while, so that it does not stay in flight for good
@@ -29,11 +30,13 @@ async function fetchSession(): Promise<SessionData> {
   const response = await fetch('/api/auth/session', { cache: 'no-store', signal: AbortSignal.timeout(SESSION_TIMEOUT_MS) })
   if (response.status !== 200) throw new Error(`session answered ${response.status}`)
   const body: unknown = await response.json()
-  if (!body || typeof body !== 'object') throw new Error('session answer is not an object')
+  if (body === null) return null
+  if (typeof body !== 'object' || Array.isArray(body)) throw new Error('session answer is not an object')
   const user = (body as { user?: unknown }).user
   if (user === null || user === undefined) return null
   if (typeof user !== 'object' || typeof (user as { id?: unknown }).id !== 'string') throw new Error('session user is invalid')
-  return { user: user as SessionUser }
+  const { id, name, image } = user as { id: string, name?: unknown, image?: unknown }
+  return { user: { id, name: typeof name === 'string' ? name : '', image: typeof image === 'string' && image ? image : null } }
 }
 
 const sameUser = (a: SessionData, b: SessionData) =>
@@ -114,11 +117,12 @@ export function useSession(): SessionState {
   return useContext(SessionContext)
 }
 
-/** Goes to GitHub and comes back to the page being viewed. */
-export function signIn(): void {
-  // A full navigation: the sign-in route is a Route Handler that redirects to GitHub, not a page of the Next.js router.
-  // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-  location.assign('/api/auth/signin?returnTo=' + encodeURIComponent(location.pathname + location.search))
+/**
+ * Goes to GitHub, and comes back to returnTo, a path of this site. Rejects, staying on the page, when the request that
+ * starts the login fails; next-auth/react itself goes to Auth.js's error page when it cannot read the providers.
+ */
+export async function signInWithGitHub(returnTo: string): Promise<void> {
+  await authSignIn('github', { redirectTo: returnTo })
 }
 
 /**
@@ -134,7 +138,11 @@ export async function signOutEverywhere(): Promise<void> {
 
 /** Signs out and goes home. Rejects, and stays on the page signed in, when the sign-out request fails or is refused. */
 export async function signOut(): Promise<void> {
-  await api('/api/auth/signout', { method: 'POST' })
+  // Auth.js answers a sign-out with the URL to go to; a failed one (a refused CSRF token, an error) with none, or with
+  // its error page.
+  const answer: unknown = await authSignOut({ redirect: false })
+  const url = (answer as { url?: unknown } | null)?.url
+  if (typeof url !== 'string' || new URL(url, location.href).searchParams.has('error')) throw new Error('sign-out failed')
   // A full page load, so nothing from the signed-in session stays in memory.
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
   location.assign('/home')

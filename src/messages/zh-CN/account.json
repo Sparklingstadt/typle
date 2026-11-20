@@ -2,6 +2,7 @@
   "checking": "正在确认登录状态",
   "signIn": "登录",
   "signInWithGitHub": "使用 GitHub 登录",
+  "signInFailed": "无法登录。请重试。",
   "githubUser": "GitHub 用户",
   "ffpfUser": "FFPF ID 用户",
   "menu": "账号菜单",

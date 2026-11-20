@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { openPacks } from './packRows'
 import { guestWorkspace } from './guestData'
+import { origin } from './account'
 
 test('removed server routes answer 404', async ({ page }) => {
   for (const path of ['/api/v1/lists', '/api/tokens', '/api/admin/dashboard', '/api/admin/users', '/api/admin/gallery',
@@ -16,20 +17,50 @@ test('removed server routes answer 404', async ({ page }) => {
   expect((await page.goto('/admin'))!.status()).toBe(404)
 })
 
-// An answer that still lists FFPF ID (an older deployment) offers GitHub alone, and the login asks for no provider.
-test('the sign-in is GitHub alone', async ({ page }) => {
-  await page.route('**/api/auth/session', route => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ user: null, providers: ['github', 'ffpf'] }) }))
-  const urls: string[] = []
-  await page.route('**/api/auth/signin?**', route => { urls.push(route.request().url()); return route.fulfill({ status: 200, contentType: 'text/html', body: 'ok' }) })
+// The login before Auth.js: the app's token and the made-up local login (now the Credentials provider `local`).
+test('the old login routes answer 404', async ({ page }) => {
+  for (const path of ['/api/auth/token', '/api/auth/local']) {
+    expect((await page.request.get(path)).status(), `GET ${path}`).toBe(404)
+    expect((await page.request.post(path)).status(), `POST ${path}`).toBe(404)
+  }
+})
+
+// The top bar goes to /signin with the page being viewed, and /signin offers GitHub alone (no FFPF ID), coming back to
+// that page.
+test('/signin has the GitHub button, and the login comes back to the page', async ({ page }) => {
   await page.goto('/home')
-  await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toBeVisible()
+  const signIn = page.getByRole('link', { name: 'ログイン', exact: true })
+  await expect(signIn).toHaveAttribute('href', '/signin?returnTo=%2Fhome')
+  await signIn.click()
+  await expect(page).toHaveURL(/\/signin\?returnTo=%2Fhome$/)
+  await expect(page.getByRole('heading', { level: 1, name: 'ログイン' })).toBeVisible()
   await expect(page.getByText('FFPF ID')).toHaveCount(0)
+  const bodies: string[] = []
+  // next-auth/react posts to /api/auth/signin/github? (with the provider's own query, empty here).
+  await page.route(url => url.pathname === '/api/auth/signin/github', route => {
+    bodies.push(route.request().postData() ?? '')
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ url: `${origin}/home` }) })
+  })
   await page.getByRole('button', { name: 'GitHubでログイン' }).click()
-  await expect.poll(() => urls.length).toBe(1)
-  const url = new URL(urls[0])
-  expect(url.pathname).toBe('/api/auth/signin')
-  expect(url.searchParams.get('returnTo')).toBe('/home')
-  expect(url.searchParams.has('provider')).toBe(false)
+  await expect.poll(() => bodies.length).toBe(1)
+  const body = new URLSearchParams(bodies[0])
+  expect(body.get('callbackUrl')).toBe('/home')
+  expect(body.get('csrfToken')).toBeTruthy()
+  await expect(page).toHaveURL(/\/home$/)
+})
+
+// Auth.js answers at the address the app is served at (AUTH_URL), not at localhost, which Next.js makes of 127.0.0.1.
+test('the GitHub login comes back to AUTH_URL', async ({ page }) => {
+  const { csrfToken } = await (await page.request.get('/api/auth/csrf')).json()
+  const response = await page.request.post('/api/auth/signin/github', {
+    headers: { 'X-Auth-Return-Redirect': '1' },
+    form: { csrfToken, callbackUrl: '/play' },
+  })
+  expect(response.status()).toBe(200)
+  const url = new URL((await response.json()).url)
+  expect(url.origin + url.pathname).toBe('https://github.com/login/oauth/authorize')
+  expect(url.searchParams.get('redirect_uri')).toBe(`${origin}/api/auth/callback/github`)
+  expect(url.searchParams.get('scope')).toBe('')
 })
 
 test('a link to a shared pack says sharing has ended, and asks nothing of the server', async ({ page }) => {
@@ -60,6 +91,6 @@ for (const name of ['authjs.session-token', 'typle-session']) {
     await page.goto('/edit')
     await openPacks(page)
     await expect(page.getByRole('button', { name: 'Kept in browser を編集', exact: true })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()
   })
 }
