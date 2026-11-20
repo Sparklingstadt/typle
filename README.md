@@ -17,6 +17,7 @@
 | [docs/features.md](docs/features.md) | 画面ごとの機能の仕様（ログインなしでの利用・表示言語・入力・ダッシュボード・単語リスト・CSV・端末・ベスト記録など） |
 | [docs/word-list-sources.md](docs/word-list-sources.md) | 公式の単語リスト（国名・コマンド・構文）の出典と検証 |
 | [docs/release-workflow.md](docs/release-workflow.md) | PR から本番公開までの手順 |
+| [docs/aws/](docs/aws/README.md) | AWS の練習環境をコンソールで作って消す手順書（AWS への移行と CLF-C02 の学習のため） |
 | [api-docs/](api-docs/src/README.md) | アプリの API の仕様（VuePress。`cd api-docs && npm ci && npm run docs:dev`） |
 | [docs/save-metrics.md](docs/save-metrics.md) | 保存の時間と大きさの計測（`TYPLE_MEASURE_SAVES=1`） |
 | [docs/backend-compare.md](docs/backend-compare.md) | Next.js・Go・Kotlin のバックエンドの速度比較（`TYPLE_BACKEND_COMPARE=1` のプレビューだけ） |
