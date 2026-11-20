@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": false
   },
+  "regions": ["sin1"],
   "buildCommand": "npm run db:migrate && npm run build",
   "redirects": [
     { "source": "/api/auth/signin", "has": [{ "type": "host", "value": "typle-r-six\\.vercel\\.app" }], "destination": "https://typle.sparklingstadt.com/api/auth/signin", "permanent": false },
