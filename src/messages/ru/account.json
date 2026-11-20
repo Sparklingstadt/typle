@@ -8,6 +8,7 @@
   "menu": "Меню аккаунта",
   "signedInWithGitHub": "Вход выполнен через GitHub",
   "signedInWithFfpf": "Вход выполнен через FFPF ID",
+  "signedInWithPassword": "Вход по ID",
   "manageDevices": "Управление устройствами",
   "signOut": "Выйти",
   "signOutFailed": "Не удалось выйти. Повторите попытку.",

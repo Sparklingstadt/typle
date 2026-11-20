@@ -8,6 +8,7 @@
   "menu": "アカウントメニュー",
   "signedInWithGitHub": "GitHubでログイン中",
   "signedInWithFfpf": "FFPF IDでログイン中",
+  "signedInWithPassword": "IDでログイン中",
   "manageDevices": "端末を管理",
   "signOut": "ログアウト",
   "signOutFailed": "ログアウトできませんでした。もう一度お試しください。",

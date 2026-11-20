@@ -353,3 +353,21 @@ export async function answerChangePassword(request: Request, open: () => Pool,
   }
   return reply(200, { loginId: user.loginId })
 }
+
+/**
+ * GET /api/account/me: the signed-in account with an ID and a password, as the settings show it:
+ * 200 { loginId, email, emailVerified }. 401 loginRequired when signed out (or the account is gone), 400
+ * notPasswordAccount for a login of another kind (GitHub).
+ */
+export async function answerMe(request: Request, open: () => Pool,
+  settings: () => LoginSettings | null = readLoginSettings): Promise<Response> {
+  const login = settings()
+  if (!login) return refuse(503, 'authUnavailable')
+  if (request.method !== 'GET') return methodNotAllowed(['GET', 'HEAD'])
+  const opened = openDb(request, open, 'account.me')
+  if ('refusal' in opened) return opened.refusal
+  const account = await signedInAccount(request, opened.db, login, 'account.me')
+  if ('refusal' in account) return account.refusal
+  const { user } = account
+  return reply(200, { loginId: user.loginId, email: user.email, emailVerified: !!user.emailVerifiedAt })
+}

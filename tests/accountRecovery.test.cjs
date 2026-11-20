@@ -5,6 +5,7 @@ const { randomUUID } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const {
   answerVerify, answerResendVerification, answerForgotPassword, answerResetPassword, answerForgotId, answerChangePassword,
+  answerMe,
 } = require('../src/server/accountRecovery.ts')
 const { revokedSoon } = require('../src/server/account.ts')
 const { issueToken } = require('../src/server/emailTokens.ts')
@@ -336,6 +337,33 @@ test('resend-verification mails a new link, three times an hour, and tells an al
   const done = await call(answerResendVerification, post('resend-verification', {}, { headers: { Cookie: cookie } }))
   assert.equal(done.status, 200)
   assert.deepEqual(await done.json(), { alreadyVerified: true })
+})
+
+test('me answers the signed-in password account, with whether its address is confirmed', database, async () => {
+  const get = headers => new Request(`${origin}/api/account/me`, { headers })
+  const user = await account('me')
+  const cookie = cookieOf(user.sub)
+  const before = await answerMe(get({ Cookie: cookie }), open, withSettings)
+  assert.equal(before.status, 200)
+  assert.equal(before.headers.get('Cache-Control'), 'private, no-store')
+  assert.deepEqual(await before.json(), { loginId: user.loginId, email: user.email, emailVerified: false })
+  await markEmailVerified(db, user.id, user.email)
+  const after = await answerMe(get({ Cookie: cookie }), open, withSettings)
+  assert.deepEqual(await after.json(), { loginId: user.loginId, email: user.email, emailVerified: true })
+  const none = await answerMe(get({}), open, withSettings)
+  assert.equal(none.status, 401)
+  assert.deepEqual(await none.json(), { error: 'loginRequired' })
+  const github = await answerMe(get({ Cookie: cookieOf('github:1') }), open, withSettings)
+  assert.equal(github.status, 400)
+  assert.deepEqual(await github.json(), { error: 'notPasswordAccount' })
+})
+
+test('me answers 503 without the login settings and 405 to another method', async () => {
+  const unset = await answerMe(new Request(`${origin}/api/account/me`), open, () => null)
+  assert.equal(unset.status, 503)
+  const posted = await answerMe(post('me', {}), open, withSettings)
+  assert.equal(posted.status, 405)
+  assert.equal(posted.headers.get('Allow'), 'GET, HEAD')
 })
 
 test('accountIdOf takes the UUID out of a password: account only', () => {

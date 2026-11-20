@@ -43,6 +43,8 @@ export default function AccountBar() {
   }
   // A login with FFPF ID made before v2.54.0 still opens until it expires (the login itself was removed then).
   const viaFfpf = session.user.id.startsWith('ffpf:')
+  // An account with an ID and a password is named by its ID.
+  const viaPassword = session.user.id.startsWith('password:')
   // A name that is empty (an FFPF ID without one) is no name, so it falls back too.
   const name = session.user.name || t(viaFfpf ? 'ffpfUser' : 'githubUser')
   return <div className="relative">
@@ -57,7 +59,7 @@ export default function AccountBar() {
           <UserAvatar name={name} image={session.user.image} className="size-9" />
           <span className="grid min-w-0">
             <span className="truncate text-sm font-medium">{name}</span>
-            <span className="text-xs text-muted-foreground">{t(viaFfpf ? 'signedInWithFfpf' : 'signedInWithGitHub')}</span>
+            <span className="text-xs text-muted-foreground">{t(viaPassword ? 'signedInWithPassword' : viaFfpf ? 'signedInWithFfpf' : 'signedInWithGitHub')}</span>
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="-mx-1" />

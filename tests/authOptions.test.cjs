@@ -2,10 +2,11 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const {
-  githubProfile, githubConfigured, authorizeLocal, LOCAL_USER, jwtCallback, sessionCallback, redirectCallback,
+  githubProfile, authorizeLocal, LOCAL_USER, jwtCallback, sessionCallback, redirectCallback,
   redirectProxyUrl, authPathKnown,
 } = require('../src/server/authOptions.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
+const { githubConfigured } = require('../src/lib/githubLogin.ts')
 
 // What src/auth.ts hands Auth.js: the GitHub profile, the callbacks that give the session its account ID, its end and
 // its revocation, the made-up local login, and the paths under /api/auth that Auth.js answers.

@@ -8,6 +8,7 @@
   "menu": "帳號選單",
   "signedInWithGitHub": "已透過 GitHub 登入",
   "signedInWithFfpf": "已透過 FFPF ID 登入",
+  "signedInWithPassword": "已使用 ID 登入",
   "manageDevices": "管理裝置",
   "signOut": "登出",
   "signOutFailed": "無法登出。請再試一次。",

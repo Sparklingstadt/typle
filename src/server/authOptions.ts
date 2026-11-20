@@ -13,9 +13,6 @@ export function githubProfile(profile: { id: number | string, login: string, nam
   return { id: `github:${profile.id}`, name, image: profile.avatar_url }
 }
 
-/** Whether the GitHub login can be offered: Auth.js reads its client ID and secret from these. */
-export const githubConfigured = (env: Record<string, string | undefined> = process.env) =>
-  !!env.AUTH_GITHUB_ID && !!env.AUTH_GITHUB_SECRET
 
 /** The made-up account of the local login, for development on this machine. */
 export const LOCAL_USER = { id: 'github:0', name: 'ローカル練習用', image: '' } // i18n-ignore: a stored account name, as the Go backend gave it

@@ -8,6 +8,7 @@
   "menu": "Account menu",
   "signedInWithGitHub": "Signed in with GitHub",
   "signedInWithFfpf": "Signed in with FFPF ID",
+  "signedInWithPassword": "Signed in with an ID",
   "manageDevices": "Manage devices",
   "signOut": "Sign out",
   "signOutFailed": "Could not sign out. Please try again.",
