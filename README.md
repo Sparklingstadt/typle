@@ -188,6 +188,21 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 
 公式資料: [GitHub OAuth App](https://docs.github.com/ja/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)、[PostgreSQL Docker image](https://hub.docker.com/_/postgres)。
 
+### コンテナのイメージ
+
+AWS への移行（[設計](docs/superpowers/specs/2026-11-20-aws-migration-design.md)）のため、本番のイメージをリポジトリのルートの `Dockerfile` で作れます（v2.55.2 から）。AWS での動かし方は、後の手順書に書きます。
+
+```bash
+docker build --build-arg SITE_URL=https://typle.sparklingstadt.com -t typle-r .
+```
+
+- `SITE_URL` は必須です。`sitemap.xml`・`robots.txt`・ページのメタデータはビルドの時点で URL を埋め込むため、ないとビルドが止まります。
+- イメージの中では `TYPLE_STANDALONE=1` で standalone のビルドをし、`node server.js` が `:3000` で受けます。Vercel と `next start`（verify・E2E）のビルドは今までどおりです。
+- `.env*` と `*.pem` は `.dockerignore` でイメージに入りません。設定は実行のときに環境変数で渡します。
+- マイグレーションは同じイメージで `node scripts/migrate.cjs` を実行します。
+- Amazon RDS につなぐときは、`DATABASE_URL` の末尾に `?sslmode=verify-full&sslrootcert=/app/certs/rds-global-bundle.pem` を付けます（RDS の CA バンドルはイメージに入っています）。
+- 接続元の IP（回数制限）は `x-forwarded-for` の最後の値です。Vercel も AWS のロードバランサーも、最後に自分が見た接続元を置くためです。
+
 ### FFPF ID でのログイン（廃止）
 
 FFPF ID（ffpf-portal）でのログインは v2.54.0 でなくしました。ログインは GitHub と ID・パスワードです（v2.55.0 から）。
