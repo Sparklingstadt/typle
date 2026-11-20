@@ -1,0 +1,19 @@
+# The build context of Dockerfile: the app's sources only. Never secrets (.env*, keys) or local builds.
+.git
+node_modules
+.next
+.next-production
+.env*
+*.pem
+.vercel
+.superpowers
+kotlin
+server
+api
+api-docs
+tests
+test-results
+playwright-report
+coverage
+docs
+*.md
