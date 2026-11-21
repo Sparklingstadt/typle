@@ -40,4 +40,16 @@ class RoutesTest < ActionDispatch::IntegrationTest
       assert_equal "rails", response.headers["x-typle-backend"]
     end
   end
+
+  test "the answers carry the headers of Next.js and no others of Rails" do
+    with_env("TYPLE_BACKEND_COMPARE" => "1") do
+      [[:post, "/api/health"], [:get, "/api/other"]].each do |method, path|
+        process method, path, headers: { "Accept" => "text/html" }
+        assert_equal "Cookie", response.headers["Vary"], "#{method} #{path}"
+        assert_nil response.headers["X-XSS-Protection"]
+        assert_nil response.headers["X-Permitted-Cross-Domain-Policies"]
+        assert_equal "application/json; charset=utf-8", response.headers["Content-Type"]
+      end
+    end
+  end
 end

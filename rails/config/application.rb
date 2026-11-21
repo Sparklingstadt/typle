@@ -23,6 +23,8 @@ module TypleRails
     config.middleware.delete Rack::ConditionalGet
     config.middleware.delete ActionDispatch::RequestId
     config.middleware.delete Rack::Runtime
+    # The headers of every answer are those of next.config.mjs, which Typle::BackendGate adds.
+    config.action_dispatch.default_headers = {}
 
     # The schema belongs to Next.js (db/ of the repository); Rails neither loads nor dumps one.
     config.active_record.maintain_test_schema = false
