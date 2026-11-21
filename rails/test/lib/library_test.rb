@@ -183,4 +183,11 @@ class LibraryTest < ActiveSupport::TestCase
     back = Typle::RecordRows.with_records([{ "id" => "l", "records" => [] }, { "id" => "m", "records" => [] }], { "l" => [{ "id" => "r" }] })
     assert_equal [{ "id" => "l", "records" => [{ "id" => "r" }] }, { "id" => "m", "records" => [] }], back
   end
+
+  test "a save keeps an unknown field holding a number JSON cannot write, as null" do
+    body = Typle::JsonValue.parse(%({"revision":0,"lists":[#{LIST.sub('"records":[]', '"records":[],"x":1e400')}]}))
+    _, _, change = Typle::WorkspaceChanges.read(body)
+    encoded = Typle::WorkspaceChanges.encode(change)
+    assert_includes Typle::JsonValue.generate(encoded.library.lists), '"x":null'
+  end
 end

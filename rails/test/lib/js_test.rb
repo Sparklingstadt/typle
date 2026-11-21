@@ -51,4 +51,11 @@ class JsTest < ActiveSupport::TestCase
     assert Typle::Js.finite_number?(2.5)
     refute Typle::Js.finite_number?(true)
   end
+
+  test "JSON is written as JSON.stringify writes it: non-finite numbers as null, numbers as Number#toString" do
+    assert_equal '{"x":null,"y":[null,null]}', Typle::JsonValue.generate({ "x" => Float::INFINITY, "y" => [-Float::INFINITY, Float::NAN] })
+    assert_equal '{"x":null}', Typle::JsonValue.generate(Typle::JsonValue.parse('{"x":1e400}'))
+    assert_equal "100000000000000000", Typle::JsonValue.generate(Typle::JsonValue.parse("1e17"))
+    assert_equal "[1.5e-7,1e+21,0.1,2.5]", Typle::JsonValue.generate([1.5e-7, 1e21, 0.1, 2.5])
+  end
 end

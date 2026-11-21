@@ -49,7 +49,7 @@ module Typle
 
     # The value of the cookie name in a Cookie header, the first one when there are several; quotes around it dropped.
     def cookie_value(header, name)
-      header.to_s.split(";").each do |part|
+      Js.header(header.to_s).split(";").each do |part|
         at = part.index("=") or next
         next unless Js.trim(part[0, at]) == name
 

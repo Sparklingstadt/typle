@@ -17,7 +17,15 @@ module Typle
       @app = app
     end
 
+    # Where the Content-Type header is kept for the handlers, which check it as src/server/request.ts does. Rails sees
+    # application/octet-stream instead, so it neither reads the body (as a form, which Rack takes a body without a type
+    # for) nor refuses a header it cannot read as a MIME type.
+    CONTENT_TYPE = "typle.content_type"
+    OPAQUE = "application/octet-stream"
+
     def call(env)
+      env[CONTENT_TYPE] = env["CONTENT_TYPE"]
+      env["CONTENT_TYPE"] = OPAQUE
       status, headers, body = ENV["TYPLE_BACKEND_COMPARE"] == "1" ? @app.call(env) : not_found
       headers.merge!(SECURITY_HEADERS)
       headers[BACKEND_HEADER] = "rails"

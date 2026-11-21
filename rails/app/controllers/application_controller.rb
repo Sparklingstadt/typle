@@ -41,8 +41,9 @@ class ApplicationController < ActionController::API
 
   # A write comes from the app's own pages (its Origin) and declares a JSON body.
   def require_write_request
-    content_type = Typle::Js.trim(request.headers["Content-Type"].to_s.split(";").first.to_s)
-    refuse(403, "forbiddenRequest") if request.headers["Origin"] != login_settings.origin || content_type != "application/json"
+    content_type = Typle::Js.trim(Typle::Js.header(request.get_header(Typle::BackendGate::CONTENT_TYPE).to_s).split(";").first.to_s)
+    origin = Typle::Js.header(request.headers["Origin"])
+    refuse(403, "forbiddenRequest") if origin != login_settings.origin || content_type != "application/json"
   end
 
   def require_database

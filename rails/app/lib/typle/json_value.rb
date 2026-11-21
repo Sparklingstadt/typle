@@ -11,8 +11,18 @@ module Typle
       normalize(JSON.parse(text, allow_duplicate_key: true, allow_nan: false))
     end
 
+    # JSON.stringify(value): a non-finite number is null, and a Float is written as Number#toString writes it.
     def generate(value)
-      JSON.generate(value)
+      JSON.generate(js_numbers(value))
+    end
+
+    def js_numbers(value)
+      case value
+      when Hash then value.transform_values { |item| js_numbers(item) }
+      when Array then value.map { |item| js_numbers(item) }
+      when Float then value.finite? ? JSON::Fragment.new(Js.number(value)) : nil
+      else value
+      end
     end
 
     # value with every Float that is a whole number within 2^53 as an Integer, and every larger Integer as a Float.

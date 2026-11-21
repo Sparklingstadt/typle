@@ -160,13 +160,20 @@ Vercel の Preview 環境の `TYPLE_RAILS_URL` も消してください。秘密
 
 答えの状態コードと JSON の値はそろえていますが、次の点は違います。
 
-- JSON のバイト列: Ruby の `JSON.generate` は、`1e-7` を `1.0e-07`、`1e21` を `1.0e+21` のように書きます（値は同じ）。
-  整数の値（`1500.0` など）は JS と同じく `1500` と書きます（読んだときに Integer に直すため）。
-- 孤立サロゲート（`"\ud800"`）を含む JSON は、Ruby のパーサーが読めません。本文ならどちらも `400 invalidWorkspace`
-  （記録は `invalidRecord`）で同じですが、ログインの Cookie の中身に含まれていると、Rails だけ `401` になります。
+- JSON の書き出しは `JSON.stringify` に合わせています（数は `Number#toString` と同じ形、`Infinity` などは `null`、整数の値
+  `1500.0` は `1500`）。読み込みは Ruby の JSON で、`JSON.parse` と同じものを受け付け、同じキーはあとの値が勝ちます。
+- 孤立サロゲート（`"\ud800"`）を含む JSON は、Ruby のパーサーが読めないので、本文なら `400 invalidWorkspace`（記録は
+  `invalidRecord`）にします。Next.js は読めるので、ほかの検査で決まります（`listId` なら `404 recordListDeleted`、
+  `recordId` なら `200`、ほかの人の `accountId` なら `401 loginAccountChanged`、lists の中なら `400 invalidWorkspace`）。
+  ログインの Cookie の中身に含まれていると、Rails だけ `401` になります。アプリが送ることはありません。
 - `Date.parse` は Kotlin 版と同じく、ISO 8601 の形とよく使われるいくつかの形だけを読みます（`kotlin/README.md`）。
 - `toLocaleLowerCase()` は Ruby の `downcase` です。
 - 本文は UTF-8 として読み、壊れたバイトは `U+FFFD` にします（`TextDecoder` と、置き換えの単位が少し違うことがあります）。
 - 失敗（`503`）は、Rails のログ（標準出力）に書くだけです。リクエストごとのログは書きません。
 - 知らないパスには `404 {"error":"notFound"}` を返します（Next.js なら 404 のページ）。
 - 設定（`AUTH_SECRET`・`AUTH_URL`）は、値の組ごとに1回だけ鍵を作ります。
+- ヘッダーは Node と同じく1バイトを1文字（Latin-1）として読みます。`Content-Type` は Rails には見せず（ゲートが
+  `application/octet-stream` に置き換える）、ハンドラーが自分で確かめます。Rails が本文をフォームとして読んだり、MIME 型として
+  読めない値で断ったりしないためです。
+- プロセスやつなぎ直した接続の最初のリクエストでは、Rails が表の列と索引を読み、接続の設定（`SET`）を流します。Next.js には
+  ない仕事なので、`--warmup 0` のコールドスタートの数字にはこれが入ります。温めのあとの数字には入りません。

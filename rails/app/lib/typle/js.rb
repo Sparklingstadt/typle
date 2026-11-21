@@ -10,6 +10,9 @@ module Typle
 
     module_function
 
+    # A header's value as Node reads it: each byte one character (Latin-1), whatever bytes Puma received.
+    def header(value) = value&.b&.force_encoding(Encoding::ISO_8859_1)&.encode(Encoding::UTF_8)
+
     def space?(char) = SPACE_CHAR.match?(char)
 
     def trim(text) = text.sub(LEADING, "").sub(TRAILING, "")
