@@ -66,8 +66,9 @@ export default function AccountSettings() {
           <Badge variant={me.emailVerified ? 'secondary' : 'outline'}>{me.emailVerified ? t('verified') : t('unverified')}</Badge>
         </dd>
       </dl>}
-      {me && !me.emailVerified && <div className="space-y-2">
-        <Button variant="outline" disabled={mailBusy} onClick={async () => {
+      {/* The outcome stays after the address turns out to be confirmed, when the button goes. */}
+      {me && (!me.emailVerified || mailOutcome) && <div className="space-y-2">
+        {!me.emailVerified && <Button variant="outline" disabled={mailBusy} onClick={async () => {
           setMailBusy(true)
           setMailOutcome(null)
           try {
@@ -80,7 +81,7 @@ export default function AccountSettings() {
             setMailOutcome({ kind: 'error', text: errorText(reason, t('mailNotSent')) })
           }
           setMailBusy(false)
-        }}>{t('resend')}</Button>
+        }}>{t('resend')}</Button>}
         {mailOutcome && <FormMessage kind={mailOutcome.kind}>{mailOutcome.text}</FormMessage>}
       </div>}
       {me && <form className="max-w-sm space-y-4" noValidate onSubmit={async event => {

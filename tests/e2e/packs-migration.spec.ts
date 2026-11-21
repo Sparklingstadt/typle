@@ -4,13 +4,6 @@ const key = 'typle-r:guest-workspace:v1'
 const words = (...texts: string[]) => texts.map(text => ({ display: text, input: text, annotation: '' }))
 const saved = (page: Page) => page.evaluate(k => JSON.parse(localStorage.getItem(k) ?? 'null'), key)
 
-test('a guest with nothing saved starts with no packs', async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 })
-  await page.goto('/edit')
-  await expect(page.getByText('まだパックがありません。公式パックをフォローするか、新しいパックを作りましょう')).toBeVisible()
-  await expect(page.locator('li[data-pack-id]')).toHaveCount(0)
-})
-
 // Before v0.98.0 every account held a copy of each official pack. The copies that are not followed are removed when
 // read, with their lists and records; the user's own packs stay.
 const officialId = 'pack-8f3cf116-1f9f-4579-a071-e600094b104d'

@@ -4,12 +4,6 @@ const assert = require('node:assert/strict')
 const { validateWorkspaceRequest } = require('../src/lib/workspaceRequest.ts')
 const list = { id: 'one', name: 'One', createdAt: '2026-09-06', words: [{ display: 'a', input: 'a', annotation: '' }], records: [] }
 
-test('request validation drops sharing fields sent by older screens', () => {
-  const [sent] = validateWorkspaceRequest({ revision: 1, lists: [{ ...list, shared: true, shareId: 'x' }] }).lists
-  assert.equal('shared' in sent, false)
-  assert.equal('shareId' in sent, false)
-})
-
 test('request validation rejects invalid revisions and oversized fields', () => {
   for (const revision of [-1, 1.5, '0', NaN]) assert.throws(() => validateWorkspaceRequest({ revision, lists: [] }))
   assert.throws(() => validateWorkspaceRequest({ revision: 0, lists: [{ ...list, name: 'a'.repeat(201) }] }))

@@ -73,6 +73,12 @@ test('a guest follows an official pack from the catalog, practises it and unfoll
   await expect(entry.getByRole('button', { name: 'Go構文 をフォローする', exact: true })).toBeVisible()
   await page.goto('/edit')
   await expect(page.getByRole('button', { name: 'Go構文', exact: true })).toHaveCount(0)
+  await expect(page.locator('li[data-pack-id]')).toHaveCount(0)
+
+  // An unfollowed pack can be followed again.
+  await page.goto('/packs/catalog')
+  await entry.getByRole('button', { name: 'Go構文 をフォローする', exact: true }).click()
+  await expect(entry.getByRole('link', { name: /開く/ })).toBeVisible()
 })
 
 test('the practice screen points to the catalog when there are no packs', async ({ page }) => {
@@ -130,7 +136,10 @@ test('several official packs are followed one after another without leaving the 
     await expect(page.getByRole('button', { name: `${name} のフォローを解除`, exact: true })).toBeVisible()
   }
   await expect(page).toHaveURL(/\/packs\/catalog$/)
+  // They are kept after a reload.
   await page.goto('/edit')
+  await page.reload()
+  await expect(page.locator('li[data-pack-id]')).toHaveCount(2)
   await expect(page.getByRole('button', { name: 'Go構文', exact: true })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Kotlin構文', exact: true })).toBeVisible()
 })
