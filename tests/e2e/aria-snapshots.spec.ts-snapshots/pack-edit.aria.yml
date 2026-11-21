@@ -1,0 +1,41 @@
+- main:
+  - button "単語パック"
+  - heading "パックを編集" [level=1]
+  - paragraph: パックの情報と、中のリストの順番を変更します。
+  - region "パックの情報":
+    - text: パック名
+    - textbox "パック名": 英単語
+    - paragraph: パックの一覧と、練習するパックの選択に表示されます。
+    - text: 説明（任意）
+    - textbox "説明（任意）":
+      - /placeholder: このパックの内容など
+    - text: カテゴリ（任意）
+    - combobox "カテゴリ（任意）": 語学
+    - paragraph: 使っているカテゴリから1つ選ぶか、入力して新しく作成します。一覧や練習画面で絞り込めます。
+    - text: タグ（任意）
+    - combobox "タグ（任意）": タグを選ぶ・作成する
+    - list "付けたタグ":
+      - listitem:
+        - text: 英語
+        - button "タグ「英語」を外す"
+    - paragraph: 使っているタグから選ぶか、入力して新しく作成します（20個まで）。リスト名やタグでの検索に使えます。
+  - region "リスト":
+    - heading "リスト" [level=2]
+    - paragraph: つまみをドラッグするか、キーボードで並べ替えます。
+    - list:
+      - group "基本の単語":
+        - button "基本の単語 をドラッグして並べ替え"
+        - paragraph: 基本の単語
+        - paragraph: 難易度なし
+        - text: 3語
+        - button "基本の単語 の操作"
+      - group "よく使う表現":
+        - button "よく使う表現 をドラッグして並べ替え"
+        - paragraph: よく使う表現
+        - paragraph: 難易度なし
+        - text: 2語
+        - button "よく使う表現 の操作"
+    - status
+  - text: 変更はありません
+  - button "キャンセル"
+  - button "保存"

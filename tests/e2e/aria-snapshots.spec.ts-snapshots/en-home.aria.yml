@@ -1,0 +1,115 @@
+- main:
+  - heading "Practice overview" [level=1]
+  - paragraph: Totals are based on the records saved in this browser.
+  - navigation "Get started":
+    - link "Create a word list":
+      - /url: /create
+  - region "英単語 › 基本の単語":
+    - paragraph: Pick up where you left off
+    - heading "英単語 › 基本の単語" [level=2]
+    - paragraph: "3 words · Last practiced Today · Best: 100% accuracy, 5.40 s"
+    - list "First words":
+      - listitem: apple
+      - listitem: water
+      - listitem: experience
+    - link "Practice 英単語 › 基本の単語":
+      - /url: /play?list=basics
+      - text: Practice
+    - link "Choose another list":
+      - /url: /edit
+  - region "This week":
+    - heading "This week" [level=2]
+    - paragraph: Records from Mon, Oct 26 to Sun, Nov 1. Changes are compared with last week up to the same day and time.
+    - term: Runs this week
+    - definition: 5 runs
+    - definition:
+      - paragraph: 5 runs more than last week
+    - term: Streak
+    - definition: 2 days
+    - definition:
+      - paragraph: Practiced today
+    - term: Average accuracy (last 5)
+    - definition: 97.1 %
+    - definition:
+      - paragraph: Nothing to compare with yet
+    - term: Practice time this week
+    - definition: 37 s
+    - definition:
+      - paragraph: 37 s more than last week
+  - region "Lists to practice next":
+    - heading "Lists to practice next" [level=2]
+    - paragraph: Shows up to 3 lists you have not practiced yet, have not practiced for 3 days or more, or with recent accuracy below 90%.
+    - paragraph: You have practiced every list recently.
+  - region "Weak words":
+    - heading "Weak words" [level=2]
+    - paragraph: For each list, the words missed in its last 10 runs (not counting Handwriting), most often missed first. Words you type without a mistake when practising only the weak words leave this list.
+    - paragraph: No weak words yet. Words you miss in practice show up here.
+  - region "Trends by list":
+    - heading "Trends by list" [level=2]
+    - paragraph: Seconds per word (lower is faster) and accuracy for up to the last 20 runs. Time is divided by the number of words, so runs before and after editing a list can be compared.
+    - article "英単語 › 基本の単語":
+      - heading "英単語 › 基本の単語" [level=3]
+      - paragraph: 4 runs · Last practiced Today
+      - heading "Seconds per word" [level=4]
+      - paragraph: Latest 2.07 s
+      - paragraph: "Average of last 2: 0.08 s faster vs. the previous 2"
+      - figure "10/29 11/1":
+        - slider "Seconds per word (use the arrow keys to read each run)"
+        - table "Seconds per word":
+          - caption: Seconds per word
+          - rowgroup:
+            - row "Date Value":
+              - columnheader "Date"
+              - columnheader "Value"
+          - rowgroup:
+            - row "10/29, 12:00 PM 3.03 s":
+              - cell "10/29, 12:00 PM"
+              - cell "3.03 s"
+            - row "10/31, 12:00 PM 1.80 s":
+              - cell "10/31, 12:00 PM"
+              - cell "1.80 s"
+            - row "11/1, 10:00 AM 2.60 s":
+              - cell "11/1, 10:00 AM"
+              - cell "2.60 s"
+            - row "11/1, 11:55 AM 2.07 s":
+              - cell "11/1, 11:55 AM"
+              - cell "2.07 s"
+      - heading "Accuracy" [level=4]
+      - paragraph: Latest 100.0%
+      - paragraph: "Average of last 2: +2.3 pts vs. the previous 2"
+      - figure "10/29 11/1":
+        - slider "Accuracy (use the arrow keys to read each run)"
+        - table "Accuracy":
+          - caption: Accuracy
+          - rowgroup:
+            - row "Date Value":
+              - columnheader "Date"
+              - columnheader "Value"
+          - rowgroup:
+            - row "10/29, 12:00 PM 90.5%":
+              - cell "10/29, 12:00 PM"
+              - cell "90.5%"
+            - row "10/31, 12:00 PM 100.0%":
+              - cell "10/31, 12:00 PM"
+              - cell "100.0%"
+            - row "11/1, 10:00 AM 95.2%":
+              - cell "11/1, 10:00 AM"
+              - cell "95.2%"
+            - row "11/1, 11:55 AM 100.0%":
+              - cell "11/1, 11:55 AM"
+              - cell "100.0%"
+      - paragraph: "Best record: accuracy 100% · 5.40 s (Yesterday)"
+    - article "英単語 › よく使う表現":
+      - heading "英単語 › よく使う表現" [level=3]
+      - paragraph: 1 run · Last practiced Today
+      - paragraph: The trend appears once there are at least two records.
+      - link "Practice 英単語 › よく使う表現":
+        - /url: /play?list=phrases
+        - text: Practice
+  - paragraph: You can use every practice and editing feature without signing in. Word lists, practice history, and devices are saved in this browser. Signing in (with GitHub or an ID and password) switches to a separate storage location, your account, which syncs across devices. Data in the browser is not moved automatically.
+  - paragraph:
+    - link "How to use":
+      - /url: /guide
+    - text: /
+    - link "About Typle":
+      - /url: /about

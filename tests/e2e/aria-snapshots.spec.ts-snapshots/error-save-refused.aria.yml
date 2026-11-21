@@ -1,0 +1,45 @@
+- main:
+  - button "単語パック"
+  - heading "単語リストを作成" [level=1]
+  - paragraph: タイピングで表示する単語と、正解として入力する文字を登録します。
+  - region "基本情報":
+    - text: 単語リスト名
+    - textbox "単語リスト名": 下書き
+    - paragraph: 練習画面と単語リスト一覧に表示されます。
+    - text: 難易度（任意）
+    - textbox "難易度（任意）":
+      - /placeholder: 初級など
+    - paragraph: 練習画面で、パックの中のリストを選ぶのに使います。例：初級
+    - switch "手書き練習（Typle Handwriting）に使う"
+    - text: 手書き練習（Typle Handwriting）に使う
+    - paragraph: このリストを手書きで練習できるようにします。認識する言語は手書きの文字を読み取るときに使います。
+  - region "単語":
+    - heading "単語" [level=2]
+    - text: 1 / 1,000
+    - button "CSVを読み込む"
+    - group "単語 1":
+      - button "単語 1 をドラッグして並べ替え" [disabled]
+      - text: "1"
+      - textbox "表示する単語 1":
+        - /placeholder: 単語を入力
+        - text: apple
+      - text: 入力する文字
+      - textbox "入力する文字 1":
+        - /placeholder: apple
+      - text: 入力の種類
+      - combobox "入力の種類 1":
+        - option "単語" [selected]
+        - option "コマンド"
+        - option "コード"
+      - text: 補足
+      - textbox "補足 1":
+        - /placeholder: 読み・意味など
+      - button "単語 1 の操作"
+      - button "単語 1 を削除" [disabled]
+    - status
+    - button "単語を追加"
+    - paragraph: Enter 次の単語へ（最後の単語では行を追加） Alt+↑↓ 単語を移動 Ctrl（⌘）+Enter 保存ドラッグで並べ替え
+  - alert: ブラウザーに保存できません。空き容量や保存設定を確認して再試行してください。
+  - text: ・ 1語
+  - button "キャンセル"
+  - button "保存"

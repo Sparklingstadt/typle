@@ -1,0 +1,520 @@
+- main:
+  - paragraph: 語学 · 英語
+  - heading "英語：基礎・中級のタイピング練習" [level=1]
+  - paragraph: 英語の基礎・中級の単語と構文、あわせて160個を打って覚えます。apple・water などの単語から、現在完了の文まで、日本語の意味が付いています。
+  - paragraph: 4リスト・160語
+  - button "このパックで練習する"
+  - paragraph: 無料・ログインなしで練習できます。押すとこのパックをフォローし、すぐに練習が始まります。
+  - region "収録している言葉":
+    - heading "収録している言葉" [level=2]
+    - heading "英語（基礎単語）" [level=3]
+    - table:
+      - rowgroup:
+        - row "打つ言葉 意味・補足":
+          - columnheader "打つ言葉"
+          - columnheader "意味・補足"
+      - rowgroup:
+        - row "apple apple / りんご":
+          - cell "apple"
+          - cell "apple / りんご"
+        - row "water water / 水":
+          - cell "water"
+          - cell "water / 水"
+        - row "book book / 本":
+          - cell "book"
+          - cell "book / 本"
+        - row "house house / 家":
+          - cell "house"
+          - cell "house / 家"
+        - row "school school / 学校":
+          - cell "school"
+          - cell "school / 学校"
+        - row "friend friend / 友達":
+          - cell "friend"
+          - cell "friend / 友達"
+        - row "family family / 家族":
+          - cell "family"
+          - cell "family / 家族"
+        - row "dog dog / 犬":
+          - cell "dog"
+          - cell "dog / 犬"
+        - row "cat cat / 猫":
+          - cell "cat"
+          - cell "cat / 猫"
+        - row "car car / 車":
+          - cell "car"
+          - cell "car / 車"
+        - row "train train / 電車":
+          - cell "train"
+          - cell "train / 電車"
+        - row "money money / お金":
+          - cell "money"
+          - cell "money / お金"
+        - row "time time / 時間":
+          - cell "time"
+          - cell "time / 時間"
+        - row "day day / 日":
+          - cell "day"
+          - cell "day / 日"
+        - row "night night / 夜":
+          - cell "night"
+          - cell "night / 夜"
+        - row "morning morning / 朝":
+          - cell "morning"
+          - cell "morning / 朝"
+        - row "food food / 食べ物":
+          - cell "food"
+          - cell "food / 食べ物"
+        - row "name name / 名前":
+          - cell "name"
+          - cell "name / 名前"
+        - row "city city / 都市、市":
+          - cell "city"
+          - cell "city / 都市、市"
+        - row "country country / 国":
+          - cell "country"
+          - cell "country / 国"
+        - row "go go / 行く":
+          - cell "go"
+          - cell "go / 行く"
+        - row "come come / 来る":
+          - cell "come"
+          - cell "come / 来る"
+        - row "eat eat / 食べる":
+          - cell "eat"
+          - cell "eat / 食べる"
+        - row "drink drink / 飲む":
+          - cell "drink"
+          - cell "drink / 飲む"
+        - row "see see / 見る":
+          - cell "see"
+          - cell "see / 見る"
+        - row "read read / 読む":
+          - cell "read"
+          - cell "read / 読む"
+        - row "write write / 書く":
+          - cell "write"
+          - cell "write / 書く"
+        - row "speak speak / 話す":
+          - cell "speak"
+          - cell "speak / 話す"
+        - row "like like / 好きである":
+          - cell "like"
+          - cell "like / 好きである"
+        - row "want want / 欲しい、～したい":
+          - cell "want"
+          - cell "want / 欲しい、～したい"
+        - row "big big / 大きい":
+          - cell "big"
+          - cell "big / 大きい"
+        - row "small small / 小さい":
+          - cell "small"
+          - cell "small / 小さい"
+        - row "new new / 新しい":
+          - cell "new"
+          - cell "new / 新しい"
+        - row "old old / 古い、年をとった":
+          - cell "old"
+          - cell "old / 古い、年をとった"
+        - row "good good / 良い":
+          - cell "good"
+          - cell "good / 良い"
+        - row "bad bad / 悪い":
+          - cell "bad"
+          - cell "bad / 悪い"
+        - row "hot hot / 暑い、熱い":
+          - cell "hot"
+          - cell "hot / 暑い、熱い"
+        - row "cold cold / 寒い、冷たい":
+          - cell "cold"
+          - cell "cold / 寒い、冷たい"
+        - row "happy happy / うれしい、幸せな":
+          - cell "happy"
+          - cell "happy / うれしい、幸せな"
+        - row "today today / 今日":
+          - cell "today"
+          - cell "today / 今日"
+    - heading "英語（基礎構文）" [level=3]
+    - table:
+      - rowgroup:
+        - row "打つ言葉 意味・補足":
+          - columnheader "打つ言葉"
+          - columnheader "意味・補足"
+      - rowgroup:
+        - row "I am a student. I am a student. / 私は学生です。":
+          - cell "I am a student."
+          - cell "I am a student. / 私は学生です。"
+        - row "This is a book. This is a book. / これは本です。":
+          - cell "This is a book."
+          - cell "This is a book. / これは本です。"
+        - row "That is not my bag. That is not my bag. / あれは私のかばんではありません。":
+          - cell "That is not my bag."
+          - cell "That is not my bag. / あれは私のかばんではありません。"
+        - row "Are you Japanese? Are you Japanese? / あなたは日本人ですか？":
+          - cell "Are you Japanese?"
+          - cell "Are you Japanese? / あなたは日本人ですか？"
+        - row "Yes, I am. Yes, I am. / はい、そうです。":
+          - cell "Yes, I am."
+          - cell "Yes, I am. / はい、そうです。"
+        - row "No, I'm not. No, I'm not. / いいえ、違います。":
+          - cell "No, I'm not."
+          - cell "No, I'm not. / いいえ、違います。"
+        - row "What is this? What is this? / これは何ですか？":
+          - cell "What is this?"
+          - cell "What is this? / これは何ですか？"
+        - row "Who is she? Who is she? / 彼女は誰ですか？":
+          - cell "Who is she?"
+          - cell "Who is she? / 彼女は誰ですか？"
+        - row "Where is the station? Where is the station? / 駅はどこですか？":
+          - cell "Where is the station?"
+          - cell "Where is the station? / 駅はどこですか？"
+        - row "When is your birthday? When is your birthday? / あなたの誕生日はいつですか？":
+          - cell "When is your birthday?"
+          - cell "When is your birthday? / あなたの誕生日はいつですか？"
+        - row "How are you? How are you? / お元気ですか？":
+          - cell "How are you?"
+          - cell "How are you? / お元気ですか？"
+        - row "I'm fine, thank you. I'm fine, thank you. / 元気です、ありがとう。":
+          - cell "I'm fine, thank you."
+          - cell "I'm fine, thank you. / 元気です、ありがとう。"
+        - row "Nice to meet you. Nice to meet you. / はじめまして。":
+          - cell "Nice to meet you."
+          - cell "Nice to meet you. / はじめまして。"
+        - row "My name is Ken. My name is Ken. / 私の名前はケンです。":
+          - cell "My name is Ken."
+          - cell "My name is Ken. / 私の名前はケンです。"
+        - row "I like music. I like music. / 私は音楽が好きです。":
+          - cell "I like music."
+          - cell "I like music. / 私は音楽が好きです。"
+        - row "I don't like coffee. I don't like coffee. / 私はコーヒーが好きではありません。":
+          - cell "I don't like coffee."
+          - cell "I don't like coffee. / 私はコーヒーが好きではありません。"
+        - row "Do you have a pen? Do you have a pen? / ペンを持っていますか？":
+          - cell "Do you have a pen?"
+          - cell "Do you have a pen? / ペンを持っていますか？"
+        - row "I have two brothers. I have two brothers. / 私には兄弟が2人います。":
+          - cell "I have two brothers."
+          - cell "I have two brothers. / 私には兄弟が2人います。"
+        - row "She lives in Tokyo. She lives in Tokyo. / 彼女は東京に住んでいます。":
+          - cell "She lives in Tokyo."
+          - cell "She lives in Tokyo. / 彼女は東京に住んでいます。"
+        - row "He doesn't eat meat. He doesn't eat meat. / 彼は肉を食べません。":
+          - cell "He doesn't eat meat."
+          - cell "He doesn't eat meat. / 彼は肉を食べません。"
+        - row "What time is it? What time is it? / 何時ですか？":
+          - cell "What time is it?"
+          - cell "What time is it? / 何時ですか？"
+        - row "It's three o'clock. It's three o'clock. / 3時です。":
+          - cell "It's three o'clock."
+          - cell "It's three o'clock. / 3時です。"
+        - row "How much is this? How much is this? / これはいくらですか？":
+          - cell "How much is this?"
+          - cell "How much is this? / これはいくらですか？"
+        - row "I want some water. I want some water. / 水が欲しいです。":
+          - cell "I want some water."
+          - cell "I want some water. / 水が欲しいです。"
+        - row "Can you help me? Can you help me? / 手伝ってもらえますか？":
+          - cell "Can you help me?"
+          - cell "Can you help me? / 手伝ってもらえますか？"
+        - row "I can swim. I can swim. / 私は泳げます。":
+          - cell "I can swim."
+          - cell "I can swim. / 私は泳げます。"
+        - row "There is a cat on the bed. There is a cat on the bed. / ベッドの上に猫がいます。":
+          - cell "There is a cat on the bed."
+          - cell "There is a cat on the bed. / ベッドの上に猫がいます。"
+        - row "There are many people here. There are many people here. / ここにはたくさんの人がいます。":
+          - cell "There are many people here."
+          - cell "There are many people here. / ここにはたくさんの人がいます。"
+        - row "I am reading a book now. I am reading a book now. / 私は今、本を読んでいます。":
+          - cell "I am reading a book now."
+          - cell "I am reading a book now. / 私は今、本を読んでいます。"
+        - row "I went to the park yesterday. I went to the park yesterday. / 私は昨日、公園に行きました。":
+          - cell "I went to the park yesterday."
+          - cell "I went to the park yesterday. / 私は昨日、公園に行きました。"
+        - row "I will call you tomorrow. I will call you tomorrow. / 明日あなたに電話します。":
+          - cell "I will call you tomorrow."
+          - cell "I will call you tomorrow. / 明日あなたに電話します。"
+        - row "Let's go together. Let's go together. / 一緒に行きましょう。":
+          - cell "Let's go together."
+          - cell "Let's go together. / 一緒に行きましょう。"
+        - row "Please sit down. Please sit down. / 座ってください。":
+          - cell "Please sit down."
+          - cell "Please sit down. / 座ってください。"
+        - row "Don't worry. Don't worry. / 心配しないで。":
+          - cell "Don't worry."
+          - cell "Don't worry. / 心配しないで。"
+        - row "Excuse me. Excuse me. / すみません。":
+          - cell "Excuse me."
+          - cell "Excuse me. / すみません。"
+        - row "I'm sorry. I'm sorry. / ごめんなさい。":
+          - cell "I'm sorry."
+          - cell "I'm sorry. / ごめんなさい。"
+        - row "See you later. See you later. / またあとで。":
+          - cell "See you later."
+          - cell "See you later. / またあとで。"
+        - row "It is sunny today. It is sunny today. / 今日は晴れています。":
+          - cell "It is sunny today."
+          - cell "It is sunny today. / 今日は晴れています。"
+        - row "This bag is bigger than that one. This bag is bigger than that one. / このかばんはあれより大きいです。":
+          - cell "This bag is bigger than that one."
+          - cell "This bag is bigger than that one. / このかばんはあれより大きいです。"
+        - row "I get up at seven every day. I get up at seven every day. / 私は毎日7時に起きます。":
+          - cell "I get up at seven every day."
+          - cell "I get up at seven every day. / 私は毎日7時に起きます。"
+    - heading "英語（中級単語）" [level=3]
+    - table:
+      - rowgroup:
+        - row "打つ言葉 意味・補足":
+          - columnheader "打つ言葉"
+          - columnheader "意味・補足"
+      - rowgroup:
+        - row "experience experience / 経験":
+          - cell "experience"
+          - cell "experience / 経験"
+        - row "opinion opinion / 意見":
+          - cell "opinion"
+          - cell "opinion / 意見"
+        - row "decision decision / 決定、決心":
+          - cell "decision"
+          - cell "decision / 決定、決心"
+        - row "environment environment / 環境":
+          - cell "environment"
+          - cell "environment / 環境"
+        - row "government government / 政府":
+          - cell "government"
+          - cell "government / 政府"
+        - row "knowledge knowledge / 知識":
+          - cell "knowledge"
+          - cell "knowledge / 知識"
+        - row "relationship relationship / 関係":
+          - cell "relationship"
+          - cell "relationship / 関係"
+        - row "opportunity opportunity / 機会":
+          - cell "opportunity"
+          - cell "opportunity / 機会"
+        - row "responsibility responsibility / 責任":
+          - cell "responsibility"
+          - cell "responsibility / 責任"
+        - row "advantage advantage / 利点":
+          - cell "advantage"
+          - cell "advantage / 利点"
+        - row "challenge challenge / 課題、挑戦":
+          - cell "challenge"
+          - cell "challenge / 課題、挑戦"
+        - row "solution solution / 解決策":
+          - cell "solution"
+          - cell "solution / 解決策"
+        - row "purpose purpose / 目的":
+          - cell "purpose"
+          - cell "purpose / 目的"
+        - row "influence influence / 影響":
+          - cell "influence"
+          - cell "influence / 影響"
+        - row "average average / 平均":
+          - cell "average"
+          - cell "average / 平均"
+        - row "quality quality / 質":
+          - cell "quality"
+          - cell "quality / 質"
+        - row "behavior behavior / 振る舞い、行動":
+          - cell "behavior"
+          - cell "behavior / 振る舞い、行動"
+        - row "achieve achieve / 達成する":
+          - cell "achieve"
+          - cell "achieve / 達成する"
+        - row "improve improve / 改善する":
+          - cell "improve"
+          - cell "improve / 改善する"
+        - row "consider consider / よく考える、検討する":
+          - cell "consider"
+          - cell "consider / よく考える、検討する"
+        - row "suggest suggest / 提案する":
+          - cell "suggest"
+          - cell "suggest / 提案する"
+        - row "require require / 必要とする":
+          - cell "require"
+          - cell "require / 必要とする"
+        - row "reduce reduce / 減らす":
+          - cell "reduce"
+          - cell "reduce / 減らす"
+        - row "increase increase / 増やす、増える":
+          - cell "increase"
+          - cell "increase / 増やす、増える"
+        - row "compare compare / 比べる":
+          - cell "compare"
+          - cell "compare / 比べる"
+        - row "develop develop / 発達させる、開発する":
+          - cell "develop"
+          - cell "develop / 発達させる、開発する"
+        - row "avoid avoid / 避ける":
+          - cell "avoid"
+          - cell "avoid / 避ける"
+        - row "manage manage / 管理する、なんとかやり遂げる":
+          - cell "manage"
+          - cell "manage / 管理する、なんとかやり遂げる"
+        - row "explain explain / 説明する":
+          - cell "explain"
+          - cell "explain / 説明する"
+        - row "prefer prefer / ～の方を好む":
+          - cell "prefer"
+          - cell "prefer / ～の方を好む"
+        - row "available available / 利用できる、手が空いている":
+          - cell "available"
+          - cell "available / 利用できる、手が空いている"
+        - row "necessary necessary / 必要な":
+          - cell "necessary"
+          - cell "necessary / 必要な"
+        - row "convenient convenient / 便利な":
+          - cell "convenient"
+          - cell "convenient / 便利な"
+        - row "serious serious / 深刻な、まじめな":
+          - cell "serious"
+          - cell "serious / 深刻な、まじめな"
+        - row "familiar familiar / よく知っている、なじみのある":
+          - cell "familiar"
+          - cell "familiar / よく知っている、なじみのある"
+        - row "efficient efficient / 効率的な":
+          - cell "efficient"
+          - cell "efficient / 効率的な"
+        - row "reliable reliable / 信頼できる":
+          - cell "reliable"
+          - cell "reliable / 信頼できる"
+        - row "obvious obvious / 明らかな":
+          - cell "obvious"
+          - cell "obvious / 明らかな"
+        - row "recently recently / 最近":
+          - cell "recently"
+          - cell "recently / 最近"
+        - row "eventually eventually / 最終的に、結局":
+          - cell "eventually"
+          - cell "eventually / 最終的に、結局"
+    - heading "英語（中級構文）" [level=3]
+    - table:
+      - rowgroup:
+        - row "打つ言葉 意味・補足":
+          - columnheader "打つ言葉"
+          - columnheader "意味・補足"
+      - rowgroup:
+        - row "I have lived here for five years. I have lived here for five years. / 私はここに5年間住んでいます。":
+          - cell "I have lived here for five years."
+          - cell "I have lived here for five years. / 私はここに5年間住んでいます。"
+        - row "Have you ever been to London? Have you ever been to London? / ロンドンに行ったことがありますか？":
+          - cell "Have you ever been to London?"
+          - cell "Have you ever been to London? / ロンドンに行ったことがありますか？"
+        - row "I have just finished my homework. I have just finished my homework. / ちょうど宿題を終えたところです。":
+          - cell "I have just finished my homework."
+          - cell "I have just finished my homework. / ちょうど宿題を終えたところです。"
+        - row "I was watching TV when she called. I was watching TV when she called. / 彼女が電話してきたとき、私はテレビを見ていました。":
+          - cell "I was watching TV when she called."
+          - cell "I was watching TV when she called. / 彼女が電話してきたとき、私はテレビを見ていました。"
+        - row "If it rains, we will stay home. If it rains, we will stay home. / 雨が降ったら、家にいます。":
+          - cell "If it rains, we will stay home."
+          - cell "If it rains, we will stay home. / 雨が降ったら、家にいます。"
+        - row "If I were you, I would accept the offer. If I were you, I would accept the offer. / もし私があなたなら、その申し出を受けるでしょう。":
+          - cell "If I were you, I would accept the offer."
+          - cell "If I were you, I would accept the offer. / もし私があなたなら、その申し出を受けるでしょう。"
+        - row "If I had known, I would have helped you. If I had known, I would have helped you. / 知っていたら、あなたを手伝ったのに。":
+          - cell "If I had known, I would have helped you."
+          - cell "If I had known, I would have helped you. / 知っていたら、あなたを手伝ったのに。"
+        - row "This bridge was built in 1990. This bridge was built in 1990. / この橋は1990年に建てられました。":
+          - cell "This bridge was built in 1990."
+          - cell "This bridge was built in 1990. / この橋は1990年に建てられました。"
+        - row "English is spoken in many countries. English is spoken in many countries. / 英語は多くの国で話されています。":
+          - cell "English is spoken in many countries."
+          - cell "English is spoken in many countries. / 英語は多くの国で話されています。"
+        - row "The man who lives next door is a doctor. The man who lives next door is a doctor. / 隣に住んでいる男性は医者です。":
+          - cell "The man who lives next door is a doctor."
+          - cell "The man who lives next door is a doctor. / 隣に住んでいる男性は医者です。"
+        - row "This is the book that I bought yesterday. This is the book that I bought yesterday. / これは私が昨日買った本です。":
+          - cell "This is the book that I bought yesterday."
+          - cell "This is the book that I bought yesterday. / これは私が昨日買った本です。"
+        - row "I know where she lives. I know where she lives. / 彼女がどこに住んでいるか知っています。":
+          - cell "I know where she lives."
+          - cell "I know where she lives. / 彼女がどこに住んでいるか知っています。"
+        - row "Do you know what time the store opens? Do you know what time the store opens? / その店が何時に開くか知っていますか？":
+          - cell "Do you know what time the store opens?"
+          - cell "Do you know what time the store opens? / その店が何時に開くか知っていますか？"
+        - row "He said that he was tired. He said that he was tired. / 彼は疲れていると言いました。":
+          - cell "He said that he was tired."
+          - cell "He said that he was tired. / 彼は疲れていると言いました。"
+        - row "She asked me if I could come. She asked me if I could come. / 彼女は私に来られるかどうか尋ねました。":
+          - cell "She asked me if I could come."
+          - cell "She asked me if I could come. / 彼女は私に来られるかどうか尋ねました。"
+        - row "I'm looking forward to seeing you. I'm looking forward to seeing you. / あなたに会えるのを楽しみにしています。":
+          - cell "I'm looking forward to seeing you."
+          - cell "I'm looking forward to seeing you. / あなたに会えるのを楽しみにしています。"
+        - row "I'm used to getting up early. I'm used to getting up early. / 私は早起きに慣れています。":
+          - cell "I'm used to getting up early."
+          - cell "I'm used to getting up early. / 私は早起きに慣れています。"
+        - row "I used to play tennis. I used to play tennis. / 私は以前テニスをしていました。":
+          - cell "I used to play tennis."
+          - cell "I used to play tennis. / 私は以前テニスをしていました。"
+        - row "You should see a doctor. You should see a doctor. / 医者に診てもらったほうがいいです。":
+          - cell "You should see a doctor."
+          - cell "You should see a doctor. / 医者に診てもらったほうがいいです。"
+        - row "You don't have to come. You don't have to come. / 来なくてもいいです。":
+          - cell "You don't have to come."
+          - cell "You don't have to come. / 来なくてもいいです。"
+        - row "You must not smoke here. You must not smoke here. / ここでたばこを吸ってはいけません。":
+          - cell "You must not smoke here."
+          - cell "You must not smoke here. / ここでたばこを吸ってはいけません。"
+        - row "It may rain this afternoon. It may rain this afternoon. / 午後は雨が降るかもしれません。":
+          - cell "It may rain this afternoon."
+          - cell "It may rain this afternoon. / 午後は雨が降るかもしれません。"
+        - row "It is easy for me to read this book. It is easy for me to read this book. / この本を読むのは私には簡単です。":
+          - cell "It is easy for me to read this book."
+          - cell "It is easy for me to read this book. / この本を読むのは私には簡単です。"
+        - row "It is important to sleep well. It is important to sleep well. / よく眠ることは大切です。":
+          - cell "It is important to sleep well."
+          - cell "It is important to sleep well. / よく眠ることは大切です。"
+        - row "I want you to help me. I want you to help me. / あなたに手伝ってほしいです。":
+          - cell "I want you to help me."
+          - cell "I want you to help me. / あなたに手伝ってほしいです。"
+        - row "My mother made me clean my room. My mother made me clean my room. / 母は私に部屋を掃除させました。":
+          - cell "My mother made me clean my room."
+          - cell "My mother made me clean my room. / 母は私に部屋を掃除させました。"
+        - row "I had my hair cut yesterday. I had my hair cut yesterday. / 昨日髪を切ってもらいました。":
+          - cell "I had my hair cut yesterday."
+          - cell "I had my hair cut yesterday. / 昨日髪を切ってもらいました。"
+        - row "She is too tired to walk. She is too tired to walk. / 彼女は疲れすぎて歩けません。":
+          - cell "She is too tired to walk."
+          - cell "She is too tired to walk. / 彼女は疲れすぎて歩けません。"
+        - row "He is old enough to drive. He is old enough to drive. / 彼は運転できる年齢です。":
+          - cell "He is old enough to drive."
+          - cell "He is old enough to drive. / 彼は運転できる年齢です。"
+        - row "The more you practice, the better you get. The more you practice, the better you get. / 練習すればするほど上手になります。":
+          - cell "The more you practice, the better you get."
+          - cell "The more you practice, the better you get. / 練習すればするほど上手になります。"
+        - row "This is the most interesting movie I have ever seen. This is the most interesting movie I have ever seen. / これは私が今まで見た中で一番面白い映画です。":
+          - cell "This is the most interesting movie I have ever seen."
+          - cell "This is the most interesting movie I have ever seen. / これは私が今まで見た中で一番面白い映画です。"
+        - row "Not only he but also she was late. Not only he but also she was late. / 彼だけでなく彼女も遅刻しました。":
+          - cell "Not only he but also she was late."
+          - cell "Not only he but also she was late. / 彼だけでなく彼女も遅刻しました。"
+        - row "Although it was cold, we went out. Although it was cold, we went out. / 寒かったけれど、私たちは出かけました。":
+          - cell "Although it was cold, we went out."
+          - cell "Although it was cold, we went out. / 寒かったけれど、私たちは出かけました。"
+        - row "I stayed home because I had a cold. I stayed home because I had a cold. / 風邪をひいていたので家にいました。":
+          - cell "I stayed home because I had a cold."
+          - cell "I stayed home because I had a cold. / 風邪をひいていたので家にいました。"
+        - row "I'll wait here until you come back. I'll wait here until you come back. / あなたが戻るまでここで待ちます。":
+          - cell "I'll wait here until you come back."
+          - cell "I'll wait here until you come back. / あなたが戻るまでここで待ちます。"
+        - row "By the time we arrived, the movie had started. By the time we arrived, the movie had started. / 私たちが着いたときには、映画は始まっていました。":
+          - cell "By the time we arrived, the movie had started."
+          - cell "By the time we arrived, the movie had started. / 私たちが着いたときには、映画は始まっていました。"
+        - row "I wish I could speak French. I wish I could speak French. / フランス語が話せたらいいのに。":
+          - cell "I wish I could speak French."
+          - cell "I wish I could speak French. / フランス語が話せたらいいのに。"
+        - row "It's time we went home. It's time we went home. / もう家に帰る時間です。":
+          - cell "It's time we went home."
+          - cell "It's time we went home. / もう家に帰る時間です。"
+        - row "Would you mind opening the window? Would you mind opening the window? / 窓を開けていただけますか？":
+          - cell "Would you mind opening the window?"
+          - cell "Would you mind opening the window? / 窓を開けていただけますか？"
+        - row "I'd rather stay home tonight. I'd rather stay home tonight. / 今夜はむしろ家にいたいです。":
+          - cell "I'd rather stay home tonight."
+          - cell "I'd rather stay home tonight. / 今夜はむしろ家にいたいです。"
+  - paragraph:
+    - link "ほかの公式パックを見る":
+      - /url: /packs/catalog

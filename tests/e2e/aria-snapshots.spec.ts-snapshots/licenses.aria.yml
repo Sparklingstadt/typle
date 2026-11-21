@@ -1,0 +1,12 @@
+- main:
+  - link "Typleについて":
+    - /url: /about
+  - heading "オープンソースのライセンス" [level=1]
+  - paragraph: Typleは次のオープンソースのソフトウェア・フォント・モデルを使っています。名前から各プロジェクトのページを開けます。ライセンスの全文は「すべてのライセンス文」にまとめています。
+  - link "すべてのライセンス文":
+    - /url: /licenses/third-party.txt
+  - searchbox "名前・ライセンスで絞り込み"
+  - paragraph: /\d+件中 \d+件/
+  - list:
+    - listitem:
+      - link /（新しいタブで開く）$/

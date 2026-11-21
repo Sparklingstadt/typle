@@ -1,0 +1,8 @@
+- banner "トップバー":
+  - link "本文へスキップ":
+    - /url: "#main-content"
+  - link "Typle":
+    - /url: /home
+  - text: 保存先： アカウントに保存
+  - button "ダークモード"
+  - button "アカウントメニュー"
