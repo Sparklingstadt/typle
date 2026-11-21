@@ -208,3 +208,73 @@ test('the account pages are not indexed', async ({ page }) => {
     expect(sitemap).not.toContain(`/${path}<`)
   }
 })
+
+test('the settings mail the confirming link again, and say so once the address is confirmed', async ({ page, context }) => {
+  await signUp(page)
+  await page.goto('/settings')
+  const account = page.getByRole('region', { name: 'アカウント', exact: true })
+  await expect(account).toContainText('未確認')
+  const resendButton = account.getByRole('button', { name: '確認のメールを送り直す', exact: true })
+  const verifyMails = async () => (await mailsTo(email)).filter(mail => mail.text.includes('/verify-email?token=')).length
+  expect(await verifyMails()).toBe(1)
+
+  await resendButton.click()
+  await expect(account.getByText('確認のメールを送りました。', { exact: true })).toBeVisible()
+  await expect.poll(verifyMails).toBe(2)
+
+  // The new link confirms the address in another tab; this one still shows it unconfirmed, and asking again says
+  // that it is confirmed, sends nothing and reads the account again.
+  const other = await context.newPage()
+  await other.goto(await linkIn(email, '/verify-email'))
+  await expect(other.getByText('メールアドレスを確認できました。')).toBeVisible()
+  await other.close()
+  await expect(account).toContainText('未確認')
+  await resendButton.click()
+  await expect(account.getByText('このアドレスはすでに確認済みです。', { exact: true })).toBeVisible()
+  await expect(account).toContainText('確認済み')
+  await expect(resendButton).toHaveCount(0)
+  expect(await verifyMails()).toBe(2)
+})
+
+test('the settings refuse a wrong current password and a short new one, and the password stays', async ({ page }) => {
+  await signUp(page)
+  await page.goto('/settings')
+  const account = page.getByRole('region', { name: 'アカウント', exact: true })
+  const current = page.getByLabel('今のパスワード', { exact: true })
+  const next = page.getByLabel('新しいパスワード', { exact: true })
+  const change = page.getByRole('button', { name: 'パスワードを変更する', exact: true })
+  await expect(change).toBeDisabled()
+
+  // A new password that is too short is told on its field, before anything is sent.
+  const sent: string[] = []
+  page.on('request', request => { if (request.url().endsWith('/api/account/change-password')) sent.push(request.method()) })
+  await current.fill(PASSWORD)
+  await next.fill('short')
+  await change.click()
+  await expect(account.getByText('パスワードは10〜128文字で入力してください。')).toBeVisible()
+  await expect(next).toHaveAttribute('aria-invalid', 'true')
+  expect(sent).toEqual([])
+
+  await current.fill('not the password')
+  await next.fill(NEW_PASSWORD)
+  await change.click()
+  await expect(account.getByRole('alert').filter({ hasText: '今のパスワードが違います。' })).toBeVisible()
+  expect(sent).toEqual(['POST'])
+  // The fields are kept for another try, and the old password still signs in.
+  await expect(next).toHaveValue(NEW_PASSWORD)
+  await signOut(page)
+  await signInWith(page, loginId, NEW_PASSWORD)
+  await expect(page.getByRole('alert').filter({ hasText: 'ID かパスワードが違うか、しばらくログインできません。' })).toBeVisible()
+  await signInWith(page, loginId, PASSWORD)
+  await expect(accountMenu(page)).toHaveAttribute('title', loginId)
+})
+
+test('the settings say when the account cannot be read, and show no form for it', async ({ page }) => {
+  await signUp(page)
+  await page.route('**/api/account/me', route => route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"databaseUnavailable"}' }))
+  await page.goto('/settings')
+  const account = page.getByRole('region', { name: 'アカウント', exact: true })
+  await expect(account.getByRole('alert').filter({ hasText: 'アカウントの情報を読み込めませんでした。' })).toBeVisible()
+  await expect(page.getByLabel('今のパスワード', { exact: true })).toHaveCount(0)
+  await expect(account.getByRole('button', { name: '確認のメールを送り直す', exact: true })).toHaveCount(0)
+})

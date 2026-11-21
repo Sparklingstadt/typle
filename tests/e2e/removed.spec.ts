@@ -25,6 +25,14 @@ test('the old login routes answer 404', async ({ page }) => {
   }
 })
 
+// The made-up login of development (src/app/local-login, the Credentials provider `local`) is only there when the app
+// runs for development on this machine (src/lib/localDevelopment.ts): the production build serves neither.
+test('the development login is not served by the production build', async ({ page }) => {
+  expect((await page.goto('/local-login'))!.status()).toBe(404)
+  const providers = await (await page.request.get('/api/auth/providers')).json()
+  expect(Object.keys(providers)).not.toContain('local')
+})
+
 // The top bar goes to /signin with the page being viewed, and /signin offers GitHub alone (no FFPF ID), coming back to
 // that page.
 test('/signin has the GitHub button, and the login comes back to the page', async ({ page }) => {

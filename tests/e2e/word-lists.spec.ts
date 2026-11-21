@@ -237,3 +237,31 @@ test('empty and failed loads say different things', async ({ page }) => {
   await expect(broken.getByRole('button', { name: '再読み込み' })).toBeVisible()
   await expect(broken.getByRole('heading', { name: '単語パックはまだありません' })).toHaveCount(0)
 })
+
+test('at the limit of own lists a new one cannot be made or copied, and says why', async ({ page }) => {
+  // One pack of 150 lists (a group makes one pack), so that a single pack is opened.
+  const full = Array.from({ length: 150 }, (_, index) => ({ id: `l${index}`, name: `List ${index}`, group: 'Many', createdAt: '2026-09-01', words: words('a'), records: [] }))
+  await seed(page, full)
+  await page.goto('/edit')
+  await openPacks(page)
+  await expect(page.getByRole('button', { name: '単語リストを作成', exact: true })).toBeDisabled()
+  await expect(page.getByRole('link', { name: '単語リストを作成', exact: true })).toHaveCount(0)
+  await expect(page.getByText('自作の単語リストは150件まで保存できます。使わなくなったリストを削除すると作成できます。フォローしたパックのリストは数えません。')).toBeVisible()
+  // A pack is made of lists already saved, so it can still be made.
+  await expect(page.getByRole('link', { name: '新しいパック', exact: true })).toHaveAttribute('href', '/packs/create')
+  await row(page, 'l0').getByRole('button', { name: 'List 0 のその他の操作' }).click()
+  await expect(page.getByRole('menuitem', { name: 'CSVエクスポート', exact: true })).toBeVisible()
+  await expect(page.getByRole('menuitem', { name: '複製' })).toBeDisabled()
+  await page.keyboard.press('Escape')
+})
+
+test('one list under the limit a new one can still be made and copied', async ({ page }) => {
+  const almost = Array.from({ length: 149 }, (_, index) => ({ id: `l${index}`, name: `List ${index}`, group: 'Many', createdAt: '2026-09-01', words: words('a'), records: [] }))
+  await seed(page, almost)
+  await page.goto('/edit')
+  await openPacks(page)
+  await expect(page.getByRole('link', { name: '単語リストを作成', exact: true })).toHaveAttribute('href', '/create')
+  await expect(page.getByText(/自作の単語リストは150件まで保存できます/)).toHaveCount(0)
+  await row(page, 'l0').getByRole('button', { name: 'List 0 のその他の操作' }).click()
+  await expect(page.getByRole('menuitem', { name: '複製' })).toBeEnabled()
+})

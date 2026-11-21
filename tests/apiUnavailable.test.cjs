@@ -1,0 +1,171 @@
+require('./register.cjs')
+const { test } = require('node:test')
+const assert = require('node:assert/strict')
+const { answerWorkspace, answerRecords } = require('../src/server/workspace.ts')
+const { answerSignOutEverywhere, answerSignup } = require('../src/server/accountApi.ts')
+const {
+  answerVerify, answerResendVerification, answerForgotPassword, answerResetPassword, answerForgotId, answerChangePassword, answerMe,
+} = require('../src/server/accountRecovery.ts')
+const { readLoginSettings } = require('../src/server/settings.ts')
+const { sealSession, newSession } = require('../src/server/session.ts')
+
+// What the API answers when the database fails at each point it is used: a 503 with the same key for every cause, and
+// the operation in the log (src/server/report.ts) so that the failures of one kind can be found together. No database
+// is needed: the pools here are made up, and answer only the queries a test lets through.
+
+const origin = 'http://127.0.0.1:3104'
+const settings = readLoginSettings({ AUTH_SECRET: 'typle-unavailable-test-secret', AUTH_URL: origin })
+const withSettings = () => settings
+const failure = () => Promise.reject(new Error('the database is down'))
+
+/** A pool that answers the queries whose text holds one of the keys of answers with its rows, and fails every other use. */
+function pool(answers = {}) {
+  return {
+    query: text => {
+      const found = Object.entries(answers).find(([part]) => String(text).includes(part))
+      return found ? Promise.resolve({ rows: found[1], rowCount: found[1].length }) : failure()
+    },
+    connect: failure,
+  }
+}
+const NOT_REVOKED = { 'SELECT revoked_at FROM typle_session_revocations': [] }
+/** Every use fails. */
+const down = () => pool()
+/** The login is checked (it was never revoked), and every later use fails. */
+const afterLogin = () => pool(NOT_REVOKED)
+/** No pool at all, as when DATABASE_URL is not set. */
+const none = () => { throw new Error('DATABASE_URL is not set') }
+
+const USER_ID = '0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d'
+const USER = { id: USER_ID, login_id: 'someone', email: 'someone@example.com', email_verified_at: null, password_hash: '', locale: 'ja' }
+/** The login is checked and the account is found, and every later use fails. */
+const afterAccount = () => pool({ ...NOT_REVOKED, 'FROM typle_users WHERE id': [USER] })
+
+const cookieOf = sub => `typle-session=${sealSession(settings.sessionKey, newSession(sub, 'N', '', Math.floor(Date.now() / 1000) - 60))}`
+const github = cookieOf('github:5')
+const password = cookieOf(`password:${USER_ID}`)
+
+function request(path, method, body, cookie) {
+  return new Request(`${origin}${path}`, {
+    method,
+    body: body === undefined ? undefined : JSON.stringify(body),
+    headers: { Origin: origin, 'Content-Type': 'application/json', 'x-forwarded-for': '192.0.2.1', ...(cookie ? { Cookie: cookie } : {}) },
+  })
+}
+
+/** The answer of run and what it logged with console.error meanwhile. */
+async function answered(run) {
+  const original = console.error
+  const logged = []
+  console.error = (...args) => logged.push(args.map(String).join(' '))
+  try {
+    return { response: await run(), logged }
+  } finally {
+    console.error = original
+  }
+}
+
+/** run answers 503 with key, and reports the failure once as `<method> <path>: <operation>:`. */
+async function expectUnavailable(run, key, report) {
+  const { response, logged } = await answered(run)
+  assert.equal(response.status, 503, report)
+  assert.equal(await response.text(), `{"error":"${key}"}\n`, report)
+  assert.equal(logged.length, 1, logged.join('\n'))
+  assert.ok(logged[0].startsWith(`${report}:`), logged[0])
+}
+
+const list = { id: 'l', name: 'L', packId: 'p', words: [{ display: 'a', input: 'a', annotation: '' }], records: [], createdAt: '2026-09-07T00:00:00.000Z' }
+const save = { accountId: 'github:5', revision: 0, packs: [{ id: 'p', name: 'P', createdAt: '2026-09-07T00:00:00.000Z' }], lists: [list] }
+const run = { id: 'run-1', time: 2.5, date: '2026-10-02T10:00:00.000Z', mistakes: 0, accuracy: 100, wordCount: 1 }
+
+test('/api/workspace is 503 databaseUnavailable when there is no pool or the workspace cannot be read', async () => {
+  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'GET', undefined, github), none, withSettings, {}),
+    'databaseUnavailable', 'GET /api/workspace: workspace.open')
+  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'PUT', save, github), none, withSettings, {}),
+    'databaseUnavailable', 'PUT /api/workspace: workspace.open')
+  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'GET', undefined, github), afterLogin, withSettings, {}),
+    'databaseUnavailable', 'GET /api/workspace: workspace.read')
+})
+
+test('a save that cannot be written, or whose body cannot be read, is 503 workspaceSaveFailed', async () => {
+  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'PUT', save, github), afterLogin, withSettings, {}),
+    'workspaceSaveFailed', 'PUT /api/workspace: workspace.write')
+  // The connection ends while the body is still being sent.
+  const cut = new Request(`${origin}/api/workspace`, {
+    method: 'PUT', duplex: 'half', body: new ReadableStream({ pull(controller) { controller.error(new Error('the connection was cut')) } }),
+    headers: { Origin: origin, 'Content-Type': 'application/json', Cookie: github },
+  })
+  await expectUnavailable(() => answerWorkspace(cut, afterLogin, withSettings, {}), 'workspaceSaveFailed', 'PUT /api/workspace: workspace.write')
+})
+
+test('/api/workspace/records is 503 when there is no pool or the record cannot be written', async () => {
+  const add = { accountId: 'github:5', listId: 'l', record: run }
+  const remove = { accountId: 'github:5', listId: 'l', recordId: 'run-1' }
+  await expectUnavailable(() => answerRecords(request('/api/workspace/records', 'POST', add, github), none, withSettings, {}),
+    'databaseUnavailable', 'POST /api/workspace/records: workspace.open')
+  await expectUnavailable(() => answerRecords(request('/api/workspace/records', 'POST', add, github), afterLogin, withSettings, {}),
+    'workspaceSaveFailed', 'POST /api/workspace/records: record.add')
+  await expectUnavailable(() => answerRecords(request('/api/workspace/records', 'DELETE', remove, github), afterLogin, withSettings, {}),
+    'workspaceSaveFailed', 'DELETE /api/workspace/records: record.delete')
+})
+
+// Each account API with a body that reaches the database, and the operation its failures are reported as.
+const defer = () => {}
+const accountApis = [
+  { path: 'signup', operation: 'account.signup', body: { loginId: 'someone', email: 'someone@example.com', password: 'correct horse battery' },
+    answer: (req, open) => answerSignup(req, open, withSettings) },
+  { path: 'verify', operation: 'account.verify', body: { token: 'x' }, answer: (req, open) => answerVerify(req, open, withSettings) },
+  { path: 'forgot-password', operation: 'account.forgotPassword', body: { loginId: 'someone' },
+    answer: (req, open) => answerForgotPassword(req, open, withSettings, defer) },
+  { path: 'reset-password', operation: 'account.resetPassword', body: { token: 'x', password: 'correct horse battery' },
+    answer: (req, open) => answerResetPassword(req, open, withSettings) },
+  { path: 'forgot-id', operation: 'account.forgotId', body: { email: 'someone@example.com' },
+    answer: (req, open) => answerForgotId(req, open, withSettings, defer) },
+]
+// The ones that need a login first: with an ID and a password, as only such an account has them.
+const signedInApis = [
+  { path: 'resend-verification', method: 'POST', operation: 'account.resendVerification', body: {},
+    answer: (req, open) => answerResendVerification(req, open, withSettings) },
+  { path: 'change-password', method: 'POST', operation: 'account.changePassword', body: { currentPassword: 'correct horse battery', newPassword: 'staple battery horse' },
+    answer: (req, open) => answerChangePassword(req, open, withSettings) },
+  { path: 'me', method: 'GET', operation: 'account.me', answer: (req, open) => answerMe(req, open, withSettings) },
+]
+
+test('every account API is 503 databaseUnavailable when there is no pool', async () => {
+  for (const api of accountApis) {
+    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, 'POST', api.body), none),
+      'databaseUnavailable', `POST /api/account/${api.path}: ${api.operation}`)
+  }
+  for (const api of signedInApis) {
+    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, api.method, api.body, password), none),
+      'databaseUnavailable', `${api.method} /api/account/${api.path}: ${api.operation}`)
+  }
+  await expectUnavailable(() => answerSignOutEverywhere(request('/api/account/signout-everywhere', 'POST', undefined, github), none, withSettings),
+    'databaseUnavailable', 'POST /api/account/signout-everywhere: session.revoke')
+})
+
+test('the account APIs without a login are 503 databaseUnavailable when their first query fails', async () => {
+  for (const api of accountApis) {
+    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, 'POST', api.body), down),
+      'databaseUnavailable', `POST /api/account/${api.path}: ${api.operation}`)
+  }
+})
+
+test('the account APIs with a login are 503 databaseUnavailable when the account cannot be read', async () => {
+  for (const api of signedInApis) {
+    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, api.method, api.body, password), afterLogin),
+      'databaseUnavailable', `${api.method} /api/account/${api.path}: ${api.operation}`)
+  }
+})
+
+test('asking for the link again and changing the password are 503 when the limits cannot be counted', async () => {
+  for (const api of signedInApis.filter(api => api.method === 'POST')) {
+    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, 'POST', api.body, password), afterAccount),
+      'databaseUnavailable', `POST /api/account/${api.path}: ${api.operation}`)
+  }
+  // The account is read all the same.
+  const { response, logged } = await answered(() => answerMe(request('/api/account/me', 'GET', undefined, password), afterAccount, withSettings))
+  assert.equal(response.status, 200)
+  assert.deepEqual(await response.json(), { loginId: 'someone', email: 'someone@example.com', emailVerified: false })
+  assert.deepEqual(logged, [])
+})
