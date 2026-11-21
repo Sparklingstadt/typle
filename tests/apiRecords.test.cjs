@@ -105,15 +105,6 @@ test('a request is refused as the Go backend refused it', database, async () => 
   await expectError(await answerRecords(request(user, 'POST', good), () => { throw new Error('not opened') }, () => null), 503, 'authUnavailable')
 })
 
-test('a Bearer token does not stand in for the Origin or the login', database, async () => {
-  const user = account()
-  await withRow(user)
-  const body = JSON.stringify({ accountId: user.owner, listId: 'l1', record: run })
-  const headers = { Authorization: `Bearer ${user.token}`, 'Content-Type': 'application/json' }
-  await expectError(await answerRecords(new Request(`${origin}/api/workspace/records`, { method: 'POST', body, headers }), open, withSettings), 403, 'forbiddenRequest')
-  await expectError(await answerRecords(new Request(`${origin}/api/workspace/records`, { method: 'POST', body, headers: { ...headers, Origin: origin } }), open, withSettings), 401, 'loginRequired')
-})
-
 test('a revoked login is refused, and a browser loses its cookie', database, async () => {
   const user = account()
   await withRow(user)

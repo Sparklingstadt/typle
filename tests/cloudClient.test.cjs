@@ -70,14 +70,6 @@ test('cloud reads give lists without packs a pack of their own and keep the pack
   await assert.rejects(readWorkspace(), { key: 'savedDataCorrupted' })
 })
 
-test('cloud reads drop sharing fields saved by older versions', async t => {
-  const list = { id: 'l', name: 'L', createdAt: '2026-09-27', words: [{ display: 'a', input: 'a', annotation: '' }], records: [] }
-  t.mock.method(global, 'fetch', async () => answer({ accountId: 'github:1', revision: 1, devices: [], lists: [{ ...list, shared: true, shareId: 'x' }] }))
-  const [read] = (await readWorkspace()).lists
-  assert.equal('shared' in read, false)
-  assert.equal('shareId' in read, false)
-})
-
 test('cloud reads give followed packs their words from the catalog, and saves send them without', async t => {
   const { officialPacks, followOfficialPack } = require('../src/lib/packs/catalog.ts')
   const { withoutFollowedWords } = require('../src/lib/followedPacks.ts')

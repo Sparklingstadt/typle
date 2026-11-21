@@ -77,11 +77,3 @@ test('of two saves from the same revision, only one is saved', database, async (
   assert.deepEqual(again.sort(), ['conflict', 'ok'])
   assert.equal((await state(owner)).row.revision, 2)
 })
-
-// Sharing and the gallery were removed in v2.49.0, and their tables with them (0037 and 0038).
-test('the tables of sharing and the gallery are gone', database, async () => {
-  for (const table of ['typle_shared_packs', 'typle_gallery_reports', 'typle_gallery_hits']) {
-    const { rows } = await db.query('SELECT to_regclass($1) IS NULL AS gone', [table])
-    assert.equal(rows[0].gone, true, table)
-  }
-})

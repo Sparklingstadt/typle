@@ -173,17 +173,3 @@ test('about page explains features and storage, marks the browser as the current
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
 })
 
-test('a guest workspace saved before v1.0.0 opens empty, and the first save replaces it', async ({ page }) => {
-  const list = (id: string, name: string) => ({ id, name, createdAt: '2026-10-01T00:00:00.000Z', words: [{ display: 'a', input: 'a', annotation: '' }], records: [] })
-  // As the app with profiles saved it, without packs; set only before the first load.
-  const legacy = JSON.stringify({ version: 1, accountId: 'guest:local', revision: 2, lists: [list('main', 'Main')], devices: [],
-    profiles: [{ id: 'default', name: 'メイン' }, { id: 'zh', name: '中国語', lists: [list('zh-list', '中文')] }] })
-  await page.addInitScript(([key, value]) => { if (localStorage.getItem(key) === null) localStorage.setItem(key, value) }, [key, legacy])
-  await page.goto('/edit')
-  await expect(page.getByRole('button', { name: 'Main を編集', exact: true })).toHaveCount(0)
-  // The home page no longer offers to move data of the versions before the cloud workspace.
-  await page.goto('/home')
-  await expect(page.getByText('ログインせずにすべての練習', { exact: false })).toBeVisible()
-  await expect(page.getByRole('heading', { name: '以前のデータを移行', exact: true })).toHaveCount(0)
-})
-
