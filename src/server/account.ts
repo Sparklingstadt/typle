@@ -33,6 +33,20 @@ export async function readRevokedAt(db: Pick<Pool, 'query'>, owner: string): Pro
 /** Whether signing out of every device at revokedAt revoked user: a login in that very second counts too (whole seconds). */
 export const revokedBy = (user: Session, revokedAt: Date | null) => !!revokedAt && user.issuedAt * 1000 <= revokedAt.getTime()
 
+/**
+ * Revokes every login of the account owner made until now (typle_session_revocations): signing out of every device, and
+ * a reset or a change of the password. revoked_at is the clock's time when the statement runs, not the transaction's
+ * start, so that in a change of the password it is later than the moment the account's row was locked (see
+ * findUserForLogin in src/server/users.ts). A sign-in after a revocation is dated from the revocation's next whole
+ * second, which can be ahead of the clock; the next revocation is therefore never earlier than that second, so that it
+ * revokes that sign-in too.
+ */
+export async function revokeLogins(db: Pick<Pool, 'query'>, owner: string): Promise<void> {
+  await db.query(`INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, clock_timestamp())
+    ON CONFLICT (owner_id) DO UPDATE SET revoked_at =
+      GREATEST(clock_timestamp(), date_trunc('second', typle_session_revocations.revoked_at) + interval '1 second')`, [owner])
+}
+
 /** How long the session check waits for the revocations before it goes on without them. */
 const REVOCATION_WAIT_MS = 1000
 

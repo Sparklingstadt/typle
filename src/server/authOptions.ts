@@ -1,5 +1,6 @@
 import type { Session, User } from 'next-auth'
 import type { JWT } from 'next-auth/jwt'
+import { SESSION_MAX_AGE } from './session'
 import { readLoginSettings, type LoginSettings } from './settings'
 
 // The parts of the Auth.js configuration (src/auth.ts) that decide something, kept apart from NextAuth so that the unit
@@ -25,14 +26,22 @@ export function authorizeLocal(settings: LoginSettings | null = readLoginSetting
 /**
  * The jwt callback. At a login the account is the provider's: for OAuth, Auth.js gives the user a random id and keeps
  * the id of profile() (github:<number>) as providerAccountId, and for Credentials providerAccountId is the id authorize
- * returned, so it is the account ID either way. A session read from the cookie is null, which Auth.js answers with no
- * session and the cookie removed, when the account signed out of every device since this login; it is kept when that
- * cannot be told in time (revoked answers null).
+ * returned, so it is the account ID either way. A login whose user says when it was made (issuedAt of the ID and
+ * password, src/server/passwordLogin.ts) starts then; the others start when the cookie is sealed (encodeSession). A
+ * session read from the cookie is null, which Auth.js answers with no session and the cookie removed, when the account
+ * signed out of every device since this login; it is kept when that cannot be told in time (revoked answers null).
  */
 export function jwtCallback(revoked: (sub: string, issuedAt: number) => Promise<boolean | null>) {
-  return async ({ token, account }: { token: JWT, account?: { providerAccountId: string } | null }): Promise<JWT | null> => {
+  return async ({ token, account, user }: {
+    token: JWT, account?: { providerAccountId: string } | null, user?: object | null,
+  }): Promise<JWT | null> => {
     if (account) {
       token.sub = account.providerAccountId
+      const issuedAt = user && 'issuedAt' in user ? user.issuedAt : null
+      if (typeof issuedAt === 'number' && Number.isInteger(issuedAt)) {
+        token.iat = issuedAt
+        token.exp = issuedAt + SESSION_MAX_AGE
+      }
       return token
     }
     if (token.sub && typeof token.iat === 'number' && await revoked(token.sub, token.iat) === true) return null

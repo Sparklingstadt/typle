@@ -2,7 +2,7 @@ import type { Pool } from 'pg'
 import { loginIdProblem, normalizeLoginId } from '../lib/accountRules'
 import { clearHits, countHit, LIMITS, undoHit } from './limits'
 import { verifyPassword, type Scrypt } from './password'
-import { findUserByLoginId } from './users'
+import { findUserForLogin } from './users'
 
 // The sign-in with an ID and a password (the Credentials provider "password" in src/auth.ts). Each attempt is counted as a
 // failure for its IP and then its ID before the password is checked, so attempts sent together cannot all pass the limit
@@ -15,7 +15,8 @@ type Db = Pick<Pool, 'query'>
 /** The longest password an account can have (src/lib/accountRules.ts); longer ones never match. */
 const MAX_PASSWORD_LENGTH = 128
 
-type Account = { id: string, name: string, image: '' }
+/** issuedAt is the time (Unix seconds) the login starts at: see findUserForLogin. */
+type Account = { id: string, name: string, image: '', issuedAt: number }
 
 /**
  * Checks an ID and a password as a sign-in does: { account } of the right ones, or why they were refused: 'limited'
@@ -51,10 +52,10 @@ export async function checkPassword(
   }
   // When the ID's hit itself reached the limit nothing is undone: this is its 5th allowed attempt, checked as any other.
 
-  const user = await findUserByLoginId(db, loginId)
-  if (!await verifyPassword(password, user?.passwordHash ?? null, derive) || !user) return { refused: 'wrong' }
+  const found = await findUserForLogin(db, loginId)
+  if (!await verifyPassword(password, found?.user.passwordHash ?? null, derive) || !found) return { refused: 'wrong' }
   await Promise.all([clearHits(db, idLimit.key), undoHit(db, ipLimit.key, now)])
-  return { account: { id: `password:${user.id}`, name: user.loginId, image: '' } }
+  return { account: { id: `password:${found.user.id}`, name: found.user.loginId, image: '', issuedAt: found.issuedAt } }
 }
 
 /**
