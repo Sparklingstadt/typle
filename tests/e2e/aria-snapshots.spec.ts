@@ -1,4 +1,6 @@
-import { test, expect, type Page } from '@playwright/test'
+import { writeFileSync } from 'node:fs'
+import path from 'node:path'
+import { test, expect, type Locator, type Page } from '@playwright/test'
 import { guestWorkspace } from './guestData'
 import { openPacks } from './packRows'
 import { seedSaved } from './snapshotData'
@@ -6,9 +8,30 @@ import { deleteWorkspace, newAccountId, signIn } from './account'
 
 // ARIA snapshots compare the accessibility tree (roles, names and their order), not pixels, so fonts and the OS do
 // not change them. They catch a control that lost its label, a heading that changed level or a link that went missing.
-// When a screen is meant to change, rewrite the expected trees with
-// `npx playwright test tests/e2e/aria-snapshots.spec.ts --update-snapshots --update-source-method=overwrite`
-// and review the diff before committing it.
+// How to update them is in docs/snapshots.md: in short, the trees written in this file are rewritten with
+// `npx playwright test tests/e2e/aria-snapshots.spec.ts --update-snapshots --update-source-method=overwrite`, and
+// those kept in aria-snapshots.spec.ts-snapshots/ with TYPLE_ARIA_WRITE=1 (matchAriaFile below). Review the diff
+// before committing it.
+
+/**
+ * Compares the locator's tree with aria-snapshots.spec.ts-snapshots/<name>. With TYPLE_ARIA_WRITE=1 it writes the
+ * tree there instead, with the values as they are: --update-snapshots would turn every number, date and time into a
+ * regular expression, while the data and the clock of these tests are fixed so that the values can be compared. Only
+ * the app's version, which every PR changes, is written as a regular expression.
+ */
+async function matchAriaFile(locator: Locator, name: string) {
+  if (process.env.TYPLE_ARIA_WRITE !== '1') return expect(locator).toMatchAriaSnapshot({ name })
+  // A page may still change after it looks ready, so the tree is written once two readings half a second apart agree.
+  let tree = await locator.ariaSnapshot()
+  for (let tries = 0; tries < 10; tries++) {
+    await locator.page().waitForTimeout(500)
+    const next = await locator.ariaSnapshot()
+    if (next === tree) break
+    tree = next
+  }
+  tree = tree.replace(/^(\s*- [a-z]+: )v\d+\.\d+\.\d+$/gm, '$1/v\\d+\\.\\d+\\.\\d+/')
+  writeFileSync(path.join(path.dirname(test.info().file), 'aria-snapshots.spec.ts-snapshots', name), tree + '\n')
+}
 
 test('the sign-in form keeps its fields, buttons and links', async ({ page }) => {
   await page.goto('/signin')
@@ -242,28 +265,29 @@ const savedPages: { name: string, path: string, title: string, ready: (page: Pag
   { name: 'settings', path: '/settings', title: 'the general settings keep the display languages', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
   { name: 'input', path: '/input', title: 'the input settings keep their switches', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
   { name: 'pack-create', path: '/packs/create', title: 'the pack form keeps its fields', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
-  { name: 'about', path: '/about', title: 'the about page keeps its sections', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  // Where the data is kept now is marked once this browser's storage is read.
+  { name: 'about', path: '/about', title: 'the about page keeps its sections', ready: page => expect(page.getByText('今の保存先', { exact: true })).toBeVisible() },
 ]
 for (const { name, path, title, ready } of savedPages) {
   test(title, async ({ page }) => {
     await seedSaved(page)
     await page.goto(path)
     await ready(page)
-    await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: `${name}.aria.yml` })
+    await matchAriaFile(page.getByRole('main'), `${name}.aria.yml`)
   })
 }
 
 test('the best records page shows the chosen list', async ({ page }) => {
   await seedSaved(page)
   await page.goto('/rankings')
-  await expect(page.getByRole('region', { name: '英単語 › 基本の単語', exact: true })).toMatchAriaSnapshot({ name: 'rankings.aria.yml' })
+  await matchAriaFile(page.getByRole('region', { name: '英単語 › 基本の単語', exact: true }), 'rankings.aria.yml')
 })
 
 test('the packs page shows a pack open with its lists', async ({ page }) => {
   await seedSaved(page)
   await page.goto('/edit')
   await openPacks(page)
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'packs.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'packs.aria.yml')
 })
 
 test('the list editor keeps its fields and the words', async ({ page }) => {
@@ -272,27 +296,27 @@ test('the list editor keeps its fields and the words', async ({ page }) => {
   await openPacks(page)
   await page.getByRole('button', { name: '基本の単語 を編集', exact: true }).click()
   await expect(page.getByRole('textbox', { name: '表示する単語 3', exact: true })).toHaveValue('experience')
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'editor.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'editor.aria.yml')
 })
 
 test('home introduces the app before the first record', async ({ page }) => {
   await page.goto('/home')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'home-first.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'home-first.aria.yml')
 })
 
 test('the sidebar keeps its groups of links', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/home')
-  await expect(page.getByRole('navigation', { name: 'メインナビゲーション' })).toMatchAriaSnapshot({ name: 'sidebar.aria.yml' })
-  await expect(page.getByRole('navigation', { name: 'ヘルプ' })).toMatchAriaSnapshot({ name: 'sidebar-help.aria.yml' })
+  await matchAriaFile(page.getByRole('navigation', { name: 'メインナビゲーション' }), 'sidebar.aria.yml')
+  await matchAriaFile(page.getByRole('navigation', { name: 'ヘルプ' }), 'sidebar-help.aria.yml')
 })
 
 test('on a phone the menu opens as a dialog with the same links', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/home')
   await page.getByRole('button', { name: 'メニューを開く' }).click()
-  await expect(page.getByRole('dialog', { name: 'メニュー' })).toMatchAriaSnapshot({ name: 'phone-menu.aria.yml' })
+  await matchAriaFile(page.getByRole('dialog', { name: 'メニュー' }), 'phone-menu.aria.yml')
 })
 
 test('practice keeps its controls, the word and the stats', async ({ page }) => {
@@ -305,7 +329,7 @@ test('practice keeps its controls, the word and the stats', async ({ page }) => 
   await page.clock.runFor(1_000)
   await input.pressSequentially('p')
   await page.clock.runFor(1_000)
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'play.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'play.aria.yml')
 })
 
 // Practice in the other modes, on the list of seed() above.
@@ -319,7 +343,7 @@ test('recall hides the answer behind placeholders and keeps the reveal button', 
   await input.focus()
   await input.pressSequentially('ap')
   await page.clock.runFor(1_000)
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'play-recall.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'play-recall.aria.yml')
 })
 
 test('handwriting keeps its mode switch, text field and buttons', async ({ page }) => {
@@ -332,14 +356,14 @@ test('handwriting keeps its mode switch, text field and buttons', async ({ page 
   await page.getByRole('radio', { name: 'Handwriting', exact: true }).click()
   await expect(page.getByRole('textbox', { name: 'ここに手書きで入力', exact: true })).toBeVisible()
   await page.clock.pauseAt(startedAt + 60_000)
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'play-writing.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'play-writing.aria.yml')
 })
 
 test('the pack editor keeps its fields and the lists of the pack', async ({ page }) => {
   await seedSaved(page)
   await page.goto('/packs/edit?pack=pack-basics')
   await expect(page.getByRole('heading', { name: 'パックを編集', level: 1 })).toBeVisible()
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'pack-edit.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'pack-edit.aria.yml')
 })
 
 // Signed in: an account of its own for each test (account.ts), whose rows are deleted afterwards.
@@ -356,23 +380,23 @@ test.describe('signed in', () => {
     const menuButton = page.getByRole('button', { name: 'アカウントメニュー', exact: true })
     await expect(menuButton).toBeVisible()
     // An open menu hides the rest of the page from assistive technology, so the top bar is read before it opens.
-    await expect(page.getByRole('banner')).toMatchAriaSnapshot({ name: 'signed-in-banner.aria.yml' })
+    await matchAriaFile(page.getByRole('banner'), 'signed-in-banner.aria.yml')
     await menuButton.click()
     await expect(page.getByRole('menu')).toContainText('E2E User')
-    await expect(page.getByRole('menu')).toMatchAriaSnapshot({ name: 'signed-in-menu.aria.yml' })
+    await matchAriaFile(page.getByRole('menu'), 'signed-in-menu.aria.yml')
   })
 
   test('home tells a signed-in user where the data is kept', async ({ page }) => {
     await page.goto('/home')
     // The account's workspace is read from the server after the page loads.
     await expect(page.getByRole('heading', { name: '自分の単語で、タイピング練習。', level: 1 })).toBeVisible()
-    await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'signed-in-home.aria.yml' })
+    await matchAriaFile(page.getByRole('main'), 'signed-in-home.aria.yml')
   })
 
   test('the general settings add the sign-out of every device', async ({ page }) => {
     await page.goto('/settings')
     await expect(page.getByRole('region', { name: 'ログイン中の端末', exact: true })).toBeVisible()
-    await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'signed-in-settings.aria.yml' })
+    await matchAriaFile(page.getByRole('main'), 'signed-in-settings.aria.yml')
   })
 })
 
@@ -392,7 +416,7 @@ for (const { name, path, ready } of linkedPages) {
   test(`${name} keeps its tree`, async ({ page }) => {
     await page.goto(path)
     await ready(page)
-    await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: `${name}.aria.yml` })
+    await matchAriaFile(page.getByRole('main'), `${name}.aria.yml`)
   })
 }
 
@@ -403,7 +427,7 @@ test('unreadable saved data shows an alert instead of the records', async ({ pag
   await page.evaluate(() => localStorage.setItem('typle-r:guest-workspace:v1', '{broken'))
   await page.reload()
   await expect(page.getByRole('main').getByRole('alert')).toContainText('保存データを読み込めません')
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'error-unreadable.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'error-unreadable.aria.yml')
 })
 
 test('a save the browser refuses keeps the draft and alerts in the save bar', async ({ page }) => {
@@ -420,7 +444,7 @@ test('a save the browser refuses keeps the draft and alerts in the save bar', as
   })
   await page.getByRole('button', { name: '保存', exact: true }).click()
   await expect(page.getByRole('alert').filter({ hasText: 'ブラウザーに保存できません' })).toBeVisible()
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'error-save-refused.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'error-save-refused.aria.yml')
 })
 
 // Another display language: English, chosen on the general settings and kept in this browser.
@@ -434,14 +458,14 @@ test('home keeps its tree in English', async ({ page }) => {
   await useEnglish(page)
   await page.goto('/home')
   await expect(page.getByRole('heading', { level: 1, name: 'Practice overview' })).toBeVisible()
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'en-home.aria.yml' })
-  await expect(page.getByRole('navigation', { name: 'Main navigation' })).toMatchAriaSnapshot({ name: 'en-sidebar.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'en-home.aria.yml')
+  await matchAriaFile(page.getByRole('navigation', { name: 'Main navigation' }), 'en-sidebar.aria.yml')
 })
 test('the sign-in form keeps its tree in English', async ({ page }) => {
   await useEnglish(page)
   await page.goto('/signin')
   await expect(page.locator('html')).toHaveAttribute('lang', 'en')
-  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'en-signin.aria.yml' })
+  await matchAriaFile(page.getByRole('main'), 'en-signin.aria.yml')
 })
 
 // Pages whose lists grow with the official packs or the app's dependencies. Their expected trees are written by hand
