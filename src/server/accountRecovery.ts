@@ -1,6 +1,6 @@
 import type { Pool, PoolClient } from 'pg'
 import { emailProblem, loginIdProblem, normalizeEmail, normalizeLoginId, passwordProblem } from '../lib/accountRules'
-import { signedIn } from './account'
+import { revokeLogins, signedIn } from './account'
 import { readerLocale, readFields } from './accountApi'
 import { consumeToken, issueToken, peekToken, spendResetTokens } from './emailTokens'
 import { clearHits, clientIp, LIMITS } from './limits'
@@ -81,22 +81,6 @@ async function trySend(request: Request, address: string, mail: () => Promise<Ma
     reportFailure(request, error, 'mail.send')
     return false
   }
-}
-
-/**
- * Revokes every login of the account made before now (typle_session_revocations), after its password was reset or
- * changed. revokedBy counts a login in the very second of revoked_at as revoked, because a session's iat is in whole
- * seconds; the screen signs in again right after this answer, so writing now() would revoke that new login too when it
- * falls in the same second. revoked_at is therefore written one second back: every login of an earlier whole second is
- * still revoked, the new one is not, and only another login made earlier in the same whole second as the change (its
- * iat equal to the new login's) outlives it.
- * GREATEST keeps a later revocation (a sign-out of every device in that second) from being moved back. iat comes from
- * the app's clock and revoked_at from the database's, so a skew between them of a second or more moves this window.
- */
-async function revokeEarlierLogins(db: Pick<Pool, 'query'>, sub: string): Promise<void> {
-  await db.query(`INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now() - interval '1 second')
-    ON CONFLICT (owner_id) DO UPDATE
-    SET revoked_at = GREATEST(typle_session_revocations.revoked_at, EXCLUDED.revoked_at)`, [sub])
 }
 
 /**
@@ -270,7 +254,8 @@ export async function answerResetPassword(request: Request, open: () => Pool,
       if (!token || token.userId !== user.id) return false
       await setPassword(client, user.id, passwordHash)
       await markEmailVerified(client, user.id, token.email)
-      await revokeEarlierLogins(client, `password:${user.id}`)
+      // After setPassword, which locks the account's row: see revokeLogins.
+      await revokeLogins(client, `password:${user.id}`)
       // The account's other reset links are spent, and the ID's failed logins forgotten: the link proved the owner, so
       // the new password signs in at once even when the old one was locked out by guesses.
       await spendResetTokens(client, user.id)
@@ -343,7 +328,8 @@ export async function answerChangePassword(request: Request, open: () => Pool,
     const passwordHash = await hashPassword(fields.newPassword)
     await inTransaction(db, async client => {
       await setPassword(client, user.id, passwordHash)
-      await revokeEarlierLogins(client, sub)
+      // After setPassword, which locks the account's row: see revokeLogins.
+      await revokeLogins(client, sub)
       await spendResetTokens(client, user.id)
       return true
     })

@@ -7,6 +7,7 @@ const { createUser } = require('../src/server/users.ts')
 const { hashPassword } = require('../src/server/password.ts')
 const { countHit, LIMITS } = require('../src/server/limits.ts')
 const { authorizePassword, checkPassword } = require('../src/server/passwordLogin.ts')
+const { revokedSoon, revokeLogins } = require('../src/server/account.ts')
 const { openSession, sealSession, newSession } = require('../src/server/session.ts')
 
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
@@ -18,8 +19,11 @@ after(async () => {
   if (!db) return
   await db.query('DELETE FROM typle_users WHERE login_id LIKE $1', [`${prefix}%`])
   await db.query('DELETE FROM typle_auth_limits WHERE key LIKE $1', [`%${prefix}%`])
+  await db.query('DELETE FROM typle_session_revocations WHERE owner_id = ANY($1)', [owners])
   await db.end()
 })
+const owners = []
+const open = () => db
 
 const PASSWORD = 'correct horse battery'
 
@@ -27,7 +31,8 @@ const PASSWORD = 'correct horse battery'
 async function account(name) {
   const loginId = `${prefix}${name}`
   const { id } = await createUser(db, { loginId, email: `${loginId}@example.com`, passwordHash: await hashPassword(PASSWORD), locale: 'ja' })
-  return { id, loginId }
+  owners.push(`password:${id}`)
+  return { id, loginId, sub: `password:${id}` }
 }
 
 /** The real scrypt, counting its runs. */
@@ -60,9 +65,47 @@ test('the right ID and password sign in as password:<uuid>, the ID in any case a
   const { id, loginId } = await account('ok')
   const derive = counted()
   const user = await authorizePassword(db, { loginId: `  ${loginId.toUpperCase()} `, password: PASSWORD }, ip('ok'), undefined, derive)
-  assert.deepEqual(user, { id: `password:${id}`, name: loginId, image: '' })
+  // issuedAt is the database's time of the lookup, in whole seconds.
+  assert.ok(Number.isInteger(user.issuedAt) && Math.abs(user.issuedAt - Date.now() / 1000) < 5, `issuedAt ${user.issuedAt}`)
+  assert.deepEqual(user, { id: `password:${id}`, name: loginId, image: '', issuedAt: user.issuedAt })
   assert.match(user.id, /^password:[0-9a-f-]{36}$/)
   assert.equal(derive.runs, 1)
+})
+
+test('a sign-in made before a revocation is revoked by it, even in the same second, and one made after it is not', database, async () => {
+  const { loginId, sub } = await account('samesecond')
+  const signIn = name => authorizePassword(db, { loginId, password: PASSWORD }, ip(name))
+  // Ten rounds, so that most of them have the sign-ins and the revocation in one whole second.
+  for (let round = 0; round < 10; round++) {
+    const before = await signIn('samesecond')
+    await revokeLogins(db, sub)
+    const after = await signIn('samesecond')
+    assert.equal(await revokedSoon(open, sub, before.issuedAt), true, `round ${round}: the sign-in before`)
+    assert.equal(await revokedSoon(open, sub, after.issuedAt), false, `round ${round}: the sign-in after`)
+  }
+})
+
+test('a sign-in waits for a change of the password under way, and is checked against the new one', database, async () => {
+  const { id, loginId } = await account('underway')
+  const newHash = await hashPassword('staple battery horse')
+  const client = await db.connect()
+  let outcome = 'waiting'
+  let signIn
+  try {
+    await client.query('BEGIN')
+    await client.query('UPDATE typle_users SET password_hash = $2 WHERE id = $1', [id, newHash])
+    signIn = authorizePassword(db, { loginId, password: PASSWORD }, ip('underway')).then(user => { outcome = user })
+    await new Promise(resolve => setTimeout(resolve, 500))
+    assert.equal(outcome, 'waiting')
+    await client.query('COMMIT')
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+  await signIn
+  assert.equal(outcome, null)
 })
 
 test('a wrong password and an unknown ID are both refused after one scrypt, and counted', database, async () => {

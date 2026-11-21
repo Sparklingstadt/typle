@@ -1,7 +1,7 @@
 import type { Pool } from 'pg'
 import { defaultLocale, isLocale, LOCALE_COOKIE } from '../i18n/config'
 import { emailProblem, loginIdProblem, normalizeEmail, normalizeLoginId, passwordProblem } from '../lib/accountRules'
-import { cookieValue, dropCookie, signedIn } from './account'
+import { cookieValue, dropCookie, revokeLogins, signedIn } from './account'
 import { issueToken, pruneTokens } from './emailTokens'
 import { clientIp, countHit, LIMITS, pruneLimits } from './limits'
 import { sendMail, verifyMail } from './mail'
@@ -38,8 +38,7 @@ export async function answerSignOutEverywhere(request: Request, open: () => Pool
   const result = await signedIn(request, db, login, now)
   if ('refusal' in result) return result.refusal
   try {
-    await db.query(`INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now())
-      ON CONFLICT (owner_id) DO UPDATE SET revoked_at = EXCLUDED.revoked_at`, [result.user.sub])
+    await revokeLogins(db, result.user.sub)
   } catch (error) {
     reportFailure(request, error, 'session.revoke')
     return refuse(503, 'databaseUnavailable')

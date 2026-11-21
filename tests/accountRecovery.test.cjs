@@ -224,18 +224,20 @@ test('reset-password sets the new password, verifies the address and revokes the
   assert.equal(short.status, 400)
   assert.deepEqual(await short.json(), { error: 'passwordLength' })
 
+  // A sign-in with the old password just before the reset, most often in the same whole second.
+  const before = await authorizePassword(db, { loginId: user.loginId, password: PASSWORD }, newIp())
   const response = await call(answerResetPassword, post('reset-password', { token, password: NEW_PASSWORD }))
   assert.equal(response.status, 200)
   assert.deepEqual(await response.json(), { loginId: user.loginId })
   const ip = newIp()
   assert.equal(await authorizePassword(db, { loginId: user.loginId, password: PASSWORD }, ip), null)
-  assert.deepEqual(await authorizePassword(db, { loginId: user.loginId, password: NEW_PASSWORD }, ip),
-    { id: user.sub, name: user.loginId, image: '' })
+  const after = await authorizePassword(db, { loginId: user.loginId, password: NEW_PASSWORD }, ip)
+  assert.deepEqual(after, { id: user.sub, name: user.loginId, image: '', issuedAt: after.issuedAt })
   assert.ok((await findUserById(db, user.id)).emailVerifiedAt)
-  // A cookie made before the reset is revoked; one made by the sign-in right after it is not.
-  const issuedBefore = Math.floor(Date.now() / 1000) - 60
-  assert.equal(await revokedSoon(open, user.sub, issuedBefore), true)
-  assert.equal(await revokedSoon(open, user.sub, Math.floor(Date.now() / 1000)), false)
+  // Every login made before the reset is revoked; the sign-in right after it is not.
+  assert.equal(await revokedSoon(open, user.sub, Math.floor(Date.now() / 1000) - 60), true)
+  assert.equal(await revokedSoon(open, user.sub, before.issuedAt), true)
+  assert.equal(await revokedSoon(open, user.sub, after.issuedAt), false)
 
   const again = await call(answerResetPassword, post('reset-password', { token, password: NEW_PASSWORD }))
   assert.equal(again.status, 400)
@@ -293,14 +295,18 @@ test('change-password sets the new password and revokes the logins before it', d
     { currentPassword: PASSWORD, newPassword: user.loginId }, { headers: { Cookie: cookie } }))
   assert.equal(sameId.status, 400)
   assert.deepEqual(await sameId.json(), { error: 'passwordSameAsId' })
+  // A sign-in with the old password just before the change, most often in the same whole second.
+  const before = await authorizePassword(db, { loginId: user.loginId, password: PASSWORD }, newIp())
   const response = await call(answerChangePassword, post('change-password',
     { currentPassword: PASSWORD, newPassword: NEW_PASSWORD }, { headers: { Cookie: cookie } }))
   assert.equal(response.status, 200)
   assert.deepEqual(await response.json(), { loginId: user.loginId })
   assert.equal(await authorizePassword(db, { loginId: user.loginId, password: PASSWORD }, newIp()), null)
-  assert.ok(await authorizePassword(db, { loginId: user.loginId, password: NEW_PASSWORD }, newIp()))
+  const after = await authorizePassword(db, { loginId: user.loginId, password: NEW_PASSWORD }, newIp())
+  // Every login made before the change is revoked; the sign-in right after it is not.
   assert.equal(await revokedSoon(open, user.sub, Math.floor(Date.now() / 1000) - 60), true)
-  assert.equal(await revokedSoon(open, user.sub, Math.floor(Date.now() / 1000)), false)
+  assert.equal(await revokedSoon(open, user.sub, before.issuedAt), true)
+  assert.equal(await revokedSoon(open, user.sub, after.issuedAt), false)
   // The old cookie no longer works.
   const again = await call(answerChangePassword, post('change-password',
     { currentPassword: NEW_PASSWORD, newPassword: PASSWORD }, { headers: { Cookie: cookie } }))
@@ -479,8 +485,7 @@ test('a reset lifts the lockout of the ID, so the new password signs in', databa
   const token = await issueToken(db, { userId: user.id, kind: 'reset', email: user.email, ttlSeconds: 1800 })
   const response = await call(answerResetPassword, post('reset-password', { token, password: NEW_PASSWORD }))
   assert.equal(response.status, 200)
-  assert.deepEqual(await authorizePassword(db, { loginId: user.loginId, password: NEW_PASSWORD }, newIp()),
-    { id: user.sub, name: user.loginId, image: '' })
+  assert.equal((await authorizePassword(db, { loginId: user.loginId, password: NEW_PASSWORD }, newIp()))?.id, user.sub)
 })
 
 test('a reset spends the account\'s other reset links', database, async () => {

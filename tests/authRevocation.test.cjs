@@ -89,6 +89,18 @@ test('signing out of every device revokes the logins and removes the cookie', da
   assert.match(again.headers.get('set-cookie'), /Max-Age=0/)
 })
 
+test('signing out of every device never leaves the revocation in a second some login was dated after', database, async () => {
+  const owner = newOwner()
+  // An earlier revocation ahead of the clock: the logins made after it are dated from its next whole second.
+  await db.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, to_timestamp($2))', [owner, now + 100])
+  const key = Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), 'typle session v1', 32))
+  const payload = Buffer.from(JSON.stringify({ sub: owner, name: 'N', image: '', iat: now + 101, exp: now + 3600 })).toString('base64url')
+  const cookie = `typle-session=${payload}.${createHmac('sha256', key).update(payload).digest('base64url')}`
+  const response = await answerSignOutEverywhere(signOut({ Cookie: cookie, Origin: origin }), open, withSettings)
+  assert.equal(response.status, 204)
+  assert.equal(await revokedSoon(open, owner, now + 101), true)
+})
+
 test('signing out of every device is 503 when the revocations cannot be written, and 503 without login settings', async () => {
   const down = createPool('postgres://user:pass@127.0.0.1:1/none')
   const original = console.error

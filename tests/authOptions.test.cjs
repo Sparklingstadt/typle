@@ -48,6 +48,15 @@ test('at a login, the session is the provider account: the account ID, not the r
   assert.equal(asked, 0)
 })
 
+test('a login that says when it was made (the ID and password) starts then and lasts 30 days', async () => {
+  const jwt = jwtCallback(async () => true)
+  const account = { providerAccountId: 'password:6d0c3a40-0000-4000-8000-000000000000' }
+  assert.deepEqual(await jwt({ token: { sub: 'x', name: 'mona' }, account, user: { id: account.providerAccountId, issuedAt: 1_700_000_000 } }),
+    { sub: account.providerAccountId, name: 'mona', iat: 1_700_000_000, exp: 1_702_592_000 })
+  // Not a whole number of seconds: the login starts when its cookie is sealed, as the others.
+  assert.deepEqual(await jwt({ token: { sub: 'x' }, account, user: { issuedAt: 1.5 } }), { sub: account.providerAccountId })
+})
+
 test('a session read from the cookie ends when its account signed out of every device since the login', async () => {
   const calls = []
   const token = { sub: 'github:42', name: 'Mona', picture: '', iat: 1_700_000_000, exp: 1_702_592_000 }
