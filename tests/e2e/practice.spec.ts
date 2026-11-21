@@ -347,6 +347,8 @@ test('desktop sidebar fits 1280×768, stays in view while scrolling, and the ski
   await expect(page.getByRole('banner', { name: 'トップバー' })).toBeInViewport()
   await expect(navigation.getByRole('link', { name: 'ホーム', exact: true })).toBeInViewport({ ratio: 1 })
   await page.goto('/records')
+  // The records replace a loading state once this browser's data is read; a focus moved before that is lost with it.
+  await expect(page.getByRole('heading', { name: 'まだ練習記録がありません', exact: true })).toBeVisible()
   await page.keyboard.press('Tab')
   const skip = page.getByRole('link', { name: '本文へスキップ' })
   await expect(skip).toBeFocused()
