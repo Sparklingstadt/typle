@@ -1,0 +1,11 @@
+- main:
+  - heading "練習記録" [level=1]
+  - paragraph:
+    - text: これまでの練習を新しい順に表示します。リストごとの上位は
+    - link "ベスト記録":
+      - /url: /rankings
+    - text: 、推移は
+    - link "ホーム":
+      - /url: /home
+    - text: で見られます。
+  - alert: ブラウザーの保存データを読み込めません。元のデータは変更していません。

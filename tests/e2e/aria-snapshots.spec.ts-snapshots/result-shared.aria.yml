@@ -1,0 +1,15 @@
+- main:
+  - heading "「基本の単語」の練習記録" [level=1]
+  - term: 所要時間
+  - definition: 6.00秒
+  - term: 正確率
+  - definition: 95%
+  - term: 速度
+  - definition: 200打/分
+  - term: 単語
+  - definition: 3語
+  - paragraph: Typle で打った記録です。Typle は、覚えたい言葉を打って覚えるタイピングアプリです。
+  - link "Typle で練習してみる":
+    - /url: /play
+  - link "Typle について":
+    - /url: /

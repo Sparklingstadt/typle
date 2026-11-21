@@ -1,0 +1,24 @@
+- main:
+  - heading "関心" [level=1]
+  - paragraph: 選んだ関心に合う公式パックをフォローできます。公式パックの一覧でも、合うパックを先に表示します。
+  - button "語学" [pressed]
+  - button "プログラミング" [pressed]
+  - group "語学の関心":
+    - heading "語学" [level=2]
+    - button "英語" [pressed]
+  - group "プログラミングの関心":
+    - heading "プログラミング" [level=2]
+    - button "Go" [pressed]
+  - region "関心に合う公式パック":
+    - heading "関心に合う公式パック" [level=2]
+    - paragraph: スイッチをオンにしたパックを「追加」でフォローします。フォロー中のパックのスイッチをオフにすると、フォローを解除します。チェックを付けたパックは、下の「まとめてフォロー」「まとめて解除」で一度にフォローしたり、フォローを解除したりできます。
+    - list:
+      - listitem:
+        - checkbox /を選ぶ$/
+        - heading [level=3]
+        - paragraph: /\d+語/
+        - switch /をフォローする$/
+    - checkbox "すべて選択 0個を選択中"
+    - button "まとめてフォロー" [disabled]
+    - button "まとめて解除" [disabled]
+    - button "追加" [disabled]

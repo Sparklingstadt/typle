@@ -1,0 +1,46 @@
+- main:
+  - paragraph: 無料・ログインなしで使えます
+  - heading "覚えたい言葉を、打って覚える。" [level=1]
+  - paragraph: Typle は、自分の単語リストや公式パックで練習できるタイピングアプリです。プログラミングのコマンドや構文も、外国語の単語も、打ちながら身につけられます。
+  - link "ログインせずに練習を始める":
+    - /url: /play
+  - link "公式パックを見る":
+    - /url: /packs/catalog
+  - link "ホームへ":
+    - /url: /home
+  - textbox "入力"
+  - paragraph: 上の単語を打つと、次の単語に進みます。ここで打った分は記録しません。
+  - button "このパックで練習を続ける"
+  - region "公式パック":
+    - heading "公式パック" [level=2]
+    - paragraph: /\d+件の公式リストを、フォローしてすぐに練習できます。/
+    - list:
+      - listitem:
+        - heading "プログラミング" [level=3]
+        - text: /\d+リスト/
+      - listitem:
+        - heading "語学" [level=3]
+        - text: /\d+リスト/
+  - region "できること":
+    - heading "できること" [level=2]
+    - list:
+      - listitem:
+        - heading "自分の単語リストで練習" [level=3]
+        - paragraph: 覚えたい単語を登録して練習します。表示する単語と入力する文字を分けられ、CSV からも取り込めます。
+      - listitem:
+        - heading "思い出して打つ" [level=3]
+        - paragraph: 答えを隠し、補足をヒントに思い出しながら打つモードで、覚えたかどうかを確かめられます。
+      - listitem:
+        - heading "記録で上達を確かめる" [level=3]
+        - paragraph: 速度・正確率・ミスを毎回記録し、自己ベストと推移で上達を振り返れます。
+  - region "データの保存先":
+    - heading "データの保存先" [level=2]
+    - paragraph: ログインしなくても、すべての機能を使えます。データはこのブラウザーに保存され、ログイン（GitHub または ID とパスワード）すると端末間で同期できます。
+    - paragraph:
+      - link "使い方":
+        - /url: /guide
+      - text: ／
+      - link "Typleについて":
+        - /url: /about
+  - link "ログインせずに練習を始める":
+    - /url: /play

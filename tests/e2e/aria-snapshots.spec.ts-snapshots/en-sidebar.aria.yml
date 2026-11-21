@@ -1,0 +1,44 @@
+- navigation "Main navigation":
+  - list:
+    - listitem:
+      - link "Home":
+        - /url: /home
+  - group "Practice":
+    - paragraph: Practice
+    - list:
+      - listitem:
+        - link "Practice":
+          - /url: /play
+      - listitem:
+        - link "Practice history":
+          - /url: /records
+      - listitem:
+        - link "Best records":
+          - /url: /rankings
+  - group "Word lists":
+    - paragraph: Word lists
+    - list:
+      - listitem:
+        - link "Word packs":
+          - /url: /edit
+      - listitem:
+        - link "Browse words":
+          - /url: /words
+      - listitem:
+        - link "Create a pack":
+          - /url: /packs/create
+  - group "Settings":
+    - paragraph: Settings
+    - list:
+      - listitem:
+        - link "General":
+          - /url: /settings
+      - listitem:
+        - link "Input":
+          - /url: /input
+      - listitem:
+        - link "Interests":
+          - /url: /interests
+      - listitem:
+        - link "Devices":
+          - /url: /devices

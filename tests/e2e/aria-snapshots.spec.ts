@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { guestWorkspace } from './guestData'
 import { openPacks } from './packRows'
 import { seedSaved } from './snapshotData'
+import { deleteWorkspace, newAccountId, signIn } from './account'
 
 // ARIA snapshots compare the accessibility tree (roles, names and their order), not pixels, so fonts and the OS do
 // not change them. They catch a control that lost its label, a heading that changed level or a link that went missing.
@@ -306,3 +307,156 @@ test('practice keeps its controls, the word and the stats', async ({ page }) => 
   await page.clock.runFor(1_000)
   await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'play.aria.yml' })
 })
+
+// Practice in the other modes, on the list of seed() above.
+test('recall hides the answer behind placeholders and keeps the reveal button', async ({ page }) => {
+  await seed(page)
+  await page.goto('/play')
+  const input = page.getByRole('textbox', { name: '表示された文字を入力', exact: true })
+  await expect(input).toBeFocused()
+  await page.clock.pauseAt(startedAt + 60_000)
+  await page.getByRole('button', { name: '思い出して打つ', exact: true }).click()
+  await input.focus()
+  await input.pressSequentially('ap')
+  await page.clock.runFor(1_000)
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'play-recall.aria.yml' })
+})
+
+test('handwriting keeps its mode switch, text field and buttons', async ({ page }) => {
+  await page.clock.install({ time: startedAt })
+  await page.addInitScript(([key, value]) => {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, value)
+  }, ['typle-r:guest-workspace:v1', guestWorkspace([{ id: 'hand', name: '手書き', createdAt: '2026-09-01', records: [], writing: { language: 'en' },
+    words: [word('apple', 'りんご'), word('water', '水')] }])])
+  await page.goto('/play?list=hand')
+  await page.getByRole('radio', { name: 'Handwriting', exact: true }).click()
+  await expect(page.getByRole('textbox', { name: 'ここに手書きで入力', exact: true })).toBeVisible()
+  await page.clock.pauseAt(startedAt + 60_000)
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'play-writing.aria.yml' })
+})
+
+test('the pack editor keeps its fields and the lists of the pack', async ({ page }) => {
+  await seedSaved(page)
+  await page.goto('/packs/edit?pack=pack-basics')
+  await expect(page.getByRole('heading', { name: 'パックを編集', level: 1 })).toBeVisible()
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'pack-edit.aria.yml' })
+})
+
+// Signed in: an account of its own for each test (account.ts), whose rows are deleted afterwards.
+test.describe('signed in', () => {
+  let accountId = ''
+  test.beforeEach(async ({ context }) => {
+    accountId = newAccountId()
+    await signIn(context, accountId)
+  })
+  test.afterEach(() => deleteWorkspace(accountId))
+
+  test('the top bar says the data is saved to the account, and the menu names the user', async ({ page }) => {
+    await page.goto('/home')
+    const menuButton = page.getByRole('button', { name: 'アカウントメニュー', exact: true })
+    await expect(menuButton).toBeVisible()
+    // An open menu hides the rest of the page from assistive technology, so the top bar is read before it opens.
+    await expect(page.getByRole('banner')).toMatchAriaSnapshot({ name: 'signed-in-banner.aria.yml' })
+    await menuButton.click()
+    await expect(page.getByRole('menu')).toContainText('E2E User')
+    await expect(page.getByRole('menu')).toMatchAriaSnapshot({ name: 'signed-in-menu.aria.yml' })
+  })
+
+  test('home tells a signed-in user where the data is kept', async ({ page }) => {
+    await page.goto('/home')
+    // The account's workspace is read from the server after the page loads.
+    await expect(page.getByRole('heading', { name: '自分の単語で、タイピング練習。', level: 1 })).toBeVisible()
+    await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'signed-in-home.aria.yml' })
+  })
+
+  test('the general settings add the sign-out of every device', async ({ page }) => {
+    await page.goto('/settings')
+    await expect(page.getByRole('region', { name: 'ログイン中の端末', exact: true })).toBeVisible()
+    await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'signed-in-settings.aria.yml' })
+  })
+})
+
+// Pages reached from outside the app: a shared result, a link to a shared pack (sharing has ended), the forms for a
+// forgotten password or ID, the links of the mails (an unknown token, as a used link shows), and one official pack.
+const linkedPages: { name: string, path: string, ready: (page: Page) => Promise<void> }[] = [
+  { name: 'result-shared', path: `/result?n=${encodeURIComponent('基本の単語')}&t=6.00&a=95&w=3&s=200`, ready: page => expect(page.getByRole('heading', { level: 1, name: '「基本の単語」の練習記録' })).toBeVisible() },
+  { name: 'shared-ended', path: '/shared/0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d', ready: page => expect(page.getByText('この共有は終了しました。')).toBeVisible() },
+  { name: 'forgot-password', path: '/forgot-password', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'forgot-id', path: '/forgot-id', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'reset-password', path: '/reset-password?token=unknown-token', ready: page => expect(page.getByLabel('新しいパスワード', { exact: true })).toBeVisible() },
+  { name: 'verify-email-unusable', path: '/verify-email?token=unknown-token', ready: page => expect(page.getByRole('alert').filter({ hasText: 'このリンクは使えません。' })).toBeVisible() },
+  // The button to practise is disabled until this browser's data is read.
+  { name: 'official-pack', path: '/packs/english-basics', ready: page => expect(page.getByRole('button', { name: 'このパックで練習する', exact: true })).toBeEnabled() },
+]
+for (const { name, path, ready } of linkedPages) {
+  test(`${name} keeps its tree`, async ({ page }) => {
+    await page.goto(path)
+    await ready(page)
+    await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: `${name}.aria.yml` })
+  })
+}
+
+// Errors: data in this browser that cannot be read, and a save that the browser refuses (its storage is full).
+test('unreadable saved data shows an alert instead of the records', async ({ page }) => {
+  await seedSaved(page)
+  await page.goto('/records')
+  await page.evaluate(() => localStorage.setItem('typle-r:guest-workspace:v1', '{broken'))
+  await page.reload()
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('保存データを読み込めません')
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'error-unreadable.aria.yml' })
+})
+
+test('a save the browser refuses keeps the draft and alerts in the save bar', async ({ page }) => {
+  await seedSaved(page)
+  await page.goto('/create')
+  await page.getByRole('textbox', { name: '単語リスト名', exact: true }).fill('下書き')
+  await page.getByRole('textbox', { name: '表示する単語 1', exact: true }).fill('apple')
+  await page.evaluate(() => {
+    const original = Storage.prototype.setItem
+    Storage.prototype.setItem = function (name, value) {
+      if (name === 'typle-r:guest-workspace:v1') { Storage.prototype.setItem = original; throw new DOMException('Full', 'QuotaExceededError') }
+      return original.call(this, name, value)
+    }
+  })
+  await page.getByRole('button', { name: '保存', exact: true }).click()
+  await expect(page.getByRole('alert').filter({ hasText: 'ブラウザーに保存できません' })).toBeVisible()
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'error-save-refused.aria.yml' })
+})
+
+// Another display language: English, chosen on the general settings and kept in this browser.
+async function useEnglish(page: Page) {
+  await page.goto('/settings')
+  await page.locator('label').filter({ has: page.locator('span[lang]', { hasText: 'English' }) }).click()
+  await expect(page.getByRole('heading', { level: 1, name: 'General' })).toBeVisible()
+}
+test('home keeps its tree in English', async ({ page }) => {
+  await seedSaved(page)
+  await useEnglish(page)
+  await page.goto('/home')
+  await expect(page.getByRole('heading', { level: 1, name: 'Practice overview' })).toBeVisible()
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'en-home.aria.yml' })
+  await expect(page.getByRole('navigation', { name: 'Main navigation' })).toMatchAriaSnapshot({ name: 'en-sidebar.aria.yml' })
+})
+test('the sign-in form keeps its tree in English', async ({ page }) => {
+  await useEnglish(page)
+  await page.goto('/signin')
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'en-signin.aria.yml' })
+})
+
+// Pages whose lists grow with the official packs or the app's dependencies. Their expected trees are written by hand
+// and keep only what stays: the heading, the text and the controls. A tree matches when it contains the expected one,
+// so packs or licenses added to the lists do not change the result.
+const growingPages: { name: string, path: string, title: string }[] = [
+  { name: 'catalog', path: '/packs/catalog', title: 'the official catalog keeps its heading, link and the parts of a pack' },
+  { name: 'interests', path: '/interests', title: 'the interests page keeps its groups and the controls of the packs' },
+  { name: 'landing', path: '/', title: 'the landing page keeps its hero, the try-out and its sections' },
+  { name: 'licenses', path: '/about/licenses', title: 'the licenses page keeps its heading, search and the form of an entry' },
+]
+for (const { name, path, title } of growingPages) {
+  test(title, async ({ page }) => {
+    await page.goto(path)
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: `${name}.aria.yml` })
+  })
+}

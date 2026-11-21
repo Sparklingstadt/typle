@@ -2,6 +2,7 @@ import { test, expect, type Locator, type Page } from '@playwright/test'
 import { guestWorkspace } from './guestData'
 import { openPacks } from './packRows'
 import { seedSaved } from './snapshotData'
+import { deleteWorkspace, newAccountId, signIn } from './account'
 
 // Screenshot snapshots compare what a screen looks like with an image taken before
 // (tests/e2e/screenshots.spec.ts-snapshots/). Fonts and anti-aliasing differ between systems, so the images are taken
@@ -239,4 +240,134 @@ test('on a phone the result fits the width', async ({ page }) => {
   await page.clock.runFor(10_000)
   await expect(page.getByLabel('練習結果', { exact: true })).toContainText('練習記録を保存しました。')
   await expect(page).toHaveScreenshot('phone-result.png', masks(page))
+})
+
+// Practice in the other modes: recall hides the answer, and Handwriting is typed into its text field here (the pad
+// loads the recognition model, which takes long and is checked in writing-pad.spec.ts).
+for (const colorScheme of ['light', 'dark'] as const) {
+  test(`recall hides the answer and shows the hint (${colorScheme})`, async ({ page }) => {
+    const input = await practise(page, colorScheme)
+    await page.getByRole('button', { name: '思い出して打つ', exact: true }).click()
+    await expect(page.locator('#wordDisplay')).toHaveText('＿＿＿＿＿')
+    await input.focus()
+    await input.pressSequentially('ty')
+    await page.clock.runFor(1_500)
+    await expect(page).toHaveScreenshot(`play-recall${colorScheme === 'dark' ? '-dark' : ''}.png`, masks(page))
+  })
+}
+
+test('handwriting shows the word and its text field', async ({ page }) => {
+  await page.clock.install({ time: startedAt })
+  await page.addInitScript(([key, value]) => {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, value)
+  }, ['typle-r:guest-workspace:v1', guestWorkspace([{ id: 'hand', name: '手書き', createdAt: '2026-09-06', records: [], writing: { language: 'en' }, words }])])
+  await open(page, '/play?list=hand')
+  await page.getByRole('radio', { name: 'Handwriting', exact: true }).click()
+  await expect(page.getByRole('textbox', { name: 'ここに手書きで入力', exact: true })).toBeVisible()
+  await page.clock.pauseAt(startedAt + 60_000)
+  await expect(page).toHaveScreenshot('play-writing.png', masks(page))
+})
+
+test('the pack editor shows the fields and the lists of the pack', async ({ page }) => {
+  await openSaved(page, '/packs/edit?pack=pack-basics')
+  await expect(page.getByRole('heading', { name: 'パックを編集', level: 1 })).toBeVisible()
+  // The lists are below the fold of 800px; a taller window shows them above the save bar.
+  await page.setViewportSize({ width: 1280, height: 1200 })
+  await expect(page).toHaveScreenshot('pack-edit.png', masks(page))
+})
+
+// Signed in: an account of its own for each test (account.ts), whose rows are deleted afterwards. Its id is random,
+// and the name is always E2E User.
+test.describe('signed in', () => {
+  let accountId = ''
+  test.beforeEach(async ({ context }) => {
+    accountId = newAccountId()
+    await signIn(context, accountId)
+  })
+  test.afterEach(() => deleteWorkspace(accountId))
+
+  test('the top bar shows the account menu and where the data is saved', async ({ page }) => {
+    await open(page, '/home')
+    // The account's workspace is read from the server after the page loads.
+    await expect(page.getByRole('heading', { name: '自分の単語で、タイピング練習。', level: 1 })).toBeVisible()
+    await page.getByRole('button', { name: 'アカウントメニュー', exact: true }).click()
+    await expect(page.getByRole('menu')).toContainText('E2E User')
+    await expect(page).toHaveScreenshot('signed-in-menu.png', masks(page))
+  })
+
+  test('the general settings show the account', async ({ page }) => {
+    await open(page, '/settings')
+    // The account's section comes once the session is read.
+    await expect(page.getByRole('region', { name: 'ログイン中の端末', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'アカウントメニュー', exact: true })).toBeVisible()
+    await expect(page).toHaveScreenshot('signed-in-settings.png', masks(page))
+  })
+})
+
+// Pages reached from outside the app: a shared result, a link to a shared pack (sharing has ended), the forms for a
+// forgotten password or ID, and the links of the mails (an unknown token, which is what such a link shows once used).
+// The page of one official pack shows only that pack, unlike the catalog.
+const linkedPages: { name: string, path: string, ready: (page: Page) => Promise<void> }[] = [
+  { name: 'result-shared', path: `/result?n=${encodeURIComponent('基本の単語')}&t=6.00&a=95&w=3&s=200`, ready: page => expect(page.getByRole('heading', { level: 1, name: '「基本の単語」の練習記録' })).toBeVisible() },
+  { name: 'shared-ended', path: '/shared/0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d', ready: page => expect(page.getByText('この共有は終了しました。')).toBeVisible() },
+  { name: 'forgot-password', path: '/forgot-password', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'forgot-id', path: '/forgot-id', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'reset-password', path: '/reset-password?token=unknown-token', ready: page => expect(page.getByLabel('新しいパスワード', { exact: true })).toBeVisible() },
+  { name: 'verify-email-unusable', path: '/verify-email?token=unknown-token', ready: page => expect(page.getByRole('alert').filter({ hasText: 'このリンクは使えません。' })).toBeVisible() },
+  // The button to practise is disabled until this browser's data is read.
+  { name: 'official-pack', path: '/packs/english-basics', ready: page => expect(page.getByRole('button', { name: 'このパックで練習する', exact: true })).toBeEnabled() },
+]
+for (const { name, path, ready } of linkedPages) {
+  test(`${name} looks the same`, async ({ page }) => {
+    await open(page, path)
+    await ready(page)
+    await expect(page).toHaveScreenshot(`${name}.png`, masks(page))
+  })
+}
+
+// Errors: data in this browser that cannot be read, and a save that the browser refuses (its storage is full).
+test('unreadable saved data shows the error instead of the records', async ({ page }) => {
+  await openSaved(page, '/records')
+  await page.evaluate(() => localStorage.setItem('typle-r:guest-workspace:v1', '{broken'))
+  await page.reload()
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('保存データを読み込めません')
+  await expect(page).toHaveScreenshot('error-unreadable.png', masks(page))
+})
+
+test('a save the browser refuses keeps the draft and says why', async ({ page }) => {
+  await openSaved(page, '/create')
+  await page.getByRole('textbox', { name: '単語リスト名', exact: true }).fill('下書き')
+  await page.getByRole('textbox', { name: '表示する単語 1', exact: true }).fill('apple')
+  await page.evaluate(() => {
+    const original = Storage.prototype.setItem
+    Storage.prototype.setItem = function (name, value) {
+      if (name === 'typle-r:guest-workspace:v1') { Storage.prototype.setItem = original; throw new DOMException('Full', 'QuotaExceededError') }
+      return original.call(this, name, value)
+    }
+  })
+  await page.getByRole('button', { name: '保存', exact: true }).click()
+  await expect(page.getByRole('alert').filter({ hasText: 'ブラウザーに保存できません' })).toBeVisible()
+  await expect(page).toHaveScreenshot('error-save-refused.png', masks(page))
+})
+
+// Another display language: English, chosen on the general settings and kept in this browser.
+async function useEnglish(page: Page) {
+  await open(page, '/settings')
+  await page.locator('label').filter({ has: page.locator('span[lang]', { hasText: 'English' }) }).click()
+  await expect(page.getByRole('heading', { level: 1, name: 'General' })).toBeVisible()
+}
+test('home looks the same in English', async ({ page }) => {
+  await seedSaved(page)
+  await useEnglish(page)
+  await page.goto('/home')
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  await expect(page).toHaveScreenshot('en-home.png', masks(page))
+})
+test('the sign-in page looks the same in English', async ({ page }) => {
+  await useEnglish(page)
+  await page.goto('/signin')
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  await expect(page).toHaveScreenshot('en-signin.png', masks(page))
 })

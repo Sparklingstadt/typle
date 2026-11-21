@@ -1,0 +1,5 @@
+- menu "アカウントメニュー":
+  - text: E2E User GitHubでログイン中
+  - separator
+  - menuitem "端末を管理"
+  - menuitem "ログアウト"
