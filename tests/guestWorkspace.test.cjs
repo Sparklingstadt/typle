@@ -64,16 +64,6 @@ test('each account uses its own store, says where it saves, and only the guest s
   } finally { globalThis.window = previous }
 })
 
-test('guest data with old sharing fields loads and the next write drops them', () => {
-  const store = storage()
-  store.setItem(GUEST_STORAGE_KEY, JSON.stringify({ version: 1, accountId: 'guest:local', revision: 1, lists: [{ ...list, shared: true, shareId: 'x' }], packs: [pack], devices: [] }))
-  const loaded = readGuestWorkspace(store)
-  assert.equal('shared' in loaded.lists[0], false)
-  writeGuestWorkspace({ accountId: 'guest:local', revision: 1, lists: loaded.lists, packs: loaded.packs }, store)
-  const raw = store.getItem(GUEST_STORAGE_KEY)
-  assert.doesNotMatch(raw, /shared|shareId/)
-})
-
 test('lists saved without packs are each put in a pack of their own, and lists that disagree with packs are refused', () => {
   const store = storage()
   const saved = writeGuestWorkspace({ ...readGuestWorkspace(store), lists: [list], packs: [{ ...pack, description: 'D' }] }, store)

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { guestWorkspace } from './guestData'
+import { toSharedQuery } from '../../src/lib/sharedResult'
 const key = 'typle-r:guest-workspace:v1'
 const sentence = 'The quick brown fox jumps over the lazy dog and keeps running across the field'
 
@@ -324,4 +325,61 @@ test('practice text stays centered at 80% width and code previews keep compact c
     expect(Math.abs(geometry.center - geometry.parentCenter)).toBeLessThan(1)
     expect(await display.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true)
   }
+})
+
+test('the side panel is hidden and shown again on a wide screen, and the choice is kept', async ({ page }) => {
+  await seedGuest(page)
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/play')
+  const input = page.getByRole('textbox', { name: '表示された文字を入力', exact: true })
+  const toggle = page.getByRole('button', { name: 'サイドパネル（単語リスト）を表示', exact: true })
+  const aside = page.locator('#practice-aside')
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+  await expect(aside).toBeVisible()
+
+  // Hiding it gives the typing back to the input, and is remembered by this browser.
+  await toggle.click()
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+  await expect(aside).toBeHidden()
+  await expect(input).toBeFocused()
+  expect(await page.evaluate(() => localStorage.getItem('typle-r:play-aside'))).toBe('collapsed')
+  await page.reload()
+  await expect(toggle).toHaveAttribute('aria-pressed', 'false')
+  await expect(aside).toBeHidden()
+
+  // Below the wide layout the panel follows the card and is always shown, without the button.
+  await page.setViewportSize({ width: 800, height: 900 })
+  await expect(toggle).toBeHidden()
+  await expect(aside).toBeVisible()
+
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await toggle.click()
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true')
+  await expect(aside).toBeVisible()
+  expect(await page.evaluate(() => localStorage.getItem('typle-r:play-aside'))).toBeNull()
+})
+
+test('a shared result of a recall or handwriting run names its mode, and one without a speed shows a dash', async ({ page }) => {
+  // The figures as the page shows them: [label, value and unit].
+  const tiles = async () => {
+    const labels = await page.getByRole('term').allInnerTexts()
+    const values = await page.getByRole('definition').allInnerTexts()
+    return Object.fromEntries(labels.map((label, index) => [label, values[index].replace(/\s+/g, '')]))
+  }
+  await page.goto('/result?' + toSharedQuery({ name: 'Recalled', time: 12.5, accuracy: 90, speed: null, words: 3, mode: 'recall' }))
+  await expect(page.getByRole('heading', { level: 1, name: '「Recalled」の練習記録' })).toBeVisible()
+  await expect(page.getByRole('main').locator('header')).toContainText('思い出して打つ')
+  expect(await tiles()).toMatchObject({ 所要時間: '12.50秒', 正確率: '90%', 速度: '—打/分' })
+
+  // A handwriting run counts words a minute.
+  await page.goto('/result?' + toSharedQuery({ name: 'Written', time: 30, accuracy: 100, speed: 6, words: 3, mode: 'writing' }))
+  await expect(page.getByRole('heading', { level: 1, name: '「Written」の練習記録' })).toBeVisible()
+  await expect(page.getByRole('main').locator('header')).toContainText('Handwriting')
+  expect(await tiles()).toMatchObject({ 所要時間: '30.00秒', 正確率: '100%', 速度: '6語/分' })
+
+  // A normal run has no badge.
+  await page.goto('/result?' + toSharedQuery({ name: 'Typed', time: 6, accuracy: 95, speed: 200, words: 3, mode: 'normal' }))
+  await expect(page.getByRole('heading', { level: 1, name: '「Typed」の練習記録' })).toBeVisible()
+  await expect(page.getByRole('main').locator('header span')).toHaveCount(0)
+  expect(await tiles()).toMatchObject({ 速度: '200打/分' })
 })

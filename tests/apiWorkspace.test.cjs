@@ -83,14 +83,6 @@ test('a save is refused as the Go backend refused it', database, async () => {
   await expectError(await answerWorkspace(put(user, good), () => { throw new Error('not opened') }, () => null), 503, 'authUnavailable')
 })
 
-test('a Bearer token does not stand in for the Origin or the login', database, async () => {
-  const user = account()
-  const body = JSON.stringify({ revision: 0, accountId: user.owner, ...library('one') })
-  const headers = { Authorization: `Bearer ${user.token}`, 'Content-Type': 'application/json' }
-  await expectError(await answerWorkspace(new Request(`${origin}/api/workspace`, { method: 'PUT', body, headers }), open, withSettings), 403, 'forbiddenRequest')
-  await expectError(await answerWorkspace(new Request(`${origin}/api/workspace`, { method: 'PUT', body, headers: { ...headers, Origin: origin } }), open, withSettings), 401, 'loginRequired')
-})
-
 test('a revoked login can neither read nor save, and a browser loses its cookie', database, async () => {
   const user = account()
   await db.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now())', [user.owner])

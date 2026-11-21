@@ -672,3 +672,30 @@ for (const width of [390, 1440]) {
     expect(lists[1].records).toEqual([])
   })
 }
+
+test('a CSV that is not UTF-8 or is over 1 MiB is refused, and a dropped file is read', async ({ page }) => {
+  await seed(page, [])
+  await page.goto('/create')
+  await page.getByRole('button', { name: 'CSVを読み込む', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'CSVから読み込む' })
+  const file = dialog.getByLabel('CSVファイルを選択', { exact: true })
+  // 日本 in Shift_JIS, as a spreadsheet saves a CSV on some systems.
+  await file.setInputFiles({ name: 'sjis.csv', mimeType: 'text/csv', buffer: Buffer.concat([Buffer.from('input,display\nnihon,'), Buffer.from([0x93, 0xfa, 0x96, 0x7b])]) })
+  await expect(dialog.getByRole('alert')).toContainText('UTF-8形式で保存したファイルを選択してください。')
+  await file.setInputFiles({ name: 'big.csv', mimeType: 'text/csv', buffer: Buffer.alloc(1024 * 1024 + 1, 'a') })
+  await expect(dialog.getByRole('alert')).toContainText('ファイルは1 MiB以内にしてください。')
+  await expect(dialog.getByRole('button', { name: /語を追加$/ })).toHaveCount(0)
+
+  // A file dropped on the dialog is read as one chosen with the button.
+  const dataTransfer = await page.evaluateHandle(() => {
+    const transfer = new DataTransfer()
+    transfer.items.add(new File(['input,display\na,First'], 'Dropped.csv', { type: 'text/csv' }))
+    return transfer
+  })
+  await dialog.getByText('ファイルをここにドロップ', { exact: true }).dispatchEvent('drop', { dataTransfer })
+  await expect(dialog.getByRole('alert')).toHaveCount(0)
+  await expect(dialog.getByRole('table', { name: '読み込む単語のプレビュー' })).toContainText('First')
+  await dialog.getByRole('button', { name: '1語を追加', exact: true }).click()
+  await expect(page.getByRole('textbox', { name: '単語リスト名', exact: true })).toHaveValue('Dropped')
+  await expect(page.getByRole('textbox', { name: '入力する文字 1', exact: true })).toHaveValue('a')
+})

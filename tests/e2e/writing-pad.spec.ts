@@ -25,31 +25,40 @@ const syllables: Record<string, (x: number, y: number, s: number) => Point[][]> 
 const pad = (page: Page) => page.getByRole('img', { name: '手書きパッド', exact: true })
 const model = (page: Page) => page.locator('#wordDisplay')
 
+async function draw(page: Page, stroke: Point[]) {
+  await page.mouse.move(stroke[0].x, stroke[0].y)
+  await page.mouse.down()
+  for (const point of stroke.slice(1)) await page.mouse.move(point.x, point.y)
+  await page.mouse.up()
+}
+
 async function write(page: Page, text: string) {
   const box = await pad(page).boundingBox()
   if (!box) throw new Error('No pad')
   const side = box.height * 0.7
   let x = box.x + box.width / 2 - side * [...text].length / 2
   for (const syllable of text) {
-    for (const stroke of syllables[syllable](x, box.y + box.height * 0.15, side)) {
-      await page.mouse.move(stroke[0].x, stroke[0].y)
-      await page.mouse.down()
-      for (const point of stroke.slice(1)) await page.mouse.move(point.x, point.y)
-      await page.mouse.up()
-    }
+    for (const stroke of syllables[syllable](x, box.y + box.height * 0.15, side)) await draw(page, stroke)
     x += side * 1.05
   }
 }
 
-async function start(page: Page) {
+const hint = (page: Page) => page.getByText('ここに書く', { exact: true })
+
+/** Opens the list in handwriting mode, with the pad chosen. */
+async function open(page: Page) {
   await page.addInitScript(([key, value]) => {
     if (!localStorage.getItem(key)) localStorage.setItem(key, value)
   }, [key, guestWorkspace([korean])])
   await page.goto('/play?list=ko')
   await page.getByRole('radio', { name: 'Handwriting', exact: true }).click()
   await expect(page.getByRole('radio', { name: '手書きパッド', exact: true })).toBeChecked()
+}
+
+async function start(page: Page) {
+  await open(page)
   // The model is loaded when the hint shows.
-  await expect(page.getByText('ここに書く', { exact: true })).toBeVisible({ timeout: 30000 })
+  await expect(hint(page)).toBeVisible({ timeout: 30000 })
   await expect(model(page)).toHaveText('아이')
 }
 
@@ -97,4 +106,62 @@ test('the text around the pad cannot be selected while writing, and can with the
   expect(await selected()).toBe('')
   await page.getByRole('radio', { name: '入力欄', exact: true }).click()
   expect(await selected()).not.toBe('')
+})
+
+test('a model that cannot be loaded says so, and is loaded when asked again', async ({ page }) => {
+  let requests = 0
+  const modelFile = '**/handwriting/ko/*.onnx'
+  await page.route(modelFile, route => { requests++; return route.abort() })
+  await open(page)
+  const failed = page.getByRole('status').filter({ hasText: '手書きの認識を読み込めませんでした。' })
+  await expect(failed).toBeVisible({ timeout: 30000 })
+  // Nothing can be written or judged meanwhile.
+  await expect(page.getByRole('button', { name: '判定', exact: true })).toBeDisabled()
+  await expect(hint(page)).toHaveCount(0)
+  expect(requests).toBe(1)
+
+  // A failed load is not kept: asking again fetches the model again, and fails again while it cannot be reached.
+  await failed.getByRole('button', { name: 'もう一度読み込む', exact: true }).click()
+  await expect.poll(() => requests).toBe(2)
+  await expect(failed).toBeVisible({ timeout: 30000 })
+
+  await page.unroute(modelFile)
+  await failed.getByRole('button', { name: 'もう一度読み込む', exact: true }).click()
+  await expect(hint(page)).toBeVisible({ timeout: 30000 })
+  await expect(failed).toHaveCount(0)
+  await write(page, '아이')
+  await expect(model(page)).toHaveText('오이')
+})
+
+test('the last stroke is taken back with Ctrl+Z and with 1画戻す', async ({ page }) => {
+  await start(page)
+  const undo = page.getByRole('button', { name: '1画戻す', exact: true })
+  const clear = page.getByRole('button', { name: '消す', exact: true })
+  await expect(undo).toBeDisabled()
+  await expect(clear).toBeDisabled()
+  const box = await pad(page).boundingBox()
+  if (!box) throw new Error('No pad')
+  const stroke = (offset: number) => line(box.x + 30 + offset, box.y + 40, box.x + 70 + offset, box.y + 60)
+
+  // One stroke, taken back with the keyboard: the pad is empty again.
+  await draw(page, stroke(0))
+  await expect(hint(page)).toBeHidden()
+  await expect(undo).toBeEnabled()
+  await page.keyboard.press('Control+z')
+  await expect(hint(page)).toBeVisible()
+  await expect(undo).toBeDisabled()
+
+  // Two strokes: the button takes back one at a time.
+  await draw(page, stroke(0))
+  await draw(page, stroke(60))
+  await undo.click()
+  await expect(hint(page)).toBeHidden()
+  await expect(undo).toBeEnabled()
+  await undo.click()
+  await expect(hint(page)).toBeVisible()
+  await expect(undo).toBeDisabled()
+  // The word is still the first one, and can be written.
+  await expect(model(page)).toHaveText('아이')
+  await write(page, '아이')
+  await expect(model(page)).toHaveText('오이')
 })

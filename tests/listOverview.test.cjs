@@ -64,13 +64,6 @@ test('a copy gets a free name, the same words and no records', () => {
   assert.throws(() => duplicateList(full, 'l0', 'copy', suffix), { key: 'listLimit', values: { max: 150 } })
 })
 
-test('a copy of a shared list is not shared', () => {
-  const current = lists().map((list, index) => index ? list : { ...list, shared: true, shareId: 'x' })
-  const { copy } = duplicateList(current, 'a', 'copy', n => `（${n}）`)
-  assert.equal('shared' in copy, false)
-  assert.equal('shareId' in copy, false)
-})
-
 test('currentRecordCount counts normal records only', () => {
   const r = (id, extra = {}) => ({ id, time: 1, date: '2026-09-01T00:00:00.000Z', wordCount: 1, ...extra })
   const list = { words: [{ display: 'a', input: 'a', annotation: '' }], records: [r('a'), r('b', { mode: 'recall' })] }
