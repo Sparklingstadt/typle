@@ -1,15 +1,15 @@
 Rails.application.routes.draw do
   scope "/api" do
     # GET routes answer HEAD too (Rails runs them and drops the body).
-    get "health", to: "errors#not_found"
+    get "health", to: "health#show"
     match "health", to: "errors#method_not_allowed", via: :all, defaults: { allow: "GET, HEAD" }
 
-    get "workspace", to: "errors#not_found"
-    put "workspace", to: "errors#not_found"
+    get "workspace", to: "workspaces#show"
+    put "workspace", to: "workspaces#update"
     match "workspace", to: "errors#method_not_allowed", via: :all, defaults: { allow: "GET, HEAD, PUT" }
 
-    post "workspace/records", to: "errors#not_found"
-    delete "workspace/records", to: "errors#not_found"
+    post "workspace/records", to: "records#create"
+    delete "workspace/records", to: "records#destroy"
     match "workspace/records", to: "errors#method_not_allowed", via: :all, defaults: { allow: "POST, DELETE" }
   end
 
