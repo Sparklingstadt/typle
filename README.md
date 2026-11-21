@@ -22,7 +22,7 @@
 | [docs/aws/production.md](docs/aws/production.md) | 本番を `infra/`（AWS CDK）で作る手順（切り替えの前まで） |
 | [api-docs/](api-docs/src/README.md) | アプリの API の仕様（VuePress。`cd api-docs && npm ci && npm run docs:dev`） |
 | [docs/save-metrics.md](docs/save-metrics.md) | 保存の時間と大きさの計測（`TYPLE_MEASURE_SAVES=1`） |
-| [docs/backend-compare.md](docs/backend-compare.md) | Next.js・Go・Kotlin のバックエンドの速度比較（`TYPLE_BACKEND_COMPARE=1` のプレビューだけ） |
+| [docs/backend-compare.md](docs/backend-compare.md) | Next.js・Go・Kotlin・Rails のバックエンドの速度比較（`TYPLE_BACKEND_COMPARE=1` のプレビューだけ。Rails は [rails/README.md](rails/README.md)） |
 | [docs/backend-switch.md](docs/backend-switch.md) | workspace と records の API を Go に切り替える（`TYPLE_BACKEND=go`。本番でも使える） |
 | [docs/design/](docs/design) | 画面ごとのデザインレビュー |
 | [docs/roadmap.md](docs/roadmap.md) | これからの進め方（今・次・その先の順番と理由） |
