@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Locator, type Page } from '@playwright/test'
 import { guestWorkspace } from './guestData'
 import { openPacks } from './packRows'
 
@@ -200,3 +200,68 @@ for (const colorScheme of ['light', 'dark'] as const) {
     await expect(page).toHaveScreenshot(`rankings${suffix}.png`, masks(page))
   })
 }
+
+// More pages of the saved data above, each as it first opens. The official catalog and the interests page list the
+// official packs, which grow with every pack added, so they are left out.
+const pages: { name: string, path: string, ready: (page: Page) => Promise<void>, dark?: boolean, mask?: (page: Page) => Locator[] }[] = [
+  { name: 'home', path: '/home', dark: true, ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'words', path: '/words?list=basics', ready: page => expect(page.getByText('experience', { exact: true }).first()).toBeVisible() },
+  { name: 'devices', path: '/devices', ready: page => expect(page.getByRole('heading', { name: 'HHKB', exact: true })).toBeVisible() },
+  { name: 'settings', path: '/settings', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'input', path: '/input', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'pack-create', path: '/packs/create', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'landing', path: '/', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible(),
+    // The numbers of official lists grow with every pack added; they are painted over.
+    mask: page => [page.getByText(/\d+件の公式リスト/), page.getByText(/^\d+リスト$/)] },
+  { name: 'about', path: '/about', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+]
+for (const { name, path, ready, dark, mask } of pages) {
+  for (const colorScheme of dark ? ['light', 'dark'] as const : ['light'] as const) {
+    const suffix = colorScheme === 'dark' ? '-dark' : ''
+    test(`${path} looks the same (${colorScheme})`, async ({ page }) => {
+      await openSaved(page, path, colorScheme)
+      await ready(page)
+      await expect(page).toHaveScreenshot(`${name}${suffix}.png`, { mask: [...masks(page).mask, ...(mask?.(page) ?? [])] })
+    })
+  }
+}
+
+test('home introduces the app before the first record', async ({ page }) => {
+  await open(page, '/home')
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  await expect(page).toHaveScreenshot('home-first.png', masks(page))
+})
+
+// On a phone the sidebar is a drawer behind the menu button, and practice and its result fit 390px.
+test('on a phone the menu opens as a drawer', async ({ page }) => {
+  await openSaved(page, '/home')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.getByRole('button', { name: 'メニューを開く' }).click()
+  await expect(page.getByRole('dialog', { name: 'メニュー' })).toBeVisible()
+  await expect(page).toHaveScreenshot('phone-menu.png', masks(page))
+})
+
+test('on a phone practice shows the word and the stats', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const input = await practise(page)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await input.pressSequentially('ty')
+  await page.clock.runFor(1_500)
+  await expect(page.locator('#wordDisplay [data-state="current"]')).toHaveText('p')
+  await expect(page).toHaveScreenshot('phone-play.png', masks(page))
+})
+
+test('on a phone the result fits the width', async ({ page }) => {
+  const input = await practise(page)
+  await page.setViewportSize({ width: 390, height: 844 })
+  await input.pressSequentially('typle')
+  await page.clock.runFor(2_000)
+  await input.pressSequentially('wx')
+  await page.clock.runFor(1_000)
+  await input.pressSequentially('ater')
+  await page.clock.runFor(3_000)
+  await input.pressSequentially('experience')
+  await page.clock.runFor(10_000)
+  await expect(page.getByLabel('練習結果', { exact: true })).toContainText('練習記録を保存しました。')
+  await expect(page).toHaveScreenshot('phone-result.png', masks(page))
+})
