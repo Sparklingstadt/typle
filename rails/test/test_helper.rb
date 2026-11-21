@@ -18,3 +18,19 @@ module ActiveSupport
     end
   end
 end
+
+# The shared fixtures of the repository (tests/fixtures), read in place: Next.js, Go and Kotlin are held to the same files.
+module Fixtures
+  DIR = Rails.root.join("../tests/fixtures")
+
+  module_function
+
+  def read(path)
+    Typle::JsonValue.parse(File.read(DIR.join(path)))
+  end
+
+  # The JSON files of a fixture directory, by name.
+  def files(path)
+    Dir[DIR.join(path, "*.json")].sort.map { |file| [File.basename(file), Typle::JsonValue.parse(File.read(file))] }
+  end
+end

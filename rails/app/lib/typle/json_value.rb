@@ -1,10 +1,29 @@
 module Typle
-  # JSON as JSON.parse and JSON.stringify treat it (filled in by the JS-compatibility task).
+  # JSON as JSON.parse and JSON.stringify treat it: a repeated key keeps its last value, and a number is one Number, so
+  # 1500.0 is 1500 (an Integer here, written "1500" as JSON.stringify writes it). Ruby's parser refuses a lone surrogate
+  # in a string, which JSON.parse takes; every body that holds one is refused all the same (a string jsonb cannot keep).
   module JsonValue
+    MAX_EXACT = 2**53
+
     module_function
+
+    def parse(text)
+      normalize(JSON.parse(text, allow_duplicate_key: true, allow_nan: false))
+    end
 
     def generate(value)
       JSON.generate(value)
+    end
+
+    # value with every Float that is a whole number within 2^53 as an Integer, and every larger Integer as a Float.
+    def normalize(value)
+      case value
+      when Hash then value.transform_values { |item| normalize(item) }
+      when Array then value.map { |item| normalize(item) }
+      when Float then value.finite? && value == value.floor && value.abs <= MAX_EXACT ? value.to_i : value
+      when Integer then value.abs > MAX_EXACT ? value.to_f : value
+      else value
+      end
     end
   end
 end
