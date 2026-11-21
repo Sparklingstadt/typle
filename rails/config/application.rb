@@ -14,7 +14,6 @@ module TypleRails
   class Application < Rails::Application
     config.load_defaults 8.1
     config.api_only = true
-    config.autoload_paths << root.join("app/lib")
 
     # Rails' session key is never used (the login cookie is Auth.js's), so a random one does when none is given.
     config.secret_key_base = ENV["SECRET_KEY_BASE"].presence || SecureRandom.hex(64)
