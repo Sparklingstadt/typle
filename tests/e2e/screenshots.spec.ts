@@ -189,7 +189,8 @@ const pages: { name: string, path: string, ready: (page: Page) => Promise<void>,
   { name: 'landing', path: '/', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible(),
     // The numbers of official lists grow with every pack added; they are painted over.
     mask: page => [page.getByText(/\d+件の公式リスト/), page.getByText(/^\d+リスト$/)] },
-  { name: 'about', path: '/about', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  // Where the data is kept now is marked once this browser's storage is read.
+  { name: 'about', path: '/about', ready: page => expect(page.getByText('今の保存先', { exact: true })).toBeVisible() },
 ]
 for (const { name, path, ready, dark, mask } of pages) {
   for (const colorScheme of dark ? ['light', 'dark'] as const : ['light'] as const) {
