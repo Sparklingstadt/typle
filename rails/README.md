@@ -85,7 +85,7 @@ cd rails && TYPLE_TEST_DATABASE_URL=$(grep '^DATABASE_URL=' ../.env.local | cut 
 Ruby がないときは Docker で動かせます（リポジトリのルートで）。
 
 ```bash
-docker run --rm -v "$PWD":/w -w /w/rails ruby:3.4.1 sh -c 'bundle config set --local path /tmp/bundle && bundle install -j4 >/dev/null && bin/rails test'
+docker run --rm -v "$PWD":/w -w /w/rails -e BUNDLE_APP_CONFIG=/tmp/bundle-config -e BUNDLE_PATH=/tmp/bundle ruby:3.4.1 sh -c 'bundle install -j4 >/dev/null && bin/rails test'
 ```
 
 ## ビルドと手元での実行
