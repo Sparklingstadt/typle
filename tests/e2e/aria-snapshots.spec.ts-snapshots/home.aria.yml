@@ -1,0 +1,115 @@
+- main:
+  - heading "練習の状況" [level=1]
+  - paragraph: このブラウザーに保存された記録から集計しています。
+  - navigation "はじめる":
+    - link "単語リストを作成":
+      - /url: /create
+  - region "英単語 › 基本の単語":
+    - paragraph: 続きから
+    - heading "英単語 › 基本の単語" [level=2]
+    - paragraph: 3語 · 最終練習 今日 · ベスト 正確率 100%・5.40 秒
+    - list "最初の単語":
+      - listitem: apple
+      - listitem: water
+      - listitem: experience
+    - link "英単語 › 基本の単語 を練習する":
+      - /url: /play?list=basics
+      - text: 練習する
+    - link "別のリストを選ぶ":
+      - /url: /edit
+  - region "今週のまとめ":
+    - heading "今週のまとめ" [level=2]
+    - paragraph: 10月26日（月）〜11月1日（日）の記録です。増減は、先週の同じ曜日・時刻までの記録と比べています。
+    - term: 今週の練習
+    - definition: 5 回
+    - definition:
+      - paragraph: 先週より 5回多い
+    - term: 連続練習
+    - definition: 2 日
+    - definition:
+      - paragraph: 今日も練習済み
+    - term: 平均正確率（直近5回）
+    - definition: 97.1 %
+    - definition:
+      - paragraph: 比べる記録がまだありません
+    - term: 今週の練習時間
+    - definition: 37 秒
+    - definition:
+      - paragraph: 先週より 37秒多い
+  - region "次に練習するリスト":
+    - heading "次に練習するリスト" [level=2]
+    - paragraph: まだ練習していないリスト、3日以上練習していないリスト、直近の正確率が90%未満のリストを最大3件表示します。
+    - paragraph: どのリストも最近練習できています。
+  - region "苦手な単語":
+    - heading "苦手な単語" [level=2]
+    - paragraph: リストごとに、直近10回の練習（Handwriting を除く）で間違えた単語を、間違えた回の多い順に表示します。苦手な単語だけの練習でミスなく打てた単語は、ここから外れます。
+    - paragraph: まだ苦手な単語はありません。練習で間違えた単語がここに出ます。
+  - region "リスト別の推移":
+    - heading "リスト別の推移" [level=2]
+    - paragraph: 1単語あたりの秒数（低いほど速い）と正確率を、直近20回まで表示します。所要時間を単語数で割っているので、リストを編集した前後でも比べられます。
+    - article "英単語 › 基本の単語":
+      - heading "英単語 › 基本の単語" [level=3]
+      - paragraph: 4回 · 最終練習 今日
+      - heading "1単語あたりの秒数" [level=4]
+      - paragraph: 最新 2.07 秒
+      - paragraph: 直近2回の平均は、その前の2回より 0.08 秒速い
+      - figure "10/29 11/1":
+        - slider "1単語あたりの秒数（左右キーで各回の値を表示）"
+        - table "1単語あたりの秒数":
+          - caption: 1単語あたりの秒数
+          - rowgroup:
+            - row "日時 値":
+              - columnheader "日時"
+              - columnheader "値"
+          - rowgroup:
+            - row "10/29 12:00 3.03 秒":
+              - cell "10/29 12:00"
+              - cell "3.03 秒"
+            - row "10/31 12:00 1.80 秒":
+              - cell "10/31 12:00"
+              - cell "1.80 秒"
+            - row "11/1 10:00 2.60 秒":
+              - cell "11/1 10:00"
+              - cell "2.60 秒"
+            - row "11/1 11:55 2.07 秒":
+              - cell "11/1 11:55"
+              - cell "2.07 秒"
+      - heading "正確率" [level=4]
+      - paragraph: 最新 100.0%
+      - paragraph: 直近2回の平均は、その前の2回より +2.3pt
+      - figure "10/29 11/1":
+        - slider "正確率（左右キーで各回の値を表示）"
+        - table "正確率":
+          - caption: 正確率
+          - rowgroup:
+            - row "日時 値":
+              - columnheader "日時"
+              - columnheader "値"
+          - rowgroup:
+            - row "10/29 12:00 90.5%":
+              - cell "10/29 12:00"
+              - cell "90.5%"
+            - row "10/31 12:00 100.0%":
+              - cell "10/31 12:00"
+              - cell "100.0%"
+            - row "11/1 10:00 95.2%":
+              - cell "11/1 10:00"
+              - cell "95.2%"
+            - row "11/1 11:55 100.0%":
+              - cell "11/1 11:55"
+              - cell "100.0%"
+      - paragraph: ベスト記録：正確率 100%・5.40 秒（昨日）
+    - article "英単語 › よく使う表現":
+      - heading "英単語 › よく使う表現" [level=3]
+      - paragraph: 1回 · 最終練習 今日
+      - paragraph: 記録が2回以上になると推移を表示します。
+      - link "英単語 › よく使う表現 を練習する":
+        - /url: /play?list=phrases
+        - text: 練習する
+  - paragraph: ログインせずにすべての練習・編集機能を利用できます。単語リスト・練習記録・端末はこのブラウザーに保存されます。ログイン（GitHub または ID とパスワード）すると、別の保存先であるアカウントに切り替わり、端末間で同期できます。ブラウザーのデータは自動で移行されません。
+  - paragraph:
+    - link "使い方":
+      - /url: /guide
+    - text: ／
+    - link "Typleについて":
+      - /url: /about

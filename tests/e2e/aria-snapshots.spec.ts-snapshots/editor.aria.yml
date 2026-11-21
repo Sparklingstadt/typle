@@ -1,0 +1,90 @@
+- main:
+  - button "単語パック"
+  - heading "単語リストを編集" [level=1]
+  - paragraph: 3語 · 練習 4回 · 最終 今日
+  - region "基本情報":
+    - text: パック
+    - combobox "パック":
+      - option "英単語" [selected]
+      - option "新しいパック（リスト名で作成）"
+    - paragraph: リストを入れるパックです。ほかのパックを選ぶと、リストはそのパックに移ります。
+    - text: 単語リスト名
+    - textbox "単語リスト名": 基本の単語
+    - paragraph: 練習画面と単語リスト一覧に表示されます。
+    - text: 難易度（任意）
+    - textbox "難易度（任意）":
+      - /placeholder: 初級など
+    - paragraph: 練習画面で、パックの中のリストを選ぶのに使います。例：初級
+    - switch "手書き練習（Typle Handwriting）に使う"
+    - text: 手書き練習（Typle Handwriting）に使う
+    - paragraph: このリストを手書きで練習できるようにします。認識する言語は手書きの文字を読み取るときに使います。
+  - region "単語":
+    - heading "単語" [level=2]
+    - text: 3 / 1,000
+    - button "CSVを読み込む"
+    - group "単語 1":
+      - button "単語 1 をドラッグして並べ替え"
+      - text: "1"
+      - textbox "表示する単語 1":
+        - /placeholder: 単語を入力
+        - text: apple
+      - text: 入力する文字
+      - textbox "入力する文字 1":
+        - /placeholder: apple
+      - text: 入力の種類
+      - combobox "入力の種類 1":
+        - option "単語" [selected]
+        - option "コマンド"
+        - option "コード"
+      - text: 補足
+      - textbox "補足 1":
+        - /placeholder: 読み・意味など
+        - text: りんご
+      - button "単語 1 の操作"
+      - button "単語 1 を削除"
+    - group "単語 2":
+      - button "単語 2 をドラッグして並べ替え"
+      - text: "2"
+      - textbox "表示する単語 2":
+        - /placeholder: 単語を入力
+        - text: water
+      - text: 入力する文字
+      - textbox "入力する文字 2":
+        - /placeholder: water
+      - text: 入力の種類
+      - combobox "入力の種類 2":
+        - option "単語" [selected]
+        - option "コマンド"
+        - option "コード"
+      - text: 補足
+      - textbox "補足 2":
+        - /placeholder: 読み・意味など
+        - text: 水
+      - button "単語 2 の操作"
+      - button "単語 2 を削除"
+    - group "単語 3":
+      - button "単語 3 をドラッグして並べ替え"
+      - text: "3"
+      - textbox "表示する単語 3":
+        - /placeholder: 単語を入力
+        - text: experience
+      - text: 入力する文字
+      - textbox "入力する文字 3":
+        - /placeholder: experience
+      - text: 入力の種類
+      - combobox "入力の種類 3":
+        - option "単語" [selected]
+        - option "コマンド"
+        - option "コード"
+      - text: 補足
+      - textbox "補足 3":
+        - /placeholder: 読み・意味など
+        - text: 経験
+      - button "単語 3 の操作"
+      - button "単語 3 を削除"
+    - status
+    - button "単語を追加"
+    - paragraph: Enter 次の単語へ（最後の単語では行を追加） Alt+↑↓ 単語を移動 Ctrl（⌘）+Enter 保存ドラッグで並べ替え
+  - text: 変更はありません ・ 3語
+  - button "キャンセル"
+  - button "保存"

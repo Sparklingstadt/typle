@@ -1,0 +1,202 @@
+- main:
+  - heading "入力" [level=1]
+  - paragraph: 練習で文字を入力するときの設定です。
+  - region "特殊文字の簡易入力":
+    - heading "特殊文字の簡易入力" [level=2]
+    - paragraph: チェコ語やスペイン語などの í・ó・ñ・č のように、アクセントやティルダなどの記号が付いた文字を、記号のない文字（i・o・n・c）で入力できるようにします。記号付きの文字をそのまま入力しても正解になります。 ロシア語のキリル文字も、привет → privet、школа → shkola、я → ya のようにラテン文字で入力できます。キリル文字の直接入力も正解になります。
+    - text: 特殊文字の簡易入力を使う ONにすると、á → a、č → c、ш → sh、я → ya のように入力できます。
+    - switch "特殊文字の簡易入力を使う ONにすると、á → a、č → c、ш → sh、я → ya のように入力できます。"
+    - status: この設定はこのブラウザーに保存されます。
+  - region "大文字・小文字を区別しない":
+    - heading "大文字・小文字を区別しない" [level=2]
+    - paragraph: A と a のように、大文字と小文字を同じ文字として扱います。Shift キーを押さずに入力しても、押して入力しても正解になります。
+    - text: 大文字・小文字を区別しない ONにすると、A や É などの大文字を a や é と入力しても正解になります（逆も同じです）。
+    - switch "大文字・小文字を区別しない ONにすると、A や É などの大文字を a や é と入力しても正解になります（逆も同じです）。"
+    - status: この設定はこのブラウザーに保存されます。
+  - region "簡易入力の対応表":
+    - heading "簡易入力の対応表" [level=2]
+    - paragraph: 特殊文字の簡易入力をONにしたときに、それぞれの文字の代わりに入力できるキーです。
+    - table "記号付きのラテン文字":
+      - caption: 記号付きのラテン文字
+      - rowgroup:
+        - row "文字 入力するキー":
+          - columnheader "文字"
+          - columnheader "入力するキー"
+      - rowgroup:
+        - row "à á â ã ä å ā ă ą ǎ a":
+          - cell "à á â ã ä å ā ă ą ǎ"
+          - cell "a"
+        - row "ç ć ĉ ċ č c":
+          - cell "ç ć ĉ ċ č"
+          - cell "c"
+        - row "ď d":
+          - cell "ď"
+          - cell "d"
+        - row "è é ê ë ē ĕ ė ę ě e":
+          - cell "è é ê ë ē ĕ ė ę ě"
+          - cell "e"
+        - row "ĝ ğ ġ ģ g":
+          - cell "ĝ ğ ġ ģ"
+          - cell "g"
+        - row "ĥ h":
+          - cell "ĥ"
+          - cell "h"
+        - row "ì í î ï ĩ ī ĭ į i":
+          - cell "ì í î ï ĩ ī ĭ į"
+          - cell "i"
+        - row "ĵ j":
+          - cell "ĵ"
+          - cell "j"
+        - row "ķ k":
+          - cell "ķ"
+          - cell "k"
+        - row "ĺ ļ ľ l":
+          - cell "ĺ ļ ľ"
+          - cell "l"
+        - row "ń ņ ň ñ n":
+          - cell "ń ņ ň ñ"
+          - cell "n"
+        - row "ò ó ô õ ö ō ŏ ő ǒ o":
+          - cell "ò ó ô õ ö ō ŏ ő ǒ"
+          - cell "o"
+        - row "ŕ ŗ ř r":
+          - cell "ŕ ŗ ř"
+          - cell "r"
+        - row "ś ŝ ş š ș s":
+          - cell "ś ŝ ş š ș"
+          - cell "s"
+        - row "ţ ť ț t":
+          - cell "ţ ť ț"
+          - cell "t"
+        - row "ù ú û ü ũ ū ŭ ů ű ų ǔ u":
+          - cell "ù ú û ü ũ ū ŭ ů ű ų ǔ"
+          - cell "u"
+        - row "ŵ w":
+          - cell "ŵ"
+          - cell "w"
+        - row "ý ÿ ŷ y":
+          - cell "ý ÿ ŷ"
+          - cell "y"
+        - row "ź ż ž z":
+          - cell "ź ż ž"
+          - cell "z"
+    - table "そのほかの記号":
+      - caption: そのほかの記号
+      - rowgroup:
+        - row "文字 入力するキー":
+          - columnheader "文字"
+          - columnheader "入力するキー"
+      - rowgroup:
+        - row "ß ss":
+          - cell "ß"
+          - cell "ss"
+        - row "¿ ?":
+          - cell "¿"
+          - cell "?"
+    - table "キリル文字（ロシア語）":
+      - caption: キリル文字（ロシア語）
+      - rowgroup:
+        - row "文字 入力するキー":
+          - columnheader "文字"
+          - columnheader "入力するキー"
+      - rowgroup:
+        - row "а a":
+          - cell "а"
+          - cell "a"
+        - row "б b":
+          - cell "б"
+          - cell "b"
+        - row "в v":
+          - cell "в"
+          - cell "v"
+        - row "г g":
+          - cell "г"
+          - cell "g"
+        - row "д d":
+          - cell "д"
+          - cell "d"
+        - row "е e":
+          - cell "е"
+          - cell "e"
+        - row "ё yo":
+          - cell "ё"
+          - cell "yo"
+        - row "ж zh":
+          - cell "ж"
+          - cell "zh"
+        - row "з z":
+          - cell "з"
+          - cell "z"
+        - row "и i":
+          - cell "и"
+          - cell "i"
+        - row "й y":
+          - cell "й"
+          - cell "y"
+        - row "к k":
+          - cell "к"
+          - cell "k"
+        - row "л l":
+          - cell "л"
+          - cell "l"
+        - row "м m":
+          - cell "м"
+          - cell "m"
+        - row "н n":
+          - cell "н"
+          - cell "n"
+        - row "о o":
+          - cell "о"
+          - cell "o"
+        - row "п p":
+          - cell "п"
+          - cell "p"
+        - row "р r":
+          - cell "р"
+          - cell "r"
+        - row "с s":
+          - cell "с"
+          - cell "s"
+        - row "т t":
+          - cell "т"
+          - cell "t"
+        - row "у u":
+          - cell "у"
+          - cell "u"
+        - row "ф f":
+          - cell "ф"
+          - cell "f"
+        - row "х kh":
+          - cell "х"
+          - cell "kh"
+        - row "ц ts":
+          - cell "ц"
+          - cell "ts"
+        - row "ч ch":
+          - cell "ч"
+          - cell "ch"
+        - row "ш sh":
+          - cell "ш"
+          - cell "sh"
+        - row "щ shch":
+          - cell "щ"
+          - cell "shch"
+        - row "ъ \"":
+          - cell "ъ"
+          - cell "\""
+        - row "ы y":
+          - cell "ы"
+          - cell "y"
+        - row "ь '":
+          - cell "ь"
+          - cell "'"
+        - row "э e":
+          - cell "э"
+          - cell "e"
+        - row "ю yu":
+          - cell "ю"
+          - cell "yu"
+        - row "я ya":
+          - cell "я"
+          - cell "ya"
+    - paragraph: 大文字も同じように入力できます（Á → A、Ш → Sh または SH）。

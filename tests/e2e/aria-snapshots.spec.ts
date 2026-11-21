@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import { guestWorkspace } from './guestData'
 import { openPacks } from './packRows'
+import { seedSaved } from './snapshotData'
 
 // ARIA snapshots compare the accessibility tree (roles, names and their order), not pixels, so fonts and the OS do
 // not change them. They catch a control that lost its label, a heading that changed level or a link that went missing.
@@ -227,4 +228,81 @@ test('leaving the editor with changes asks with two choices', async ({ page }) =
       - button "編集を続ける"
       - button "破棄して移動"
   `)
+})
+
+
+// The pages of saved data (snapshotData.ts), each as it first opens. These trees are long, so each is kept in its own
+// file, aria-snapshots.spec.ts-snapshots/<name>.aria.yml.
+const savedPages: { name: string, path: string, title: string, ready: (page: Page) => Promise<void> }[] = [
+  { name: 'home', path: '/home', title: 'home sums up the week and suggests what to practise', ready: page => expect(page.getByRole('heading', { name: '練習の状況', level: 1 })).toBeVisible() },
+  { name: 'records', path: '/records', title: 'the records page groups the records by day', ready: page => expect(page.locator('[data-record-key]')).toHaveCount(5) },
+  { name: 'devices', path: '/devices', title: 'the devices page lists the devices and their use', ready: page => expect(page.getByRole('heading', { name: 'HHKB', exact: true })).toBeVisible() },
+  { name: 'words', path: '/words?list=basics', title: 'the words page shows the words of the chosen list', ready: page => expect(page.getByText('experience', { exact: true }).first()).toBeVisible() },
+  { name: 'settings', path: '/settings', title: 'the general settings keep the display languages', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'input', path: '/input', title: 'the input settings keep their switches', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'pack-create', path: '/packs/create', title: 'the pack form keeps its fields', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+  { name: 'about', path: '/about', title: 'the about page keeps its sections', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
+]
+for (const { name, path, title, ready } of savedPages) {
+  test(title, async ({ page }) => {
+    await seedSaved(page)
+    await page.goto(path)
+    await ready(page)
+    await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: `${name}.aria.yml` })
+  })
+}
+
+test('the best records page shows the chosen list', async ({ page }) => {
+  await seedSaved(page)
+  await page.goto('/rankings')
+  await expect(page.getByRole('region', { name: '英単語 › 基本の単語', exact: true })).toMatchAriaSnapshot({ name: 'rankings.aria.yml' })
+})
+
+test('the packs page shows a pack open with its lists', async ({ page }) => {
+  await seedSaved(page)
+  await page.goto('/edit')
+  await openPacks(page)
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'packs.aria.yml' })
+})
+
+test('the list editor keeps its fields and the words', async ({ page }) => {
+  await seedSaved(page)
+  await page.goto('/edit')
+  await openPacks(page)
+  await page.getByRole('button', { name: '基本の単語 を編集', exact: true }).click()
+  await expect(page.getByRole('textbox', { name: '表示する単語 3', exact: true })).toHaveValue('experience')
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'editor.aria.yml' })
+})
+
+test('home introduces the app before the first record', async ({ page }) => {
+  await page.goto('/home')
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'home-first.aria.yml' })
+})
+
+test('the sidebar keeps its groups of links', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/home')
+  await expect(page.getByRole('navigation', { name: 'メインナビゲーション' })).toMatchAriaSnapshot({ name: 'sidebar.aria.yml' })
+  await expect(page.getByRole('navigation', { name: 'ヘルプ' })).toMatchAriaSnapshot({ name: 'sidebar-help.aria.yml' })
+})
+
+test('on a phone the menu opens as a dialog with the same links', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/home')
+  await page.getByRole('button', { name: 'メニューを開く' }).click()
+  await expect(page.getByRole('dialog', { name: 'メニュー' })).toMatchAriaSnapshot({ name: 'phone-menu.aria.yml' })
+})
+
+test('practice keeps its controls, the word and the stats', async ({ page }) => {
+  await seed(page)
+  await page.goto('/play')
+  const input = page.getByRole('textbox', { name: '表示された文字を入力', exact: true })
+  await expect(input).toBeFocused()
+  await page.clock.pauseAt(startedAt + 60_000)
+  await input.pressSequentially('a')
+  await page.clock.runFor(1_000)
+  await input.pressSequentially('p')
+  await page.clock.runFor(1_000)
+  await expect(page.getByRole('main')).toMatchAriaSnapshot({ name: 'play.aria.yml' })
 })

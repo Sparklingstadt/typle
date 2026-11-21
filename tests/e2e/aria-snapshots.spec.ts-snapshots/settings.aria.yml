@@ -1,0 +1,20 @@
+- main:
+  - heading "一般" [level=1]
+  - paragraph: Typleの表示とログインに関する設定です。
+  - region "表示言語":
+    - heading "表示言語" [level=2]
+    - paragraph: 画面に表示する言語を選びます。単語リストの内容や練習記録は変わりません。
+    - group "表示言語":
+      - radio "日本語 日本語 使用中" [checked]
+      - text: 日本語 日本語 使用中
+      - radio "English 英語"
+      - text: English 英語
+      - radio "简体中文 中国語（簡体字）"
+      - text: 简体中文 中国語（簡体字）
+      - radio "繁體中文 中国語（繁体字）"
+      - text: 繁體中文 中国語（繁体字）
+      - radio "Русский ロシア語"
+      - text: Русский ロシア語
+      - radio "Français フランス語"
+      - text: Français フランス語
+    - status: 選んだ言語はこのブラウザーに保存されます。

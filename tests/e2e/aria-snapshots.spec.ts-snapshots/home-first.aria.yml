@@ -1,0 +1,18 @@
+- main:
+  - heading "自分の単語で、タイピング練習。" [level=1]
+  - paragraph: 公式パックで練習を始めるか、覚えたい単語のリストを作成しましょう。
+  - text: 単語リスト 0 件 完了した練習 0 回
+  - navigation "はじめる":
+    - link "練習する":
+      - /url: /play
+    - link "単語リストを作成":
+      - /url: /create
+    - link "記録を見る":
+      - /url: /records
+  - paragraph: ログインせずにすべての練習・編集機能を利用できます。単語リスト・練習記録・端末はこのブラウザーに保存されます。ログイン（GitHub または ID とパスワード）すると、別の保存先であるアカウントに切り替わり、端末間で同期できます。ブラウザーのデータは自動で移行されません。
+  - paragraph:
+    - link "使い方":
+      - /url: /guide
+    - text: ／
+    - link "Typleについて":
+      - /url: /about

@@ -1,0 +1,36 @@
+- main:
+  - heading "端末" [level=1]
+  - paragraph:
+    - text: 練習に使うパソコンやキーボードを登録します。「
+    - link "練習する":
+      - /url: /play
+    - text: 」で選ぶと、どの端末で練習したかが記録に残ります。
+  - region "このブラウザーで練習に使う端末":
+    - heading "このブラウザーで練習に使う端末" [level=2]
+    - paragraph: デフォルト
+    - button "このブラウザーで練習に使う端末を変更（現在：デフォルト）": 変更
+    - link "練習する":
+      - /url: /play
+    - paragraph: 「練習する」で練習すると、この端末が記録に残ります。ブラウザーごとに覚えるので、パソコンごとに選んでおけます。
+  - region "登録済みの端末":
+    - heading "登録済みの端末" [level=2]
+    - text: 2台
+    - button "端末を追加"
+    - list:
+      - listitem:
+        - heading "デフォルト" [level=3]
+        - text: 使用中
+        - paragraph: 登録しなくても使える端末です。名前の変更と削除はできません。
+        - paragraph: まだ練習していません
+      - listitem:
+        - heading "MacBook Air" [level=3]
+        - paragraph: JIS
+        - paragraph: 練習 3回 · 最終 今日
+        - button "MacBook Air を編集"
+        - button "MacBook Air を削除"
+      - listitem:
+        - heading "HHKB" [level=3]
+        - paragraph: US
+        - paragraph: 練習 2回 · 最終 今日
+        - button "HHKB を編集"
+        - button "HHKB を削除"

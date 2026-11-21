@@ -1,0 +1,59 @@
+- main:
+  - heading "練習記録" [level=1]
+  - paragraph:
+    - text: これまでの練習を新しい順に表示します。リストごとの上位は
+    - link "ベスト記録":
+      - /url: /rankings
+    - text: 、推移は
+    - link "ホーム":
+      - /url: /home
+    - text: で見られます。
+  - button "パックで絞り込む（現在：すべてのパック）": パック すべて
+  - button "リストで絞り込む（現在：すべてのリスト）": リスト すべて
+  - button "端末で絞り込む（現在：すべての端末）": 端末 すべて
+  - paragraph: 5件
+  - region "今日 · 11月1日（日）":
+    - heading "今日 · 11月1日（日）" [level=2]
+    - paragraph: 3回 · 23秒
+    - list:
+      - listitem:
+        - text: 11:55
+        - heading "英単語 › 基本の単語" [level=3]
+        - paragraph: 3語 · MacBook Air（JIS）
+        - paragraph: 所要時間 6.20秒 正確率 100% 1語あたり 2.07秒/語 ミス 0
+        - button "英単語 › 基本の単語（2026/11/1 11:55）の記録を削除"
+      - listitem:
+        - text: 11:30
+        - heading "英単語 › よく使う表現" [level=3]
+        - text: ベスト
+        - paragraph: 2語 · MacBook Air（JIS）
+        - paragraph: 所要時間 8.50秒 正確率 100% 1語あたり 4.25秒/語 ミス 0
+        - button "英単語 › よく使う表現（2026/11/1 11:30）の記録を削除"
+      - listitem:
+        - text: 10:00
+        - heading "英単語 › 基本の単語" [level=3]
+        - paragraph: 3語 · HHKB（US）
+        - paragraph: 所要時間 7.80秒 正確率 95.2% 1語あたり 2.60秒/語 ミス 1
+        - button "英単語 › 基本の単語（2026/11/1 10:00）の記録を削除"
+  - region "昨日 · 10月31日（土）":
+    - heading "昨日 · 10月31日（土）" [level=2]
+    - paragraph: 1回 · 5秒
+    - list:
+      - listitem:
+        - text: 12:00
+        - heading "英単語 › 基本の単語" [level=3]
+        - text: ベスト
+        - paragraph: 3語 · MacBook Air（JIS）
+        - paragraph: 所要時間 5.40秒 正確率 100% 1語あたり 1.80秒/語 ミス 0
+        - button "英単語 › 基本の単語（2026/10/31 12:00）の記録を削除"
+  - region "10月29日（木）":
+    - heading "10月29日（木）" [level=2]
+    - paragraph: 1回 · 9秒
+    - list:
+      - listitem:
+        - text: 12:00
+        - heading "英単語 › 基本の単語" [level=3]
+        - paragraph: 3語 · HHKB（US）
+        - paragraph: 所要時間 9.10秒 正確率 90.5% 1語あたり 3.03秒/語 ミス 1
+        - button "英単語 › 基本の単語（2026/10/29 12:00）の記録を削除"
+  - paragraph: 単語数・端末名は練習した時点のものです。

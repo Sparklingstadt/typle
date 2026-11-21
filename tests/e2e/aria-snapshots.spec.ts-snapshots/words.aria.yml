@@ -1,0 +1,48 @@
+- main:
+  - heading "単語一覧" [level=1]
+  - paragraph: 単語リストを選ぶと、そのリストの入力する文字と補足を一覧で表示します。
+  - complementary "単語リスト":
+    - heading "単語リスト" [level=2]
+    - searchbox "リスト名・カテゴリ・タグで絞り込む"
+    - combobox "カテゴリで絞り込む":
+      - option "すべてのカテゴリ" [selected]
+      - option "語学（1）"
+    - list "単語リスト":
+      - listitem:
+        - 'button "英単語 カテゴリ: 語学 タグ: 英語 基本の単語 · 3語 · ベスト 5.40 秒" [expanded]'
+        - group "英単語 のリスト":
+          - list:
+            - listitem:
+              - button "基本の単語" [pressed]: 基本の単語 3語 · ベスト 5.40 秒
+            - listitem:
+              - button "よく使う表現": よく使う表現 2語 · ベスト 8.50 秒
+  - heading "英単語 › 基本の単語" [level=2]
+  - text: "カテゴリ: 語学 タグ: 英語"
+  - paragraph: 3語
+  - link "英単語 › 基本の単語 を練習":
+    - /url: /play?list=basics
+    - text: 練習
+  - link "英単語 › 基本の単語 を編集":
+    - /url: /edit?list=basics
+    - text: 編集
+  - table "英単語 › 基本の単語":
+    - rowgroup:
+      - row "番号 入力する文字":
+        - columnheader "番号"
+        - columnheader "入力する文字"
+    - rowgroup:
+      - row "1 apple りんご":
+        - cell "1"
+        - cell "apple りんご":
+          - text: apple
+          - paragraph: りんご
+      - row "2 water 水":
+        - cell "2"
+        - cell "water 水":
+          - text: water
+          - paragraph: 水
+      - row "3 experience 経験":
+        - cell "3"
+        - cell "experience 経験":
+          - text: experience
+          - paragraph: 経験
