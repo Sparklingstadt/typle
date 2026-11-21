@@ -1,0 +1,12 @@
+- navigation "ヘルプ":
+  - paragraph: ヘルプ
+  - list:
+    - listitem:
+      - link "使い方":
+        - /url: /guide
+    - listitem:
+      - link "Typleについて":
+        - /url: /about
+    - listitem:
+      - link "GitHub":
+        - /url: https://github.com/Sparklingstadt/typle-r

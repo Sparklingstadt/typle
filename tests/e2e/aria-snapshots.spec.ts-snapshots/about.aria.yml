@@ -1,0 +1,69 @@
+- main:
+  - heading "Typleについて" [level=1]
+  - paragraph: 自分で作った単語リストで練習できるタイピングアプリです。好きな言葉を登録して練習し、ベスト記録で上達を振り返れます。
+  - link "練習する":
+    - /url: /play
+  - link "使い方":
+    - /url: /guide
+  - region "できること":
+    - heading "できること" [level=2]
+    - list:
+      - listitem:
+        - heading "パックを作成" [level=3]:
+          - link "パックを作成":
+            - /url: /packs/create
+        - paragraph: 覚えたい単語を登録します。表示する単語と入力する文字は別々に指定でき、CSVからも追加できます。
+      - listitem:
+        - heading "練習する" [level=3]:
+          - link "練習する":
+            - /url: /play
+        - paragraph: 速度・正確率・ミス数をその場で表示し、違う文字を打った位置も示します。
+      - listitem:
+        - heading "ベスト記録" [level=3]:
+          - link "ベスト記録":
+            - /url: /rankings
+        - paragraph: 自己ベストと直近5回の平均、所要時間の推移で上達を確かめられます。
+  - region "データの保存先":
+    - heading "データの保存先" [level=2]
+    - paragraph: ログインは任意です。ログインしているかどうかで保存先が変わり、2つのデータは別々に保存されます（自動では移行しません）。
+    - list:
+      - listitem:
+        - heading "このブラウザー" [level=3]
+        - paragraph: ログインしていないとき
+        - text: 今の保存先
+        - list:
+          - listitem: このブラウザーのLocalStorageに保存します
+          - listitem: 別の端末やブラウザーとは同期しません
+          - listitem: ブラウザーのデータを削除すると消えます
+      - listitem:
+        - heading "アカウント" [level=3]
+        - paragraph: ログインしているとき
+        - list:
+          - listitem: アカウント専用のサーバーに保存します
+          - listitem: ログインした端末で同じデータを使えます
+          - listitem: 保存にはインターネット接続が必要です
+    - paragraph:
+      - link "使い方の「保存先とデータ」":
+        - /url: /guide#storage
+      - text: に詳しい説明があります。
+  - region "アクセス解析":
+    - heading "アクセス解析" [level=2]
+    - paragraph: どのページがどれくらい見られているかを知るため、Vercel Web Analytics でページの表示を数えています。送るのはページのアドレス（? 以降を除く）と、参照元・ブラウザー・OS・国です。Cookie は使わず、単語リストや練習記録は送りません。
+  - region "メールアドレスの扱い":
+    - heading "メールアドレスの扱い" [level=2]
+    - paragraph: ID とパスワードで登録するときに、メールアドレスをお預かりします。使うのは、アドレスの確認、パスワードの再設定、ID のお知らせのメールを送るときだけです。広告やお知らせには使わず、ほかへ渡すこともありません。メールは Resend で送ります。
+  - region "バージョンと開発":
+    - heading "バージョンと開発" [level=2]
+    - term: バージョン
+    - definition: /v\d+\.\d+\.\d+/
+    - term: 使用している技術
+    - definition: Next.js・React・PostgreSQL（Neon）
+    - term: ソースコード
+    - definition:
+      - link "GitHub （新しいタブで開く）":
+        - /url: https://github.com/Sparklingstadt/typle-r
+      - paragraph: 公開のリポジトリです。だれでもソースコードを見られます。
+    - term: ライセンス
+    - definition:
+      - link "オープンソースのライセンス":
+        - /url: /about/licenses

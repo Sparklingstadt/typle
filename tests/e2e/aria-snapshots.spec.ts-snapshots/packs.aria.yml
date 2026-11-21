@@ -1,0 +1,52 @@
+- main:
+  - heading "単語パック" [level=1]
+  - paragraph: 練習に使う単語パックを作成・編集します。リストをCSVで書き出すと、別のブラウザーやアカウントで読み込めます。
+  - link "公式パック":
+    - /url: /packs/catalog
+  - region "保存済みのパック":
+    - heading "保存済みのパック" [level=2]
+    - text: 自作 2 / 150 フォロー 0 / 200パック
+    - button "ファイルから取り込む"
+    - link "新しいパック":
+      - /url: /packs/create
+    - link "単語リストを作成":
+      - /url: /create
+    - text: パック名・リスト名・カテゴリ・タグ・単語で検索
+    - searchbox "パック名・リスト名・カテゴリ・タグ・単語で検索"
+    - button "カテゴリ：すべてのカテゴリ": すべてのカテゴリ
+    - button "すべてのタグ"
+    - button "並び順：追加した順": 並び順 追加した順
+    - paragraph: 1パック
+    - list:
+      - listitem:
+        - heading "英単語" [level=3]:
+          - button "英単語" [expanded]
+        - text: "カテゴリ: 語学 タグ: 英語"
+        - paragraph: 2リスト · 練習済み 2/2
+        - paragraph: 5語
+        - paragraph: 練習 5回 · 最終 今日
+        - button "英単語 のパックの操作"
+        - list "英単語 のリスト":
+          - listitem:
+            - heading "基本の単語" [level=3]
+            - text: "カテゴリ: 語学 タグ: 英語"
+            - paragraph: 単語の例 apple・water・experience
+            - paragraph: 3語
+            - paragraph: 練習 4回 · 最終 今日
+            - link "基本の単語 を練習":
+              - /url: /play?list=basics
+              - text: 練習
+            - button "基本の単語 を編集": 編集
+            - button "基本の単語 のその他の操作"
+          - listitem:
+            - heading "よく使う表現" [level=3]
+            - text: "カテゴリ: 語学 タグ: 英語"
+            - paragraph: 単語の例 thank you・good morning
+            - paragraph: 2語
+            - paragraph: 練習 1回 · 最終 今日
+            - link "よく使う表現 を練習":
+              - /url: /play?list=phrases
+              - text: 練習
+            - button "よく使う表現 を編集": 編集
+            - button "よく使う表現 のその他の操作"
+    - paragraph: CSVエクスポートは表示する単語・入力する文字・補足を保存します（練習記録は含みません）。作成・編集画面の「CSVを読み込む」で使えます。

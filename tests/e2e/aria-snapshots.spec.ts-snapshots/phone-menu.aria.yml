@@ -1,0 +1,63 @@
+- dialog "メニュー":
+  - heading "メニュー" [level=2]
+  - link "Typle":
+    - /url: /home
+  - button "メニューを閉じる"
+  - text: 保存先： このブラウザーに保存
+  - navigation "メインナビゲーション":
+    - list:
+      - listitem:
+        - link "ホーム":
+          - /url: /home
+    - group "練習":
+      - paragraph: 練習
+      - list:
+        - listitem:
+          - link "練習する":
+            - /url: /play
+        - listitem:
+          - link "練習記録":
+            - /url: /records
+        - listitem:
+          - link "ベスト記録":
+            - /url: /rankings
+    - group "単語リスト":
+      - paragraph: 単語リスト
+      - list:
+        - listitem:
+          - link "単語パック":
+            - /url: /edit
+        - listitem:
+          - link "単語一覧":
+            - /url: /words
+        - listitem:
+          - link "パックを作成":
+            - /url: /packs/create
+    - group "設定":
+      - paragraph: 設定
+      - list:
+        - listitem:
+          - link "一般":
+            - /url: /settings
+        - listitem:
+          - link "入力":
+            - /url: /input
+        - listitem:
+          - link "関心":
+            - /url: /interests
+        - listitem:
+          - link "端末":
+            - /url: /devices
+  - navigation "ヘルプ":
+    - paragraph: ヘルプ
+    - list:
+      - listitem:
+        - link "使い方":
+          - /url: /guide
+      - listitem:
+        - link "Typleについて":
+          - /url: /about
+      - listitem:
+        - link "GitHub":
+          - /url: https://github.com/Sparklingstadt/typle-r
+  - paragraph: /v\d+\.\d+\.\d+/

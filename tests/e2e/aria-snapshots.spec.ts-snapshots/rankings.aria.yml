@@ -1,0 +1,81 @@
+- region "英単語 › 基本の単語":
+  - heading "英単語 › 基本の単語" [level=2]
+  - paragraph: 3語 記録 4回 最終練習 今日
+  - link "記録を見る":
+    - /url: /records?list=basics
+  - link "このリストを練習":
+    - /url: /play?list=basics
+  - term: 自己ベスト
+  - definition: 5.40秒
+  - definition: 100% · 昨日
+  - term: 直近4回の平均
+  - definition: 7.13秒
+  - definition: ベストとの差 +1.72秒
+  - term: 平均正確率
+  - definition: 96.4%
+  - definition: 直近4回
+  - term: 練習回数
+  - definition: 4回
+  - definition: 今の3語で練習
+  - heading "所要時間の推移 直近4回" [level=3]
+  - figure "10/29 11/1":
+    - slider "英単語 › 基本の単語 の所要時間の推移（左右キーで各回の値を表示）"
+    - table "英単語 › 基本の単語 の所要時間の推移":
+      - caption: 英単語 › 基本の単語 の所要時間の推移
+      - rowgroup:
+        - row "日時 値":
+          - columnheader "日時"
+          - columnheader "値"
+      - rowgroup:
+        - row "10/29 12:00 9.10秒":
+          - cell "10/29 12:00"
+          - cell "9.10秒"
+        - row "10/31 12:00 5.40秒":
+          - cell "10/31 12:00"
+          - cell "5.40秒"
+        - row "11/1 10:00 7.80秒":
+          - cell "11/1 10:00"
+          - cell "7.80秒"
+        - row "11/1 11:55 6.20秒":
+          - cell "11/1 11:55"
+          - cell "6.20秒"
+  - heading "上位の記録 正確率を優先" [level=3]
+  - text: 4 / 4件
+  - table "英単語 › 基本の単語 の上位の記録":
+    - rowgroup:
+      - row "順位 所要時間 正確率 ミス 端末 日時":
+        - columnheader "順位"
+        - columnheader "所要時間"
+        - columnheader "正確率"
+        - columnheader "ミス"
+        - columnheader "端末"
+        - columnheader "日時"
+    - rowgroup:
+      - row "1 5.40秒 100% 0 MacBook Air 昨日 12:00":
+        - rowheader "1"
+        - cell "5.40秒"
+        - cell "100%"
+        - cell "0"
+        - cell "MacBook Air"
+        - cell "昨日 12:00"
+      - row "2 6.20秒 100% 0 MacBook Air 今日 11:55":
+        - rowheader "2"
+        - cell "6.20秒"
+        - cell "100%"
+        - cell "0"
+        - cell "MacBook Air"
+        - cell "今日 11:55"
+      - row "3 7.80秒 95.2% 1 HHKB 今日 10:00":
+        - rowheader "3"
+        - cell "7.80秒"
+        - cell "95.2%"
+        - cell "1"
+        - cell "HHKB"
+        - cell "今日 10:00"
+      - row "4 9.10秒 90.5% 1 HHKB 10月29日 12:00":
+        - rowheader "4"
+        - cell "9.10秒"
+        - cell "90.5%"
+        - cell "1"
+        - cell "HHKB"
+        - cell "10月29日 12:00"
