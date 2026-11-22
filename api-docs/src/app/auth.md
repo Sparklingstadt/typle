@@ -1,6 +1,6 @@
 # ログイン
 
-ログインは Auth.js（next-auth v5）で、GitHub（OAuth App）と、ID とパスワードの2つです（開発用の `local` が手元だけにあります）。FFPF ID のログインは v2.54.0 で、iPad・Mac のアプリのログイン（`/api/auth/token`・アプリのトークン）は v2.55.0 でなくしました。ログイン後のリクエストの扱いは [認証](./README.md#認証) を見てください。
+ログインは Auth.js（next-auth v5）で、Sparklingstadt ID（OpenID Connect、v2.58.0 から）、GitHub（OAuth App）、ID とパスワードの3つです（開発用の `local` が手元だけにあります）。FFPF ID のログインは v2.54.0 で、iPad・Mac のアプリのログイン（`/api/auth/token`・アプリのトークン）は v2.55.0 でなくしました。ログイン後のリクエストの扱いは [認証](./README.md#認証) を見てください。
 
 ## Auth.js の経路（`/api/auth/*`）
 
@@ -10,16 +10,16 @@
 |---|---|
 | `GET /api/auth/session` | セッション。ログインしていなければ `null`、していれば `{ "user": { "id": "github:123", "name": "…", "image": "https://…" }, "expires": "…" }`（`expires` は中身の `exp` と同じ時刻） |
 | `GET /api/auth/csrf` | CSRF トークン（`{ "csrfToken" }`）と、その Cookie |
-| `GET /api/auth/providers` | 使えるプロバイダー。`github`（設定があるとき）と `password`、手元では `local` |
-| `POST /api/auth/signin/<provider>` | ログインを始める。CSRF のトークンを付けた `application/x-www-form-urlencoded` の POST。`github` は GitHub の認可ページへの `302` |
-| `GET /api/auth/callback/github`・`POST /api/auth/callback/<password・local>` | ログインから戻る先 |
+| `GET /api/auth/providers` | 使えるプロバイダー。`sid`・`github`（設定があるとき）と `password`、手元では `local` |
+| `POST /api/auth/signin/<provider>` | ログインを始める。CSRF のトークンを付けた `application/x-www-form-urlencoded` の POST。`github` は GitHub の、`sid` は Sparklingstadt ID の認可ページへの `302`。ログアウトのあとの `sid` には `prompt=login` を付けます（Cookie `typle-sid-relogin`） |
+| `GET /api/auth/callback/<github・sid>`・`POST /api/auth/callback/<password・local>` | ログインから戻る先 |
 | `POST /api/auth/signout` | ログアウト（この端末の Cookie を消す） |
 | `GET /api/auth/error` | ログインの失敗（画面 `/signin?error=…` に移ります） |
 
 - ログインの Cookie は `__Host-typle-session`（`AUTH_URL` が HTTPS のとき。HTTP なら `typle-session`）、`HttpOnly`・`SameSite=Lax`・`Path=/` で、中身は `{sub,name,image,iat,exp}` を HMAC-SHA256 で署名したものです。**ログインから30日で切れ、延長しません**。ブラウザーの Cookie の `Expires` は Auth.js がセッションを読むたびに「今から30日」に書き直しますが、切れるかどうかは中身の `exp` で決まります。
-- アカウント ID は `github:<GitHub のユーザー番号>`・`password:<小文字の UUID>`・`ffpf:…`（v2.53.1 までのログインが切れるまで）です。開発用のログインは `github:0` です。
+- アカウント ID は `github:<GitHub のユーザー番号>`・`password:<小文字の UUID>`・`sid:<Sparklingstadt ID の sub>`（ほかのアカウントにひも付けた ID はそのアカウント）・`ffpf:…`（v2.53.1 までのログインが切れるまで）です。開発用のログインは `github:0` です。
 - 「すべての端末からログアウト」で無効にされたセッションは、`/api/auth/session` が `null` を返して Cookie を消します。この確認は1秒までしか待たず、間に合わなければ確かめずに答えます。
-- 本番では環境変数 `AUTH_REDIRECT_PROXY_URL` を設定しないでください（Auth.js が読んで GitHub の callback の向きを変えます）。
+- 本番では環境変数 `AUTH_REDIRECT_PROXY_URL` を設定しないでください（Auth.js が読んで GitHub と Sparklingstadt ID の callback の向きを変えます）。
 - パスワードの間違いは、Auth.js が `/signin?error=CredentialsSignin` へ戻します（サーバーのログには出しません）。
 
 ## `POST /api/account/*`
