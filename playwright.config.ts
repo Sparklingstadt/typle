@@ -33,6 +33,10 @@ export default defineConfig({
         // The session lists GitHub as a login, as the Go backend did with these.
         AUTH_GITHUB_ID: 'e2e',
         AUTH_GITHUB_SECRET: 'e2e',
+        // Sparklingstadt ID is the fake one below (tests/e2e/fakeSid.cjs).
+        AUTH_SID_ISSUER: 'http://127.0.0.1:3197',
+        AUTH_SID_ID: 'e2e',
+        AUTH_SID_SECRET: 'e2e',
         // The mails go to the fake Resend below (tests/e2e/fakeResend.cjs), which the tests read them back from.
         RESEND_API_KEY: 'e2e',
         TYPLE_MAIL_FROM: 'Typle <e2e@example.test>',
@@ -44,6 +48,12 @@ export default defineConfig({
       url: 'http://127.0.0.1:3101',
       reuseExistingServer: false,
       timeout: 60000,
+    },
+    {
+      command: 'node tests/e2e/fakeSid.cjs',
+      url: 'http://127.0.0.1:3197/.well-known/openid-configuration',
+      reuseExistingServer: false,
+      timeout: 10000,
     },
     {
       command: 'node tests/e2e/fakeResend.cjs',

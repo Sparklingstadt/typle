@@ -48,6 +48,8 @@ if (sidConfigured()) {
     checks: ['pkce', 'state', 'nonce'],
     authorization: { params: { scope: 'openid email profile' } },
     profile: (profile: SidClaims) => sidProfile(profile),
+    // As for GitHub: at a loopback AUTH_URL, the ID server sends the browser back to AUTH_URL, not to localhost.
+    redirectProxyUrl: redirectProxyUrl(settings),
   })
   providerIds.push(SID_PROVIDER_ID)
 }
