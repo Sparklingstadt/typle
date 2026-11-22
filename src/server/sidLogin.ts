@@ -23,3 +23,64 @@ export function sidProfile(profile: SidClaims): { id: string, name: string, imag
   const name = profile.name?.trim() || (profile.email ?? '').split('@')[0]
   return { id: `sid:${profile.sub}`, name, image: '' }
 }
+
+/**
+ * The cookie that makes the next Sparklingstadt ID login ask for the password (prompt=login): the ID server keeps its
+ * own login, so without it a browser signed out of this app would be let straight back in. It is left by a sign-out
+ * that went through and removed by a Sparklingstadt ID login that succeeded, as the FFPF ID login did in v2.6.4.
+ */
+export const SID_RELOGIN_COOKIE = 'typle-sid-relogin'
+/** How long the cookie is kept: the longest a login lasts (SESSION_MAX_AGE). */
+const RELOGIN_MAX_AGE = 30 * 24 * 3600
+
+const hasReloginCookie = (request: Request) => (request.headers.get('Cookie') ?? '').split(';')
+  .some(part => part.trim().startsWith(`${SID_RELOGIN_COOKIE}=`))
+
+/** The URL to start a Sparklingstadt ID login at with prompt=login when the cookie asks for it, else null: as it is. */
+export function sidSignInUrl(request: Request): string | null {
+  const url = new URL(request.url)
+  if (url.pathname !== `/api/auth/signin/${SID_PROVIDER_ID}` || !hasReloginCookie(request)) return null
+  url.searchParams.set('prompt', 'login')
+  return url.href
+}
+
+/** Whether a URL Auth.js answered with (where to go next) is not its error page or the sign-in page with an error. */
+const withoutError = (location: string | null | undefined, base: string) => {
+  if (!location) return false
+  const url = new URL(location, base)
+  return !url.searchParams.has('error') && url.pathname !== '/api/auth/error'
+}
+
+/** Whether response is a sign-out that went through: Auth.js's answer for next-auth/react (JSON), or its redirect. */
+async function signedOut(request: Request, response: Response): Promise<boolean> {
+  const path = new URL(request.url).pathname
+  if (request.method !== 'POST') return false
+  if (path === '/api/account/signout-everywhere') return response.ok
+  if (path !== '/api/auth/signout') return false
+  if (response.status >= 300 && response.status < 400) return withoutError(response.headers.get('Location'), request.url)
+  if (!response.ok) return false
+  const body: unknown = await response.clone().json().catch(() => null)
+  const url = body && typeof body === 'object' && 'url' in body ? body.url : null
+  return typeof url === 'string' && withoutError(url, request.url)
+}
+
+/**
+ * response, with the cookie left after a sign-out that went through (POST /api/auth/signout or
+ * /api/account/signout-everywhere), or removed after a Sparklingstadt ID login that succeeded (the callback sends the
+ * browser on, not back to the sign-in page with an error). Any other response is answered as it is.
+ */
+export async function withSidRelogin(request: Request, response: Response, secure: boolean): Promise<Response> {
+  const attributes = `Path=/; HttpOnly; SameSite=Lax${secure ? '; Secure' : ''}`
+  let cookie: string | null = null
+  if (await signedOut(request, response)) {
+    cookie = `${SID_RELOGIN_COOKIE}=1; ${attributes}; Max-Age=${RELOGIN_MAX_AGE}`
+  } else if (new URL(request.url).pathname === `/api/auth/callback/${SID_PROVIDER_ID}` && hasReloginCookie(request)
+    && response.status >= 300 && response.status < 400 && withoutError(response.headers.get('Location'), request.url)) {
+    cookie = `${SID_RELOGIN_COOKIE}=; ${attributes}; Max-Age=0`
+  }
+  if (!cookie) return response
+  // A copy, as the headers of a response may be immutable (Response.redirect).
+  const answered = new Response(response.body, response)
+  answered.headers.append('Set-Cookie', cookie)
+  return answered
+}
