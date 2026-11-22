@@ -33,51 +33,17 @@ async function matchAriaFile(locator: Locator, name: string) {
   writeFileSync(path.join(path.dirname(test.info().file), 'aria-snapshots.spec.ts-snapshots', name), tree + '\n')
 }
 
-test('the sign-in form keeps its fields, buttons and links', async ({ page }) => {
+test('the sign-in page has only the Sparklingstadt ID and GitHub buttons', async ({ page }) => {
   await page.goto('/signin')
   await expect(page.getByRole('main')).toMatchAriaSnapshot(`
     - main:
       - heading "ログイン" [level=1]
-      - text: ID
-      - textbox "ID"
-      - text: パスワード
-      - textbox "パスワード"
-      - button "ログイン" [disabled]
-      - list:
-        - listitem:
-          - link "新しく登録する":
-            - /url: /signup
-        - listitem:
-          - link "パスワードを忘れた":
-            - /url: /forgot-password
-        - listitem:
-          - link "ID を忘れた":
-            - /url: /forgot-id
-      - paragraph: GitHub のアカウントでもログインできます。
+      - button "Sparklingstadt IDでログイン"
       - button "GitHubでログイン"
   `)
-})
-
-test('the sign-up form keeps its fields, buttons and links', async ({ page }) => {
-  await page.goto('/signup')
-  await expect(page.getByRole('main')).toMatchAriaSnapshot(`
-    - main:
-      - heading "登録" [level=1]
-      - paragraph: ID とパスワードで Typle のアカウントを作ります。
-      - text: ID
-      - textbox "ID"
-      - paragraph: /半角英数字・「_」・「-」で3〜\\d+文字。大文字と小文字は区別しません。あとから変えられません。/
-      - text: メールアドレス
-      - textbox "メールアドレス"
-      - paragraph: 確認のメールと、ID やパスワードを忘れたときのメールを送ります。
-      - text: パスワード
-      - textbox "パスワード"
-      - paragraph: /\\d+〜\\d+文字。ID と同じものは使えません。/
-      - button "登録する"
-      - paragraph:
-        - link "登録済みの方は、こちらからログイン":
-          - /url: /signin?returnTo=%2Fhome
-  `)
+  // No ID or password, and no links to sign up or to recover either.
+  await expect(page.getByRole('textbox')).toHaveCount(0)
+  await expect(page.getByRole('main').getByRole('link')).toHaveCount(0)
 })
 
 test('the guide keeps its table of contents', async ({ page }) => {
@@ -400,15 +366,11 @@ test.describe('signed in', () => {
   })
 })
 
-// Pages reached from outside the app: a shared result, a link to a shared pack (sharing has ended), the forms for a
-// forgotten password or ID, the links of the mails (an unknown token, as a used link shows), and one official pack.
+// Pages reached from outside the app: a shared result, a link to a shared pack (sharing has ended), and one official
+// pack.
 const linkedPages: { name: string, path: string, ready: (page: Page) => Promise<void> }[] = [
   { name: 'result-shared', path: `/result?n=${encodeURIComponent('基本の単語')}&t=6.00&a=95&w=3&s=200`, ready: page => expect(page.getByRole('heading', { level: 1, name: '「基本の単語」の練習記録' })).toBeVisible() },
   { name: 'shared-ended', path: '/shared/0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d', ready: page => expect(page.getByText('この共有は終了しました。')).toBeVisible() },
-  { name: 'forgot-password', path: '/forgot-password', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
-  { name: 'forgot-id', path: '/forgot-id', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
-  { name: 'reset-password', path: '/reset-password?token=unknown-token', ready: page => expect(page.getByLabel('新しいパスワード', { exact: true })).toBeVisible() },
-  { name: 'verify-email-unusable', path: '/verify-email?token=unknown-token', ready: page => expect(page.getByRole('alert').filter({ hasText: 'このリンクは使えません。' })).toBeVisible() },
   // The button to practise is disabled until this browser's data is read.
   { name: 'official-pack', path: '/packs/english-basics', ready: page => expect(page.getByRole('button', { name: 'このパックで練習する', exact: true })).toBeEnabled() },
 ]

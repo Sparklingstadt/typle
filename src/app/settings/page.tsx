@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import AccountSettings from '@/components/Settings/AccountSettings'
 import LanguageSettings from '@/components/Settings/LanguageSettings'
 import SessionSettings from '@/components/Settings/SessionSettings'
 import { PageMain } from '@/components/ui/page-layout'
@@ -19,7 +18,6 @@ export default async function Settings() {
     </header>
     <div className="space-y-6">
       <LanguageSettings />
-      <AccountSettings />
       <SessionSettings />
     </div>
   </PageMain>

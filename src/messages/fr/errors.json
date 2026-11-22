@@ -65,14 +65,5 @@
   "sharedPackNotFound": "Ce partage est terminé.",
   "invalidPage": "Le numéro de page n’est pas valide.",
   "importInputTypeInvalid": "Ligne {line} : input_type doit être command, code ou word.",
-  "invalidRequest": "La requête n’est pas valide.",
-  "loginIdFormat": "L’identifiant doit comporter de 3 à 32 lettres, chiffres, « _ » ou « - ».",
-  "passwordLength": "Le mot de passe doit comporter de 10 à 128 caractères.",
-  "passwordSameAsId": "Le mot de passe ne peut pas être identique à l’identifiant.",
-  "emailFormat": "L’adresse e-mail n’est pas valide.",
-  "loginIdTaken": "Cet identifiant est déjà utilisé. Choisissez-en un autre.",
-  "tooManyRequests": "Trop de demandes. Réessayez plus tard.",
-  "invalidToken": "Ce lien ne peut pas être utilisé : il a expiré ou a déjà servi.",
-  "notPasswordAccount": "Réservé aux comptes qui se connectent avec un identifiant et un mot de passe.",
-  "wrongPassword": "Le mot de passe actuel est incorrect."
+  "invalidRequest": "La requête n’est pas valide."
 }

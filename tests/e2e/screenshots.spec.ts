@@ -32,11 +32,6 @@ test('the sign-in page looks the same in dark mode', async ({ page }) => {
   await expect(page).toHaveScreenshot('signin-dark.png', masks(page))
 })
 
-test('the sign-up page looks the same', async ({ page }) => {
-  await open(page, '/signup')
-  await expect(page).toHaveScreenshot('signup.png', masks(page))
-})
-
 test('the top of the guide looks the same', async ({ page }) => {
   await open(page, '/guide')
   await expect(page).toHaveScreenshot('guide.png', masks(page))
@@ -305,16 +300,11 @@ test.describe('signed in', () => {
   })
 })
 
-// Pages reached from outside the app: a shared result, a link to a shared pack (sharing has ended), the forms for a
-// forgotten password or ID, and the links of the mails (an unknown token, which is what such a link shows once used).
+// Pages reached from outside the app: a shared result and a link to a shared pack (sharing has ended).
 // The page of one official pack shows only that pack, unlike the catalog.
 const linkedPages: { name: string, path: string, ready: (page: Page) => Promise<void> }[] = [
   { name: 'result-shared', path: `/result?n=${encodeURIComponent('基本の単語')}&t=6.00&a=95&w=3&s=200`, ready: page => expect(page.getByRole('heading', { level: 1, name: '「基本の単語」の練習記録' })).toBeVisible() },
   { name: 'shared-ended', path: '/shared/0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d', ready: page => expect(page.getByText('この共有は終了しました。')).toBeVisible() },
-  { name: 'forgot-password', path: '/forgot-password', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
-  { name: 'forgot-id', path: '/forgot-id', ready: page => expect(page.getByRole('heading', { level: 1 })).toBeVisible() },
-  { name: 'reset-password', path: '/reset-password?token=unknown-token', ready: page => expect(page.getByLabel('新しいパスワード', { exact: true })).toBeVisible() },
-  { name: 'verify-email-unusable', path: '/verify-email?token=unknown-token', ready: page => expect(page.getByRole('alert').filter({ hasText: 'このリンクは使えません。' })).toBeVisible() },
   // The button to practise is disabled until this browser's data is read.
   { name: 'official-pack', path: '/packs/english-basics', ready: page => expect(page.getByRole('button', { name: 'このパックで練習する', exact: true })).toBeEnabled() },
 ]
