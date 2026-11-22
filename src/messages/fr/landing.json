@@ -42,7 +42,7 @@
   },
   "storage": {
     "title": "Où sont gardées vos données",
-    "text": "Toutes les fonctions marchent sans connexion. Vos données sont gardées dans ce navigateur, et une connexion (avec GitHub ou un identifiant et un mot de passe) les synchronise entre vos appareils.",
+    "text": "Toutes les fonctions marchent sans connexion. Vos données sont gardées dans ce navigateur, et une connexion (avec Sparklingstadt ID ou GitHub) les synchronise entre vos appareils.",
     "more": "<guide>Mode d’emploi</guide> / <about>À propos de Typle</about>"
   },
   "try": {

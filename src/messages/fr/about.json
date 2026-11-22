@@ -48,10 +48,6 @@
     "title": "Statistiques de visite",
     "text": "Pour savoir quelles pages sont consultées et à quelle fréquence, les affichages de pages sont comptés avec Vercel Web Analytics. Seuls l’adresse de la page (sans ce qui suit ?), le site d’origine, le navigateur, le système d’exploitation et le pays sont envoyés. Aucun cookie n’est utilisé, et vos listes de mots et vos résultats d’entraînement ne sont jamais envoyés."
   },
-  "email": {
-    "title": "Utilisation de l’adresse e-mail",
-    "text": "Quand vous créez un compte avec un identifiant et un mot de passe, nous conservons votre adresse e-mail. Elle sert uniquement à envoyer les e-mails de confirmation de l’adresse, de réinitialisation du mot de passe et de rappel de l’identifiant. Elle n’est jamais utilisée pour de la publicité ou des annonces ni transmise à d’autres. Les e-mails sont envoyés via Resend."
-  },
   "version": {
     "title": "Version et développement",
     "version": "Version",

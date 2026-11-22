@@ -106,7 +106,7 @@
       - link "Practice 英単語 › よく使う表現":
         - /url: /play?list=phrases
         - text: Practice
-  - paragraph: You can use every practice and editing feature without signing in. Word lists, practice history, and devices are saved in this browser. Signing in (with GitHub or an ID and password) switches to a separate storage location, your account, which syncs across devices. Data in the browser is not moved automatically.
+  - paragraph: You can use every practice and editing feature without signing in. Word lists, practice history, and devices are saved in this browser. Signing in (with Sparklingstadt ID or GitHub) switches to a separate storage location, your account, which syncs across devices. Data in the browser is not moved automatically.
   - paragraph:
     - link "How to use":
       - /url: /guide

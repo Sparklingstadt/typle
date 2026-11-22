@@ -48,10 +48,6 @@
     "title": "Analytics",
     "text": "To see which pages are viewed and how often, page views are counted with Vercel Web Analytics. Only the page address (without anything after ?), the referrer, the browser, the OS and the country are sent. No cookies are used, and your word lists and practice records are never sent."
   },
-  "email": {
-    "title": "How we use email addresses",
-    "text": "When you sign up with an ID and a password, we keep your email address. It is used only to send mail for confirming the address, resetting the password and telling you your ID. It is never used for ads or announcements and is not passed to anyone else. Mail is sent through Resend."
-  },
   "version": {
     "title": "Version and development",
     "version": "Version",

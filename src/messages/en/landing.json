@@ -42,7 +42,7 @@
   },
   "storage": {
     "title": "Where your data is kept",
-    "text": "Every feature works without logging in. Your data is kept in this browser, and logging in (with GitHub or an ID and password) syncs it across devices.",
+    "text": "Every feature works without logging in. Your data is kept in this browser, and logging in (with Sparklingstadt ID or GitHub) syncs it across devices.",
     "more": "<guide>How to use</guide> / <about>About Typle</about>"
   },
   "try": {

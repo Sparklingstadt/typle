@@ -71,7 +71,7 @@ GitHub Proへ変更した場合は、上記のmain保護ルールを追加して
    そのあと `npm run check:production`（`scripts/check-production.cjs`）で次を確かめます。1つでも失敗すれば終了コード1です。
    本番（`https://typle.sparklingstadt.com`）のホームの成功応答、Vercel のドメインのページが本番へ308で移ること（クエリも残す）、
    両方のドメインで Route Handler（`src/app/api/health/route.ts`）が返す`/api/health`の200（本番DBへの接続を含む）と匿名APIアクセスの401。
-   ログインの関数（Auth.js）も確かめます。`/api/auth/session`が200で、本文に`user`がないこと、`/api/auth/providers`が`github`と`password`を含むこと、
+   ログインの関数（Auth.js）も確かめます。`/api/auth/session`が200で、本文に`user`がないこと、`/api/auth/providers`が`sid`と`github`だけであること（v2.59.0 から。それまでは`github`と`password`を含むこと）、
    `/api/auth/csrf`でCSRFトークンとCookieをもらい、それを付けた`POST /api/auth/signin/github`がリダイレクトを辿らずに302を返し、
    `Location`が`https://github.com/login/oauth/authorize?`で始まり本番の`redirect_uri`（`https://typle.sparklingstadt.com/api/auth/callback/github`）を含むことです。
    これにより、本番の関数で`AUTH_SECRET`・`AUTH_URL`・`AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET`が揃って設定されていることまで確かめます。

@@ -164,6 +164,7 @@ ID とパスワードのログインは v2.59.0 でなくしました。登録�
 - v2.58.0 までに ID とパスワードでログインしたセッション（アカウント ID が `password:` で始まる）は、ログインから30日で切れるまで使えます。
 - そのアカウントのデータ（`typle_users` などの DB の行はそのまま残ります）は、上の「Sparklingstadt ID のひも付け」で `password:<UUID>` に Sparklingstadt ID をひも付ければ、そのまま使えます。
 - 環境変数 `RESEND_API_KEY`・`TYPLE_MAIL_FROM` は読みません（Vercel から消してかまいません）。
+- 「Typleについて」の「メールアドレスの扱い」と、ホーム・トップページ・使い方の「GitHub または ID とパスワード」の説明は v2.60.1 で直しました。`npm run check:production` も、`/api/auth/providers` が `sid` と `github` だけであることを確かめます。
 
 #### iPad・Mac のアプリ
 
