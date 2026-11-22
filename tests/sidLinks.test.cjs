@@ -4,7 +4,7 @@ const assert = require('node:assert/strict')
 const { randomInt } = require('node:crypto')
 const { createPool } = require('../src/server/database.ts')
 const { linkedAccount } = require('../src/server/sidLinks.ts')
-const { linkSid, parseSub } = require('../scripts/sid-link.cjs')
+const { databaseLabel, linkSid, parseSub } = require('../scripts/sid-link.cjs')
 
 // The links of Sparklingstadt ID accounts to the accounts of the other logins (typle_sid_links): what the login reads
 // and what npm run sid:link adds. Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
@@ -38,6 +38,12 @@ test('a sub is taken with or without sid:, and only in its own form', () => {
   assert.equal(parseSub('sid:cm3abc'), 'cm3abc')
   assert.equal(parseSub('cm3abc'), 'cm3abc')
   for (const text of ['SID:x', '', 'sid:', 'a b', 'ABC', 'a'.repeat(65)]) assert.equal(parseSub(text), null, text)
+})
+
+test('the result names the database it was written to, without the user or password', () => {
+  assert.equal(databaseLabel('postgresql://u:secret@ep-x.neon.tech/neondb?sslmode=require'), 'ep-x.neon.tech/neondb')
+  assert.equal(databaseLabel('postgresql://u:secret@127.0.0.1:5433/typle'), '127.0.0.1:5433/typle')
+  assert.equal(databaseLabel('not a url'), '?')
 })
 
 test('a linked sub signs in as its account; a sub without a link has none', database, async () => {

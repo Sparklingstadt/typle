@@ -17,6 +17,19 @@ function parseSub(text) {
   return SUB.test(sub) ? sub : null
 }
 
+/**
+ * The database url names, as host[:port]/name without the user or password, so that the result says which database
+ * was written to (a forgotten DATABASE_URL=<production> falls back to .env.local's).
+ */
+function databaseLabel(url) {
+  try {
+    const parsed = new URL(url)
+    return `${parsed.host}${parsed.pathname}`
+  } catch {
+    return '?'
+  }
+}
+
 /** Whether owner has a saved workspace or a practice record. */
 async function hasData(client, owner) {
   const { rows } = await client.query(`SELECT EXISTS (SELECT 1 FROM typle_workspaces WHERE owner_id = $1)
@@ -82,7 +95,7 @@ async function main(args) {
   const db = new Pool({ connectionString: url, max: 1 })
   try {
     const answer = await linkSid(db, sub, accountId)
-    console.log(`${MESSAGES[answer]}（sid:${sub} → ${accountId}）`)
+    console.log(`${MESSAGES[answer]}（sid:${sub} → ${accountId}、DB: ${databaseLabel(url)}）`)
     return answer === 'linked'
   } finally {
     await db.end()
@@ -96,4 +109,4 @@ if (require.main === module) {
   })
 }
 
-module.exports = { linkSid, parseSub }
+module.exports = { databaseLabel, linkSid, parseSub }
