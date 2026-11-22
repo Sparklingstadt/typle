@@ -59,3 +59,12 @@ test('a session is sealed with the same bytes as the Go backend\'s', () => {
   assert.equal(sealSession(authSettings.sessionKey, bob), auth.values.bob)
   assert.deepEqual(openSession(authSettings.sessionKey, auth.values.bob, auth.now), bob)
 })
+
+test('a Sparklingstadt ID account sid:<sub> opens, and a sub of another form does not', () => {
+  const now = 2000
+  const open = sub => openSession(settings.sessionKey, sealSession(settings.sessionKey,
+    { sub, name: 'N', image: '', issuedAt: 1000, expires: 3000 }), now)
+  assert.equal(open('sid:cm3abc123')?.sub, 'sid:cm3abc123')
+  assert.equal(open(`sid:${'a'.repeat(64)}`)?.sub, `sid:${'a'.repeat(64)}`)
+  for (const sub of ['sid:', 'sid:ABC', 'sid:a-b', `sid:${'a'.repeat(65)}`, 'SID:abc', 'sid:abc\n']) assert.equal(open(sub), null, sub)
+})
