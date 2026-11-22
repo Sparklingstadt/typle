@@ -14,7 +14,7 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 | [`POST /api/workspace/records`](./workspace.md#記録の追加と削除) | 要 | 記録を1件追加する |
 | [`DELETE /api/workspace/records`](./workspace.md#記録の追加と削除) | 要 | 記録を1件削除する |
 | [`/api/auth/*`](./auth.md#auth-js-の経路-api-auth) | — | Auth.js（セッション・CSRF・プロバイダー・ログイン・ログアウト） |
-| [`/api/account/*`](./auth.md#post-api-account) | 一部要 | ID とパスワードのアカウント（登録・確認・再設定・パスワードの変更・すべての端末からのログアウト） |
+| [`/api/account/signout-everywhere`](./auth.md#post-api-account-signout-everywhere) | 要 | すべての端末からのログアウト |
 
 ## 共通事項
 
@@ -44,7 +44,7 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 
 ## 認証
 
-アカウントは `github:<GitHubのユーザーID>` か `password:<UUID>`（ID とパスワードのアカウント）です（v2.53.1 までに FFPF ID でログインしたセッションは、30日で切れるまで `ffpf:` のアカウントです）。ログインの流れは [ログイン](./auth.md) を見てください。
+アカウントは `github:<GitHubのユーザーID>`、`sid:<Sparklingstadt ID の sub>`（ほかのアカウントにひも付けた ID はそのアカウント）か `password:<UUID>`（v2.58.0 までの ID とパスワードのアカウント）です（v2.53.1 までに FFPF ID でログインしたセッションは、30日で切れるまで `ffpf:` のアカウントです）。ログインの流れは [ログイン](./auth.md) を見てください。
 
 - リクエストはセッションの Cookie で判断します（v2.55.0 から `Authorization: Bearer` のアプリのトークンは読みません）。名前は HTTPS では `__Host-` 付きで、`HttpOnly`・`SameSite=Lax`・`Path=/` です。セッションはログインから30日で切れ、使っても延びません。
 - データを読み書きするリクエストは、そのたびにセッションが無効にされていないか（`POST /api/account/signout-everywhere` の後のログインか）をDBで確かめます。無効なら `401 loginRequired` で、Cookie を消します。確かめられなければ `503 databaseUnavailable` です。
