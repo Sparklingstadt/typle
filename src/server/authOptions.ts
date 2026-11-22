@@ -2,6 +2,7 @@ import type { Session, User } from 'next-auth'
 import type { JWT } from 'next-auth/jwt'
 import { SESSION_MAX_AGE } from './session'
 import { readLoginSettings, type LoginSettings } from './settings'
+import { SID_PROVIDER_ID } from './sidLogin'
 
 // The parts of the Auth.js configuration (src/auth.ts) that decide something, kept apart from NextAuth so that the unit
 // tests can run them: the account a login makes, the session's account ID, end and revocation, where Auth.js sends the
@@ -30,13 +31,18 @@ export function authorizeLocal(settings: LoginSettings | null = readLoginSetting
  * password, src/server/passwordLogin.ts) starts then; the others start when the cookie is sealed (encodeSession). A
  * session read from the cookie is null, which Auth.js answers with no session and the cookie removed, when the account
  * signed out of every device since this login; it is kept when that cannot be told in time (revoked answers null).
+ * A Sparklingstadt ID login (sid:<sub>) is the account its sub is linked to when linked answers one; when the link
+ * cannot be read, the login fails (linked throws), rather than open the empty account sid:<sub>.
  */
-export function jwtCallback(revoked: (sub: string, issuedAt: number) => Promise<boolean | null>) {
+export function jwtCallback(revoked: (sub: string, issuedAt: number) => Promise<boolean | null>,
+  linked: (sub: string) => Promise<string | null>) {
   return async ({ token, account, user }: {
-    token: JWT, account?: { providerAccountId: string } | null, user?: object | null,
+    token: JWT, account?: { provider?: string, providerAccountId: string } | null, user?: object | null,
   }): Promise<JWT | null> => {
     if (account) {
-      token.sub = account.providerAccountId
+      token.sub = account.provider === SID_PROVIDER_ID
+        ? await linked(account.providerAccountId.slice('sid:'.length)) ?? account.providerAccountId
+        : account.providerAccountId
       const issuedAt = user && 'issuedAt' in user ? user.issuedAt : null
       if (typeof issuedAt === 'number' && Number.isInteger(issuedAt)) {
         token.iat = issuedAt

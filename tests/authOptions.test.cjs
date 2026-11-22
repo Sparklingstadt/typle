@@ -7,6 +7,8 @@ const {
 } = require('../src/server/authOptions.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 const { githubConfigured } = require('../src/lib/githubLogin.ts')
+const { sidConfigured } = require('../src/lib/sidLogin.ts')
+const { sidProfile, SID_PROVIDER_ID } = require('../src/server/sidLogin.ts')
 
 // What src/auth.ts hands Auth.js: the GitHub profile, the callbacks that give the session its account ID, its end and
 // its revocation, the made-up local login, and the paths under /api/auth that Auth.js answers.
@@ -145,4 +147,52 @@ test('the Auth.js logger leaves out the unreadable session cookie, and only that
   log(sessionError(new Error('database is down')))
   assert.equal(lines[0], '[auth][error] JWTSessionError: Read more at https://errors.authjs.dev#jwtsessionerror')
   assert.ok(lines.some(line => line.includes('database is down')))
+})
+
+test('Sparklingstadt ID is offered only with its issuer, client ID and secret', () => {
+  const all = { AUTH_SID_ISSUER: 'https://id.example', AUTH_SID_ID: 'typle-r', AUTH_SID_SECRET: 'secret' }
+  assert.equal(sidConfigured(all), true)
+  for (const name of Object.keys(all)) {
+    assert.equal(sidConfigured({ ...all, [name]: undefined }), false, name)
+    assert.equal(sidConfigured({ ...all, [name]: '' }), false, name)
+  }
+  assert.equal(SID_PROVIDER_ID, 'sid')
+})
+
+test('the Sparklingstadt ID profile is the account sid:<sub>, named by its name, or by its address before @', () => {
+  const profile = { sub: 'cm3abc', email: 'ann@example.test', email_verified: true, name: ' Ann ' }
+  assert.deepEqual(sidProfile(profile), { id: 'sid:cm3abc', name: 'Ann', image: '' })
+  for (const name of [null, undefined, '', '  ']) assert.deepEqual(sidProfile({ ...profile, name }), { id: 'sid:cm3abc', name: 'ann', image: '' })
+})
+
+test('a Sparklingstadt ID whose address is not confirmed, or whose sub is not of its form, is refused', () => {
+  const profile = { sub: 'cm3abc', email: 'ann@example.test', email_verified: true, name: 'Ann' }
+  for (const changed of [{ email_verified: false }, { email_verified: undefined }, { email_verified: 'true' },
+    { sub: 'A!' }, { sub: '' }, { sub: 'a'.repeat(65) }]) {
+    assert.throws(() => sidProfile({ ...profile, ...changed }), JSON.stringify(changed))
+  }
+})
+
+test('a Sparklingstadt ID login opens the account it is linked to, else its own sid:<sub>', async () => {
+  const asked = []
+  const linked = async sub => { asked.push(sub); return sub === 'cm3abc' ? 'github:42' : null }
+  const jwt = jwtCallback(async () => false, linked)
+  assert.equal((await jwt({ token: { sub: 'x' }, account: { provider: 'sid', providerAccountId: 'sid:cm3abc' } })).sub, 'github:42')
+  assert.equal((await jwt({ token: { sub: 'x' }, account: { provider: 'sid', providerAccountId: 'sid:cm3xyz' } })).sub, 'sid:cm3xyz')
+  assert.deepEqual(asked, ['cm3abc', 'cm3xyz'])
+  // The other logins are not looked up.
+  assert.equal((await jwt({ token: { sub: 'x' }, account: { provider: 'github', providerAccountId: 'github:7' } })).sub, 'github:7')
+  assert.deepEqual(asked, ['cm3abc', 'cm3xyz'])
+})
+
+test('a Sparklingstadt ID login fails when its link cannot be read, rather than open an empty account', async () => {
+  const jwt = jwtCallback(async () => false, async () => { throw new Error('database down') })
+  await assert.rejects(jwt({ token: { sub: 'x' }, account: { provider: 'sid', providerAccountId: 'sid:cm3abc' } }), /database down/)
+})
+
+test('Auth.js answers the Sparklingstadt ID paths only when it is in use', () => {
+  assert.equal(authPathKnown('/api/auth/signin/sid', ['github', 'sid']), true)
+  assert.equal(authPathKnown('/api/auth/callback/sid', ['github', 'sid']), true)
+  assert.equal(authPathKnown('/api/auth/signin/sid', ['github']), false)
+  assert.equal(authPathKnown('/api/auth/callback/sid', ['github']), false)
 })
