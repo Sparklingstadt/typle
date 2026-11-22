@@ -50,7 +50,7 @@ test('at a login, the session is the provider account: the account ID, not the r
   assert.equal(asked, 0)
 })
 
-test('a login that says when it was made (the ID and password) starts then and lasts 30 days', async () => {
+test('a login that says when it was made starts then and lasts 30 days', async () => {
   const jwt = jwtCallback(async () => true)
   const account = { providerAccountId: 'password:6d0c3a40-0000-4000-8000-000000000000' }
   assert.deepEqual(await jwt({ token: { sub: 'x', name: 'mona' }, account, user: { id: account.providerAccountId, issuedAt: 1_700_000_000 } }),
@@ -122,12 +122,13 @@ test('Auth.js answers its own paths and the providers in use; every other /api/a
   assert.equal(authPathKnown('/api/auth/callback/github', ['local']), false)
 })
 
-test('the Auth.js logger skips CredentialsSignin and logs every other error', () => {
+test('the Auth.js logger logs every error but the unreadable session cookie', () => {
   const lines = []
   const log = authErrorLogger((...args) => lines.push(args.join(' ')))
-  const wrong = Object.assign(new Error('Read more at https://errors.authjs.dev#credentialssignin'), { type: 'CredentialsSignin' })
-  log(wrong)
-  assert.deepEqual(lines, [])
+  // A refused Credentials login is no longer quiet: only the local login of development has that provider.
+  log(Object.assign(new Error('Read more at https://errors.authjs.dev#credentialssignin'), { type: 'CredentialsSignin' }))
+  assert.equal(lines[0], '[auth][error] CredentialsSignin: Read more at https://errors.authjs.dev#credentialssignin')
+  lines.length = 0
   const other = Object.assign(new Error('boom'), { type: 'AdapterError' })
   log(other)
   assert.equal(lines[0], '[auth][error] AdapterError: boom')

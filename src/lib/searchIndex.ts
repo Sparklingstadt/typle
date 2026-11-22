@@ -24,9 +24,9 @@ export const INDEXED_PATHS: readonly { path: string; changeFrequency: SitemapEnt
   { path: '/about', changeFrequency: 'monthly', priority: 0.5 },
 ]
 
-// The account pages (sign-in, sign-up and the recovery of an ID or password) are noindex in their own metadata and are
-// not listed above: robots.txt does not block them, so that a crawler can read the noindex.
-export const ACCOUNT_PATHS: readonly string[] = ['/signin', '/signup', '/verify-email', '/forgot-password', '/reset-password', '/forgot-id']
+// The sign-in page is noindex in its own metadata and is not listed above: robots.txt does not block it, so that a crawler can read
+// the noindex.
+export const ACCOUNT_PATHS: readonly string[] = ['/signin']
 
 // The development login and the backend have nothing for a search result.
 export const DISALLOWED_PATHS: readonly string[] = ['/local-login', '/api/']

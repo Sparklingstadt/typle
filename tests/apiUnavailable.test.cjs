@@ -2,10 +2,7 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { answerWorkspace, answerRecords } = require('../src/server/workspace.ts')
-const { answerSignOutEverywhere, answerSignup } = require('../src/server/accountApi.ts')
-const {
-  answerVerify, answerResendVerification, answerForgotPassword, answerResetPassword, answerForgotId, answerChangePassword, answerMe,
-} = require('../src/server/accountRecovery.ts')
+const { answerSignOutEverywhere } = require('../src/server/accountApi.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 const { sealSession, newSession } = require('../src/server/session.ts')
 
@@ -36,14 +33,8 @@ const afterLogin = () => pool(NOT_REVOKED)
 /** No pool at all, as when DATABASE_URL is not set. */
 const none = () => { throw new Error('DATABASE_URL is not set') }
 
-const USER_ID = '0b6f2c1e-3d4a-4f5b-8c9d-0e1f2a3b4c5d'
-const USER = { id: USER_ID, login_id: 'someone', email: 'someone@example.com', email_verified_at: null, password_hash: '', locale: 'ja' }
-/** The login is checked and the account is found, and every later use fails. */
-const afterAccount = () => pool({ ...NOT_REVOKED, 'FROM typle_users WHERE id': [USER] })
-
 const cookieOf = sub => `typle-session=${sealSession(settings.sessionKey, newSession(sub, 'N', '', Math.floor(Date.now() / 1000) - 60))}`
 const github = cookieOf('github:5')
-const password = cookieOf(`password:${USER_ID}`)
 
 function request(path, method, body, cookie) {
   return new Request(`${origin}${path}`, {
@@ -109,63 +100,9 @@ test('/api/workspace/records is 503 when there is no pool or the record cannot b
     'workspaceSaveFailed', 'DELETE /api/workspace/records: record.delete')
 })
 
-// Each account API with a body that reaches the database, and the operation its failures are reported as.
-const defer = () => {}
-const accountApis = [
-  { path: 'signup', operation: 'account.signup', body: { loginId: 'someone', email: 'someone@example.com', password: 'correct horse battery' },
-    answer: (req, open) => answerSignup(req, open, withSettings) },
-  { path: 'verify', operation: 'account.verify', body: { token: 'x' }, answer: (req, open) => answerVerify(req, open, withSettings) },
-  { path: 'forgot-password', operation: 'account.forgotPassword', body: { loginId: 'someone' },
-    answer: (req, open) => answerForgotPassword(req, open, withSettings, defer) },
-  { path: 'reset-password', operation: 'account.resetPassword', body: { token: 'x', password: 'correct horse battery' },
-    answer: (req, open) => answerResetPassword(req, open, withSettings) },
-  { path: 'forgot-id', operation: 'account.forgotId', body: { email: 'someone@example.com' },
-    answer: (req, open) => answerForgotId(req, open, withSettings, defer) },
-]
-// The ones that need a login first: with an ID and a password, as only such an account has them.
-const signedInApis = [
-  { path: 'resend-verification', method: 'POST', operation: 'account.resendVerification', body: {},
-    answer: (req, open) => answerResendVerification(req, open, withSettings) },
-  { path: 'change-password', method: 'POST', operation: 'account.changePassword', body: { currentPassword: 'correct horse battery', newPassword: 'staple battery horse' },
-    answer: (req, open) => answerChangePassword(req, open, withSettings) },
-  { path: 'me', method: 'GET', operation: 'account.me', answer: (req, open) => answerMe(req, open, withSettings) },
-]
-
-test('every account API is 503 databaseUnavailable when there is no pool', async () => {
-  for (const api of accountApis) {
-    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, 'POST', api.body), none),
-      'databaseUnavailable', `POST /api/account/${api.path}: ${api.operation}`)
+test('signing out of every device is 503 databaseUnavailable when there is no pool or the revocation cannot be written', async () => {
+  for (const open of [none, afterLogin]) {
+    await expectUnavailable(() => answerSignOutEverywhere(request('/api/account/signout-everywhere', 'POST', undefined, github), open, withSettings),
+      'databaseUnavailable', 'POST /api/account/signout-everywhere: session.revoke')
   }
-  for (const api of signedInApis) {
-    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, api.method, api.body, password), none),
-      'databaseUnavailable', `${api.method} /api/account/${api.path}: ${api.operation}`)
-  }
-  await expectUnavailable(() => answerSignOutEverywhere(request('/api/account/signout-everywhere', 'POST', undefined, github), none, withSettings),
-    'databaseUnavailable', 'POST /api/account/signout-everywhere: session.revoke')
-})
-
-test('the account APIs without a login are 503 databaseUnavailable when their first query fails', async () => {
-  for (const api of accountApis) {
-    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, 'POST', api.body), down),
-      'databaseUnavailable', `POST /api/account/${api.path}: ${api.operation}`)
-  }
-})
-
-test('the account APIs with a login are 503 databaseUnavailable when the account cannot be read', async () => {
-  for (const api of signedInApis) {
-    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, api.method, api.body, password), afterLogin),
-      'databaseUnavailable', `${api.method} /api/account/${api.path}: ${api.operation}`)
-  }
-})
-
-test('asking for the link again and changing the password are 503 when the limits cannot be counted', async () => {
-  for (const api of signedInApis.filter(api => api.method === 'POST')) {
-    await expectUnavailable(() => api.answer(request(`/api/account/${api.path}`, 'POST', api.body, password), afterAccount),
-      'databaseUnavailable', `POST /api/account/${api.path}: ${api.operation}`)
-  }
-  // The account is read all the same.
-  const { response, logged } = await answered(() => answerMe(request('/api/account/me', 'GET', undefined, password), afterAccount, withSettings))
-  assert.equal(response.status, 200)
-  assert.deepEqual(await response.json(), { loginId: 'someone', email: 'someone@example.com', emailVerified: false })
-  assert.deepEqual(logged, [])
 })

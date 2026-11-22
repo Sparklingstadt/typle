@@ -27,8 +27,8 @@ export function authorizeLocal(settings: LoginSettings | null = readLoginSetting
 /**
  * The jwt callback. At a login the account is the provider's: for OAuth, Auth.js gives the user a random id and keeps
  * the id of profile() (github:<number>) as providerAccountId, and for Credentials providerAccountId is the id authorize
- * returned, so it is the account ID either way. A login whose user says when it was made (issuedAt of the ID and
- * password, src/server/passwordLogin.ts) starts then; the others start when the cookie is sealed (encodeSession). A
+ * returned, so it is the account ID either way. A login whose user says when it was made (issuedAt) starts then; the
+ * others start when the cookie is sealed (encodeSession). A
  * session read from the cookie is null, which Auth.js answers with no session and the cookie removed, when the account
  * signed out of every device since this login; it is kept when that cannot be told in time (revoked answers null).
  * A Sparklingstadt ID login (sid:<sub>) is the account its sub is linked to when linked answers one; when the link
@@ -125,16 +125,15 @@ function unreadableCookie(name: string, error: Error): boolean {
 }
 
 /**
- * The Auth.js logger's error method. A wrong ID or password makes Auth.js log CredentialsSignin as an error with a
- * stack on every attempt, and an expired or unreadable login cookie a JWTSessionError on every read of the session;
- * those are ordinary answers, not failures, so they are not logged (the limits and the response already handle them).
+ * The Auth.js logger's error method. An expired or unreadable login cookie makes Auth.js log a JWTSessionError on every
+ * read of the session; that is an ordinary answer, not a failure, so it is not logged (the response already handles it).
  * Every other error, including any other JWTSessionError, is logged as Auth.js's own logger does, with its cause when
  * it has one.
  */
 export function authErrorLogger(write: (...args: unknown[]) => void = console.error) {
   return (error: Error) => {
     const name = (error as { type?: string }).type ?? error.name
-    if (name === 'CredentialsSignin' || unreadableCookie(name, error)) return
+    if (unreadableCookie(name, error)) return
     write(`[auth][error] ${name}: ${error.message}`)
     const cause = error.cause
     if (cause && typeof cause === 'object' && 'err' in cause && (cause as { err: unknown }).err instanceof Error) {

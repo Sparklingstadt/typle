@@ -139,21 +139,6 @@ export async function signInWithGitHub(returnTo: string): Promise<void> {
 }
 
 /**
- * Signs in with an ID and a password (the Credentials provider `password` of src/auth.ts), and reads the session
- * again with update. Resolves with 'refused' when Auth.js refuses the login (a wrong ID or password, or one held back
- * for a while: it does not tell which), and rejects when the login could not be tried or did not take.
- */
-export async function signInWithPassword(loginId: string, password: string,
-  update: SessionState['update']): Promise<'signedIn' | 'refused'> {
-  const result = await authSignIn('password', { loginId, password, redirect: false })
-  if (result?.error === 'CredentialsSignin') return 'refused'
-  if (!result?.ok || result.error) throw new Error('password sign-in failed')
-  // A session that could not be read keeps the one before, which is not this sign-in.
-  if (!(await update())?.user.id.startsWith('password:')) throw new Error('password sign-in did not sign in')
-  return 'signedIn'
-}
-
-/**
  * Signs out of every device, this browser included, and goes home: every login until now
  * stops working, such as one that was stolen. Rejects, and stays on the page signed in, when the request fails or is
  * refused.

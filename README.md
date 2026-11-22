@@ -7,7 +7,7 @@
 - 本番: https://typle.sparklingstadt.com （v2.33.0 から。`https://typle-r-six.vercel.app` のページはここへ移ります）
 - リポジトリ: https://github.com/Sparklingstadt/typle-r （公開）
 
-本番は Sparklingstadt ID・GitHub・ID とパスワードのログイン、Neon DB、ローカル/LANは開発用アカウントとDocker DBを使用します。開発ログインは本番では無効です。
+本番は Sparklingstadt ID・GitHub のログイン、Neon DB、ローカル/LANは開発用アカウントとDocker DBを使用します。開発ログインは本番では無効です。
 
 ## 文書
 
@@ -108,7 +108,7 @@ npm run test:e2e
 
 API の Route Handler は、DB を使うテスト（`tests/api*.test.cjs` など）が、マイグレーション済みのテスト用DB（`TYPLE_TEST_DATABASE_URL`）で確かめます（`npm run verify` は `db:migrate` の後に実行します）。v2.46.11 まで動いていた Go のバックエンドの答え・Cookie・トークンは `tests/fixtures`（`sessions.json`・`auth-answers.json` など）に記録してあり、TS が同じ答えを返し、Go の発行した Cookie・トークンを読めることを確かめます。
 
-`npm test` は入力判定、記録、移行、形式検証などの単体テストです。速さのため全ファイルを1つのプロセスで動かす（`--test-isolation=none`）ので、`process.env` や `globalThis` を変えるテストは終わりに元へ戻してください。E2Eは既定で6 workersを使い、ファイル内も並列実行します（v2.38.2 から。それまでは手元ではコアの半分でした）。すべてのテストが1つの `next start` を共有するため、workers を増やしても速くなりません。14コアの Mac では、6のとき約56秒、コアの半分の7で約61秒、14で約88秒でした。数は環境変数 `TYPLE_E2E_WORKERS`（`4` や `50%` など）で変えられます。テストごとにランダムなアカウントIDを使用します。Playwright が本番ビルドの `next start`（ポート3101）を起動し、実PostgreSQLとAPIを通して作成・編集・練習・再読み込み・削除、アカウント分離、401/403/409応答を確認します。GitHub にはつながず、`tests/e2e/sessionCookie.ts` がテスト専用の秘密値で署名したログインの Cookie を作ります（`src/server/session.ts` と同じ値になることは `tests/sessionCookie.test.cjs` が確かめます）。GitHub OAuth画面の実ログインは自動テストできないため、公開後に本番で別途確認が必要です。Sparklingstadt ID は、Playwright が起動する偽の OpenID Connect のサーバー（`tests/e2e/fakeSid.cjs`、ポート3197）を相手に、ログイン・ひも付け・断る場合・ログアウト後の `prompt=login` まで通します（`tests/e2e/sid-login.spec.ts`）。テストユーザーの行だけを終了後に削除します。スナップショットテストの更新手順は [docs/snapshots.md](docs/snapshots.md) にまとめています。`tests/e2e/aria-snapshots.spec.ts` は、ログイン・登録のフォーム、使い方の目次、トップバーと、練習の結果、単語リストの行のメニュー、CSV の読み込みのダイアログ、編集をやめるときの確認のアクセシビリティツリー（役割・名前・並び）を、テストに書いた期待値と比べます（ARIA スナップショット。画像ではないので OS やフォントで変わりません）。ほかの画面（ホーム、記録、設定、編集、思い出して打つ・手書きのモード、パックの編集、ログイン中の表示、共有された結果、パスワード・ID を忘れたときとメールのリンク、公式パック、エラーの表示、英語の表示など）は期待値が長いので、画面ごとのファイル（`tests/e2e/aria-snapshots.spec.ts-snapshots/*.aria.yml`）に分けています。公式パックの一覧・関心・トップページ・ライセンスは、公式パックや依存パッケージが増えると一覧が変わるので、期待値を手で書き、見出し・説明・操作と一覧の1件目の形だけを比べます（ARIA スナップショットは、期待値を含んでいれば一致とみなします）。記録のデータと時計は `tests/e2e/snapshotData.ts` でスクリーンショットと共通にしてあり、日付・時刻・秒数まで実際の値で比べます。画面をわざと変えたときは、テストの中の期待値を `npx playwright test tests/e2e/aria-snapshots.spec.ts --update-snapshots --update-source-method=overwrite` で、ファイルに分けた期待値を `TYPLE_ARIA_WRITE=1 npx playwright test tests/e2e/aria-snapshots.spec.ts` で書き直し、差分を確かめてからコミットします。`tests/e2e/screenshots.spec.ts` は、ログイン（ライト・ダーク・スマートフォンの幅）、登録、使い方の上部、練習中・打ち間違い・練習の結果・練習記録・ベスト記録（それぞれライトとダーク）、ホーム（ライト・ダーク・はじめての人向け・英語）、単語パックの一覧と行のメニュー、単語リストの編集・入力エラー・編集をやめるときの確認、CSV の読み込みのプレビュー、パックの作成と編集、単語一覧、端末、設定の一般と入力、トップページ、Typleについて、スマートフォンのメニュー・練習・結果、思い出して打つ（ライト・ダーク）・手書きのモード、ログイン中のメニューと設定、共有された結果、終了した共有のリンク、パスワード・ID を忘れたとき、パスワードの再設定、使えないメールのリンク、公式パック1つのページ、読めない保存データ、保存できなかったとき、英語のログインを、前に撮った画像（`tests/e2e/screenshots.spec.ts-snapshots/`）と比べます。フォントの描画が OS で違うため、画像は macOS で撮っていて（名前が `-darwin` で終わります）、macOS でしか一致しません。サイドバーのバージョンは PR のたびに変わるので、塗りつぶして比べます。ログイン中の画面は、ほかの E2E と同じく `tests/e2e/account.ts` のテスト用のログイン（名前は E2E User、ID はテストごとにランダム）を使い、終わったら DB の行を消します。公式パックの数はパックを足すたびに変わるので、トップページの件数は塗りつぶし、公式パックの一覧と関心の画面は撮りません。練習の画面は、Playwright の時計（`page.clock`）を止めて決まった秒数だけ進めながら打つので、経過・速度・所要時間・記録の日付も毎回同じになります。記録の画面も時計を 2026年11月1日（日）の正午（日本時間）に固定し、その日から数えた記録を入れておくので、「今日」「昨日」の見出しまで毎回同じです。画面の見た目をわざと変えたときは `npx playwright test tests/e2e/screenshots.spec.ts --update-snapshots` で撮り直し、変わった画像を1枚ずつ見てからコミットします。
+`npm test` は入力判定、記録、移行、形式検証などの単体テストです。速さのため全ファイルを1つのプロセスで動かす（`--test-isolation=none`）ので、`process.env` や `globalThis` を変えるテストは終わりに元へ戻してください。E2Eは既定で6 workersを使い、ファイル内も並列実行します（v2.38.2 から。それまでは手元ではコアの半分でした）。すべてのテストが1つの `next start` を共有するため、workers を増やしても速くなりません。14コアの Mac では、6のとき約56秒、コアの半分の7で約61秒、14で約88秒でした。数は環境変数 `TYPLE_E2E_WORKERS`（`4` や `50%` など）で変えられます。テストごとにランダムなアカウントIDを使用します。Playwright が本番ビルドの `next start`（ポート3101）を起動し、実PostgreSQLとAPIを通して作成・編集・練習・再読み込み・削除、アカウント分離、401/403/409応答を確認します。GitHub にはつながず、`tests/e2e/sessionCookie.ts` がテスト専用の秘密値で署名したログインの Cookie を作ります（`src/server/session.ts` と同じ値になることは `tests/sessionCookie.test.cjs` が確かめます）。GitHub OAuth画面の実ログインは自動テストできないため、公開後に本番で別途確認が必要です。Sparklingstadt ID は、Playwright が起動する偽の OpenID Connect のサーバー（`tests/e2e/fakeSid.cjs`、ポート3197）を相手に、ログイン・ひも付け・断る場合・ログアウト後の `prompt=login` まで通します（`tests/e2e/sid-login.spec.ts`）。テストユーザーの行だけを終了後に削除します。スナップショットテストの更新手順は [docs/snapshots.md](docs/snapshots.md) にまとめています。`tests/e2e/aria-snapshots.spec.ts` は、ログインの画面、使い方の目次、トップバーと、練習の結果、単語リストの行のメニュー、CSV の読み込みのダイアログ、編集をやめるときの確認のアクセシビリティツリー（役割・名前・並び）を、テストに書いた期待値と比べます（ARIA スナップショット。画像ではないので OS やフォントで変わりません）。ほかの画面（ホーム、記録、設定、編集、思い出して打つ・手書きのモード、パックの編集、ログイン中の表示、共有された結果、公式パック、エラーの表示、英語の表示など）は期待値が長いので、画面ごとのファイル（`tests/e2e/aria-snapshots.spec.ts-snapshots/*.aria.yml`）に分けています。公式パックの一覧・関心・トップページ・ライセンスは、公式パックや依存パッケージが増えると一覧が変わるので、期待値を手で書き、見出し・説明・操作と一覧の1件目の形だけを比べます（ARIA スナップショットは、期待値を含んでいれば一致とみなします）。記録のデータと時計は `tests/e2e/snapshotData.ts` でスクリーンショットと共通にしてあり、日付・時刻・秒数まで実際の値で比べます。画面をわざと変えたときは、テストの中の期待値を `npx playwright test tests/e2e/aria-snapshots.spec.ts --update-snapshots --update-source-method=overwrite` で、ファイルに分けた期待値を `TYPLE_ARIA_WRITE=1 npx playwright test tests/e2e/aria-snapshots.spec.ts` で書き直し、差分を確かめてからコミットします。`tests/e2e/screenshots.spec.ts` は、ログイン（ライト・ダーク・スマートフォンの幅）、使い方の上部、練習中・打ち間違い・練習の結果・練習記録・ベスト記録（それぞれライトとダーク）、ホーム（ライト・ダーク・はじめての人向け・英語）、単語パックの一覧と行のメニュー、単語リストの編集・入力エラー・編集をやめるときの確認、CSV の読み込みのプレビュー、パックの作成と編集、単語一覧、端末、設定の一般と入力、トップページ、Typleについて、スマートフォンのメニュー・練習・結果、思い出して打つ（ライト・ダーク）・手書きのモード、ログイン中のメニューと設定、共有された結果、終了した共有のリンク、公式パック1つのページ、読めない保存データ、保存できなかったとき、英語のログインを、前に撮った画像（`tests/e2e/screenshots.spec.ts-snapshots/`）と比べます。フォントの描画が OS で違うため、画像は macOS で撮っていて（名前が `-darwin` で終わります）、macOS でしか一致しません。サイドバーのバージョンは PR のたびに変わるので、塗りつぶして比べます。ログイン中の画面は、ほかの E2E と同じく `tests/e2e/account.ts` のテスト用のログイン（名前は E2E User、ID はテストごとにランダム）を使い、終わったら DB の行を消します。公式パックの数はパックを足すたびに変わるので、トップページの件数は塗りつぶし、公式パックの一覧と関心の画面は撮りません。練習の画面は、Playwright の時計（`page.clock`）を止めて決まった秒数だけ進めながら打つので、経過・速度・所要時間・記録の日付も毎回同じになります。記録の画面も時計を 2026年11月1日（日）の正午（日本時間）に固定し、その日から数えた記録を入れておくので、「今日」「昨日」の見出しまで毎回同じです。画面の見た目をわざと変えたときは `npx playwright test tests/e2e/screenshots.spec.ts --update-snapshots` で撮り直し、変わった画像を1枚ずつ見てからコミットします。
 
 GitHub Actions の CI は v2.38.1 でやめ、公開の前の検査は手元の `npm run verify` で行います（[リリース運用](docs/release-workflow.md)）。開発ビルド `.next` と本番ビルド `.next-production` は分離しています。
 
@@ -124,7 +124,7 @@ Next.js の App Router のアプリは1つで、`src` は Next.js でよく使�
 | `src/lib` | フック以外の処理。単語リスト・入力判定・記録・集計・ワークスペースのモデルと検証、保存先の型 `WorkspaceStore`（`workspaceStore.ts`、保存場所 `location` を含む）、ワークスペースの読み込み・保存 `createWorkspaceSession`（`workspaceSession.ts`。アカウントの切り替え後に届いた結果の破棄、保存の直列化、409での再読み込み、古いクラウド読み込みの無視）、単語ファイルの CSV の読み書き（`wordFormat.ts`。TSV の読み込みは v2.44.0 でやめました）、ログインの状態（`session.tsx`）など。保存先は `src/lib/storage` で、`cloud.ts`（Next.js の Route Handler が答える `/api/workspace` と `/api/workspace/records`）と `guest.ts`（LocalStorage）を `workspaceStore(accountId)` がアカウントに応じて選びます。`packs/` は公式パック（v0.85.0 から sparklingstadt アカウントの67リストのコピーで、`commands/` に1リスト1ファイルで保存しています。それまではサンプル、国名193か国、コマンドと構文の25種類を初級・中級・上級に分けた85リスト）とそのカタログです |
 | `src/i18n`・`src/messages` | 多言語化（next-intl）と各言語の文言 |
 | `src/proxy.ts` | ページごとに nonce を作り、スクリプトの CSP（`Content-Security-Policy-Report-Only`。方針は `src/lib/contentSecurityPolicy.ts`）を付けます（v2.51.0 から）。今は報告だけです。止める CSP（フレーム・`base` 要素・`object` 要素）は `next.config.mjs` がページ以外にだけ送り、ページのフレームへの埋め込みは `X-Frame-Options` で止めます（v2.51.1 から。Next.js は proxy が付けたヘッダーを描画するリクエストにも写し、`script-src` のない CSP があるとそちらを読んで nonce を付けないため）。違反はブラウザーのコンソールに出るだけで、どこにも送りません（v2.53.0 から） |
-| `src/server` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`。Vercel の関数のログに出す）・ログインの設定（`settings.ts`）・書き込みの要求の確認（`request.ts`）・ログインの Cookie を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）と、それを Auth.js の JWT にする `authJwt.ts`・Auth.js のコールバック（`authOptions.ts`）・ログインの確認とすべての端末からのログアウトの失効（`account.ts`）・ID とパスワードのアカウント（`users.ts`・`password.ts`・`passwordLogin.ts`・`emailTokens.ts`・`mail.ts`・`limits.ts`、API は `accountApi.ts`・`accountRecovery.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。`src/lib` を使えますが、画面（`src/app`・`src/components`）からは import しません |
+| `src/server` | Next.js の Route Handler（`src/app/api/**/route.ts`）と、それが使う JSON の応答（`response.ts`）・DB の接続（`database.ts`、`pg`）・失敗の報告（`report.ts`。Vercel の関数のログに出す）・ログインの設定（`settings.ts`）・書き込みの要求の確認（`request.ts`）・ログインの Cookie を封じて開く処理（`session.ts`。鍵と形式は v2.46.11 までの Go と同じ）と、それを Auth.js の JWT にする `authJwt.ts`・Auth.js のコールバック（`authOptions.ts`）・ログインの確認とすべての端末からのログアウトの失効（`account.ts`、API は `accountApi.ts`）・ワークスペースの読み込みと `revision` による保存と練習の記録の追加・削除（`workspace.ts`。記録は表 `typle_records` に分けて持つ（`records.ts`）。`TYPLE_MEASURE_SAVES=1` なら保存を計測する（`metrics.ts`））。`/api` のすべてのパスです（v2.46.10 から。それまでは一部が Go のバックエンドでした）。`src/lib` を使えますが、画面（`src/app`・`src/components`）からは import しません |
 
 v2.43.2 まであったプラグインの層（`src/plugins`）と、ファイル形式を差し替えるための拡張口（`WordFormat` と形式の一覧）は v2.43.3 でやめました。読み書きする単語ファイルは CSV だけで、保存先は guest と cloud の2つです。
 
@@ -134,24 +134,20 @@ v2.46.11 まではバックエンドの一部が Go（`server/`、Vercel の Go 
 
 ### ログインのしくみ（Auth.js）
 
-ログインは Auth.js（next-auth v5）で、`/api/auth/*` は `src/app/api/auth/[...nextauth]/route.ts` が答えます（知らないパスは 404。`authPathKnown`）。プロバイダーは次の4つです。
+ログインは Auth.js（next-auth v5）で、`/api/auth/*` は `src/app/api/auth/[...nextauth]/route.ts` が答えます（知らないパスは 404。`authPathKnown`）。プロバイダーは次の3つです。ログイン画面（`/signin`）には Sparklingstadt ID と GitHub のボタンだけがあります。
 
 - **Sparklingstadt ID**（OpenID Connect、id `sid`。`AUTH_SID_ISSUER`・`AUTH_SID_ID`・`AUTH_SID_SECRET` が揃っているとき。v2.58.0 から）：Sparklingstadt のサービスに共通のログイン（`https://id.sparklingstadt.com`）です。ログイン画面のいちばん上に出ます。アカウントは `sid:<sub>`ですが、表 `typle_sid_links` でほかのログインのアカウントにひも付けた ID は、そのアカウントとして入ります（下の「Sparklingstadt ID のひも付け」）。ID トークンの `email_verified` が true でなければ断ります。ログアウト（「すべての端末からログアウト」も）のあとの次のログインでは、Cookie `typle-sid-relogin` を置いて `prompt=login` を付け、ID サーバーでもパスワードを聞きます（`src/server/sidLogin.ts`）。
 - **GitHub**（`AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET` が揃っているとき）：アカウントは `github:<GitHub のユーザー番号>`。
-- **ID とパスワード**（Credentials、id `password`）：アカウントは `password:<小文字の UUID>`（`typle_users.id`）、名前は ID。登録・メールの確認・再設定・ID の通知は `/api/account/*`（`src/server/accountApi.ts`・`accountRecovery.ts`。仕様は [api-docs](api-docs/src/app/auth.md)）と、画面 `/signin`・`/signup`・`/verify-email`・`/forgot-password`・`/reset-password`・`/forgot-id`、設定の「アカウント」です。
 - **開発用**（Credentials、id `local`）：`github:0`。「開発用ログインで起動」の条件を満たすときだけ有効です。
 
 セッションは JWT で、DB のセッションも adapter も使いません。API（workspace など）は Cookie を `signedIn`（`src/server/account.ts`）で読み、「すべての端末からログアウト」の表（`typle_session_revocations`）を確かめます。この操作は `POST /api/account/signout-everywhere` です（v2.54.0 までの `POST /api/auth/signout?everywhere=1` と、`Authorization: Bearer` のアプリのトークンは使えません。`Authorization` ヘッダーは読みません）。
 
-- ID は `^[a-z0-9_-]{3,32}$`（大文字小文字は区別しない）、パスワードは10〜128文字で、ハッシュは `crypto.scrypt` です。
-- 回数の制限は表 `typle_auth_limits` に持ちます（ログインの失敗は同じ ID で15分に5回・同じ IP で30回、登録は IP ごとに1時間に5件、メールは ID かアドレスごとに1時間に3通・IP ごとに10回、すべてのメールを合わせて UTC の1日に80通）。登録とメールは、仕事の前に1回分を数えてから進めます。IP は `x-forwarded-for` の最初の値で、IPv6 は /64 ごとに数えます。1日より前に終わった制限と使えなくなったリンクの行は、登録のときに消します。
-- 登録の確認のメールは24時間、再設定は30分で切れ、どちらも1回だけ使えます。トークンは32バイトの乱数で、DB には SHA-256 だけを持ちます。再設定とパスワードの変更では、ほかの端末のログインを無効にします。変更と同じ秒に古いパスワードで作ったログインも無効になります（v2.57.1 から）。パスワードのログインは、アカウントの行をロックして（`FOR SHARE`）ハッシュを読み、そのときの DB の時刻を Cookie の `iat` にします（`findUserForLogin`）。変更は行を更新したあとに失効の時刻を書く（`revokeLogins`）ので、古いハッシュで確かめたログインの `iat` は必ずそれより前です。失効の直後のログインの `iat` は失効の次の秒（1秒未満の未来になることがあります）なので、そのログインは無効になりません。
 - 注意：ブラウザーの Cookie の `Expires` は、Auth.js がセッションを読むたびに「今から30日」に書き直されます。切れるかどうかは Cookie の中身の `exp`（ログインから30日で固定）で決まるので、延長にはなりません。
 - 注意：**本番では `AUTH_REDIRECT_PROXY_URL` を設定しないでください。** Auth.js はこの値があると、GitHub と Sparklingstadt ID のログインの callback をそのアドレスのプロキシへ向けます（`redirectProxyUrl` は手元の開発のときだけ値を決めますが、環境変数が残っていれば Auth.js が読みます）。
 
 #### Sparklingstadt ID のひも付け
 
-今のアカウント（GitHub か ID・パスワード）のデータを Sparklingstadt ID で使うには、その ID の `sub` をアカウントにひも付けます。画面はなく、手元から1回だけ行います（利用者が持ち主だけのため）。
+今のアカウント（GitHub か、v2.58.0 までの ID・パスワード）のデータを Sparklingstadt ID で使うには、その ID の `sub` をアカウントにひも付けます。画面はなく、手元から1回だけ行います（利用者が持ち主だけのため）。
 
 1. ID サーバー（`sparklingstadt-id`）の `OIDC_CLIENTS` に typle-r を登録します（`pnpm run oidc:client typle-r`）。`redirectUris` は `https://typle.sparklingstadt.com/api/auth/callback/sid` と `https://typle-r-six.vercel.app/api/auth/callback/sid` です。出てきたシークレットを typle-r の `AUTH_SID_SECRET` に入れます。
 2. typle-r で Sparklingstadt ID でログインし、**何も保存せずに** `/api/auth/session` を開いて `user.id`（`sid:<sub>`）を写します。
@@ -160,21 +156,20 @@ v2.46.11 まではバックエンドの一部が Go（`server/`、Vercel の Go 
 
 `sid:link` は次の場合に断ります（終了コード 1）：その ID かアカウントがもうひも付いている、ひも付け先が `github:`・`password:`・`ffpf:` のアカウントでない、ひも付け先に保存したデータ（`typle_workspaces`・`typle_records`）がない（打ち間違いの防止）、`sid:<sub>` のアカウントにもう保存したデータがある（ひも付けると読めなくなるため）。ひも付けの解除は SQL（`DELETE FROM typle_sid_links WHERE sub = '<sub>'`）で行います。
 
-#### メール（Resend）
+#### ID とパスワードのログイン（廃止）
 
-確認・再設定・ID の通知のメールは Resend（`https://api.resend.com/emails`）へ fetch で送ります（SDK は使いません）。用意するもの：
+ID とパスワードのログインは v2.59.0 でなくしました。登録・パスワードを忘れた・ID を忘れた・メールの確認とパスワードの再設定のリンク・設定の「アカウント」（メールの送り直しとパスワードの変更）の画面と、`/api/account/*` のうち `signout-everywhere` 以外の API、Auth.js の `password` のプロバイダー、メール（Resend）の送信もなくしています。
 
-1. Resend で送信元のドメインを登録し、DNS のレコードを足して確認します。
-2. API キーを作ります。
-3. `RESEND_API_KEY` と `TYPLE_MAIL_FROM`（例 `Typle <no-reply@sparklingstadt.com>`）を Vercel の環境変数（Production と Preview）に足します。
-
-どちらかがなければメールは送れず、登録は成功したまま「送れなかった」と出ます（失敗はログに残ります）。`TYPLE_RESEND_URL` はテストのための送り先の差し替えで、本番では設定しません。Resend の無料枠は1日100通なので、上の制限でメールの送信を抑えています。
+- `/signup`・`/forgot-password`・`/forgot-id`・`/reset-password`・`/verify-email` は 404、`/api/auth/callback/password` も 404 です。
+- v2.58.0 までに ID とパスワードでログインしたセッション（アカウント ID が `password:` で始まる）は、ログインから30日で切れるまで使えます。
+- そのアカウントのデータ（`typle_users` などの DB の行はそのまま残ります）は、上の「Sparklingstadt ID のひも付け」で `password:<UUID>` に Sparklingstadt ID をひも付ければ、そのまま使えます。
+- 環境変数 `RESEND_API_KEY`・`TYPLE_MAIL_FROM` は読みません（Vercel から消してかまいません）。
 
 #### iPad・Mac のアプリ
 
 v2.55.0 から、iPad・Mac のアプリは Typle にログインできません。`/api/auth/token`・`/api/auth/signin?client=…&code_challenge=…`・アプリのトークンをなくしたためです。v2.54.0 までに発行したトークンは、`/api/workspace` などでもう通りません（`TYPLE_BACKEND=go` のときだけ Go が受け付けます。[docs/backend-switch.md](docs/backend-switch.md)）。
 
-画面は `src/lib/session.tsx` の `useSession`・`signIn`・`signOut` で Auth.js の `/api/auth/*` を呼びます。ログイン状態は `/api/auth/session` の 200 の答えだけで決め、確認が失敗したとき（通信の失敗、200 以外の答え、読めない本文）は前の状態のままにします。最初の確認だけは 1・2・4 秒後にやり直し、すべて失敗したら未ログインとして扱います。`/api/*` はどれも Next.js の Route Handler が答えます。サーバーの失敗は Vercel の関数のログに出します（Auth.js が出す `CredentialsSignin`、つまりパスワードの間違いは、毎回ログに出ないよう `src/auth.ts` の `logger` で外しています）。エラーを外のサービスに送ることはしません（Sentry は v2.53.0 でやめました）。
+画面は `src/lib/session.tsx` の `useSession`・`signIn`・`signOut` で Auth.js の `/api/auth/*` を呼びます。ログイン状態は `/api/auth/session` の 200 の答えだけで決め、確認が失敗したとき（通信の失敗、200 以外の答え、読めない本文）は前の状態のままにします。最初の確認だけは 1・2・4 秒後にやり直し、すべて失敗したら未ログインとして扱います。`/api/*` はどれも Next.js の Route Handler が答えます。サーバーの失敗は Vercel の関数のログに出します（読めない・切れたログインの Cookie で Auth.js が出す `JWTSessionError` は、毎回ログに出ないよう `src/auth.ts` の `logger` で外しています）。エラーを外のサービスに送ることはしません（Sentry は v2.53.0 でやめました）。
 
 ## 保存とアクセス制御
 
@@ -196,7 +191,6 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 - `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`: 本番用OAuth Appの認証情報
 - `AUTH_SID_ISSUER`, `AUTH_SID_ID`, `AUTH_SID_SECRET`: Sparklingstadt ID の issuer（`https://id.sparklingstadt.com`）、クライアント ID（`typle-r`）とシークレット。callback は `<本番URL>/api/auth/callback/sid`（上の「Sparklingstadt ID のひも付け」）
 - `AUTH_URL`: 本番URL。本番OAuth callbackは `<本番URL>/api/auth/callback/github`（v0.55.0 でも変わりません）。この値のオリジンだけを使います
-- `RESEND_API_KEY`, `TYPLE_MAIL_FROM`: ID・パスワードのアカウントのメール（確認・再設定・ID の通知）を送る Resend の API キーと送信元（上の「メール（Resend」）
 - `AUTH_REDIRECT_PROXY_URL`: **設定しません**（Auth.js が読んで GitHub と Sparklingstadt ID の callback の向きを変えてしまうため）
 
 関数は Vercel のシンガポール（`sin1`）で動かします（`vercel.json` の `regions`。v2.55.1 から。それまでは既定の米国東部 `iad1`）。Neon の DB も同じシンガポール（Vercel Marketplace のリージョン `sin1`）に置きます。DB を別のリージョンに移すときは、`regions` も DB に一番近いところに合わせます。
@@ -222,7 +216,7 @@ docker build --build-arg SITE_URL=https://typle.sparklingstadt.com -t typle-r .
 
 ### FFPF ID でのログイン（廃止）
 
-FFPF ID（ffpf-portal）でのログインは v2.54.0 でなくしました。ログインは GitHub と ID・パスワードです（v2.55.0 から）。v2.58.0 で Sparklingstadt ID を足しました。
+FFPF ID（ffpf-portal）でのログインは v2.54.0 でなくしました。v2.58.0 で Sparklingstadt ID を足し、v2.59.0 からログインは Sparklingstadt ID と GitHub だけです。
 
 - `/api/auth/signin/ffpf`・`/api/auth/callback/ffpf` は Auth.js のプロバイダーがないので 404 です。
 - 環境変数 `FFPF_ID_ISSUER`・`FFPF_ID_CLIENT_ID`・`FFPF_ID_CLIENT_SECRET` は読みません。ログアウトで Cookie `typle-ffpf-relogin` も置きません。
