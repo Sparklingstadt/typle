@@ -65,14 +65,5 @@
   "sharedPackNotFound": "此共享已结束。",
   "invalidPage": "页码无效。",
   "importInputTypeInvalid": "第 {line} 行的 input_type 必须是 command、code 或 word。",
-  "invalidRequest": "请求内容无效。",
-  "loginIdFormat": "ID 请使用3到32个半角字母、数字、“_”或“-”。",
-  "passwordLength": "密码请使用10到128个字符。",
-  "passwordSameAsId": "密码不能与 ID 相同。",
-  "emailFormat": "电子邮件地址的格式不正确。",
-  "loginIdTaken": "此 ID 已被使用，请换一个。",
-  "tooManyRequests": "请求次数过多，请稍后再试。",
-  "invalidToken": "此链接无法使用，可能已过期或已被使用。",
-  "notPasswordAccount": "仅适用于使用 ID 和密码登录的账号。",
-  "wrongPassword": "当前密码不正确。"
+  "invalidRequest": "请求内容无效。"
 }

@@ -10,15 +10,13 @@ import { githubConfigured } from './lib/githubLogin'
 import { sidConfigured } from './lib/sidLogin'
 import { decodeSession, encodeSession } from './server/authJwt'
 import { pool } from './server/database'
-import { clientIp } from './server/limits'
-import { authorizePassword } from './server/passwordLogin'
 import { linkedAccount } from './server/sidLinks'
 import { SID_PROVIDER_ID, sidProfile, type SidClaims } from './server/sidLogin'
 import { SESSION_MAX_AGE, sessionCookieName } from './server/session'
 import { readLoginSettings } from './server/settings'
 
-// The login, by Auth.js: Sparklingstadt ID (src/server/sidLogin.ts), GitHub, the ID and password, and the made-up local
-// login for development, under /api/auth (src/app/api/auth/[...nextauth]/route.ts). The session is Auth.js's JWT one, but its cookie keeps the name and the
+// The login, by Auth.js: Sparklingstadt ID (src/server/sidLogin.ts), GitHub, and the made-up local login for
+// development, under /api/auth (src/app/api/auth/[...nextauth]/route.ts). The session is Auth.js's JWT one, but its cookie keeps the name and the
 // form of the login cookie the Go backend sealed (src/server/session.ts), so the logins made before keep working, and
 // the Route Handlers and the Go and Kotlin backends read it as they did. What the callbacks decide is in
 // src/server/authOptions.ts.
@@ -62,14 +60,6 @@ if (githubConfigured()) {
   }))
   providerIds.push('github')
 }
-providers.push(Credentials({
-  id: 'password',
-  credentials: { loginId: {}, password: { type: 'password' } },
-  // Auth.js passes a Request rebuilt with the original headers, so x-forwarded-for is the client's as elsewhere.
-  authorize: (credentials, request) => authorizePassword(pool(), credentials, clientIp(request)),
-}))
-// next-auth/react's signIn('password') posts to /api/auth/callback/password, which authPathKnown lets through by this id.
-providerIds.push('password')
 if (settings?.localLogin) {
   providers.push(Credentials({
     id: 'local',
@@ -82,8 +72,7 @@ if (settings?.localLogin) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  // Quiet the CredentialsSignin Auth.js logs, with a stack, for every wrong password, and the JWTSessionError of an
-  // unreadable or expired cookie; other errors are still logged.
+  // Quiet the JWTSessionError Auth.js logs for an unreadable or expired cookie; other errors are still logged.
   logger: { error: authErrorLogger() },
   providers,
   // The app's own sign-in page instead of Auth.js's: a login that fails (or providers that cannot be read) comes back

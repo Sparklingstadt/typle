@@ -1,9 +1,0 @@
-- main:
-  - heading "ID を忘れた" [level=1]
-  - paragraph: 登録したメールアドレスを入れてください。そのアドレスが確認済みのアカウントがあれば、ID をメールで送ります。
-  - text: メールアドレス
-  - textbox "メールアドレス"
-  - button "送る" [disabled]
-  - paragraph:
-    - link "ログインの画面へ":
-      - /url: /signin?returnTo=%2Fhome

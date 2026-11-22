@@ -37,12 +37,6 @@ export default defineConfig({
         AUTH_SID_ISSUER: 'http://127.0.0.1:3197',
         AUTH_SID_ID: 'e2e',
         AUTH_SID_SECRET: 'e2e',
-        // The mails go to the fake Resend below (tests/e2e/fakeResend.cjs), which the tests read them back from.
-        RESEND_API_KEY: 'e2e',
-        TYPLE_MAIL_FROM: 'Typle <e2e@example.test>',
-        TYPLE_RESEND_URL: 'http://127.0.0.1:3198/emails',
-        // This run's own key for the day's cap of all mail, so that the runs of a day do not add up to it.
-        TYPLE_MAIL_CAP_SCOPE: `e2e-${Date.now()}`,
       },
       command: 'node node_modules/next/dist/bin/next start -p 3101 -H 127.0.0.1',
       url: 'http://127.0.0.1:3101',
@@ -52,12 +46,6 @@ export default defineConfig({
     {
       command: 'node tests/e2e/fakeSid.cjs',
       url: 'http://127.0.0.1:3197/.well-known/openid-configuration',
-      reuseExistingServer: false,
-      timeout: 10000,
-    },
-    {
-      command: 'node tests/e2e/fakeResend.cjs',
-      url: 'http://127.0.0.1:3198/emails',
       reuseExistingServer: false,
       timeout: 10000,
     },

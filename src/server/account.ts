@@ -34,12 +34,9 @@ export async function readRevokedAt(db: Pick<Pool, 'query'>, owner: string): Pro
 export const revokedBy = (user: Session, revokedAt: Date | null) => !!revokedAt && user.issuedAt * 1000 <= revokedAt.getTime()
 
 /**
- * Revokes every login of the account owner made until now (typle_session_revocations): signing out of every device, and
- * a reset or a change of the password. revoked_at is the clock's time when the statement runs, not the transaction's
- * start, so that in a change of the password it is later than the moment the account's row was locked (see
- * findUserForLogin in src/server/users.ts). A sign-in after a revocation is dated from the revocation's next whole
- * second, which can be ahead of the clock; the next revocation is therefore never earlier than that second, so that it
- * revokes that sign-in too.
+ * Revokes every login of the account owner made until now (typle_session_revocations): signing out of every device.
+ * revoked_at is the clock's time when the statement runs, and never earlier than the second after the revocation
+ * before it, so that a later revocation is always later than the one it replaces.
  */
 export async function revokeLogins(db: Pick<Pool, 'query'>, owner: string): Promise<void> {
   await db.query(`INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, clock_timestamp())

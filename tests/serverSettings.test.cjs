@@ -10,9 +10,6 @@ test('the settings need a secret and an http or https AUTH_URL', () => {
   for (const env of [{ ...ok, AUTH_SECRET: '' }, { ...ok, AUTH_URL: '' }, { ...ok, AUTH_URL: 'ftp://x' }, { ...ok, AUTH_URL: 'not a url' }, { AUTH_URL: ok.AUTH_URL }]) {
     assert.equal(readLoginSettings(env), null, JSON.stringify(env))
   }
-  // The day's cap of all mail has a scope of its own only where TYPLE_MAIL_CAP_SCOPE sets one (the tests).
-  assert.equal(readLoginSettings(ok).mailCapScope, '')
-  assert.equal(readLoginSettings({ ...ok, TYPLE_MAIL_CAP_SCOPE: 'e2e' }).mailCapScope, 'e2e')
 })
 
 // The local login of development, as the Go backend judged it (web.FromEnv).

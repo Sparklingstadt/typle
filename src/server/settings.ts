@@ -13,11 +13,6 @@ export type LoginSettings = {
   localLogin: boolean,
   /** Whether AUTH_URL is HTTPS, which names the login cookie __Host-. */
   secure: boolean,
-  /**
-   * TYPLE_MAIL_CAP_SCOPE, which keeps the day's cap of all mail (LIMITS.mailDaily) under a key of its own: set only by
-   * the tests, so that their mails do not add up with each other's; empty in production.
-   */
-  mailCapScope: string,
 }
 
 /** The HKDF info of the key: the same as the Go backend's. */
@@ -44,7 +39,6 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
     sessionKey: deriveKey(secret, SESSION_INFO),
     localLogin: env.VERCEL !== '1' && localLoginAllowed(env, base),
     secure: base.protocol === 'https:',
-    mailCapScope: env.TYPLE_MAIL_CAP_SCOPE ?? '',
   }
 }
 
