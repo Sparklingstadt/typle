@@ -186,7 +186,7 @@
     },
     "account": {
       "title": "保存到账号",
-      "when": "登录后（GitHub 或 ID 与密码）",
+      "when": "登录后（Sparklingstadt ID 或 GitHub）",
       "p1": "数据保存在账号专用的服务器上，只要登录，在任何设备上都能使用相同的数据。",
       "p2": "保存需要联网。"
     },

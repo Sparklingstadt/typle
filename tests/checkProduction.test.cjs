@@ -6,7 +6,7 @@ const { authResults, SITE } = require('../scripts/check-production.cjs')
 const CALLBACK = encodeURIComponent(`${SITE}/api/auth/callback/github`)
 const GITHUB = `https://github.com/login/oauth/authorize?client_id=x&redirect_uri=${CALLBACK}`
 
-function fake({ session = 'null', providers = { github: {}, password: {} }, location = GITHUB, status = 302 } = {}) {
+function fake({ session = 'null', providers = { sid: {}, github: {} }, location = GITHUB, status = 302 } = {}) {
   return async (url, init = {}) => {
     const path = new URL(url).pathname
     const headers = new Headers()
@@ -25,9 +25,12 @@ test('an anonymous session is null or has no user; one with a user is NG', async
   assert.equal((await run({ session: '{"user":{"id":"github:1"}}' }))[0], false)
 })
 
-test('the providers must include github and password', async () => {
-  assert.equal((await run({ providers: { github: {}, password: {} } }))[1], true)
+test('the providers must be Sparklingstadt ID and GitHub only', async () => {
+  assert.equal((await run({ providers: { sid: {}, github: {} } }))[1], true)
   assert.equal((await run({ providers: { github: {} } }))[1], false)
+  assert.equal((await run({ providers: { sid: {} } }))[1], false)
+  // The ID and password login is gone: a production that still offers it is NG.
+  assert.equal((await run({ providers: { sid: {}, github: {}, password: {} } }))[1], false)
 })
 
 test('the GitHub sign-in is a 302 to GitHub with the production redirect_uri', async () => {

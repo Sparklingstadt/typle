@@ -35,8 +35,8 @@ async function authResults(site, send) {
   const results = []
   const add = (ok, message, detail) => results.push({ ok, message, detail })
   const origin = site
-  // Auth.js (src/auth.ts): no session for an anonymous visitor (the body is null), GitHub and the ID and password among
-  // the providers.
+  // Auth.js (src/auth.ts): no session for an anonymous visitor (the body is null), and Sparklingstadt ID and GitHub as
+  // the only providers (the ID and password login ended in v2.59.0).
   const session = await send(`${origin}/api/auth/session`)
   const sessionBody = await session.text()
   let parsed
@@ -49,8 +49,8 @@ async function authResults(site, send) {
   let providers
   try { providers = JSON.parse(providersBody) } catch { providers = null }
   add(providersResponse.status === 200 && providers !== null && typeof providers === 'object' &&
-    Object.hasOwn(providers, 'github') && Object.hasOwn(providers, 'password'),
-  `${origin}/api/auth/providers lists github and password`, `HTTP ${providersResponse.status} ${providersBody}`)
+    Object.keys(providers).sort().join(',') === 'github,sid',
+  `${origin}/api/auth/providers lists sid and github only`, `HTTP ${providersResponse.status} ${providersBody}`)
 
   // Signing in with GitHub is a POST with Auth.js's CSRF token (and the cookie that came with it); the answer is a 302
   // to GitHub's authorize page, which carries the production callback as its redirect_uri.
