@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { PageMain } from '@/components/ui/page-layout'
 import { githubConfigured } from '@/lib/githubLogin'
+import { sidConfigured } from '@/lib/sidLogin'
 import { returnPath } from '@/lib/returnPath'
 import SignInForm from './signin-form'
 
@@ -30,6 +31,6 @@ export default async function SignIn({ searchParams }: { searchParams: Promise<{
       <h1 className="text-2xl font-bold">{t('signIn')}</h1>
     </header>
     {/* Auth.js sends a login that failed on its side here with ?error=<type> (pages.error in src/auth.ts). */}
-    <SignInForm returnTo={returnTo} github={githubConfigured()} authError={params.error !== undefined} />
+    <SignInForm returnTo={returnTo} github={githubConfigured()} sid={sidConfigured()} authError={params.error !== undefined} />
   </PageMain>
 }
