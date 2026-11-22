@@ -7,15 +7,18 @@ import {
   authErrorLogger, authorizeLocal, githubProfile, jwtCallback, redirectCallback, redirectProxyUrl, sessionCallback,
 } from './server/authOptions'
 import { githubConfigured } from './lib/githubLogin'
+import { sidConfigured } from './lib/sidLogin'
 import { decodeSession, encodeSession } from './server/authJwt'
 import { pool } from './server/database'
 import { clientIp } from './server/limits'
 import { authorizePassword } from './server/passwordLogin'
+import { linkedAccount } from './server/sidLinks'
+import { SID_PROVIDER_ID, sidProfile, type SidClaims } from './server/sidLogin'
 import { SESSION_MAX_AGE, sessionCookieName } from './server/session'
 import { readLoginSettings } from './server/settings'
 
-// The login, by Auth.js: GitHub, the ID and password, and the made-up local login for development, under /api/auth
-// (src/app/api/auth/[...nextauth]/route.ts). The session is Auth.js's JWT one, but its cookie keeps the name and the
+// The login, by Auth.js: Sparklingstadt ID (src/server/sidLogin.ts), GitHub, the ID and password, and the made-up local
+// login for development, under /api/auth (src/app/api/auth/[...nextauth]/route.ts). The session is Auth.js's JWT one, but its cookie keeps the name and the
 // form of the login cookie the Go backend sealed (src/server/session.ts), so the logins made before keep working, and
 // the Route Handlers and the Go and Kotlin backends read it as they did. What the callbacks decide is in
 // src/server/authOptions.ts.
@@ -33,6 +36,23 @@ const secure = settings?.secure ?? false
 const providers: Provider[] = []
 /** The ids of the providers in use, which name the paths /api/auth/signin/<id> and /api/auth/callback/<id>. */
 export const providerIds: string[] = []
+if (sidConfigured()) {
+  providers.push({
+    id: SID_PROVIDER_ID,
+    name: 'Sparklingstadt ID',
+    type: 'oidc',
+    issuer: process.env.AUTH_SID_ISSUER,
+    clientId: process.env.AUTH_SID_ID,
+    clientSecret: process.env.AUTH_SID_SECRET,
+    // The client of the ID server's design: the authorization code with PKCE (S256), state and nonce.
+    checks: ['pkce', 'state', 'nonce'],
+    authorization: { params: { scope: 'openid email profile' } },
+    profile: (profile: SidClaims) => sidProfile(profile),
+    // As for GitHub: at a loopback AUTH_URL, the ID server sends the browser back to AUTH_URL, not to localhost.
+    redirectProxyUrl: redirectProxyUrl(settings),
+  })
+  providerIds.push(SID_PROVIDER_ID)
+}
 if (githubConfigured()) {
   providers.push(GitHub({
     // No scope: the app only needs to know who the user is, as the login before Auth.js asked for nothing more.
@@ -83,7 +103,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     decode: ({ token }) => token ? decodeSession(token, sessionKey()) : null,
   },
   callbacks: {
-    jwt: jwtCallback((sub, issuedAt) => revokedSoon(pool, sub, issuedAt)),
+    jwt: jwtCallback((sub, issuedAt) => revokedSoon(pool, sub, issuedAt), sub => linkedAccount(pool(), sub)),
     session: ({ session, token }) => sessionCallback({ session, token }),
     ...(settings ? { redirect: redirectCallback(settings.origin) } : {}),
   },

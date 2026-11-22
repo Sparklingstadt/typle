@@ -118,6 +118,16 @@ export function useSession(): SessionState {
 }
 
 /**
+ * Goes to Sparklingstadt ID, and comes back to returnTo, a path of this site. Rejects, staying on the page, when the
+ * login cannot be started, as signInWithGitHub does.
+ */
+export async function signInWithSid(returnTo: string): Promise<void> {
+  const result = await authSignIn('sid', { redirectTo: returnTo, redirect: false })
+  if (!result?.ok || result.error || !result.url) throw new Error('Sparklingstadt ID sign-in could not start')
+  location.assign(result.url)
+}
+
+/**
  * Goes to GitHub, and comes back to returnTo, a path of this site. Rejects, staying on the page, when the login cannot
  * be started: the request fails, or Auth.js answers with an error (a 500, a refused CSRF token) or with no URL to go to.
  */

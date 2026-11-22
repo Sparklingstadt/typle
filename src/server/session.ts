@@ -8,10 +8,11 @@ export type Session = { sub: string, name: string, image: string, issuedAt: numb
 
 /**
  * The only subjects accepted: a GitHub account (its numeric id), an ID-and-password account (its lowercase UUID) or an
- * FFPF ID account (its lowercase alphanumeric sub). The login with FFPF ID was removed in v2.54.0; its sessions and
+ * FFPF ID account (its lowercase alphanumeric sub), or a Sparklingstadt ID account without a link to one of those
+ * (sid:<sub>, the sub lowercase alphanumeric). The login with FFPF ID was removed in v2.54.0; its sessions and
  * tokens still open until they expire (30 days).
  */
-const ACCOUNT_SUB = /^(github:\d+|password:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|ffpf:[a-z0-9]{1,64})$/
+const ACCOUNT_SUB = /^(github:\d+|password:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|ffpf:[a-z0-9]{1,64}|sid:[a-z0-9]{1,64})$/
 
 /** The login cookie's name: __Host- over HTTPS, which makes the browser insist on Secure, Path=/ and no Domain. */
 export function sessionCookieName(secure: boolean): string {

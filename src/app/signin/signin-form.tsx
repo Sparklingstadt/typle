@@ -6,12 +6,14 @@ import { LogIn } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { FormField, FormMessage } from '@/components/AccountForm'
 import { Button } from '@/components/ui/button'
-import { signInWithGitHub, signInWithPassword, useSession } from '@/lib/session'
+import { signInWithGitHub, signInWithPassword, signInWithSid, useSession } from '@/lib/session'
 
 /** The query that keeps returnTo on the account pages linked from here, unless it is the default. */
 const keep = (returnTo: string) => returnTo === '/home' ? '' : `?returnTo=${encodeURIComponent(returnTo)}`
 
-export default function SignInForm({ returnTo, github, authError }: { returnTo: string, github: boolean, authError: boolean }) {
+export default function SignInForm({ returnTo, github, sid, authError }: {
+  returnTo: string, github: boolean, sid: boolean, authError: boolean,
+}) {
   const t = useTranslations('account')
   const auth = useTranslations('auth')
   const router = useRouter()
@@ -19,11 +21,21 @@ export default function SignInForm({ returnTo, github, authError }: { returnTo: 
   const [loginId, setLoginId] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
-  // A failure of the GitHub login, or of any login that Auth.js sent back here, is one message; a refused ID and
+  // A failure of the Sparklingstadt ID or GitHub login, or of any login that Auth.js sent back here, is one message; a refused ID and
   // password is another, which does not tell whether the ID, the password or a hold on the login is the cause.
   const [failure, setFailure] = useState<'failed' | 'refused' | null>(authError ? 'failed' : null)
 
   return <div className="max-w-sm space-y-6">
+    {/* Sparklingstadt ID, the login shared by the Sparklingstadt services, comes first. */}
+    {sid && <div className="space-y-3 border-b pb-6">
+      <Button size="lg" disabled={busy} onClick={async () => {
+        setBusy(true)
+        setFailure(null)
+        // On success the page goes to Sparklingstadt ID, so the button stays busy until it is gone.
+        try { await signInWithSid(returnTo) } catch { setFailure('failed'); setBusy(false) }
+      }}><LogIn aria-hidden="true" />{t('signInWithSid')}</Button>
+      <p className="text-sm text-muted-foreground">{auth('signIn.orPassword')}</p>
+    </div>}
     <form className="space-y-4" onSubmit={async event => {
       event.preventDefault()
       if (busy) return
