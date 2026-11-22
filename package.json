@@ -15,6 +15,7 @@
     "verify": "node scripts/verify.cjs",
     "check:production": "node scripts/check-production.cjs",
     "db:migrate": "node scripts/migrate.cjs",
+    "sid:link": "node scripts/sid-link.cjs",
     "packs:generate": "node scripts/generate-packs.cjs",
     "postinstall": "node scripts/copy-handwriting-runtime.cjs && node scripts/generate-licenses.cjs",
     "prebuild": "node scripts/copy-handwriting-runtime.cjs && node scripts/generate-licenses.cjs",
