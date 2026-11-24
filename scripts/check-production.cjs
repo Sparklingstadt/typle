@@ -1,5 +1,6 @@
-// Checks production after `vercel deploy --prod` (docs/release-workflow.md): what the deploy job of the CI workflow
-// did until v2.38.0. Run once the production domain serves the new deployment. Exits 1 when any check fails.
+// Checks production after `vercel deploy --prod` (docs/release-workflow.md): the last step of the CI's deploy job
+// (.github/workflows/ci.yml, since v2.60.6), and `npm run check:production` when the deploy is done by hand. Run once
+// the production domain serves the new deployment. Exits 1 when any check fails. It needs no dependencies.
 //
 // The site is served at typle.sparklingstadt.com (SITE_URL and AUTH_URL). The Vercel domain typle-r-six.vercel.app
 // stays for the iPad and Mac apps, which call /api/* there: vercel.json sends its pages to the custom domain. The apps

@@ -1,14 +1,18 @@
 # PRから本番公開まで
 
-必須順序: **PR作成 → CI（`verify`） → マージ（squash merge か普通のマージ） → マージ後のverify（手元の `npm run verify`） → GitHub Release → Vercel本番デプロイ**。
+必須順序: **PR作成 → CI（`verify`） → マージ（squash merge か普通のマージ） → main の CI（policy・verify → GitHub Release → Vercel本番デプロイ → 本番の確認）**。
 
-GitHub Actions は、PR と main で `npm run verify` を流します（`.github/workflows/ci.yml` の `verify`。v2.60.3 から。v2.38.1〜v2.60.2 の間は CI がありませんでした）。
-Linux で動くので、macOS でしか一致しないスクリーンショットのスナップショット（`tests/e2e/screenshots.spec.ts`）だけは飛ばします。秘密の値は使いません。
-Release とデプロイは CI では行いません。v2.38.0 まで `policy → verify → release → deploy` が行っていた Release とデプロイは、マージした人の手元（Mac）で、この順に手で行います
-（API の文書を公開する「Docs deploy」は、手で実行する別の workflow です）。
-verify は `npm run verify`（`scripts/verify.cjs`）の1コマンドです。DB更新・マイグレーションのテスト・
-型チェック・単体テスト・Lint・knip・本番ビルド・AWS CDK の検査・E2E・APIの文書のビルドとリンク検査を順に流し、最初の失敗で止まります。
-PR の前にも手元で `npm run verify` を通し（スクリーンショットを比べるのは手元だけです）、マージ後の main のコミットでもう一度通してから公開します。
+`.github/workflows/ci.yml` がこの順番を制御します（v2.60.6 から。v2.38.0 までの `policy → verify → release → deploy` と同じ形です。
+v2.38.1〜v2.60.5 の間は、Release とデプロイを手元で行っていました）。**PR をマージすると、そのまま本番に公開されます。**
+
+- PR・手動実行は検査（`policy` の設定の確認と `verify`）だけで、公開は main への push に限ります。
+- `verify` は `npm run verify`（`scripts/verify.cjs`）の1コマンドです。DB更新・マイグレーションのテスト・型チェック・単体テスト・Lint・knip・
+  本番ビルド・AWS CDK の検査・E2E・APIの文書のビルドとリンク検査を順に流し、最初の失敗で止まります。
+- CI は Linux で動くので、macOS でしか一致しないスクリーンショットのスナップショット（`tests/e2e/screenshots.spec.ts`）だけは飛ばします。
+  スクリーンショットを比べるのは、PR の前に手元で通す `npm run verify` だけです。省かずに通してから PR を出します。
+- PR の verify に通っても、マージ後の main のコミットで verify をもう一度流してから公開します。
+- Release のイベントで別の workflow を起動する方式ではないので、`GITHUB_TOKEN` で作った Release から別の workflow が起動しない制限に依りません。
+- API の文書を公開する「Docs deploy」は、手で実行する別の workflow です。
 
 ## 初回設定
 
@@ -18,10 +22,13 @@ PR の前にも手元で `npm run verify` を通し（スクリーンショッ�
    PR必須、ブランチを最新にすることを必須にし、force push・削除禁止、bypass対象なしを設定します。
    required status check には CI の `verify` を指定します（v2.60.3 から。指定するまでは、マージの前に PR の `verify` が通っていることを目で確かめます）。
    private repoのプラン等によりルールを強制できない場合、mainへの直接pushは運用で禁止します。
-3. 公開する Mac を準備します。[development.md](development.md) の「Dockerでの仮運用」のとおり Node.js 24・Docker Compose と `.env.local` を用意し、
-   Release を作る `gh auth login`（リポジトリへの書き込み権限）と、デプロイする `vercel login`・`vercel link`
-   （`.vercel/project.json` が本番のプロジェクトを指すこと）を済ませます。`.vercel/`・トークン・`.env.local` はコミットしません。
-   それまで Actions の `production` Environment に置いていた `VERCEL_TOKEN`・`VERCEL_ORG_ID`・`VERCEL_PROJECT_ID` は使わないので、削除してかまいません。
+3. **Settings → Environments** の `production`（deployment branch を main に限定）に `VERCEL_ORG_ID`・`VERCEL_PROJECT_ID` を、
+   リポジトリの Secret に `VERCEL_TOKEN` を登録します。`VERCEL_TOKEN` は対象のチームだけに届く範囲にし、期限を付けます。
+   期限が切れると `credentials` ジョブが止まり、Release もデプロイも行いません。新しいトークンを登録して、失敗したジョブを再実行します。
+   Actions が使えること、workflow の `contents: write`（Release の作成）が禁止されていないことも確かめます。
+   手元の Mac は、PR の前の verify のために用意します（[development.md](development.md) の「Dockerでの仮運用」）。
+   CI が公開できないときに手で公開するなら、`gh auth login` と `vercel login`・`vercel link`
+   （`.vercel/project.json` が本番のプロジェクトを指すこと）も済ませます。`.vercel/`・トークン・`.env.local` はコミットしません。
 4. 対象VercelプロジェクトのProduction環境にDB・Authの環境変数を設定します。
    [production.md](production.md) の「Neon / Vercelの構成」を参照してください。
    公開先は`https://typle.sparklingstadt.com`です（v2.33.0 から。`SITE_URL`・`AUTH_URL` にこの URL を設定します）。
@@ -31,17 +38,16 @@ PR の前にも手元で `npm run verify` を通し（スクリーンショッ�
    - `CLOUDFLARE_ACCOUNT_ID`: 対象アカウントのID。
    Pages のプロジェクト `typle-api-docs` は、なければ最初の`docs-deploy`（`.github/workflows/docs-deploy.yml`）が作ります。Cloudflare の Git 連携は使いません。
 6. `vercel.json`の`git.deploymentEnabled: false`を維持します。
-   公開は下の手順の `vercel deploy --prod` だけで行い、Vercel の Git 連携・Deploy Hook・別の workflow は併用しません。
+   公開は CI の deploy ジョブ（`vercel deploy --prod`）だけで行い、Vercel の Git 連携・Deploy Hook・別の workflow は併用しません。
 
-Release の作成と Vercel の操作は手で行うため、順序を YAML で守ることはできません。
-書き込み権限とVercel権限を、この運用に従う利用者に限定してください。
+Release の作成（`contents: write`）は release ジョブだけ、Vercel のトークンは credentials・deploy ジョブの必要なステップだけが持ちます。
 
 ## 現在の導入状態
 
-2026-09-29時点で、非公開repoのプラン制限によりmainのRulesets・branch protection APIは403です。
-マージの方法の設定は利用できます。
-現プランではmainへの直接push自体は防げないため、運用で禁止します。
-GitHub Proへ変更した場合は、上記のmain保護ルールを追加してください。
+2026-11-25 に、main の Ruleset「main: CI の verify を必須にする」を作りました（リポジトリを公開してから使えるようになりました）。
+`verify` が成功していないコミットは、main にマージも直接 push もできません。bypass はありません。
+入れてあるのはこの検査だけで、PR 必須・ブランチを最新にすること・force push と削除の禁止は、まだ入れていません。
+Actions が止まってマージできなくなったら、Settings → Rules でこの Ruleset を無効にします。
 本番ビルドのNode.jsは24系です。`package.json` の `engines` を `"24.x"` に固定しています（v2.6.5 から）。`">=24.0.0"` のような上限のない指定では、Vercel が新しいメジャー版（26系）を自動で選び、手元の verify（24系）と食い違うためです。
 
 ## 毎回の開発
@@ -51,43 +57,53 @@ GitHub Proへ変更した場合は、上記のmain保護ルールを追加して
    package.jsonとpackage-lock.jsonを両方コミットしてください。
 2. 手元で `npm run verify` を通してから PR を作成し、変更内容を確認します。
    作業中の確認には E2E と API の文書を省く `npm run verify -- --fast` が使えますが、PR の前は省かずに通します。
-3. PR の CI（`verify`）が通ったことを確かめてからマージします。既定はsquash mergeで、コミットの履歴を残したいPRは普通のマージにします。普通のマージでは、マージコミットのタイトルをPRのタイトルと同じにします。
-   前のmainの公開（Release とデプロイ）が完了するまでは次のPRをマージしません。
-4. 公開する Mac で main を最新にします（`git switch main && git pull --ff-only`）。HEAD がその PR のコミットであること
-   （squash mergeは1コミットで親が1つ、普通のマージは親が2つで第2親がPRのhead）と、`git status` に変更がないことを確かめます。
-5. そのコミットで `npm run verify` を省かずに通します。手元の PostgreSQL（`docker compose --env-file .env.local up -d --wait`）の
-   `DATABASE_URL` にマイグレーションを適用し、DBテストと E2E もそのDBを使います（テストはランダムな所有者の行を足して、終わりに消します）。
-   失敗したら公開せず、新しいバージョンで修正PRを出して同じ順序でやり直します。
-6. 同じコミットに `v<package.jsonのversion>` のタグと公開済みの通常Releaseを作ります。Release notes はGitHubの自動生成を使います。
+3. PR の CI（`verify`）が通ったことを確かめてからマージします。**マージが公開の合図です。** 既定はsquash mergeで、コミットの履歴を残したいPRは普通のマージにします。
+   どちらも、マージコミットのタイトルをPRのタイトル（末尾に `(vX.Y.Z)`）と同じにします。コミットが1つだけのPRをGitHubの画面でsquashすると、
+   PRのタイトルではなくそのコミットのタイトルが入るので、マージの画面で直します（`gh pr merge <番号> --squash --subject "<PRのタイトル> (#<番号>)"` でも指定できます）。
+   前のmainの公開（deploy ジョブ）が完了するまでは次のPRをマージしません。
+4. main の CI の `policy` が、その push が1つのマージ済みPRのコミットであること（squash mergeは1コミットで親が直前のmain、
+   普通のマージは第1親が直前のmainで第2親がPRのhead）と、マージの設定（squash 可・rebase 不可）を確かめます。
+5. `verify` が、CI の PostgreSQL で `npm run verify` を流します。失敗したら公開しません。新しいバージョンで修正PRを出して、同じ順序でやり直します。
+6. `credentials` が、`VERCEL_TOKEN` でまだログインできることを確かめます。Release だけができてデプロイできない、という状態を避けるためです。
+7. `release` が、同じコミットに `v<package.jsonのversion>` のタグと公開済みの通常Releaseを作ります（`scripts/ci/release.cjs publish`）。
+   Release notes はGitHubの自動生成です。公開済みとは非draftの意味です。タグを動かしたり、同じバージョンを別のコミットに使ったりしません
+   （同じタグが別のコミットにあれば止まります。PR のバージョンを上げ直します）。
+8. `deploy` が、Release のタグがそのコミットを指していることを確かめ直してから、固定版の Vercel CLI で `vercel deploy --prod --yes` を実行します。
+   Vercel内で本番ビルド・デプロイします（`vercel.json` の `npm run db:migrate && npm run build`）。
+   読み出し不可のSecretが`[SENSITIVE]`になるため、`vercel pull`・`vercel build` はしません。
+9. `deploy` は、本番のドメインが新しいデプロイを返すまで待ちます。`vercel deploy --prod` は、ドメインがまだ前のデプロイを返しているうちに終わることがあり、
+   前のデプロイにもあるパスは同じ応答になるため、そのままでは確認が新しいデプロイを見ないからです。
+   そのあと `scripts/check-production.cjs`（手元では `npm run check:production`）で次を確かめます。1つでも失敗すればジョブは失敗です。
+   本番（`https://typle.sparklingstadt.com`）のホームの成功応答、Vercel のドメインのページが本番へ308で移ること（クエリも残す）、
+   両方のドメインで Route Handler（`src/app/api/health/route.ts`）が返す`/api/health`の200（本番DBへの接続を含む）と匿名APIアクセスの401。
+   ログインの関数（Auth.js）も確かめます。`/api/auth/session`が200で、本文に`user`がないこと、`/api/auth/providers`が`sid`と`github`だけであること、
+   `/api/auth/csrf`でCSRFトークンとCookieをもらい、それを付けた`POST /api/auth/signin/github`がリダイレクトを辿らずに302を返し、
+   `Location`が`https://github.com/login/oauth/authorize?`で始まり本番の`redirect_uri`（`https://typle.sparklingstadt.com/api/auth/callback/github`）を含むことです。
+   これにより、本番の関数で`AUTH_SECRET`・`AUTH_URL`・`AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET`が揃って設定されていることまで確かめます。
+10. マージした人は、main の CI の実行が deploy まで成功したことを Actions で確かめます。
+11. API の文書（`api-docs/`）は、v2.25.2 から CI では公開せず、必要なときに手で公開します。deploy が成功した後、
+    Actions の「Docs deploy」を main で実行します（Run workflow。`docs-deploy.yml`、main 以外では何もしません）。
+    main の最新のコミットの文書をビルドし、リンクを検査して、固定版の Wrangler（`docs-deploy.yml`の`WRANGLER_VERSION`）で
+    Cloudflare Pages の`typle-api-docs`に公開し、公開後に主なページが返ることを確かめます。
+    文書の公開が失敗してもアプリの公開には影響しません。原因を直して「Docs deploy」を再実行します。
+    文書のビルドとリンクの検査は `npm run verify` でも行います。
+
+### CI が公開できないとき（手で公開する）
+
+Actions が止まっているときなど、CI に頼れないときだけ、マージした人の Mac で同じ順に行います（v2.38.1〜v2.60.5 の手順です）。
+CI の実行が途中まで進んでいたら、先にその実行を止めます。
+
+1. `git switch main && git pull --ff-only`。HEAD がその PR のコミットで、`git status` に変更がないことを確かめ、`npm run verify` を省かずに通します。
+2. Release を作ります。
 
    ```bash
    gh release create "v$(node -p "require('./package.json').version")" --target "$(git rev-parse HEAD)" --title "v$(node -p "require('./package.json').version")" --generate-notes --latest
    ```
 
-   公開済みとは非draftの意味で、repoの非公開設定は変えません。タグを動かしたり、同じバージョンを別のコミットに使ったりしません。
-7. 同じチェックアウトから `vercel deploy --prod --yes` でソースを送り、Vercel内で本番ビルド・デプロイします（`vercel.json` の
-   `npm run db:migrate && npm run build`）。読み出し不可のSecretが`[SENSITIVE]`になるため、`vercel pull`・`vercel build` はしません。
-8. 本番のドメインが新しいデプロイを返すまで待ちます。`vercel deploy --prod` は、ドメインがまだ前のデプロイを返しているうちに終わることがあり、
-   前のデプロイにもあるパスは同じ応答になるため、そのままでは確認が新しいデプロイを見ません。`vercel inspect typle-r-six.vercel.app` が
-   `vercel deploy` の出力した URL のデプロイを指すまで待ちます。
-   そのあと `npm run check:production`（`scripts/check-production.cjs`）で次を確かめます。1つでも失敗すれば終了コード1です。
-   本番（`https://typle.sparklingstadt.com`）のホームの成功応答、Vercel のドメインのページが本番へ308で移ること（クエリも残す）、
-   両方のドメインで Route Handler（`src/app/api/health/route.ts`）が返す`/api/health`の200（本番DBへの接続を含む）と匿名APIアクセスの401。
-   ログインの関数（Auth.js）も確かめます。`/api/auth/session`が200で、本文に`user`がないこと、`/api/auth/providers`が`sid`と`github`だけであること（v2.59.0 から。それまでは`github`と`password`を含むこと）、
-   `/api/auth/csrf`でCSRFトークンとCookieをもらい、それを付けた`POST /api/auth/signin/github`がリダイレクトを辿らずに302を返し、
-   `Location`が`https://github.com/login/oauth/authorize?`で始まり本番の`redirect_uri`（`https://typle.sparklingstadt.com/api/auth/callback/github`）を含むことです。
-   これにより、本番の関数で`AUTH_SECRET`・`AUTH_URL`・`AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET`が揃って設定されていることまで確かめます。
-   メールの送信（`RESEND_API_KEY`・`TYPLE_MAIL_FROM`）は、この確認には含みません。公開のあと、本番で登録して確認のメールが届くことを手で確かめます。
-   v2.55.0 でアプリのログイン（Vercel のドメインの`/api/auth/signin?client=…`と`POST /api/auth/token`）をなくしたので、その確認も外しました。
-   v2.38.0 までは CI の deploy ジョブが同じ確認をしていました。
-9. API の文書（`api-docs/`）は、v2.25.2 から CI では公開せず、必要なときに手で公開します。Vercel のデプロイが成功した後、
-   Actions の「Docs deploy」を main で実行します（Run workflow。`docs-deploy.yml`、main 以外では何もしません）。
-   main の最新のコミットの文書をビルドし、リンクを検査して、固定版の Wrangler（`docs-deploy.yml`の`WRANGLER_VERSION`）で
-   Cloudflare Pages の`typle-api-docs`に公開し、公開後に主なページが返ることを確かめます。
-   文書の公開が失敗してもアプリの公開には影響しません。原因を直して「Docs deploy」を再実行します。
-   文書のビルドとリンクの検査は `npm run verify` でも行います。
+3. 同じチェックアウトから `vercel deploy --prod --yes` でデプロイし、`vercel inspect typle-r-six.vercel.app` が
+   そのデプロイを指すまで待ってから、`npm run check:production` を通します。
 
-verifyのDBは手元のDBですが、`vercel deploy --prod` から起動するVercel上のビルドは本番環境変数を使います。
+verifyのDBは CI が立てたDB（PR の前は手元のDB）ですが、`vercel deploy --prod` から起動するVercel上のビルドは本番環境変数を使います。
 `vercel.json`に従い、ここで本番DBへmigrationが適用されます。DB更新に成功した後で
 ビルドやデプロイが失敗することもあるため、migrationは旧アプリと互換性のある変更にします。
 DBの自動ロールバックは行いません。
@@ -133,22 +149,24 @@ DBの自動ロールバックは行いません。
    WHERE migration_name = '<名前>' AND finished_at IS NULL AND rolled_back_at IS NULL;
    ```
 
-4. `vercel deploy --prod` をやり直し、手順の確認を続けます。
+4. 失敗した deploy ジョブを再実行します（手で公開しているときは `vercel deploy --prod` をやり直します）。
 
 適用済みのマイグレーションのファイルは書き換えません。書き換えると、`db:migrate` が警告を出します（止まりはしません）。変更は新しいマイグレーションで行います。
 
 ## 失敗時
 
-- PR の前の verify 失敗: 直してから PR を出します。
-- マージ後の verify 失敗: 公開に進みません。新しいバージョンで修正PRを作り、同じ順序で公開します。
-- Release作成失敗: デプロイに進みません。タグだけできていれば、同じコミットを指していることを確かめてから Release を作り直します。
-- deploy失敗: 先に作成したReleaseは残ります。Releaseの存在だけでは本番反映成功を意味しません。原因を直して、同じコミットの `vercel deploy --prod` をやり直します。
+- PR の前の verify 失敗、PR の CI の失敗: 直してから PR を出し直します（push し直します）。
+- マージ後の policy・verify 失敗: 公開に進みません。新しいバージョンで修正PRを作り、同じ順序で公開します。
+- credentials 失敗: Release もデプロイも行っていません。`VERCEL_TOKEN` を新しくして、失敗したジョブを再実行します。
+- release 失敗: デプロイに進みません。タグだけできていれば、同じコミットを指していることを確かめてから release ジョブを再実行します。
+- deploy 失敗: 先に作成したReleaseは残ります。Releaseの存在だけでは本番反映成功を意味しません。原因を直して、deploy ジョブを再実行します
+  （Release が同じコミットを指していれば、そのまま使います）。
 - docs-deploy失敗: アプリの本番には影響しません。Secretやトークンの権限を直し、「Docs deploy」を再実行します。手元から`wrangler`で公開しません。
 - 認証・通信などの一時的な問題: 原因を直して、失敗した手順からやり直します。
   既存Releaseは非draft・非prerelease・同じタグ・同じSHAの場合だけそのまま使います。
   タグを移動したり、同じバージョンを別コミットに使ったりしません。
 - コード修正が必要: 新しいバージョンで修正PRを作り、同じ順序で公開します。
-- 公開の途中でmainが進んだ: 古いコミットの Release・デプロイは行わず、最新の main を verify からやり直します。古いコミットを公開して巻き戻しません。
+- 公開の途中でmainが進んだ: 古い実行は Release もデプロイも行わずに止まります（`scripts/ci/release.cjs` が main の先頭を確かめます）。最新の main の実行が公開します。古いコミットを公開して巻き戻しません。
 - HTTPチェックだけ失敗: デプロイ済みの可能性があるため、実際の公開状態を確認してから復旧します。
 - v1.3.0 より前のバージョンへ戻す: 練習記録は `typle_records` に移っているため、戻す前に本番DBへ
   `scripts/records-rollback.sql` を実行して記録をリストへ戻します（[設計](superpowers/specs/2026-10-29-record-table.md)）。
@@ -157,7 +175,7 @@ DBの自動ロールバックは行いません。
 
 ## 検証と参考資料
 
-手順を変えたときは、このファイルと `CLAUDE.md` の「Release workflow」、`scripts/verify.cjs`・`scripts/check-production.cjs` を合わせます。
+手順を変えたときは、このファイルと `CLAUDE.md` の「Release workflow」、`.github/workflows/ci.yml`・`scripts/ci/release.cjs`・`scripts/verify.cjs`・`scripts/check-production.cjs` を合わせます。
 
 - [GitHub CLI: gh release create](https://cli.github.com/manual/gh_release_create)
 - [Vercel CLI: vercel deploy](https://vercel.com/docs/cli/deploy)
