@@ -1,5 +1,7 @@
 # Typle
 
+[![CI](https://github.com/Sparklingstadt/typle-r/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Sparklingstadt/typle-r/actions/workflows/ci.yml)
+
 覚えたい言葉を、打って覚えるタイピングアプリです。自分の単語リストと、269件の公式リスト（プログラミングのコマンド・構文、外国語の単語）で練習できます。ログインなしで使えます。
 
 **本番: https://typle.sparklingstadt.com**
@@ -88,9 +90,9 @@
 ## 開発の進め方
 
 - 1つの PR に1つの項目を入れ、PR ごとにバージョンを上げます。
-- 順序は「PR → マージ → 手元の `npm run verify` → GitHub Release → 本番デプロイ」です（[docs/release-workflow.md](docs/release-workflow.md)）。
+- 順序は「PR → CI → マージ → 手元の `npm run verify` → GitHub Release → 本番デプロイ」です（[docs/release-workflow.md](docs/release-workflow.md)）。
 - `npm run verify` は、マイグレーション・型チェック・単体テスト・Lint・knip・本番ビルド・AWS CDK の検査・E2E・API の文書のビルドを順に流し、最初の失敗で止まります。
-- GitHub Actions の CI は v2.38.1 でやめました。検査・Release・デプロイは手元で行います。
+- GitHub Actions が、PR と main で同じ `npm run verify` を流します（[ci.yml](.github/workflows/ci.yml)）。macOS で撮ったスクリーンショットとの比較だけは手元で行います。Release とデプロイも手元です。
 
 ## 手元で動かす
 

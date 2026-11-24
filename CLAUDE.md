@@ -3,10 +3,11 @@
 ## Release workflow
 
 Read `docs/release-workflow.md` before publishing changes. The required order is
-PR → merge (squash by default, ordinary merge when the user asks) → post-merge verify → GitHub Release → Vercel production deploy.
-Since v2.38.1 GitHub Actions takes no part in it (the only workflow left, `docs-deploy.yml`, publishes `api-docs/` on
-request): the verify, the Release and the deploy are done by hand on the user's Mac, one release at a time, in the
-order below. Do not push directly to main. Prepare a PR with a new stable package version. A failure must be fixed or
+PR → CI (`verify`) → merge (squash by default, ordinary merge when the user asks) → post-merge verify → GitHub Release → Vercel production deploy.
+GitHub Actions runs `npm run verify` on every pull request and on main (`ci.yml`, since v2.60.3; there was no CI from
+v2.38.1 to v2.60.2), and a PR is merged only after it passes. It takes no part in publishing: the post-merge verify, the
+Release and the deploy are done by hand on the user's Mac, one release at a time, in the order below (`docs-deploy.yml`
+publishes `api-docs/` on request). Do not push directly to main. Prepare a PR with a new stable package version. A failure must be fixed or
 retried at the failed stage, never bypassed.
 
 Every PR takes a version no other commit has used: before `npm version`, check
@@ -20,7 +21,8 @@ by a PR merged in the meantime.
 owners and delete them), `node --test tests/migrate.test.cjs`, `npm run typecheck`, `npm test`, `npm run lint`,
 `npm run knip`, `npm run build`, the AWS CDK app's checks in `infra/` (typecheck, tests, synth), `npm run test:e2e`, and `npm run docs:build` / `npm run docs:check` in `api-docs/`. `npm run verify -- --fast` leaves out the end-to-end tests and the API docs while
 working; run it in full before opening the PR. It needs Docker (the local PostgreSQL) and Node.js 24, so a
-cloud session cannot run it: say so and hand it to the user.
+cloud session cannot run it: say so and hand it to the user. The CI runs the same command on Linux, where the
+screenshot snapshots (`tests/e2e/screenshots.spec.ts`, macOS only) are skipped, so it does not replace the run on the Mac.
 
 ### Release and deploy (the user's Mac)
 

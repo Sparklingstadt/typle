@@ -11,6 +11,9 @@ import { deleteWorkspace, newAccountId, signIn } from './account'
 // `npx playwright test tests/e2e/screenshots.spec.ts --update-snapshots`
 // and look at each changed image before committing it.
 
+// Anywhere else (the CI runs on Linux) there is no image to compare with, so the whole file is skipped.
+test.skip(process.platform !== 'darwin', 'The screenshot snapshots are taken on macOS and only match there.')
+
 async function open(page: Page, path: string, colorScheme: 'light' | 'dark' = 'light') {
   await page.emulateMedia({ colorScheme })
   await page.setViewportSize({ width: 1280, height: 800 })
