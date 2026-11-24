@@ -83,7 +83,7 @@
 
 ### ほかに
 
-- 同じ API を Go・Kotlin（Ktor）・Rails でも実装し、Next.js と速度を比べられるようにしています（[docs/backend-compare.md](docs/backend-compare.md)）。本番で動くのは Next.js だけです。
+- 同じ API を Go・Kotlin（Ktor）・Rails でも実装し、Next.js と速度を比べました。その実装は [typle-backends](https://github.com/Sparklingstadt/typle-backends) に分けてあります（v2.60.5 から）。このリポジトリにあるのは Next.js だけです。
 - ページごとの nonce を使う Content-Security-Policy を送っています。今は報告だけで、まだ止めていません（[docs/architecture.md](docs/architecture.md)）。
 - 機能ごとの設計書を [docs/superpowers/specs](docs/superpowers/specs) に、これからの順番と「やらないこと」を [docs/roadmap.md](docs/roadmap.md) に残しています。
 
@@ -122,7 +122,6 @@ http://localhost:3000 を開きます。GitHub のログインや開発用のロ
 | `db/migrations` | SQL のマイグレーション |
 | `tests` | 単体テスト（`*.test.cjs`）と E2E（`e2e/`） |
 | `infra` | AWS CDK（移行の準備） |
-| `server`・`kotlin`・`rails` | 速度比較のための Go・Kotlin・Rails の実装 |
 
 くわしい説明は [docs/architecture.md](docs/architecture.md) にあります。
 
@@ -141,8 +140,6 @@ http://localhost:3000 を開きます。GitHub のログインや開発用のロ
 | [docs/design/](docs/design) | 画面ごとのデザインレビュー |
 | [docs/word-list-sources.md](docs/word-list-sources.md) | 公式の単語リストの出典と検証 |
 | [api-docs/](api-docs/src/README.md) | アプリの API の仕様（VuePress。`cd api-docs && npm ci && npm run docs:dev`） |
-| [docs/backend-compare.md](docs/backend-compare.md) | Next.js・Go・Kotlin・Rails のバックエンドの速度比較 |
-| [docs/backend-switch.md](docs/backend-switch.md) | workspace と records の API を Go に切り替える |
 | [docs/save-metrics.md](docs/save-metrics.md) | 保存の時間と大きさの計測 |
 | [docs/aws/](docs/aws/README.md) | AWS の練習環境を作って消す手順書と、本番を CDK で作る手順（[production.md](docs/aws/production.md)） |
 | [CHANGELOG.md](CHANGELOG.md) | バージョンごとの変更（v2.1.3 まで。以降は [GitHub Releases](https://github.com/Sparklingstadt/typle-r/releases)） |
@@ -156,6 +153,7 @@ http://localhost:3000 を開きます。GitHub のログインや開発用のロ
 | [typle-macos](https://github.com/Sparklingstadt/typle-macos)（旧 typle-m） | Mac 版。v2.6.11 で typle-ipad にまとめてアーカイブしました |
 | [typle-w](https://github.com/Sparklingstadt/typle-w) | Windows 11 版（C#・WinUI 3）。v2.6.9 でアーカイブし、開発を止めました |
 | [typle-a](https://github.com/Sparklingstadt/typle-a) | Android タブレット版（Kotlin・Jetpack Compose）。v2.6.9 でアーカイブし、開発を止めました |
+| [typle-backends](https://github.com/Sparklingstadt/typle-backends) | 同じ API の Go・Kotlin（Ktor）・Rails の実装と、Next.js との速度比較。v2.60.5 でこのリポジトリから分けました |
 | [typle-kotlin-backend](https://github.com/Sparklingstadt/typle-kotlin-backend) | 以前の Go のバックエンドと同じ API の Kotlin（Ktor）版。v2.6.10 でアーカイブし、`TYPLE_BACKEND=kotlin` の切り替えも外しました |
 
 合わせて直すものの一覧は [docs/architecture.md](docs/architecture.md) の「関連リポジトリとの合わせ方」にあります。

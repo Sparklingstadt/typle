@@ -58,7 +58,7 @@ ID とパスワードのログインは v2.59.0 でなくしました。登録�
 
 #### iPad・Mac のアプリ
 
-v2.55.0 から、iPad・Mac のアプリは Typle にログインできません。`/api/auth/token`・`/api/auth/signin?client=…&code_challenge=…`・アプリのトークンをなくしたためです。v2.54.0 までに発行したトークンは、`/api/workspace` などでもう通りません（`TYPLE_BACKEND=go` のときだけ Go が受け付けます。[docs/backend-switch.md](backend-switch.md)）。
+v2.55.0 から、iPad・Mac のアプリは Typle にログインできません。`/api/auth/token`・`/api/auth/signin?client=…&code_challenge=…`・アプリのトークンをなくしたためです。v2.54.0 までに発行したトークンは、`/api/workspace` などでもう通りません。
 
 画面は `src/lib/session.tsx` の `useSession`・`signIn`・`signOut` で Auth.js の `/api/auth/*` を呼びます。ログイン状態は `/api/auth/session` の 200 の答えだけで決め、確認が失敗したとき（通信の失敗、200 以外の答え、読めない本文）は前の状態のままにします。最初の確認だけは 1・2・4 秒後にやり直し、すべて失敗したら未ログインとして扱います。`/api/*` はどれも Next.js の Route Handler が答えます。サーバーの失敗は Vercel の関数のログに出します（読めない・切れたログインの Cookie で Auth.js が出す `JWTSessionError` は、毎回ログに出ないよう `src/auth.ts` の `logger` で外しています）。エラーを外のサービスに送ることはしません（Sentry は v2.53.0 でやめました）。
 

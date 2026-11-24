@@ -3,15 +3,21 @@ const test = require('node:test')
 const fs = require('node:fs')
 const path = require('node:path')
 
-// Every /api path is a Route Handler (src/app/api/<path>/route.ts) since v2.46.10. The only forwards left are the
-// comparison's and the switch to Go (scripts/backendCompare.cjs), which a deployment has only when it is built with
-// TYPLE_BACKEND_COMPARE=1 or TYPLE_BACKEND=go.
+// Every /api path is a Route Handler (src/app/api/<path>/route.ts) since v2.46.10, and nothing is forwarded to another
+// backend: the comparison with Go, Kotlin and Rails (x-typle-backend) and the switch to Go (TYPLE_BACKEND=go) left
+// with their code in v2.60.5, for github.com/Sparklingstadt/typle-backends.
 const root = path.join(__dirname, '..')
 const read = file => fs.readFileSync(path.join(root, file), 'utf8')
 
-test('vercel.json forwards nothing, and next.config.mjs only the comparison', () => {
+test('neither vercel.json nor next.config.mjs forwards a path', () => {
   assert.equal(JSON.parse(read('vercel.json')).rewrites, undefined)
-  assert.match(read('next.config.mjs'), /beforeFiles: backendCompare\.backendRewrites\(\), afterFiles: \[\], fallback: \[\]/)
+  assert.doesNotMatch(read('next.config.mjs'), /rewrites|backendCompare|TYPLE_BACKEND/)
+})
+
+test('no other backend is left in the repository', () => {
+  for (const name of ['server', 'api', 'kotlin', 'rails', 'go.mod', 'go.sum']) {
+    assert.ok(!fs.existsSync(path.join(root, name)), `${name} belongs to typle-backends`)
+  }
 })
 
 // The paths the apps (Web, iPad, Mac, Android, Windows) call. Every /api/auth path is Auth.js's (src/auth.ts).

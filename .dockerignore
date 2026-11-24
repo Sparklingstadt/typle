@@ -9,9 +9,6 @@
 **/.vercel
 **/.env*
 **/*.pem
-kotlin
-server
-api
 api-docs
 infra
 tests
