@@ -1,14 +1,15 @@
 // Runs, in order, every check a commit must pass before it is released (docs/release-workflow.md), and stops at the
 // first failure: the migrations on the local database, the migration tests, the type check, the unit tests, lint,
 // knip, the production build, the AWS infrastructure's (infra/) type check, tests and synth, the end-to-end tests,
-// and the API documentation's build and link check. Until v2.38.0 GitHub Actions ran these as `verify`; since v2.38.1 they run here, on the
-// developer's machine, before a PR is opened and again on the merged main commit before it is released.
+// and the API documentation's build and link check. They run on the developer's machine, before a PR is opened and
+// again on the merged main commit before it is released, and in GitHub Actions on every pull request and on main
+// (.github/workflows/ci.yml, since v2.60.3; there was no CI from v2.38.1 to v2.60.2).
 //
 //   npm run verify            every check
 //   npm run verify -- --fast  without the end-to-end tests and the API documentation, for a quick look while working
 //
 // Needs the local PostgreSQL (docker compose --env-file .env.local up -d --wait) and Node.js 24. DATABASE_URL
-// from .env.local is migrated and used by the DB tests and the end-to-end tests, which add rows under random owners
+// from .env.local (in the CI, from the environment) is migrated and used by the DB tests and the end-to-end tests, which add rows under random owners
 // and delete them afterwards. TYPLE_TEST_DATABASE_URL, when set, is used for the DB tests instead.
 const { spawnSync } = require('node:child_process')
 const fs = require('node:fs')

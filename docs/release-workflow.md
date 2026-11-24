@@ -1,12 +1,14 @@
 # PRから本番公開まで
 
-必須順序: **PR作成 → マージ（squash merge か普通のマージ） → マージ後のverify（手元の `npm run verify`） → GitHub Release → Vercel本番デプロイ**。
+必須順序: **PR作成 → CI（`verify`） → マージ（squash merge か普通のマージ） → マージ後のverify（手元の `npm run verify`） → GitHub Release → Vercel本番デプロイ**。
 
-v2.38.1 から GitHub Actions は使いません（API の文書を公開する「Docs deploy」だけ残しています）。それまで `.github/workflows/ci.yml` の
-`policy → verify → release → deploy` が行っていた検査・Release・デプロイは、すべてマージした人の手元（Mac）で、この順に手で行います。
-verify は `npm run verify`（`scripts/verify.cjs`）の1コマンドです。CI の verify と同じ検査（DB更新・マイグレーションのテスト・
-型チェック・単体テスト・Lint・knip・本番ビルド・E2E・APIの文書のビルドとリンク検査）を同じ順に流し、最初の失敗で止まります。
-PR の前にも手元で `npm run verify` を通し、マージ後の main のコミットでもう一度通してから公開します。
+GitHub Actions は、PR と main で `npm run verify` を流します（`.github/workflows/ci.yml` の `verify`。v2.60.3 から。v2.38.1〜v2.60.2 の間は CI がありませんでした）。
+Linux で動くので、macOS でしか一致しないスクリーンショットのスナップショット（`tests/e2e/screenshots.spec.ts`）だけは飛ばします。秘密の値は使いません。
+Release とデプロイは CI では行いません。v2.38.0 まで `policy → verify → release → deploy` が行っていた Release とデプロイは、マージした人の手元（Mac）で、この順に手で行います
+（API の文書を公開する「Docs deploy」は、手で実行する別の workflow です）。
+verify は `npm run verify`（`scripts/verify.cjs`）の1コマンドです。DB更新・マイグレーションのテスト・
+型チェック・単体テスト・Lint・knip・本番ビルド・AWS CDK の検査・E2E・APIの文書のビルドとリンク検査を順に流し、最初の失敗で止まります。
+PR の前にも手元で `npm run verify` を通し（スクリーンショットを比べるのは手元だけです）、マージ後の main のコミットでもう一度通してから公開します。
 
 ## 初回設定
 
@@ -14,7 +16,7 @@ PR の前にも手元で `npm run verify` を通し、マージ後の main の�
    Allow rebase mergingを無効にします。普通のマージを使うときはAllow merge commitsも有効にします。
 2. **Settings → Rules → Rulesets** でmainを対象とした有効なルールを作ります。
    PR必須、ブランチを最新にすることを必須にし、force push・削除禁止、bypass対象なしを設定します。
-   required status check は v2.38.1 からありません。
+   required status check には CI の `verify` を指定します（v2.60.3 から。指定するまでは、マージの前に PR の `verify` が通っていることを目で確かめます）。
    private repoのプラン等によりルールを強制できない場合、mainへの直接pushは運用で禁止します。
 3. 公開する Mac を準備します。[development.md](development.md) の「Dockerでの仮運用」のとおり Node.js 24・Docker Compose と `.env.local` を用意し、
    Release を作る `gh auth login`（リポジトリへの書き込み権限）と、デプロイする `vercel login`・`vercel link`
@@ -49,7 +51,7 @@ GitHub Proへ変更した場合は、上記のmain保護ルールを追加して
    package.jsonとpackage-lock.jsonを両方コミットしてください。
 2. 手元で `npm run verify` を通してから PR を作成し、変更内容を確認します。
    作業中の確認には E2E と API の文書を省く `npm run verify -- --fast` が使えますが、PR の前は省かずに通します。
-3. マージします。既定はsquash mergeで、コミットの履歴を残したいPRは普通のマージにします。普通のマージでは、マージコミットのタイトルをPRのタイトルと同じにします。
+3. PR の CI（`verify`）が通ったことを確かめてからマージします。既定はsquash mergeで、コミットの履歴を残したいPRは普通のマージにします。普通のマージでは、マージコミットのタイトルをPRのタイトルと同じにします。
    前のmainの公開（Release とデプロイ）が完了するまでは次のPRをマージしません。
 4. 公開する Mac で main を最新にします（`git switch main && git pull --ff-only`）。HEAD がその PR のコミットであること
    （squash mergeは1コミットで親が1つ、普通のマージは親が2つで第2親がPRのhead）と、`git status` に変更がないことを確かめます。
