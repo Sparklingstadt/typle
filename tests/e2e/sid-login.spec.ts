@@ -51,7 +51,7 @@ test('an ID without a link signs in as its own account sid:<sub>', async ({ page
   await page.getByRole('button', { name: 'アカウントメニュー', exact: true }).click()
   await expect(page.getByText('Sparklingstadt IDでログイン中', { exact: true })).toBeVisible()
   // Signing in and landing on the home page saves nothing, so npm run sid:link can still link this ID afterwards (it
-  // refuses an ID whose own account has saved data), as the README tells.
+  // refuses an ID whose own account has saved data), as docs/architecture.md tells.
   await page.waitForLoadState('networkidle')
   const saved = await withDatabase(async pool => (await pool.query(
     'SELECT 1 FROM typle_workspaces WHERE owner_id = $1 UNION ALL SELECT 1 FROM typle_records WHERE owner_id = $1',

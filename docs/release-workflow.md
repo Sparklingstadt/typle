@@ -16,12 +16,12 @@ PR の前にも手元で `npm run verify` を通し、マージ後の main の�
    PR必須、ブランチを最新にすることを必須にし、force push・削除禁止、bypass対象なしを設定します。
    required status check は v2.38.1 からありません。
    private repoのプラン等によりルールを強制できない場合、mainへの直接pushは運用で禁止します。
-3. 公開する Mac を準備します。README の「Dockerでの仮運用」のとおり Node.js 24・Docker Compose と `.env.local` を用意し、
+3. 公開する Mac を準備します。[development.md](development.md) の「Dockerでの仮運用」のとおり Node.js 24・Docker Compose と `.env.local` を用意し、
    Release を作る `gh auth login`（リポジトリへの書き込み権限）と、デプロイする `vercel login`・`vercel link`
    （`.vercel/project.json` が本番のプロジェクトを指すこと）を済ませます。`.vercel/`・トークン・`.env.local` はコミットしません。
    それまで Actions の `production` Environment に置いていた `VERCEL_TOKEN`・`VERCEL_ORG_ID`・`VERCEL_PROJECT_ID` は使わないので、削除してかまいません。
 4. 対象VercelプロジェクトのProduction環境にDB・Authの環境変数を設定します。
-   READMEの「Neon / Vercelの構成」を参照してください。
+   [production.md](production.md) の「Neon / Vercelの構成」を参照してください。
    公開先は`https://typle.sparklingstadt.com`です（v2.33.0 から。`SITE_URL`・`AUTH_URL` にこの URL を設定します）。
    Vercel のドメイン`https://typle-r-six.vercel.app`も残し、iPad・Mac 版はそこの`/api/*`を呼びます。
 5. API の文書（`api-docs/`）を Cloudflare Pages に公開するため、**Settings → Environments** で`production`を作り（deployment branchをmainに限定）、次の2つを登録します。
