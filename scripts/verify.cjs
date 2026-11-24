@@ -3,7 +3,8 @@
 // knip, the production build, the AWS infrastructure's (infra/) type check, tests and synth, the end-to-end tests,
 // and the API documentation's build and link check. They run on the developer's machine, before a PR is opened and
 // again on the merged main commit before it is released, and in GitHub Actions on every pull request and on main
-// (.github/workflows/ci.yml, since v2.60.3; there was no CI from v2.38.1 to v2.60.2).
+// (.github/workflows/ci.yml, since v2.60.3; there was no CI from v2.38.1 to v2.60.2). On main the CI releases and
+// deploys the commit when they pass (since v2.60.6).
 //
 //   npm run verify            every check
 //   npm run verify -- --fast  without the end-to-end tests and the API documentation, for a quick look while working

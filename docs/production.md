@@ -55,4 +55,4 @@ v2.49.1 からの DB では v2.48.0 までのアプリは保存できないの�
 
 ## リリース
 
-必須の順序は **PR作成 → CI（`verify`） → マージ（squash merge か普通のマージ） → マージ後のverify（手元の `npm run verify`） → GitHub Release作成 → Vercel本番デプロイ** です。`package.json` と `package-lock.json` のバージョンをPR内で更新します。mainへの直接pushは行いません。GitHub Actions は PR と main で verify を流しますが（v2.60.3 から）、Release とデプロイは行わず、マージした人が手元でこの順に行います。`vercel.json` の `git.deploymentEnabled=false` は維持します。初回設定・手順・復旧手順は [リリース運用](release-workflow.md) を参照してください。
+必須の順序は **PR作成 → CI（`verify`） → マージ（squash merge か普通のマージ） → main の CI（verify → GitHub Release作成 → Vercel本番デプロイ → 本番の確認）** です。`package.json` と `package-lock.json` のバージョンをPR内で更新します。mainへの直接pushは行いません。マージのあとは GitHub Actions がこの順に行うので、マージがそのまま本番への公開になります（v2.60.6 から。v2.38.1〜v2.60.5 の間は、マージした人が手元で行っていました）。`vercel.json` の `git.deploymentEnabled=false` は維持します。初回設定・手順・復旧手順は [リリース運用](release-workflow.md) を参照してください。

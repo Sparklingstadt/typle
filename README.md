@@ -90,9 +90,9 @@
 ## 開発の進め方
 
 - 1つの PR に1つの項目を入れ、PR ごとにバージョンを上げます。
-- 順序は「PR → CI → マージ → 手元の `npm run verify` → GitHub Release → 本番デプロイ」です（[docs/release-workflow.md](docs/release-workflow.md)）。
+- 順序は「PR → CI → マージ → main の CI（検査 → GitHub Release → 本番デプロイ → 本番の確認）」です（[docs/release-workflow.md](docs/release-workflow.md)）。マージすると、そのまま本番に公開されます。
 - `npm run verify` は、マイグレーション・型チェック・単体テスト・Lint・knip・本番ビルド・AWS CDK の検査・E2E・API の文書のビルドを順に流し、最初の失敗で止まります。
-- GitHub Actions が、PR と main で同じ `npm run verify` を流します（[ci.yml](.github/workflows/ci.yml)）。macOS で撮ったスクリーンショットとの比較だけは手元で行います。Release とデプロイも手元です。
+- GitHub Actions が、PR と main で同じ `npm run verify` を流し、main では Release とデプロイまで行います（[ci.yml](.github/workflows/ci.yml)）。macOS で撮ったスクリーンショットとの比較だけは、PR の前に手元で行います。
 
 ## 手元で動かす
 

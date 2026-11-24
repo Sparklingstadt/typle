@@ -1,10 +1,14 @@
 name: CI
 
-# Runs npm run verify (scripts/verify.cjs) on every pull request and on main: the same checks, in the same order, as on
-# the developer's Mac, against a PostgreSQL of its own. Two things differ here. The screenshot snapshots
-# (tests/e2e/screenshots.spec.ts) are skipped, as their images are taken on macOS and only match there; and the runner
-# has fewer cores, so the end-to-end tests use fewer workers. The Release and the production deployment are not done
-# here: they stay by hand, after npm run verify on the Mac (docs/release-workflow.md). No secret is used.
+# On every pull request: verify, and a check of the repository's merge settings. On a push to main (a merged pull
+# request), also the release: policy and verify, then a GitHub Release on the verified commit, then the production
+# deployment on Vercel and the checks of production (docs/release-workflow.md). Nothing is published from a pull
+# request, a manual run or any other branch.
+#
+# verify runs npm run verify (scripts/verify.cjs): the same checks, in the same order, as on the developer's Mac,
+# against a PostgreSQL of its own. Two things differ here. The screenshot snapshots (tests/e2e/screenshots.spec.ts)
+# are skipped, as their images are taken on macOS and only match there, so they are compared on the Mac before the
+# pull request is opened; and the runner has fewer cores, so the end-to-end tests use fewer workers.
 on:
   pull_request:
   push:
@@ -20,6 +24,33 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # The merge settings the release relies on, and on main that the push is one merged pull request's commit.
+  policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - name: Check read-only access to merge settings
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/ci/release.cjs settings
+      - name: Check release policy on main push
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/ci/release.cjs policy
+
+  # The required status check of main (its ruleset) is this job, so it needs no other job: a job skipped because one it
+  # needs failed would count as passed.
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -77,3 +108,138 @@ jobs:
           path: test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  # Before anything is published: a Vercel token that no longer signs in would leave a Release without its deployment.
+  credentials:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check that the Vercel token signs in
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          test -n "$VERCEL_TOKEN" || { echo 'Missing VERCEL_TOKEN'; exit 1; }
+          status=$(curl --silent --show-error --retry 3 --max-time 30 --output /dev/null --write-out '%{http_code}' \
+            --header "Authorization: Bearer $VERCEL_TOKEN" https://api.vercel.com/v2/user)
+          test "$status" = 200 || { echo "Vercel answered HTTP $status to VERCEL_TOKEN: make a new token and save it as the secret, then run the failed jobs again"; exit 1; }
+
+  release:
+    needs: [policy, verify, credentials]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      sha: ${{ steps.release.outputs.sha }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - name: Publish release for verified commit
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/ci/release.cjs publish
+
+  deploy:
+    needs: release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    permissions:
+      contents: read
+    # VERCEL_TOKEN is given only to the steps that need it, never to the CLI's installation.
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_CLI_VERSION: 60.1.3
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.release.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+      - name: Verify published release and deployment credentials
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.release.outputs.tag }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          test -n "$VERCEL_TOKEN" || { echo 'Missing VERCEL_TOKEN'; exit 1; }
+          test -n "$VERCEL_ORG_ID" || { echo 'Missing VERCEL_ORG_ID'; exit 1; }
+          test -n "$VERCEL_PROJECT_ID" || { echo 'Missing VERCEL_PROJECT_ID'; exit 1; }
+          node scripts/ci/release.cjs check
+      # The pinned CLI is kept in its own prefix and cached by version. Only main-branch runs deploy, and they only
+      # restore caches saved on main, so a pull request cannot supply the CLI that receives the token. A global install
+      # has no lockfile, so the CLI's dependencies' install scripts are not run.
+      - name: Cache pinned Vercel CLI
+        id: vercel-cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.vercel-cli
+          key: vercel-cli-${{ runner.os }}-node24-${{ env.VERCEL_CLI_VERSION }}-ignore-scripts
+      - name: Install pinned Vercel CLI
+        if: steps.vercel-cache.outputs.cache-hit != 'true'
+        run: npm install --global --ignore-scripts --prefix "$HOME/.vercel-cli" "vercel@$VERCEL_CLI_VERSION"
+      - name: Use pinned Vercel CLI
+        run: |
+          echo "$HOME/.vercel-cli/bin" >> "$GITHUB_PATH"
+          "$HOME/.vercel-cli/bin/vercel" --version
+      - name: Recheck release before production deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.release.outputs.tag }}
+        run: node scripts/ci/release.cjs check
+      # Vercel builds the sources it is sent (vercel.json: npm run db:migrate && npm run build), with the production
+      # environment's variables: the migrations reach the production database here.
+      - name: Deploy released commit
+        id: deploy
+        env:
+          SOURCE_SHA: ${{ needs.release.outputs.sha }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          url=$(vercel deploy --prod --yes --token="$VERCEL_TOKEN" --meta "githubCommitSha=$SOURCE_SHA")
+          case "$url" in
+            https://*.vercel.app) ;;
+            *) echo "vercel deploy did not print a deployment URL: $url"; exit 1 ;;
+          esac
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          printf 'Production deployment: %s\n' "$url" >> "$GITHUB_STEP_SUMMARY"
+      # The checks below must see the new deployment. vercel deploy --prod can return while the production domain still
+      # points at the previous one, which answers the paths both have alike, so wait until Vercel resolves the domain to
+      # the deployment just made. The page itself names no deployment: Next.js writes data-dpl-id only with Skew
+      # Protection, which this project does not have enabled.
+      - name: Wait for production to serve the new deployment
+        env:
+          DEPLOYMENT_URL: ${{ steps.deploy.outputs.url }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          expected=${DEPLOYMENT_URL#https://}
+          test -n "$expected" || { echo 'No deployment URL from vercel deploy'; exit 1; }
+          for attempt in $(seq 1 60); do
+            served=$(curl --silent --show-error --max-time 30 --header "Authorization: Bearer $VERCEL_TOKEN" \
+              "https://api.vercel.com/v13/deployments/typle-r-six.vercel.app?teamId=$VERCEL_ORG_ID" | jq -r '.url // empty' || true)
+            if [ "$served" = "$expected" ]; then
+              echo "Production serves $served after $attempt checks"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Production still serves ${served:-an unknown deployment} five minutes after deploying $expected"
+          exit 1
+      # The same checks as npm run check:production on the Mac: the home page, the Vercel domain's redirect, the API's
+      # health and its 401, and Auth.js's sign-in (scripts/check-production.cjs, which needs no dependencies).
+      - name: Check production
+        run: node scripts/check-production.cjs
