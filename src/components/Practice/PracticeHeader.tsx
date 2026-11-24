@@ -4,6 +4,7 @@ import { Brain, ChevronsUpDown, Eye, EyeOff, List, PanelRightClose, PanelRightOp
 import type { PracticeDevice } from "@/lib/devices"
 import type { PracticeMode } from "@/lib/records"
 import type { SavedWordList } from "@/lib/wordLists"
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import PracticeName from "@/components/PracticeName"
 import DeviceMenu from "./DeviceMenu"
@@ -32,19 +33,25 @@ export default function PracticeHeader({ list, listName, wordCount, devices, dev
 }) {
   const t = useTranslations('practice')
   const recall = mode === 'recall'
-  return <div className="flex h-14 items-center gap-1.5 border-b px-2 sm:h-16 sm:gap-3 sm:px-3">
-    <button type="button" onClick={onOpenPicker} aria-haspopup="dialog" aria-label={t('header.switchList', { name: listName })}
-      className="flex h-10 min-w-0 items-center gap-2 rounded-lg px-1.5 text-muted-foreground outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 sm:px-2.5">
-      <List className="hidden size-4 shrink-0 sm:block" aria-hidden="true" />
-      <span className="truncate text-[15px] font-bold text-foreground sm:text-base"><PracticeName list={list} /></span>
-      <span className="hidden shrink-0 text-[13px] sm:inline">{t('header.wordCount', { count: wordCount })}</span>
-      <ChevronsUpDown className="size-4 shrink-0" aria-hidden="true" />
-    </button>
-    <span className="flex-1" />
+  // The header's width follows the sidebar and the word list panel as well as the window (it is narrower at 1280px with
+  // both than at 1024px), so the word count and the recall label are shown by the header's own width (@container).
+  return <div className="@container flex h-14 items-center gap-1.5 border-b px-2 sm:h-16 sm:gap-3 sm:px-3">
+    {/* The list's name gives way first, but this box keeps room for the icons and a few characters of it, so that they
+        never spill over the device menu; when even that does not fit, the device's name is cut short (DeviceMenu). */}
+    <div className="flex min-w-16 flex-1 sm:min-w-32">
+      <button type="button" onClick={onOpenPicker} aria-haspopup="dialog" aria-label={t('header.switchList', { name: listName })}
+        className="flex h-10 min-w-0 items-center gap-2 rounded-lg px-1.5 text-muted-foreground outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 sm:px-2.5">
+        <List className="hidden size-4 shrink-0 sm:block" aria-hidden="true" />
+        <span className="truncate text-[15px] font-bold text-foreground sm:text-base"><PracticeName list={list} /></span>
+        {/* Handwriting has no recall switch, so its header has room for the word count from a narrower width. */}
+        <span className={cn("hidden shrink-0 text-[13px]", mode === 'writing' ? "@xl:inline" : "@2xl:inline")}>{t('header.wordCount', { count: wordCount })}</span>
+        <ChevronsUpDown className="size-4 shrink-0" aria-hidden="true" />
+      </button>
+    </div>
     <DeviceMenu devices={devices} device={device} locked={running} onChange={onChooseDevice} onOpenChange={onDeviceMenuOpenChange} onCloseAutoFocus={onDeviceMenuCloseAutoFocus} />
     {/* Handwriting never combines with recall, so the recall switch is hidden while writing. */}
     {mode !== 'writing' && <Button variant="ghost" size="lg" className="shrink-0 px-2 sm:px-2.5" aria-pressed={recall} disabled={running} title={t('recall.toggle')} aria-label={t('recall.toggle')} onClick={onSwitchRecall}>
-      <Brain aria-hidden="true" /><span className="hidden xl:inline">{t('recall.toggle')}</span>
+      <Brain aria-hidden="true" /><span className="hidden @4xl:inline">{t('recall.toggle')}</span>
     </Button>}
     {/* Hiding the live stats only changes the display: timing, saving and the result screen stay the same. */}
     <Button variant="ghost" size="icon-lg" className="shrink-0" aria-pressed={statsVisible} aria-label={t('header.liveStats')} title={t('header.liveStats')}

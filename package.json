@@ -1,6 +1,6 @@
 {
   "name": "typle-r",
-  "version": "2.60.2",
+  "version": "2.60.4",
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
