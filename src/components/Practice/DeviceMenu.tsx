@@ -7,6 +7,7 @@ import { useDeviceOptions } from '@/components/Devices/useDeviceOptions'
 import type { PracticeDevice } from '@/lib/devices'
 
 // The device is chosen before the first keystroke and then shown locked, as the record keeps that snapshot.
+// The trigger keeps its width while the list's name beside it can still give way, and shrinks only after that.
 export default function DeviceMenu({ devices, device, locked, onChange, onOpenChange, onCloseAutoFocus }: {
   devices: PracticeDevice[]
   device?: PracticeDevice
@@ -19,7 +20,7 @@ export default function DeviceMenu({ devices, device, locked, onChange, onOpenCh
   const { label, options } = useDeviceOptions(devices, device)
   return <DropdownMenu onOpenChange={onOpenChange}>
     <DropdownMenuTrigger disabled={locked} aria-label={t('label', { device: label })} title={t(locked ? 'locked' : 'change')}
-      className="inline-flex h-8 max-w-28 shrink-0 items-center gap-1.5 rounded-full border bg-background px-2.5 text-[13px] outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-default disabled:text-muted-foreground disabled:hover:bg-background sm:max-w-52 dark:bg-input/30">
+      className="inline-flex h-8 max-w-28 min-w-16 items-center gap-1.5 rounded-full border bg-background px-2.5 text-[13px] outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-default disabled:text-muted-foreground disabled:hover:bg-background sm:max-w-52 dark:bg-input/30">
       <Keyboard className="size-3.5 shrink-0" aria-hidden="true" />
       <span className="truncate">{device ? label : t('unselected')}</span>
       {locked ? <Lock className="size-3 shrink-0" aria-hidden="true" /> : <ChevronDown className="size-3.5 shrink-0" aria-hidden="true" />}

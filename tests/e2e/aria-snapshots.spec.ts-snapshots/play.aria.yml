@@ -1,5 +1,5 @@
 - main:
-  - 'button "単語リストを切り替える（現在: 基本の単語）"': 基本の単語 3語
+  - 'button "単語リストを切り替える（現在: 基本の単語）"': 基本の単語
   - button "使用端末：デフォルト" [disabled]: デフォルト
   - button "思い出して打つ" [disabled]
   - button "練習中の記録を表示" [pressed]
