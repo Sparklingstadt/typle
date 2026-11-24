@@ -47,7 +47,7 @@ RDS をどのサブネットに置くかを決めるものです。
 ## 3-3. SSL が必須であることを確かめる
 
 PostgreSQL 15 以降の RDS は、パラメータ `rds.force_ssl` が既定で `1` です。暗号化していない接続は断られます。
-アプリは `DATABASE_URL` の `sslmode=verify-full` と、イメージに入っている RDS の CA バンドルで、接続先が本物の RDS であることまで確かめます（README の「コンテナのイメージ」）。
+アプリは `DATABASE_URL` の `sslmode=verify-full` と、イメージに入っている RDS の CA バンドルで、接続先が本物の RDS であることまで確かめます（[production.md](../production.md) の「コンテナのイメージ」）。
 
 ## 確かめること
 
