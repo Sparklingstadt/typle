@@ -29,6 +29,7 @@ function useWorkspace() {
   const [lists, setLists] = useState<SavedWordList[]>([])
   const [packs, setPacks] = useState<WordPack[]>([])
   const [interests, setInterests] = useState<string[]>([])
+  const [revision, setRevision] = useState<number | null>(null)
   const [ready, setReady] = useState(false)
   const [failure, setFailure] = useState<Failure>(null)
   const t = useTranslations('errors')
@@ -43,6 +44,7 @@ function useWorkspace() {
     setPacks([])
     setInterests([])
     setDevices([])
+    setRevision(null)
     setReady(false)
     setFailure(null)
   }
@@ -52,7 +54,7 @@ function useWorkspace() {
     if (!accountId) return
     const current = createWorkspaceSession({
       store: workspaceStore(accountId), accountId, initialLibrary, saving: setSaving,
-      show: shown => { setLists(shown.lists); setPacks(shown.packs); setDevices(shown.devices); setInterests(shown.interests) },
+      show: shown => { setLists(shown.lists); setPacks(shown.packs); setDevices(shown.devices); setInterests(shown.interests); setRevision(shown.revision) },
     })
     workspace.current = current
     let active = true
@@ -101,6 +103,9 @@ function useWorkspace() {
   const errorKey = failure?.reason instanceof AppError ? failure.reason.key : null
   return {
     lists, packs, devices, interests, accountId,
+    /** The saved revision of this workspace; 0 means nothing was ever saved. Null until a load has succeeded for this
+     * account, and it stays null when the load fails, so null never means a first-time visitor. */
+    revision,
     /** Where this workspace is saved; undefined until the login is known. */
     storage: accountId ? workspaceStore(accountId).location : undefined,
     updateDevices: (change: (current: PracticeDevice[]) => PracticeDevice[]) => save(current => current.update(lists => lists, true, change)),

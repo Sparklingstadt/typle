@@ -8,7 +8,7 @@ import { WorkspaceError, type WorkspaceState, type WorkspaceStore, type Workspac
 type Change = Omit<WorkspaceWrite, 'revision' | 'accountId'>
 
 /** What the screens show of the workspace. */
-export type WorkspaceShown = { lists: SavedWordList[]; packs: WordPack[]; devices: PracticeDevice[]; interests: string[] }
+export type WorkspaceShown = { lists: SavedWordList[]; packs: WordPack[]; devices: PracticeDevice[]; interests: string[]; revision: number }
 
 export type WorkspaceSessionOptions = {
   store: WorkspaceStore
@@ -32,7 +32,7 @@ export function createWorkspaceSession({ store, accountId, initialLibrary, show,
   function display(data: WorkspaceState) {
     state = data
     const library = data.revision === 0 ? initialLibrary : data
-    show({ lists: viewLists(library), packs: library.packs, devices: data.devices, interests: data.interests })
+    show({ lists: viewLists(library), packs: library.packs, devices: data.devices, interests: data.interests, revision: data.revision })
   }
 
   async function load(): Promise<WorkspaceState> {
