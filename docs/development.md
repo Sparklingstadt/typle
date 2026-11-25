@@ -67,7 +67,7 @@ npm run test:e2e
 
 アプリは DB を Prisma Client（`prisma/schema.prisma` から作る `src/generated/prisma`）で読み書きしますが、テーブルを作るのは `db/migrations` の SQL です（Prisma Migrate は使いません）。テーブルを変えるときは、`db/migrations` に新しいマイグレーションを足し、同じ変更を `prisma/schema.prisma` に書いて `npx prisma generate` します。`npm run verify` は `db:migrate` のあとに、マイグレーションを当てた DB と `schema.prisma` の差を `prisma migrate diff` で確かめ、違えば止まります（CHECK 制約は `schema.prisma` に書けないので比べません）。DB の形から `schema.prisma` を作り直すときは `npx prisma db pull` ですが、モデル名・フィールド名とコメントが消えるので、差分を見て戻します。
 
-Prisma で書けない3か所だけ SQL のまま残しています。`modifyWorkspace` の行のロック（`FOR UPDATE`）、`writeWorkspace` の最初の保存どうしのロック（`pg_advisory_xact_lock`）、`revokeLogins` の時刻の upsert です。
+SQL のまま残しているのは4か所です。Prisma で書けない `modifyWorkspace` の行のロック（`FOR UPDATE`）、`writeWorkspace` の最初の保存どうしのロック（`pg_advisory_xact_lock`）、`revokeLogins` の時刻の upsert と、速さのための `syncRecords` の記録の挿入（`unnest` の1文。Prisma の `createMany` では記録 5,000 件の保存が約3倍遅くなったため）です。
 
 API の Route Handler は、DB を使うテスト（`tests/api*.test.cjs` など）が、マイグレーション済みのテスト用DB（`TYPLE_TEST_DATABASE_URL`）で確かめます（`npm run verify` は `db:migrate` の後に実行します）。v2.46.11 まで動いていた Go のバックエンドの答え・Cookie・トークンは `tests/fixtures`（`sessions.json`・`auth-answers.json` など）に記録してあり、TS が同じ答えを返し、Go の発行した Cookie・トークンを読めることを確かめます。
 
