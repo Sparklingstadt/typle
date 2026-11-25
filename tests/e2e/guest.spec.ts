@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { API, endpointOf } from './api'
 import { openPacks } from './packRows'
+import { skipWelcome } from './welcome'
 const key = 'typle-r:guest-workspace:v1'
 async function importWords(page: import('@playwright/test').Page, files: Parameters<import('@playwright/test').Locator['setInputFiles']>[0]) {
   await page.getByRole('button', { name: 'CSVを読み込む', exact: true }).click()
@@ -140,6 +141,8 @@ test('guest changes propagate between tabs and deleted storage resets the worksp
 })
 
 test('about page explains features and storage, marks the browser as the current place, and opens GitHub in a new tab', async ({ page }) => {
+  // A fresh guest following the 練習する link to /play would be sent to the first-visit tour.
+  await skipWelcome(page)
   const { version } = JSON.parse(readFileSync('package.json', 'utf8'))
   await page.goto('/about')
   await expect(page).toHaveTitle('Typleについて | Typle')
