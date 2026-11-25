@@ -25,7 +25,7 @@ export default function PackStep({ entries, checked, check, saving, interestsFai
   const count = entries.filter(entry => checked.has(entry.catalogId)).length
   return <section aria-labelledby="welcome-packs" className="space-y-5">
     <div className="space-y-1">
-      <h2 id="welcome-packs" className="text-lg font-bold">{t('packs.title')}</h2>
+      <h2 id="welcome-packs" tabIndex={-1} className="text-lg font-bold">{t('packs.title')}</h2>
       <p className="text-sm text-muted-foreground">{t('packs.text')}</p>
     </div>
     <ul className="grid gap-4 sm:grid-cols-2">

@@ -70,11 +70,16 @@ function readMarks(storage: Storage): string[] {
   }
 }
 
+// Accounts dismissed during this page session, so 「あとで」 works even when the mark cannot be written.
+const dismissedThisSession = new Set<string>()
+
 export function isWelcomeDismissed(accountId: string, storage: Storage | undefined = defaultStorage()): boolean {
+  if (dismissedThisSession.has(accountId)) return true
   return storage ? readMarks(storage).includes(accountId) : false
 }
 
 export function dismissWelcome(accountId: string, storage: Storage | undefined = defaultStorage()): void {
+  dismissedThisSession.add(accountId)
   if (!storage) return
   try {
     const marks = readMarks(storage)

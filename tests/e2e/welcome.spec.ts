@@ -60,6 +60,7 @@ test('a new guest picks interests, follows and starts practice', async ({ page }
   await expect(page).toHaveURL(/\/welcome$/)
   await expect(page.getByText('ステップ 1 / 3')).toBeVisible()
   await pickInterests(page)
+  await expect(page.getByRole('region', { name: 'パックをフォローする' }).getByRole('checkbox')).toHaveCount(2)
   const chinese = page.getByRole('checkbox', { name: '中国語：基礎単語・基礎構文 を選ぶ', exact: true })
   const go = page.getByRole('checkbox', { name: 'Go構文 を選ぶ', exact: true })
   await expect(chinese).toBeChecked()

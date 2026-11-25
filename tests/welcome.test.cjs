@@ -58,12 +58,28 @@ test('the mark is kept per account', () => {
 
 test('a broken or unavailable storage never throws', () => {
   const storage = memoryStorage(); storage.setItem(WELCOME_DISMISSED_KEY, '{oops')
-  assert.equal(isWelcomeDismissed('guest:local', storage), false)
+  assert.equal(isWelcomeDismissed('guest:broken', storage), false)
   const failing = { getItem() { throw new Error('denied') }, setItem() { throw new Error('denied') } }
-  assert.equal(isWelcomeDismissed('guest:local', failing), false)
-  assert.doesNotThrow(() => dismissWelcome('guest:local', failing))
+  assert.equal(isWelcomeDismissed('guest:broken', failing), false)
+  assert.doesNotThrow(() => dismissWelcome('guest:broken', failing))
   const notArray = memoryStorage(); notArray.setItem(WELCOME_DISMISSED_KEY, '{"a":1}')
   assert.equal(isWelcomeDismissed('a', notArray), false)
   dismissWelcome('a', notArray)
   assert.equal(isWelcomeDismissed('a', notArray), true)
+})
+
+test('a mark that cannot be written still counts for this page session', () => {
+  const failing = { getItem() { throw new Error('denied') }, setItem() { throw new Error('denied') } }
+  assert.equal(isWelcomeDismissed('github:1', failing), false)
+  dismissWelcome('github:1', failing)
+  assert.equal(isWelcomeDismissed('github:1', failing), true)
+  assert.equal(isWelcomeDismissed('github:2', failing), false)
+})
+
+test('every welcome pack has at least one list with at least one word', () => {
+  for (const catalogId of Object.values(WELCOME_PACKS)) {
+    const entry = officialPacks().find(item => item.catalogId === catalogId)
+    assert.ok(entry.lists.length > 0, catalogId)
+    assert.ok(entry.lists.some(list => list.words.length > 0), catalogId)
+  }
 })

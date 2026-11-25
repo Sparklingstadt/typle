@@ -12,7 +12,7 @@ export default function StartStep({ pack, list, start }: { pack: string, list: S
   const t = useTranslations('home.tour')
   return <section aria-labelledby="welcome-start" className="space-y-5">
     <div className="space-y-1">
-      <h2 id="welcome-start" className="text-lg font-bold">{t('start.title')}</h2>
+      <h2 id="welcome-start" tabIndex={-1} className="text-lg font-bold">{t('start.title')}</h2>
       <p className="text-sm text-muted-foreground">{t('start.text', { pack })}</p>
     </div>
     {list && <Card className="gap-3 px-5 py-5">

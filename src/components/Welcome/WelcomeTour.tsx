@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useWordLists } from '@/hooks/useWordLists'
@@ -40,6 +40,13 @@ export default function WelcomeTour() {
     if (admitted === false) router.replace('/home')
   }, [admitted, router])
 
+  // Move focus to the new step's heading so keyboard and screen reader users land on it; not on the first render.
+  const firstRender = useRef(true)
+  useEffect(() => {
+    if (firstRender.current) { firstRender.current = false; return }
+    document.getElementById(`welcome-${step}`)?.focus()
+  }, [step])
+
   const entries = welcomePacks(chosen)
 
   function later() {
@@ -65,6 +72,8 @@ export default function WelcomeTour() {
   async function follow() {
     const choices = entries.filter(entry => checked.has(entry.catalogId)).map(entry => ({ catalogId: entry.catalogId, follow: true }))
     if (!choices.length) return
+    // Another tab or device saved meanwhile: the tour must not overwrite it.
+    if (revision !== 0) { router.replace('/home'); return }
     const saved = await updateLibrary(library =>
       applyCatalogChoices(library, choices, entry => ({ pack: randomId(), lists: entry.lists.map(() => randomId()) })))
     if (!saved) return
@@ -87,7 +96,7 @@ export default function WelcomeTour() {
     {!admitted ? <div role="status" className="space-y-3"><p className="sr-only">{common('loading')}</p><Skeleton className="h-10 w-72 max-w-full" /><Skeleton className="h-24 w-full" /></div>
       : step === 'interests' ? <section aria-labelledby="welcome-interests" className="space-y-5">
         <div className="space-y-1">
-          <h2 id="welcome-interests" className="text-lg font-bold">{t('interests.title')}</h2>
+          <h2 id="welcome-interests" tabIndex={-1} className="text-lg font-bold">{t('interests.title')}</h2>
           <p className="text-sm text-muted-foreground">{t('interests.text')}</p>
         </div>
         <InterestSettings interests={chosen} saving={false} updateInterests={async change => { setChosen(change); return true }} />

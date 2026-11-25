@@ -13,7 +13,7 @@
   "storageAccount": "你已登录，单词列表、练习记录和设备会保存到账户中，并与登录同一账户的其他设备和浏览器同步。它们与未登录时保存在此浏览器中的数据分开保存。",
   "links": "<guide>使用方法</guide> ／ <about>关于 Typle</about>",
   "tour": {
-    "title": "开始使用",
+    "title": "新手引导",
     "step": "第 {current} 步，共 {total} 步",
     "later": "以后再说",
     "next": "下一步",
