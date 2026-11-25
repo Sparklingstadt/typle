@@ -53,38 +53,38 @@ test('a linked sub signs in as its account; a sub without a link has none', data
   const sub = newSub()
   const owner = await newAccount()
   assert.equal(await linkedAccount(db, sub), null)
-  assert.equal(await linkSid(sql, sub, owner), 'linked')
+  assert.equal(await linkSid(db, sub, owner), 'linked')
   assert.equal(await linkedAccount(db, sub), owner)
 })
 
 test('a sub links once, and an account to one sub', database, async () => {
   const sub = newSub()
   const owner = await newAccount()
-  assert.equal(await linkSid(sql, sub, owner), 'linked')
-  assert.equal(await linkSid(sql, sub, await newAccount()), 'subLinked')
-  assert.equal(await linkSid(sql, newSub(), owner), 'accountLinked')
+  assert.equal(await linkSid(db, sub, owner), 'linked')
+  assert.equal(await linkSid(db, sub, await newAccount()), 'subLinked')
+  assert.equal(await linkSid(db, newSub(), owner), 'accountLinked')
 })
 
 test('an account with an account record but no workspace can be linked', database, async () => {
   const owner = await newAccount({ empty: true })
   await sql.query(`INSERT INTO typle_records (owner_id, list_id, record_id, position, at, data)
     VALUES ($1, 'l', 'r', 0, now(), '{}')`, [owner])
-  assert.equal(await linkSid(sql, newSub(), owner), 'linked')
+  assert.equal(await linkSid(db, newSub(), owner), 'linked')
 })
 
 test('an account with nothing saved is refused, as a mistyped one', database, async () => {
-  assert.equal(await linkSid(sql, newSub(), await newAccount({ empty: true })), 'accountEmpty')
+  assert.equal(await linkSid(db, newSub(), await newAccount({ empty: true })), 'accountEmpty')
 })
 
 test('a sub whose own account sid:<sub> has saved data is refused, as the link would leave that data behind', database, async () => {
   const sub = newSub()
   owners.push(`sid:${sub}`)
   await sql.query('INSERT INTO typle_workspaces (owner_id) VALUES ($1)', [`sid:${sub}`])
-  assert.equal(await linkSid(sql, sub, await newAccount()), 'sidHasData')
+  assert.equal(await linkSid(db, sub, await newAccount()), 'sidHasData')
 })
 
 test('only an account of another login can be linked to', database, async () => {
   for (const account of ['sid:abc', 'github:', 'x:1', '', 'password:not-a-uuid']) {
-    assert.equal(await linkSid(sql, newSub(), account), 'accountInvalid', account)
+    assert.equal(await linkSid(db, newSub(), account), 'accountInvalid', account)
   }
 })
