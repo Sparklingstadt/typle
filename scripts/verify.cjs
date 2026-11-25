@@ -1,7 +1,7 @@
 // Runs, in order, every check a commit must pass before it is released (docs/release-workflow.md), and stops at the
-// first failure: the migrations on the local database, the migration tests, the type check, the unit tests, lint,
-// knip, the production build, the AWS infrastructure's (infra/) type check, tests and synth, the end-to-end tests,
-// and the API documentation's build and link check. They run on the developer's machine, before a PR is opened and
+// first failure: the migrations on the local database, the check that prisma/schema.prisma matches them, the migration
+// tests, the type check, the unit tests, lint, knip, the production build, the AWS infrastructure's (infra/) type
+// check, tests and synth, the end-to-end tests, and the API documentation's build and link check. They run on the developer's machine, before a PR is opened and
 // again on the merged main commit before it is released, and in GitHub Actions on every pull request and on main
 // (.github/workflows/ci.yml, since v2.60.3; there was no CI from v2.38.1 to v2.60.2). On main the CI releases and
 // deploys the commit when they pass (since v2.60.6).
@@ -33,6 +33,8 @@ const infraDir = path.join(root, 'infra')
 /** @type {{ name: string, command: string, args: string[], env?: Record<string, string>, cwd?: string }[]} */
 const steps = [
   { name: 'db:migrate', command: 'npm', args: ['run', 'db:migrate'] },
+  // prisma/schema.prisma must describe the tables the migrations made: any difference fails (exit code 2).
+  { name: 'schema drift', command: 'npx', args: ['prisma', 'migrate', 'diff', '--from-config-datasource', '--to-schema', 'prisma/schema.prisma', '--exit-code'] },
   { name: 'migration tests', command: 'node', args: ['--test', 'tests/migrate.test.cjs'], env: { TYPLE_TEST_DATABASE_URL: testDatabaseUrl } },
   { name: 'typecheck', command: 'npm', args: ['run', 'typecheck'] },
   { name: 'unit tests', command: 'npm', args: ['test'], env: { TYPLE_TEST_DATABASE_URL: testDatabaseUrl } },

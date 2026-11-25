@@ -1,7 +1,10 @@
+import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
+import { Prisma, PrismaClient } from '../generated/prisma/client'
 
-// The database of the Route Handlers. Each server instance keeps one small pool: on Vercel many instances can run at
-// once (DATABASE_URL is Neon's pooled connection), and on AWS each ECS task is one instance. On Amazon RDS, DATABASE_URL
+// The database of the Route Handlers: Prisma Client (prisma/schema.prisma) over a pg pool. Each server instance keeps one
+// small pool: on Vercel many instances can run at once (DATABASE_URL is Neon's pooled connection), and on AWS each ECS
+// task is one instance. On Amazon RDS, DATABASE_URL
 // carries sslmode=verify-full and sslrootcert (the CA bundle in the image, see Dockerfile), so the server is verified.
 
 /**
@@ -25,46 +28,62 @@ export function createPool(url: string, timeoutMs = 5_000): Pool {
   return db
 }
 
-let shared: Pool | undefined
+/**
+ * Prisma Client over pool: the app's queries go through it, with the pool's timeouts. $disconnect() ends the pool.
+ * Tests pass a pool of their own to look into it.
+ */
+export function prismaOn(pool: Pool): PrismaClient {
+  return new PrismaClient({ adapter: new PrismaPg(pool, { disposeExternalPool: true }) })
+}
 
-/** The pool of this server instance, opened on first use from DATABASE_URL (or POSTGRES_URL). */
+/** Prisma Client for the database at url, over a pool of createPool. */
+export function createPrisma(url: string, timeoutMs = 5_000): PrismaClient {
+  return prismaOn(createPool(url, timeoutMs))
+}
+
+/** The database the server code is given: Prisma Client. */
+export type Db = PrismaClient
+/** The client of a transaction (db.$transaction(tx => ...)), or Prisma Client itself: anything that runs queries. */
+export type Tx = Prisma.TransactionClient
+
+/** How long an interactive transaction may take before Prisma gives it up (its default is 5 seconds). */
+export const TRANSACTION_TIMEOUT_MS = 15_000
+
+let sharedPool: Pool | undefined
+
+/** The pg pool the code not yet moved to Prisma uses. Removed once every query goes through prisma(). */
 export function pool(): Pool {
+  if (!sharedPool) {
+    const url = process.env.DATABASE_URL || process.env.POSTGRES_URL
+    if (!url) throw new Error('DATABASE_URL is not set')
+    sharedPool = createPool(url)
+  }
+  return sharedPool
+}
+
+let shared: PrismaClient | undefined
+
+/** The Prisma Client of this server instance, opened on first use from DATABASE_URL (or POSTGRES_URL). */
+export function prisma(): PrismaClient {
   if (!shared) {
     const url = process.env.DATABASE_URL || process.env.POSTGRES_URL
     if (!url) throw new Error('DATABASE_URL is not set')
-    shared = createPool(url)
+    shared = createPrisma(url)
   }
   return shared
 }
 
 /**
- * Resolves once the database answers `SELECT 1`, and rejects when it fails or takes longer than timeoutMs. The timeout
- * covers getting a connection too: a server that accepts it and never answers would otherwise keep the request open.
+ * Resolves once the database answers `SELECT 1`, and rejects when it fails or takes longer than timeoutMs. The pool's
+ * own timeouts drop a connection that never answers, so a dead database cannot keep the pool's connections lent out.
  */
-export async function ping(db: Pool, timeoutMs = 5_000): Promise<void> {
-  let timedOut = false
+export async function ping(db: Db, timeoutMs = 5_000): Promise<void> {
   let timer: ReturnType<typeof setTimeout> | undefined
   const deadline = new Promise<never>((_, reject) => {
-    timer = setTimeout(() => {
-      timedOut = true
-      reject(new Error(`the database did not answer within ${timeoutMs} ms`))
-    }, timeoutMs)
+    timer = setTimeout(() => reject(new Error(`the database did not answer within ${timeoutMs} ms`)), timeoutMs)
   })
-  const query = (async () => {
-    const client = await db.connect()
-    // A connection that comes back after the deadline is in an unknown state: drop it instead of reusing it.
-    if (timedOut) {
-      client.release(true)
-      return
-    }
-    try {
-      await client.query('SELECT 1')
-      client.release()
-    } catch (error) {
-      client.release(true)
-      throw error
-    }
-  })()
+  // Prisma has no call that only checks the connection, so this one query is SQL.
+  const query = db.$queryRaw`SELECT 1`
   query.catch(() => {}) // Its failure after the deadline has no one left to tell.
   try {
     await Promise.race([query, deadline])

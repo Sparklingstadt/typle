@@ -2,20 +2,20 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const net = require('node:net')
-const { createPool, ping } = require('../src/server/database.ts')
+const { createPool, createPrisma, prismaOn, ping } = require('../src/server/database.ts')
 
 // The first test runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
 
 test('ping succeeds on the database', database, async () => {
-  const db = createPool(url)
-  try { await ping(db) } finally { await db.end() }
+  const db = createPrisma(url)
+  try { await ping(db) } finally { await db.$disconnect() }
 })
 
 test('ping fails when nothing listens', async () => {
-  const db = createPool('postgres://user:pass@127.0.0.1:1/none')
-  try { await assert.rejects(ping(db)) } finally { await db.end() }
+  const db = createPrisma('postgres://user:pass@127.0.0.1:1/none')
+  try { await assert.rejects(ping(db, 500)) } finally { await db.$disconnect() }
 })
 
 // A server that accepts the connection and never answers: ping must give up on its own.
@@ -23,7 +23,7 @@ test('ping gives up after the timeout', async () => {
   const sockets = []
   const server = net.createServer(socket => sockets.push(socket)).listen(0, '127.0.0.1')
   await new Promise(resolve => server.once('listening', resolve))
-  const db = createPool(`postgres://user:pass@127.0.0.1:${server.address().port}/none`)
+  const db = createPrisma(`postgres://user:pass@127.0.0.1:${server.address().port}/none`)
   const started = Date.now()
   try {
     await assert.rejects(ping(db, 200))
@@ -31,7 +31,7 @@ test('ping gives up after the timeout', async () => {
   } finally {
     for (const socket of sockets) socket.destroy()
     server.close()
-    await db.end().catch(() => {})
+    await db.$disconnect().catch(() => {})
   }
 })
 
@@ -47,15 +47,16 @@ test('a query that never answers does not keep its connection', async () => {
     })
   }).listen(0, '127.0.0.1')
   await new Promise(resolve => server.once('listening', resolve))
-  const db = createPool(`postgres://user:pass@127.0.0.1:${server.address().port}/none`, 200)
+  const pool = createPool(`postgres://user:pass@127.0.0.1:${server.address().port}/none`, 200)
+  const db = prismaOn(pool)
   try {
     for (let i = 0; i < 7; i++) await assert.rejects(ping(db, 200))
     await new Promise(resolve => setTimeout(resolve, 400))
-    assert.deepEqual({ total: db.totalCount, waiting: db.waitingCount }, { total: 0, waiting: 0 })
+    assert.deepEqual({ total: pool.totalCount, waiting: pool.waitingCount }, { total: 0, waiting: 0 })
   } finally {
     for (const socket of sockets) socket.destroy()
     server.close()
-    await db.end().catch(() => {})
+    await db.$disconnect().catch(() => {})
   }
 })
 

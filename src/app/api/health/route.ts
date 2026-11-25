@@ -1,15 +1,15 @@
-import { pool } from '../../../server/database'
+import { prisma } from '../../../server/database'
 import { checkHealth } from '../../../server/health'
 import { methodNotAllowed, withoutBody } from '../../../server/response'
 
 // GET /api/health: whether the database answers. HEAD answers the same without the body.
 
 export async function GET() {
-  return checkHealth(pool)
+  return checkHealth(prisma)
 }
 
 export async function HEAD() {
-  return withoutBody(await checkHealth(pool))
+  return withoutBody(await checkHealth(prisma))
 }
 
 const onlyGet = async () => methodNotAllowed(['GET', 'HEAD'])
