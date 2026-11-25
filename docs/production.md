@@ -18,7 +18,7 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 
 関数は Vercel のシンガポール（`sin1`）で動かします（`vercel.json` の `regions`。v2.55.1 から。それまでは既定の米国東部 `iad1`）。Neon の DB も同じシンガポール（Vercel Marketplace のリージョン `sin1`）に置きます。DB を別のリージョンに移すときは、`regions` も DB に一番近いところに合わせます。
 
-対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/migrate.cjs` が `pg` で適用します（v2.36.19 から。Prisma Migrate は使いません）。アプリの DB の読み書きは Prisma Client です（v2.36.19〜v2.60.6 は `pg` の SQL、v2.60.7 から Prisma Client に戻しました）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](release-workflow.md)）。
+対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/check-migrations.cjs`（DB より古いコードでないかの検査）のあと `prisma migrate deploy` が適用します（v2.36.19〜v2.60.7 は自作の `scripts/migrate.cjs` が `pg` で適用し、v2.60.8 から Prisma Migrate に戻しました）。アプリの DB の読み書きは Prisma Client です（v2.36.19〜v2.60.6 は `pg` の SQL、v2.60.7 から Prisma Client に戻しました）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](release-workflow.md)）。
 
 公式資料: [GitHub OAuth App](https://docs.github.com/ja/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)、[PostgreSQL Docker image](https://hub.docker.com/_/postgres)。
 
@@ -33,7 +33,8 @@ docker build --build-arg SITE_URL=https://typle.sparklingstadt.com -t typle-r .
 - `SITE_URL` は必須です。`sitemap.xml`・`robots.txt`・ページのメタデータはビルドの時点で URL を埋め込むため、ないとビルドが止まります。
 - イメージの中では `TYPLE_STANDALONE=1` で standalone のビルドをし、`node server.js` が `:3000` で受けます。Vercel と `next start`（verify・E2E）のビルドは今までどおりです。
 - `.env*` と `*.pem` は `.dockerignore` でイメージに入りません。設定は実行のときに環境変数で渡します。
-- マイグレーションは同じイメージで `node scripts/migrate.cjs` を実行します。
+- マイグレーションは同じイメージの `/app/migrate` で `npm run db:migrate` を実行します（`npm --prefix /app/migrate run db:migrate`）。Prisma の CLI は開発用の依存で standalone のサーバーに入らないため、`/app/migrate` に `prisma`・`pg`・`@next/env` と、検査のスクリプト・`db/migrations`・`prisma.config.ts` だけを入れています。
+- `prisma.config.ts` は、`DATABASE_URL` の `sslmode=verify-full&sslrootcert=…` を Prisma の CLI が読む形（`sslmode=require&sslcert=…&sslaccept=strict`）に直して渡します。Prisma の CLI は libpq の `verify-full` と `sslrootcert` を読まず、そのままでは証明書を確かめずにつなぐためです。
 - Amazon RDS につなぐときは、`DATABASE_URL` の末尾に `?sslmode=verify-full&sslrootcert=/app/certs/rds-global-bundle.pem` を付けます（RDS の CA バンドルはイメージに入っています）。
 - 接続元の IP（回数制限）は `x-forwarded-for` の最後の値です。Vercel も AWS のロードバランサーも、最後に自分が見た接続元を置くためです。
 

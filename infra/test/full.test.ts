@@ -40,7 +40,8 @@ test('the app and the migration run the images they were given, on ARM64', () =>
   const migrate = taskDefinition('typle-migrate')
   assert.equal(migrate.RuntimePlatform.CpuArchitecture, 'ARM64')
   assert.match(JSON.stringify(migrate.ContainerDefinitions[0].Image), /:v1\.2\.4"/)
-  assert.deepEqual(migrate.ContainerDefinitions[0].Command, ['node', 'scripts/migrate.cjs'])
+  assert.deepEqual(migrate.ContainerDefinitions[0].Command, ['npm', 'run', 'db:migrate'])
+  assert.equal(migrate.ContainerDefinitions[0].WorkingDirectory, '/app/migrate')
 })
 
 test('the app gets its settings and its four secrets', () => {

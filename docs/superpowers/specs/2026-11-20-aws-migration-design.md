@@ -77,7 +77,7 @@ CDK で作り直すと本番の切り替えが2回になる。練習環境なら
 
 - 本番は Vercel（`vercel.json`: リージョン `sin1`、`buildCommand` が `npm run db:migrate && npm run build`、
   `typle-r-six.vercel.app` から本番ドメインへのリダイレクト）。デプロイは Mac から `vercel deploy --prod --yes`。
-- DB は Neon。`DATABASE_URL` は Neon の pooler、マイグレーションは `DIRECT_URL`（`scripts/migrate.cjs`）。
+- DB は Neon。`DATABASE_URL` は Neon の pooler、マイグレーションは `DIRECT_URL`（`npm run db:migrate`: v2.60.8 から `scripts/check-migrations.cjs` のあと `prisma migrate deploy`。それまでは `scripts/migrate.cjs`）。
 - `src/server/database.ts` はインスタンスごとに `max: 5` のプール。
 - `src/server/limits.ts` の `clientIp` は `x-forwarded-for` の**先頭**の値を接続元とする。Vercel はこのヘッダーを自分で付け直すので
   正しいが、ALB は届いた値の**末尾に**接続元を足すので、先頭は利用者が偽れる。
@@ -138,7 +138,7 @@ CDK で作り直すと本番の切り替えが2回になる。練習環境なら
 
 1. **コンテナ**: `next.config.mjs` に `output: 'standalone'`。リポジトリのルートに `Dockerfile`（Node 24 の slim、マルチステージ、
    ARM64）を置く。実行時のイメージに入れるもの: `.next-production/standalone` の中身、`.next-production/static`、`public/`、
-   RDS の CA バンドル、マイグレーションに要るもの（`scripts/migrate.cjs` と `db/migrations`、`pg`）。
+   RDS の CA バンドル、マイグレーションに要るもの（v2.60.8 からは `/app/migrate` に、`prisma`・`pg`・`@next/env` と `scripts/check-migrations.cjs`・`db/migrations`・`prisma.config.ts`・`prisma/schema.prisma`。それまでは `scripts/migrate.cjs` と `db/migrations`、`pg`）。
    root でないユーザーで `node server.js`（`HOSTNAME=0.0.0.0`・`PORT=3000`）。`.dockerignore` で `.env*`・`.next*`・`node_modules`・`.git`・`kotlin`・`server` などを除く。
 2. **接続元の IP**: `clientIp` を `x-forwarded-for` の**末尾**の値にする（ALB が足した、偽れない値）。Vercel も値1つなので、
    この変更は Vercel のままでも同じに動く（移行前に出せる）。`tests/` の該当テストを直し、「先頭に偽の値を足しても効かない」テストを足す。
@@ -160,7 +160,7 @@ Vercel の後片付けは切り替えの**後**。
 ## マイグレーションとデプロイ（新しいリリースの段）
 
 RDS はプライベートサブネットにあり、Mac からは直接つながらない。マイグレーションは **ECS の単発タスク**（同じイメージ、
-コマンドを `node scripts/migrate.cjs` に差し替え）で流す。これで `RunTask` とタスク定義の上書きを学べる。
+コマンドを `npm --prefix /app/migrate run db:migrate` に差し替え。v2.60.7 までは `node scripts/migrate.cjs`）で流す。これで `RunTask` とタスク定義の上書きを学べる。
 
 リリースの7〜8（`docs/release-workflow.md`）を次に置き換える。コマンドは `scripts/deploy-aws.cjs`（仮）にまとめ、各段で止まる:
 

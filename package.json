@@ -1,6 +1,6 @@
 {
   "name": "typle-r",
-  "version": "2.60.7",
+  "version": "2.60.8",
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
@@ -14,7 +14,7 @@
     "test:e2e": "playwright test",
     "verify": "node scripts/verify.cjs",
     "check:production": "node scripts/check-production.cjs",
-    "db:migrate": "node scripts/migrate.cjs",
+    "db:migrate": "node scripts/check-migrations.cjs && prisma migrate deploy",
     "sid:link": "node scripts/sid-link.cjs",
     "packs:generate": "node scripts/generate-packs.cjs",
     "postinstall": "prisma generate && node scripts/copy-handwriting-runtime.cjs && node scripts/generate-licenses.cjs",

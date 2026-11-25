@@ -108,50 +108,60 @@ verifyのDBは CI が立てたDB（PR の前は手元のDB）ですが、`vercel
 ビルドやデプロイが失敗することもあるため、migrationは旧アプリと互換性のある変更にします。
 DBの自動ロールバックは行いません。
 
-`npm run db:migrate`（`scripts/migrate.cjs`）は `db/migrations` の SQL を名前の順に適用します。v2.36.19 までは `prisma migrate deploy` で適用していたため、
-履歴は今も同じ `_prisma_migrations` テーブルに、同じ形で残します。適用する前にこのテーブルを読み、手元にない新しいマイグレーション
-（手元の最新より後の名前で、適用済みのもの）があれば何も適用せずに失敗します（v2.5.8 から）。
-古いコミットを本番へデプロイすると、古いマイグレーションを未適用とみなして本番DBへ流そうとするためです
-（2026-10-31 に v0.99.4 のソースを手元からデプロイし、`0002_practice_devices` が本番DBで失敗して、
-後のデプロイが `P3009` で止まりました）。0027_schema にまとめた 0001〜0026 のような、手元にない古い記録は問題にしません。
-この確認は v2.5.8 以降のコードにしかないため、それより前のコミットは今も本番へデプロイしないでください。
+`npm run db:migrate` は、`scripts/check-migrations.cjs` のあと `prisma migrate deploy` で `db/migrations` の SQL を名前の順に適用します
+（v2.60.8 から。v2.36.19〜v2.60.7 は自作の `scripts/migrate.cjs`、それより前も `prisma migrate deploy` でした）。履歴は `_prisma_migrations` テーブルにあり、
+`0027_schema` にまとめた `0001`〜`0026` のような、手元にない古い記録があっても Prisma Migrate はそのまま進みます。
+
+### 古いコードの検査（`scripts/check-migrations.cjs`）
+
+古いコミットを本番へデプロイしてはいけません。2026-10-31 に v0.99.4 のソースを手元からデプロイしたところ、そのコミットには `0001`〜`0026` しかなく、
+`0027_schema` にまとめる前の古いマイグレーションを未適用とみなして本番DBへ流そうとし、`0002_practice_devices` が本番DBで失敗しました。
+失敗の記録が残ったため、後のデプロイも `P3009` で止まりました。
+
+`scripts/check-migrations.cjs` は、`prisma migrate deploy` の前に `_prisma_migrations` を読み、手元の最新より後の名前の適用済みのマイグレーションがあれば、
+何も適用せずに失敗します（v2.5.8 から。v2.60.8 で `migrate.cjs` から分けました）。DB にコードより新しい記録があると、コードが DB より古いと分かるためです。
+`prisma migrate deploy` 自身はこれを調べず、新しいテーブルの上で古いコードを動かしてしまいます（成功で終わります）。この検査は v2.5.8 以降のコードにしかないため、
+それより前のコミットは今も本番へデプロイしないでください。手で公開するときも、`main` の先頭だけを出します。
 前のデプロイへ戻すときは、ビルドをしない Vercel の Instant Rollback を使うか、新しいバージョンの修正PRを出します。
 
 ## マイグレーションの失敗
 
-マイグレーションは1本ごとに1つのトランザクションで、SQL とその記録を一緒に確定します。失敗すると DB はその1本の前の状態に戻り、記録も残りません。
-そのため `CREATE INDEX CONCURRENTLY` のようにトランザクションの中で実行できない SQL は書けません。
+Prisma Migrate は1本をトランザクションで包みません。そのため v2.60.8 からの新しいマイグレーションは、SQL の最初に `BEGIN;`、最後に `COMMIT;` を書きます
+（[開発](development.md)の「テーブルを変えるとき」、`tests/migrate.test.cjs` が確かめます）。こう書いたマイグレーションが失敗すると、DB はその1本の前の状態に戻りますが、
+`_prisma_migrations` に失敗の行が残り、次の `prisma migrate deploy` は `P3009` で止まります。
 
-本番では Vercel のビルドの `npm run db:migrate` が失敗し、デプロイが止まります。今の本番のアプリと DB はそのまま動き続けます。ログの1行目で原因を見分けます。
+本番では Vercel のビルドの `npm run db:migrate` が失敗し、デプロイが止まります。今の本番のアプリと DB はそのまま動き続けます。ログで原因を見分けます。
 
 | ログ | 意味 | 直し方 |
 |---|---|---|
-| `<名前> failed and was rolled back: …` | その SQL が本番のデータで失敗した。DB は変わっていない | SQL を直す。まだ適用されていないので、同じマイグレーションを直した新しいバージョンの PR を出す |
+| `Applying migration <名前>` のあとの `Error: …`（`BEGIN;` のあるものは `current transaction is aborted`） | その SQL が本番のデータで失敗した。失敗の行が残った | 下の手順で原因を見て記録を直し、SQL を直した新しいバージョンの PR を出す |
 | `The database has migrations this checkout does not have` | DB より古いコードをデプロイした。何も適用していない | 最新の main をデプロイする |
-| `The database records failed migrations` | `_prisma_migrations` に失敗の行がある（v2.36.19 までの Prisma の記録）。何も適用していない | 下の手順で記録を直す |
-| `This database has tables but no migration history` | 接続先が違う。何も適用していない | `DIRECT_URL`・`DATABASE_URL` を確かめる |
-| `Another migration is still running` | 別の実行が30秒たっても終わらない | 終わるのを待ち、デプロイをやり直す |
+| `P3009`（`migrate found failed migrations`） | 前の失敗の行が残っている。何も適用していない | 下の手順で記録を直す |
+| `P3005`（`The database schema is not empty`） | 接続先が違う（履歴のない、空でない DB）。何も適用していない | `DIRECT_URL`・`DATABASE_URL` を確かめる |
+| `P1002`（advisory lock の待ち時間切れ） | 別の実行が終わらない | 終わるのを待ち、デプロイをやり直す |
 
-失敗の行を直す手順は次のとおりです（2026-10-31 の `0002_practice_devices` がこの例です）。本番の接続文字列は `vercel env pull --environment=production` で取り出します。
+失敗の行を直す手順は次のとおりです。本番の接続文字列は `vercel env pull --environment=production` で取り出し、`DIRECT_URL=<本番の直接接続> npx prisma …` のように渡します。
 
-1. 行を確かめます。`finished_at` が空で `rolled_back_at` も空の行が失敗の行です。
+1. `npx prisma migrate status` で、失敗したマイグレーションの名前を確かめます。
+2. 原因を見ます。`BEGIN;` のあるマイグレーションでは、Prisma のログは `current transaction is aborted` だけで、本当のエラーも
+   `_prisma_migrations` の `logs` も残りません。`COMMIT;` を `ROLLBACK;` に替えて同じ DB で流すと、何も変えずに本当のエラーが出ます。
 
-   ```sql
-   SELECT migration_name, started_at, finished_at, rolled_back_at, logs FROM _prisma_migrations
-   WHERE finished_at IS NULL AND rolled_back_at IS NULL;
+   ```bash
+   sed 's/^COMMIT;$/ROLLBACK;/' db/migrations/<名前>/migration.sql | psql "$DIRECT_URL" -v ON_ERROR_STOP=1
    ```
 
-2. その SQL が DB を途中まで変えていないかを `logs` とテーブルの定義で確かめます。途中まで変えていたら、先に手で元に戻すか、残りを手で済ませます。
-3. 記録を直します。適用し直すなら `rolled_back_at` を入れ、手で最後まで済ませたなら `finished_at` を入れます。
+3. その SQL が DB を途中まで変えていないかを、テーブルの定義で確かめます。`BEGIN;`・`COMMIT;` を書いたものは変えていません。
+   書いていない古いもの（`0040_sid_links` まで）が途中まで変えていたら、先に手で元に戻すか、残りを手で済ませます。
+4. 記録を直します。適用し直すなら `--rolled-back`、手で最後まで済ませたなら `--applied` です。
 
-   ```sql
-   UPDATE _prisma_migrations SET rolled_back_at = now()
-   WHERE migration_name = '<名前>' AND finished_at IS NULL AND rolled_back_at IS NULL;
+   ```bash
+   npx prisma migrate resolve --rolled-back <名前>
    ```
 
-4. 失敗した deploy ジョブを再実行します（手で公開しているときは `vercel deploy --prod` をやり直します）。
+5. SQL を直したなら、同じ名前のマイグレーションのファイルを直した新しいバージョンの PR を出します（失敗したものは適用済みではないので、書き換えて構いません）。
+   SQL は正しく、原因が一時的なもの（接続の切断など）なら、失敗した deploy ジョブを再実行します（手で公開しているときは `vercel deploy --prod` をやり直します）。
 
-適用済みのマイグレーションのファイルは書き換えません。書き換えると、`db:migrate` が警告を出します（止まりはしません）。変更は新しいマイグレーションで行います。
+適用済みのマイグレーションのファイルは書き換えません。変更は新しいマイグレーションで行います。
 
 ## 失敗時
 
