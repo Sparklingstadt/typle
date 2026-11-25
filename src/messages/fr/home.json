@@ -11,5 +11,31 @@
   },
   "storage": "Toutes les fonctions d’entraînement et de modification sont disponibles sans vous connecter. Les listes de mots, l’historique et les appareils sont enregistrés dans ce navigateur. En vous connectant (avec Sparklingstadt ID ou GitHub), vous passez à un autre emplacement, votre compte, synchronisé entre vos appareils. Les données du navigateur ne sont pas transférées automatiquement.",
   "storageAccount": "Vous êtes connecté : vos listes de mots, votre historique et vos appareils sont enregistrés dans votre compte et synchronisés avec les autres appareils et navigateurs connectés au même compte. Ils sont conservés séparément des données enregistrées dans ce navigateur sans connexion.",
-  "links": "<guide>Mode d’emploi</guide> / <about>À propos de Typle</about>"
+  "links": "<guide>Mode d’emploi</guide> / <about>À propos de Typle</about>",
+  "tour": {
+    "title": "Premiers pas",
+    "step": "Étape {current} sur {total}",
+    "later": "Plus tard",
+    "next": "Suivant",
+    "interests": {
+      "title": "Choisir vos centres d’intérêt",
+      "text": "Choisissez les langues et les domaines sur lesquels vous voulez vous entraîner. Vous pourrez les modifier plus tard dans « Centres d’intérêt »."
+    },
+    "packs": {
+      "title": "Suivre des packs",
+      "text": "Les packs officiels qui correspondent à vos centres d’intérêt. Les packs cochés seront suivis.",
+      "follow": "Suivre",
+      "following": "Suivi en cours…",
+      "more": "<catalog>Voir plus dans le catalogue</catalog>",
+      "select": "Sélectionner {name}",
+      "stats": "{lists, plural, one {# liste} other {# listes}} · {words, plural, one {# mot} other {# mots}}",
+      "first": "Première liste : {list}",
+      "retryInterests": "Enregistrer à nouveau les centres d’intérêt"
+    },
+    "start": {
+      "title": "Commencer l’entraînement",
+      "text": "Vous suivez maintenant « {pack} ». Commencez par sa première liste. Vous pourrez choisir vos autres packs sur l’écran « S’entraîner ».",
+      "button": "Commencer l’entraînement"
+    }
+  }
 }

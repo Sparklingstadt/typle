@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { deleteWorkspace, newAccountId, signIn } from './account'
+import { skipWelcome } from './welcome'
 
 // Since v0.101.1 every interest is picked until some are saved. Unpicks both parents, which unpicks every chip.
 async function clearInterests(page: Page) {
@@ -11,7 +12,8 @@ async function clearInterests(page: Page) {
   }
 }
 
-async function choose(page: Page) {
+async function choose(page: Page, accountId?: string) {
+  await skipWelcome(page, accountId)
   await page.goto('/home')
   await page.getByRole('navigation', { name: 'メインナビゲーション' }).getByRole('link', { name: '関心', exact: true }).click()
   await expect(page).toHaveURL(/\/interests$/)
@@ -79,7 +81,7 @@ test('an account keeps its interests after a reload', async ({ page, context }) 
   const accountId = newAccountId()
   await signIn(context, accountId)
   try {
-    await choose(page)
+    await choose(page, accountId)
     await expectSelectionKept(page)
     const response = await page.request.get('/api/workspace')
     expect((await response.json()).interests).toEqual(['language', 'language/zh'])

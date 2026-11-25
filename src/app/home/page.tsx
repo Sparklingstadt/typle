@@ -6,16 +6,18 @@ import Link from "next/link"
 import { useTranslations } from "next-intl"
 import { PageMain } from "@/components/ui/page-layout"
 import { useWordLists } from "@/hooks/useWordLists"
+import { useWelcomeRedirect } from "@/hooks/useWelcomeRedirect"
 import Dashboard from "@/components/Dashboard/Dashboard"
 
 export default function Home() {
   const t = useTranslations("home")
   const common = useTranslations("common")
   const { lists, storage, ready, error } = useWordLists()
+  const redirecting = useWelcomeRedirect()
   const count = lists.reduce((total, list) => total + list.records.length, 0)
   return <PageMain width="wide">
     {error && <ErrorAlert className="mb-6">{error}</ErrorAlert>}
-    {!ready ? <p>{common("loading")}</p> : count ? <Dashboard lists={lists} storage={storage} /> : <>
+    {!ready || redirecting ? <p>{common("loading")}</p> : count ? <Dashboard lists={lists} storage={storage} /> : <>
       <h1 className="text-3xl mb-4">{t("welcome.title")}</h1>
       <p className="mb-6">{t("welcome.text")}</p>
       <div className="flex flex-wrap gap-3 mb-6"><Badge variant="secondary">{t("welcome.lists", { count: lists.length })}</Badge><Badge variant="secondary">{t("welcome.practices", { count })}</Badge></div>

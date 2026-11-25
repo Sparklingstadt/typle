@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
+import { skipWelcome } from './welcome'
 
 const key = 'typle-r:theme:v1'
 const control = (page: Page) => page.getByRole('button', { name: 'ダークモード', exact: true })
@@ -10,6 +11,7 @@ const expectTheme = async (page: Page, dark: boolean) => {
 }
 
 test('OS defaults, manual choice, reload, navigation, focus and tab synchronization', async ({ page, context }) => {
+  await skipWelcome(page)
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()) })
@@ -75,6 +77,7 @@ test('unavailable storage still allows switching', async ({ page }) => {
 
 for (const width of [390, 1280]) {
   test(`both themes fit the navigation and pages at ${width}px`, async ({ page }, testInfo) => {
+    await skipWelcome(page)
     await page.setViewportSize({ width, height: 900 })
     await page.emulateMedia({ colorScheme: 'light' })
     await page.goto('/home')

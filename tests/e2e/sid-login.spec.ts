@@ -1,6 +1,7 @@
 import { randomInt } from 'node:crypto'
 import { test, expect, type Page } from '@playwright/test'
 import { withDatabase } from './account'
+import { skipWelcome } from './welcome'
 
 // Signing in with Sparklingstadt ID, through the sign-in page and the fake ID server (tests/e2e/fakeSid.cjs): an ID
 // without a link is its own account sid:<sub>, a linked one opens the account it is linked to (typle_sid_links), an
@@ -36,6 +37,9 @@ async function lastAuthorization(): Promise<Record<string, string>> {
 }
 
 async function signInWithSid(page: Page) {
+  // Either account may be the one signed in; neither is sent to /welcome after the login.
+  await skipWelcome(page, `sid:${sub}`)
+  await skipWelcome(page, linkedTo)
   await page.goto('/signin')
   await page.getByRole('button', { name: 'Sparklingstadt IDでログイン', exact: true }).click()
   await page.waitForURL(/\/home$/)

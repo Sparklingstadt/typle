@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { guestWorkspace } from './guestData'
+import { skipWelcome } from './welcome'
 const key = 'typle-r:guest-workspace:v1'
 const day = 24 * 60 * 60 * 1000
 
@@ -17,6 +18,7 @@ function seedGuest(page: import('@playwright/test').Page) {
 }
 
 test('home keeps the introduction until the first practice record exists', async ({ page }) => {
+  await skipWelcome(page)
   await page.goto('/home')
   await expect(page.getByRole('heading', { name: '自分の単語で、タイピング練習。', exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: '練習の状況', exact: true })).toHaveCount(0)

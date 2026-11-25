@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import { openPacks } from './packRows'
 import { guestWorkspace } from './guestData'
+import { skipWelcome } from './welcome'
 const key = 'typle-r:guest-workspace:v1'
 async function importWords(page: import('@playwright/test').Page, files: Parameters<import('@playwright/test').Locator['setInputFiles']>[0]) {
   await page.getByRole('button', { name: 'CSVを読み込む', exact: true }).click()
@@ -105,6 +106,7 @@ test('create, reorder, edit, play, reload and delete records', async ({ page }) 
 
 
 test('each page has its own title, and pages of one\'s own data are kept out of search', async ({ page }) => {
+  await skipWelcome(page)
   await page.goto('/play')
   await expect(page).toHaveTitle('練習する | Typle')
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
@@ -118,6 +120,7 @@ test('each page has its own title, and pages of one\'s own data are kept out of 
 })
 
 test('supporting pages, landing page and GitHub link', async ({ page }) => {
+  await skipWelcome(page)
   await page.goto('/')
   await expect(page).toHaveURL(/\/$/)
   await expect(page.getByRole('heading', { level: 1, name: '覚えたい言葉を、打って覚える。', exact: true })).toBeVisible()
@@ -277,6 +280,7 @@ test('optional word fields preserve overrides and annotations after saving', asy
 })
 
 test('mobile drawer closes by link, Esc and backdrop and returns focus to the menu button', async ({ page }) => {
+  await skipWelcome(page)
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/home')
   const open = page.getByRole('button', { name: 'メニューを開く' })
@@ -310,6 +314,7 @@ test('mobile drawer closes by link, Esc and backdrop and returns focus to the me
 })
 
 test('narrow desktop windows use the drawer so the page keeps its width', async ({ page }) => {
+  await skipWelcome(page)
   // A laptop or a half-screen window: the 240px sidebar would squeeze the practice area, so it stays in the drawer until 1280px.
   await page.setViewportSize({ width: 1100, height: 800 })
   await page.goto('/play')

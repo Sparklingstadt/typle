@@ -259,6 +259,18 @@ test('updateInterests writes only the interests, also before the first save', as
   assert.deepEqual(saved.shown.at(-1).interests, ['programming'])
 })
 
+test('show passes the revision, also after a save', async () => {
+  const fake = fakeStore()
+  const empty = await loaded(fake, state(0))
+  assert.equal(empty.shown.at(-1).revision, 0)
+  const saved = await loaded(fake, state(3, [list('a')]))
+  assert.equal(saved.shown.at(-1).revision, 3)
+  const saving = saved.session.updateInterests(() => ['programming'])
+  fake.writes[0].resolve({ ...state(4, [list('a')]), interests: ['programming'] })
+  assert.equal(await saving, true)
+  assert.equal(saved.shown.at(-1).revision, 4)
+})
+
 test('addRecord sends the run with its device as practised, without a revision, and shows what was saved', async () => {
   const fake = fakeStore()
   const mac = { id: 'mac', name: 'Mac', layout: 'JIS' }
