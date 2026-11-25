@@ -120,6 +120,7 @@ test('each page has its own title, and pages of one\'s own data are kept out of 
 })
 
 test('supporting pages, landing page and GitHub link', async ({ page }) => {
+  await skipWelcome(page)
   await page.goto('/')
   await expect(page).toHaveURL(/\/$/)
   await expect(page.getByRole('heading', { level: 1, name: '覚えたい言葉を、打って覚える。', exact: true })).toBeVisible()
@@ -279,6 +280,7 @@ test('optional word fields preserve overrides and annotations after saving', asy
 })
 
 test('mobile drawer closes by link, Esc and backdrop and returns focus to the menu button', async ({ page }) => {
+  await skipWelcome(page)
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/home')
   const open = page.getByRole('button', { name: 'メニューを開く' })

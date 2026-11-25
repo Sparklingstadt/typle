@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { skipWelcome } from './welcome'
 
 // next.config.mjs sends these with every page, file and Route Handler (every /api path since v2.46.10). Pages get no
 // Content-Security-Policy until the script policy of src/proxy.ts is enforced.
@@ -17,6 +18,7 @@ for (const path of ['/home', '/robots.txt', '/api/health', '/api/auth/session', 
 // src/proxy.ts reports scripts without the page's nonce. Every script Next.js and the layout put in the page carries it,
 // so a page that only runs its own scripts reports nothing.
 test('a page reports scripts without its nonce, and its own scripts carry it', async ({ page }) => {
+  await skipWelcome(page)
   const violations: string[] = []
   page.on('console', message => {
     if (message.text().includes('Content Security Policy')) violations.push(message.text())

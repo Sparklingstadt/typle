@@ -1,9 +1,11 @@
 import { test, expect, type Page } from '@playwright/test'
+import { skipWelcome } from './welcome'
 
 // The radio is visually hidden inside its label card, so pick a language by clicking the card.
 const choose = (page: Page, name: string) => page.locator('label').filter({ has: page.locator(`span[lang]`, { hasText: name }) }).click()
 
 test('the display language switches the whole screen at once and is remembered', async ({ page }) => {
+  await skipWelcome(page)
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   await page.emulateMedia({ colorScheme: 'dark' })

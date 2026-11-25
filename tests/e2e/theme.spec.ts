@@ -77,6 +77,7 @@ test('unavailable storage still allows switching', async ({ page }) => {
 
 for (const width of [390, 1280]) {
   test(`both themes fit the navigation and pages at ${width}px`, async ({ page }, testInfo) => {
+    await skipWelcome(page)
     await page.setViewportSize({ width, height: 900 })
     await page.emulateMedia({ colorScheme: 'light' })
     await page.goto('/home')
