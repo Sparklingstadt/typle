@@ -1,10 +1,13 @@
 const assert = require('node:assert/strict')
 const test = require('node:test')
 const fs = require('node:fs')
-const os = require('node:os')
 const path = require('node:path')
+const { spawnSync } = require('node:child_process')
 const { Client } = require('pg')
-const { checksum, localMigrations, migrate, newerThanLocal, pendingMigrations } = require('../scripts/migrate.cjs')
+const { appliedMigrations, localMigrations, newerThanLocal } = require('../scripts/check-migrations.cjs')
+
+const root = path.join(__dirname, '..')
+const migrations = path.join(root, 'db/migrations')
 
 test('migrations of this checkout are listed by name', () => {
   const local = localMigrations()
@@ -12,6 +15,16 @@ test('migrations of this checkout are listed by name', () => {
   assert.deepEqual(local, [...local].sort())
   // Names sort in the order they were made only while the numbers keep the same width.
   assert.ok(local.every(name => /^\d{4}_/.test(name)), local.join(', '))
+})
+
+test('new migrations are one transaction each', () => {
+  // Prisma Migrate does not wrap a migration in a transaction: without BEGIN and COMMIT a failure leaves it half done.
+  // The migrations up to 0040_sid_links were applied before and keep their checksums.
+  for (const name of localMigrations().filter(name => name > '0040_sid_links')) {
+    const sql = fs.readFileSync(path.join(migrations, name, 'migration.sql'), 'utf8').trim()
+    assert.match(sql, /^BEGIN;/, `${name} starts with BEGIN;`)
+    assert.match(sql, /COMMIT;$/, `${name} ends with COMMIT;`)
+  }
 })
 
 test('a database at the same migrations or behind them is not refused', () => {
@@ -35,95 +48,91 @@ test('an older checkout than the database is refused with the migrations it lack
   assert.deepEqual(newerThanLocal(['0999_next'], localMigrations()), ['0999_next'])
 })
 
-test('migrations not applied yet are listed in the order they were made', () => {
-  const local = ['0027_schema', '0028_admins', '0029_admins_ffpf']
-  assert.deepEqual(pendingMigrations([], local), local)
-  assert.deepEqual(pendingMigrations(['0001_workspaces', '0027_schema'], local), ['0028_admins', '0029_admins_ffpf'])
-  assert.deepEqual(pendingMigrations(local, local), [])
+test('the Prisma CLI checks the certificate where the app does', async () => {
+  const { prismaUrl } = await import('../prisma.config.ts')
+  // DATABASE_URL on AWS, in libpq's form, which pg reads and the Prisma CLI ignores.
+  const aws = 'postgresql://typle_app:pw@db.example:5432/typle?sslmode=verify-full&sslrootcert=/app/certs/rds-global-bundle.pem'
+  const converted = new URL(prismaUrl(aws)).searchParams
+  assert.equal(converted.get('sslmode'), 'require')
+  assert.equal(converted.get('sslcert'), '/app/certs/rds-global-bundle.pem')
+  assert.equal(converted.get('sslaccept'), 'strict')
+  assert.equal(converted.get('sslrootcert'), null)
+  for (const url of ['postgresql://typle:pw@127.0.0.1:5433/typle', 'postgresql://u:pw@ep.neon.tech/neondb?sslmode=require']) {
+    assert.equal(prismaUrl(url), url)
+  }
 })
 
-test('the checksum is the one Prisma Migrate recorded: the SHA-256 of the file', () => {
-  const sql = fs.readFileSync(path.join(__dirname, '../db/migrations/0027_schema/migration.sql'), 'utf8')
-  assert.match(checksum(sql), /^677f9a593b2b5c36[0-9a-f]{48}$/)
-})
-
-// The rest runs against a real database, as verify-go does: `TYPLE_TEST_DATABASE_URL=… node --test tests/migrate.test.cjs`.
+// The rest runs against a real database: `TYPLE_TEST_DATABASE_URL=… node --test tests/migrate.test.cjs`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
 
-/** Runs body with a client whose tables are in a schema of its own, dropped afterwards. */
+/** Runs body with a client and a connection string for a schema of its own, dropped afterwards. */
 async function inEmptySchema(body) {
   const client = new Client({ connectionString: url })
   await client.connect()
   const schema = `migrate_test_${process.pid}`
+  const schemaUrl = new URL(url)
+  schemaUrl.searchParams.set('schema', schema)
   try {
     await client.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`)
     await client.query(`CREATE SCHEMA ${schema}`)
     await client.query(`SET search_path TO ${schema}`)
-    await body(client)
+    await body(client, schemaUrl.toString())
   } finally {
     await client.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`)
     await client.end()
   }
 }
 
-/** A directory of migrations from { name: sql }. */
-function migrationsOf(files) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'typle-migrations-'))
-  for (const [name, sql] of Object.entries(files)) {
-    fs.mkdirSync(path.join(dir, name))
-    fs.writeFileSync(path.join(dir, name, 'migration.sql'), sql)
-  }
-  return dir
+/** `prisma migrate deploy` of this checkout on the database at databaseUrl, as npm run db:migrate runs it. */
+function deploy(databaseUrl) {
+  const result = spawnSync(path.join(root, 'node_modules/.bin/prisma'), ['migrate', 'deploy'], {
+    cwd: root, encoding: 'utf8', env: { ...process.env, DIRECT_URL: databaseUrl },
+  })
+  return { status: result.status, output: `${result.stdout}${result.stderr}` }
 }
 
-const names = async client =>
-  (await client.query('SELECT migration_name FROM _prisma_migrations ORDER BY 1')).rows.map(row => row.migration_name)
+const recorded = async client =>
+  (await client.query('SELECT migration_name FROM _prisma_migrations WHERE finished_at IS NOT NULL ORDER BY 1')).rows.map(row => row.migration_name)
 const hasTable = async (client, name) => (await client.query('SELECT to_regclass($1) IS NOT NULL AS found', [name])).rows[0].found
 
-test('a new database gets every migration, and a second run changes nothing', database, () => inEmptySchema(async client => {
-  const local = localMigrations()
-  assert.deepEqual(await migrate(client), local)
-  assert.deepEqual(await names(client), local)
+test('a new database gets every migration, and a second run changes nothing', database, () => inEmptySchema(async (client, schemaUrl) => {
+  assert.deepEqual(await appliedMigrations(client), [])
+  const first = deploy(schemaUrl)
+  assert.equal(first.status, 0, first.output)
+  assert.deepEqual(await recorded(client), localMigrations())
   assert.ok(await hasTable(client, 'typle_workspaces'))
-  assert.deepEqual(await migrate(client), [])
-  assert.deepEqual(await names(client), local)
+  assert.deepEqual((await appliedMigrations(client)).sort(), localMigrations())
+  const second = deploy(schemaUrl)
+  assert.equal(second.status, 0, second.output)
+  assert.match(second.output, /No pending migrations to apply/)
 }))
 
-test('a failed migration is undone whole and is not recorded', database, () => inEmptySchema(async client => {
-  const dir = migrationsOf({
-    '0001_good': 'CREATE TABLE good (id int);',
-    '0002_bad': 'CREATE TABLE half_done (id int); SELECT 1 / 0;',
-    '0003_later': 'CREATE TABLE later (id int);',
-  })
-  await assert.rejects(migrate(client, dir), /0002_bad failed and was rolled back/)
-  assert.deepEqual(await names(client), ['0001_good'])
-  assert.ok(await hasTable(client, 'good'))
-  assert.ok(!await hasTable(client, 'half_done'))
-  assert.ok(!await hasTable(client, 'later'))
+test('records of migrations this checkout no longer has are kept and accepted', database, () => inEmptySchema(async (client, schemaUrl) => {
+  assert.equal(deploy(schemaUrl).status, 0)
+  // As production's 0001 to 0026.
+  await client.query(`INSERT INTO _prisma_migrations (id, checksum, finished_at, migration_name, applied_steps_count)
+    VALUES ('old', 'x', now(), '0001_workspaces', 1)`)
+  const result = deploy(schemaUrl)
+  assert.equal(result.status, 0, result.output)
+  assert.deepEqual(newerThanLocal(await appliedMigrations(client), localMigrations()), [])
 }))
 
-test('a failure Prisma Migrate recorded stops the run until it is repaired', database, () => inEmptySchema(async client => {
-  const dir = migrationsOf({ '0001_good': 'CREATE TABLE good (id int);', '0002_next': 'CREATE TABLE next_one (id int);' })
-  await migrate(client, migrationsOf({ '0001_good': 'CREATE TABLE good (id int);' }))
-  await client.query("INSERT INTO _prisma_migrations (id, checksum, migration_name) VALUES ('failed', 'x', '0000_failed')")
-  await assert.rejects(migrate(client, dir), /records failed migrations: 0000_failed/)
-  assert.ok(!await hasTable(client, 'next_one'))
-  // The repair of docs/release-workflow.md.
-  await client.query("UPDATE _prisma_migrations SET rolled_back_at = now() WHERE migration_name = '0000_failed' AND finished_at IS NULL")
-  assert.deepEqual(await migrate(client, dir), ['0002_next'])
+test('a database newer than the checkout is found by the check, which Prisma Migrate does not do', database, () => inEmptySchema(async (client, schemaUrl) => {
+  assert.equal(deploy(schemaUrl).status, 0)
+  await client.query(`INSERT INTO _prisma_migrations (id, checksum, finished_at, migration_name, applied_steps_count)
+    VALUES ('future', 'x', now(), '9999_future', 1)`)
+  assert.deepEqual(newerThanLocal(await appliedMigrations(client), localMigrations()), ['9999_future'])
+  // Why scripts/check-migrations.cjs runs first: Prisma Migrate succeeds here.
+  assert.equal(deploy(schemaUrl).status, 0)
 }))
 
-test('a checkout older than the database applies nothing', database, () => inEmptySchema(async client => {
-  await migrate(client, migrationsOf({ '0001_old': 'CREATE TABLE old (id int);', '0002_new': 'CREATE TABLE new_one (id int);' }))
-  const older = migrationsOf({ '0001_old': 'CREATE TABLE old (id int);', '0000_older': 'CREATE TABLE older (id int);' })
-  await assert.rejects(migrate(client, older), /does not have: 0002_new/)
-  assert.ok(!await hasTable(client, 'older'))
-}))
-
-test('a database with tables but no history is refused', database, () => inEmptySchema(async client => {
-  await client.query('CREATE TABLE someone_elses (id int)')
-  await assert.rejects(migrate(client, migrationsOf({ '0001_good': 'CREATE TABLE good (id int);' })), /no migration history/)
-  assert.ok(!await hasTable(client, 'good'))
-  assert.ok(!await hasTable(client, '_prisma_migrations'))
+test('a failed migration stops Prisma Migrate until it is resolved', database, () => inEmptySchema(async (client, schemaUrl) => {
+  assert.equal(deploy(schemaUrl).status, 0)
+  await client.query("INSERT INTO _prisma_migrations (id, checksum, migration_name) VALUES ('failed', 'x', '0041_failed')")
+  const result = deploy(schemaUrl)
+  assert.notEqual(result.status, 0)
+  assert.match(result.output, /P3009/)
+  // A failed migration is not counted as applied.
+  assert.ok(!(await appliedMigrations(client)).includes('0041_failed'))
 }))

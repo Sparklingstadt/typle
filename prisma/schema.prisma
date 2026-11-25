@@ -1,7 +1,7 @@
 // The tables of the app's database, as the app reads and writes them through Prisma Client (src/server). They are made
-// by the SQL migrations in db/migrations (npm run db:migrate, scripts/migrate.cjs), not by Prisma Migrate: a change of a
-// table is a new migration there and the same change here, and npm run verify fails when the two differ (the CHECK
-// constraints of the migrations are not shown here).
+// by the SQL migrations in db/migrations, which Prisma Migrate applies (npm run db:migrate: prisma migrate deploy). A
+// change of a table is a new migration there and the same change here, and npm run verify fails when the two differ
+// (the CHECK constraints of the migrations are not shown here). How to write one: docs/development.md.
 
 generator client {
   provider     = "prisma-client"

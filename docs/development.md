@@ -65,7 +65,24 @@ npm run test:e2e
 
 ### テーブルを変えるとき
 
-アプリは DB を Prisma Client（`prisma/schema.prisma` から作る `src/generated/prisma`）で読み書きしますが、テーブルを作るのは `db/migrations` の SQL です（Prisma Migrate は使いません）。テーブルを変えるときは、`db/migrations` に新しいマイグレーションを足し、同じ変更を `prisma/schema.prisma` に書いて `npx prisma generate` します。`npm run verify` は `db:migrate` のあとに、マイグレーションを当てた DB と `schema.prisma` の差を `prisma migrate diff` で確かめ、違えば止まります（CHECK 制約は `schema.prisma` に書けないので比べません）。DB の形から `schema.prisma` を作り直すときは `npx prisma db pull` ですが、モデル名・フィールド名とコメントが消えるので、差分を見て戻します。
+アプリは DB を Prisma Client（`prisma/schema.prisma` から作る `src/generated/prisma`）で読み書きし、テーブルは `db/migrations` の SQL を Prisma Migrate が適用して作ります（`npm run db:migrate`: `scripts/check-migrations.cjs` のあと `prisma migrate deploy`。v2.60.8 から。v2.36.19〜v2.60.7 は自作の `scripts/migrate.cjs` でした）。`prisma.config.ts` の `migrations.path` が `db/migrations` を指します。Prisma の表示は「`migrations found in prisma/migrations`」となりますが、実際に読むのは `db/migrations` です。
+
+`prisma migrate dev` は使えません。本番の履歴には、`0027_schema` にまとめて手元にはない `0001`〜`0026` の記録が残っていて、`migrate dev` はそれを手元との不一致とみなし、DB を作り直そうとするためです。新しいマイグレーションは次の手順で作ります。
+
+1. `prisma/schema.prisma` を変えます。
+2. 手元の DB（`npm run db:migrate` 済み）と変えた `schema.prisma` の差を SQL にします。名前は、今の最後の番号の次の4桁の番号と、変更の短い英語の名前です。
+
+   ```sh
+   mkdir db/migrations/0041_<名前>
+   npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script > db/migrations/0041_<名前>/migration.sql
+   ```
+
+   Prisma が書けないもの（CHECK 制約、データの書き換え、`unnest` などの関数）は、出てきた SQL に手で足します。最初から手で書いても構いません。
+3. SQL の最初の行を `BEGIN;`、最後の行を `COMMIT;` にします。Prisma Migrate は1本をトランザクションで包まないため、こう書かないと、途中で失敗したときに変更が半分だけ残ります（`tests/migrate.test.cjs` が `0040_sid_links` より後のものを確かめます。それまでのものはチェックサムが変わるので書き換えません）。`CREATE INDEX CONCURRENTLY` のようにトランザクションの中で実行できない SQL は、そのマイグレーションだけで1本にし、`BEGIN;`・`COMMIT;` を書かずにテストの例外にします。
+4. `npm run db:migrate` で手元の DB に当て、`npx prisma generate` で Prisma Client を作り直します。
+5. `npm run verify` は `db:migrate` のあとに、マイグレーションを当てた DB と `schema.prisma` の差を `prisma migrate diff` で確かめ、違えば止まります（CHECK 制約は `schema.prisma` に書けないので比べません）。
+
+適用済みのマイグレーションのファイルは書き換えません。変更は新しいマイグレーションで行います。DB の形から `schema.prisma` を作り直すときは `npx prisma db pull` ですが、モデル名・フィールド名とコメントが消えるので、差分を見て戻します。手元の DB の履歴は `npx prisma migrate status` で見られます。
 
 SQL のまま残しているのは4か所です。Prisma で書けない `modifyWorkspace` の行のロック（`FOR UPDATE`）、`writeWorkspace` の最初の保存どうしのロック（`pg_advisory_xact_lock`）、`revokeLogins` の時刻の upsert と、速さのための `syncRecords` の記録の挿入（`unnest` の1文。Prisma の `createMany` では記録 5,000 件の保存が約3倍遅くなったため）です。
 

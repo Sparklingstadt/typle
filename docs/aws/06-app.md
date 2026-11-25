@@ -145,12 +145,13 @@ sh,-c,printf '%s\n' "SELECT 'CREATE ROLE typle_app LOGIN' WHERE NOT EXISTS (SELE
 
 ## 6-6. マイグレーションを流す（単発のタスク）
 
-アプリのイメージに入っている `scripts/migrate.cjs` で、テーブルを作ります。
+アプリのイメージに入っている `/app/migrate`（`npm run db:migrate`: 検査のスクリプトのあと `prisma migrate deploy`）で、テーブルを作ります。
 
 1. 6-5 と同じ**新しいタスクの実行**を開き、タスク定義に `typle-lab`（アプリのもの）を選びます。
    ネットワークは 6-5 と同じにします（パブリックサブネット、`typle-lab-app`、パブリック IP オン）。
-2. **コンテナの上書き** → `app` の**コマンドの上書き**に、`node,scripts/migrate.cjs` と入れます。
-3. 停止済みになったら、終了コードが 0 で、ログに `Applied 0001_…` から最後のマイグレーションまで並んでいることを確かめます。
+2. **コンテナの上書き** → `app` の**コマンドの上書き**に、`npm,--prefix,/app/migrate,run,db:migrate` と入れます。
+3. 停止済みになったら、終了コードが 0 で、ログの最後が `All migrations have been successfully applied.` であることを確かめます
+   （ログの `migrations found in prisma/migrations` の場所は Prisma の表示の決まり文句で、実際に読むのは `db/migrations` です）。
 
 マイグレーションはアプリ用のユーザー `typle_app` で流れるので、テーブルの持ち主も `typle_app` になります。
 

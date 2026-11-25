@@ -90,7 +90,9 @@ export class App extends Construct {
     const migrate = new ecs.FargateTaskDefinition(this, 'MigrateTask', { family: 'typle-migrate', cpu: 256, memoryLimitMiB: 512, runtimePlatform: arm64 })
     migrate.addContainer('migrate', {
       image: ecs.ContainerImage.fromEcrRepository(repository, config.migrateTag),
-      command: ['node', 'scripts/migrate.cjs'],
+      // The image's /app/migrate (Dockerfile): scripts/check-migrations.cjs, then prisma migrate deploy.
+      command: ['npm', 'run', 'db:migrate'],
+      workingDirectory: '/app/migrate',
       secrets: { DATABASE_URL: fromSecret(secrets.databaseUrl) },
       logging: logging('migrate'),
     })
