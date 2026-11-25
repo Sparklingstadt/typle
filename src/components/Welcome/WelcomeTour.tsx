@@ -30,6 +30,8 @@ export default function WelcomeTour() {
   const [chosen, setChosen] = useState<string[]>([])
   const [checked, setChecked] = useState<ReadonlySet<string>>(new Set())
   const [followedCatalogId, setFollowedCatalogId] = useState<string | null>(null)
+  // The packs are followed but saving the interests failed: step 2 offers to save them again.
+  const [interestsFailed, setInterestsFailed] = useState(false)
   // Whether the tour is for this visitor, decided once on the first load: the follow raises the revision later, and
   // that must not send them away mid-tour. Someone who has saved before goes home, so the tour never overwrites them.
   const [admitted, setAdmitted] = useState<boolean | null>(null)
@@ -55,7 +57,9 @@ export default function WelcomeTour() {
   }
 
   async function saveInterests() {
-    if (await updateInterests(() => normalizeInterests(chosen))) setStep('start')
+    const saved = await updateInterests(() => normalizeInterests(chosen))
+    setInterestsFailed(!saved)
+    if (saved) setStep('start')
   }
 
   async function follow() {
@@ -95,7 +99,7 @@ export default function WelcomeTour() {
         </div>
       </section>
       : step === 'packs' ? <PackStep entries={entries} checked={checked} check={check} saving={saving}
-        interestsFailed={followedCatalogId !== null} follow={() => void follow()} retryInterests={() => void saveInterests()} />
+        interestsFailed={interestsFailed} follow={() => void follow()} retryInterests={() => void saveInterests()} />
       : <StartStep pack={followed?.name ?? ''} list={firstList}
         start={() => router.push(firstList ? practicePath(firstList.id) : '/play')} />}
   </PageMain>

@@ -109,16 +109,21 @@ test('a new account is toured too, and a failed interests save can be retried', 
     await expect(page).toHaveURL(/\/welcome$/)
     await pickInterests(page)
     // The follow is the first save and passes; the interests are the second and fail.
+    const retry = page.getByRole('button', { name: '関心をもう一度保存', exact: true })
     let puts = 0
-    const failInterests = (route: import('@playwright/test').Route) => route.request().method() === 'PUT' && ++puts === 2
-      ? route.fulfill({ status: 500, contentType: 'application/json', body: '{"error":"saveFailed"}' })
-      : route.continue()
+    // Whether the retry button showed while the interests were still being saved: it must not.
+    let retryWhileSaving: number | undefined
+    const failInterests = async (route: import('@playwright/test').Route) => {
+      if (route.request().method() !== 'PUT' || ++puts !== 2) return route.continue()
+      retryWhileSaving = await retry.count()
+      return route.fulfill({ status: 500, contentType: 'application/json', body: '{"error":"saveFailed"}' })
+    }
     await page.route('**/api/workspace', failInterests)
     await page.getByRole('button', { name: 'フォローする', exact: true }).click()
     await expect(page.getByRole('alert')).toBeVisible()
-    const retry = page.getByRole('button', { name: '関心をもう一度保存', exact: true })
     await expect(retry).toBeVisible()
     expect(puts).toBe(2)
+    expect(retryWhileSaving).toBe(0)
     await page.unroute('**/api/workspace', failInterests)
     await retry.click()
     await expect(page.getByRole('region', { name: '練習を始める' })).toBeVisible()
