@@ -16,6 +16,7 @@ export const PAGE_TITLES = {
   catalog: "wordLists.catalog.title",
   createPack: "wordLists.packEditor.createTitle",
   editPack: "wordLists.packEditor.editTitle",
+  welcome: "home.tour.title",
 } as const
 
 // Pages people may find through a search get their own description; the rest keep the site-wide one.

@@ -11,5 +11,31 @@
   },
   "storage": "无需登录即可使用全部练习和编辑功能。单词列表、练习记录和设备会保存在此浏览器中。登录（Sparklingstadt ID 或 GitHub）后，将切换到另一个保存位置——账号，并可在设备之间同步。浏览器中的数据不会自动迁移。",
   "storageAccount": "你已登录，单词列表、练习记录和设备会保存到账户中，并与登录同一账户的其他设备和浏览器同步。它们与未登录时保存在此浏览器中的数据分开保存。",
-  "links": "<guide>使用方法</guide> ／ <about>关于 Typle</about>"
+  "links": "<guide>使用方法</guide> ／ <about>关于 Typle</about>",
+  "tour": {
+    "title": "开始使用",
+    "step": "第 {current} 步，共 {total} 步",
+    "later": "以后再说",
+    "next": "下一步",
+    "interests": {
+      "title": "选择兴趣",
+      "text": "请选择想练习的语言和领域。之后可以在“兴趣”中更改。"
+    },
+    "packs": {
+      "title": "关注单词包",
+      "text": "这些官方单词包符合你选择的兴趣。将关注已勾选的单词包。",
+      "follow": "关注",
+      "following": "正在关注…",
+      "more": "<catalog>在目录中查看更多</catalog>",
+      "select": "选择 {name}",
+      "stats": "{lists, plural, other {# 个列表}} · {words, plural, other {# 个单词}}",
+      "first": "第一个列表：{list}",
+      "retryInterests": "重新保存兴趣"
+    },
+    "start": {
+      "title": "开始练习",
+      "text": "已关注“{pack}”。从第一个列表开始练习吧。其他单词包可以在“开始练习”页面中选择。",
+      "button": "开始练习"
+    }
+  }
 }

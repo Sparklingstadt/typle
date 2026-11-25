@@ -11,5 +11,31 @@
   },
   "storage": "You can use every practice and editing feature without signing in. Word lists, practice history, and devices are saved in this browser. Signing in (with Sparklingstadt ID or GitHub) switches to a separate storage location, your account, which syncs across devices. Data in the browser is not moved automatically.",
   "storageAccount": "You are signed in, so your word lists, practice history, and devices are saved to your account and synced with other devices and browsers signed in to the same account. They are kept separately from data saved in this browser without signing in.",
-  "links": "<guide>How to use</guide> / <about>About Typle</about>"
+  "links": "<guide>How to use</guide> / <about>About Typle</about>",
+  "tour": {
+    "title": "Getting started",
+    "step": "Step {current} of {total}",
+    "later": "Later",
+    "next": "Next",
+    "interests": {
+      "title": "Choose your interests",
+      "text": "Choose the languages and topics you want to practise. You can change them later in Interests."
+    },
+    "packs": {
+      "title": "Follow packs",
+      "text": "Official packs that fit your interests. The checked packs will be followed.",
+      "follow": "Follow",
+      "following": "Following…",
+      "more": "<catalog>See more in the catalog</catalog>",
+      "select": "Select {name}",
+      "stats": "{lists, plural, one {# list} other {# lists}} · {words, plural, one {# word} other {# words}}",
+      "first": "First list: {list}",
+      "retryInterests": "Save interests again"
+    },
+    "start": {
+      "title": "Start practice",
+      "text": "You now follow “{pack}”. Start with its first list. You can choose your other packs on the Practice screen.",
+      "button": "Start practice"
+    }
+  }
 }

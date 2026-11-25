@@ -66,7 +66,7 @@ test('the sitemap lists no page that is marked noindex', () => {
 
 test('pages that show only the visitor\'s own data are noindex', () => {
   const found = layouts()
-  for (const page of ['/home', '/records', '/rankings', '/edit', '/words', '/devices', '/interests', '/create', '/packs/create', '/packs/edit']) {
+  for (const page of ['/home', '/records', '/rankings', '/edit', '/words', '/devices', '/interests', '/create', '/packs/create', '/packs/edit', '/welcome']) {
     assert.ok(found[page]?.options.includes('personal: true'), page)
   }
 })

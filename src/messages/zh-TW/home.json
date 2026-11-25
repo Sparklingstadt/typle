@@ -11,5 +11,31 @@
   },
   "storage": "不必登入即可使用所有練習與編輯功能。單字清單、練習紀錄與裝置會儲存在此瀏覽器中。登入（Sparklingstadt ID 或 GitHub）後，會切換到另一個儲存位置，也就是帳號，並可在裝置之間同步。瀏覽器中的資料不會自動移轉。",
   "storageAccount": "您已登入，單字清單、練習紀錄與裝置會儲存在帳戶中，並與登入同一個帳戶的其他裝置和瀏覽器同步。這些資料與未登入時儲存在此瀏覽器中的資料分開保存。",
-  "links": "<guide>使用說明</guide> ／ <about>關於 Typle</about>"
+  "links": "<guide>使用說明</guide> ／ <about>關於 Typle</about>",
+  "tour": {
+    "title": "開始使用",
+    "step": "第 {current} 步，共 {total} 步",
+    "later": "以後再說",
+    "next": "下一步",
+    "interests": {
+      "title": "選擇興趣",
+      "text": "請選擇想練習的語言和領域。之後可以在「興趣」中變更。"
+    },
+    "packs": {
+      "title": "追蹤單字包",
+      "text": "這些官方單字包符合你選擇的興趣。將追蹤已勾選的單字包。",
+      "follow": "追蹤",
+      "following": "正在追蹤…",
+      "more": "<catalog>在目錄中查看更多</catalog>",
+      "select": "選擇 {name}",
+      "stats": "{lists, plural, other {# 個列表}} · {words, plural, other {# 個單字}}",
+      "first": "第一個列表：{list}",
+      "retryInterests": "重新儲存興趣"
+    },
+    "start": {
+      "title": "開始練習",
+      "text": "已追蹤「{pack}」。從第一個列表開始練習吧。其他單字包可以在「開始練習」頁面中選擇。",
+      "button": "開始練習"
+    }
+  }
 }
