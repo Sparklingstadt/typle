@@ -2,7 +2,8 @@ require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
 const { createHmac, hkdfSync, randomInt } = require('node:crypto')
-const { createPool } = require('../src/server/database.ts')
+const { createPool, createPrisma } = require('../src/server/database.ts')
+const { failingDb, withoutTransactions } = require('./fakeDb.cjs')
 const { answerRecords } = require('../src/server/workspace.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 
@@ -12,7 +13,9 @@ const { scenarios } = require('./fixtures/record-writes.json')
 
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
-const db = url ? createPool(url) : null
+// The code under test gets Prisma Client; the tests set up and look at the tables with SQL, as the fixtures were made.
+const sql = url ? createPool(url) : null
+const db = url ? createPrisma(url) : null
 const secret = 'typle-records-test-secret'
 const origin = 'http://127.0.0.1:3101'
 const settings = readLoginSettings({ AUTH_SECRET: secret, AUTH_URL: origin })
@@ -22,9 +25,10 @@ const owners = []
 after(async () => {
   if (!db) return
   for (const table of ['typle_session_revocations', 'typle_records', 'typle_workspaces']) {
-    await db.query(`DELETE FROM ${table} WHERE owner_id = ANY($1)`, [owners])
+    await sql.query(`DELETE FROM ${table} WHERE owner_id = ANY($1)`, [owners])
   }
-  await db.end()
+  await sql.end()
+  await db.$disconnect()
 })
 
 function seal(info, sub) {
@@ -44,9 +48,9 @@ const request = (user, method, body, headers = {}) => new Request(`${origin}/api
 })
 
 async function state(owner) {
-  const row = (await db.query(`SELECT COALESCE((SELECT jsonb_build_object('lists', lists, 'packs', packs, 'devices', devices, 'interests', interests,
+  const row = (await sql.query(`SELECT COALESCE((SELECT jsonb_build_object('lists', lists, 'packs', packs, 'devices', devices, 'interests', interests,
     'revision', revision, 'split', records_split) FROM typle_workspaces WHERE owner_id = $1), 'null'::jsonb)::text AS v`, [owner])).rows[0].v
-  const records = (await db.query(`SELECT COALESCE(jsonb_agg(jsonb_build_array(list_id, record_id, position, (extract(epoch FROM at) * 1000)::bigint, data)
+  const records = (await sql.query(`SELECT COALESCE(jsonb_agg(jsonb_build_array(list_id, record_id, position, (extract(epoch FROM at) * 1000)::bigint, data)
     ORDER BY list_id, position), '[]'::jsonb)::text AS v FROM typle_records WHERE owner_id = $1`, [owner])).rows[0].v
   return { row: JSON.parse(row), records: JSON.parse(records) }
 }
@@ -56,7 +60,7 @@ for (const scenario of scenarios) {
     const user = account()
     const row = scenario.setup.row
     if (row) {
-      await db.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, interests, revision, records_split)
+      await sql.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, interests, revision, records_split)
         VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5::jsonb, $6, $7)`,
       [user.owner, JSON.stringify(row.lists), row.packs === null ? null : JSON.stringify(row.packs), JSON.stringify(row.devices),
         row.interests === null ? null : JSON.stringify(row.interests), row.revision, row.split])
@@ -81,7 +85,7 @@ for (const scenario of scenarios) {
 const at = '2026-09-07T00:00:00.000Z'
 async function withRow(user) {
   const lists = [{ id: 'l1', name: 'l1', packId: 'p', words: [{ display: 'a', input: 'a', annotation: '' }], records: [], createdAt: at }]
-  await db.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, revision, records_split) VALUES ($1, $2::jsonb, $3::jsonb, '[]'::jsonb, 1, true)`,
+  await sql.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, revision, records_split) VALUES ($1, $2::jsonb, $3::jsonb, '[]'::jsonb, 1, true)`,
     [user.owner, JSON.stringify(lists), JSON.stringify([{ id: 'p', name: 'P', createdAt: at }])])
 }
 const run = { id: 'run-1', time: 2.5, date: '2026-10-02T10:00:00.000Z', mistakes: 0, accuracy: 100, wordCount: 1 }
@@ -108,7 +112,7 @@ test('a request is refused as the Go backend refused it', database, async () => 
 test('a revoked login is refused, and a browser loses its cookie', database, async () => {
   const user = account()
   await withRow(user)
-  await db.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now())', [user.owner])
+  await sql.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now())', [user.owner])
   const response = await answerRecords(request(user, 'POST', { accountId: user.owner, listId: 'l1', record: run }), open, withSettings)
   await expectError(response, 401, 'loginRequired')
   assert.equal(response.headers.get('set-cookie'), 'typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax')
@@ -117,7 +121,7 @@ test('a revoked login is refused, and a browser loses its cookie', database, asy
 test('a record added and deleted is measured when TYPLE_MEASURE_SAVES is 1', database, async () => {
   const user = account()
   await withRow(user)
-  const latest = async () => (await db.query(`SELECT id, operation, status FROM typle_save_metrics ORDER BY id DESC LIMIT 1`)).rows[0]
+  const latest = async () => (await sql.query(`SELECT id, operation, status FROM typle_save_metrics ORDER BY id DESC LIMIT 1`)).rows[0]
   const env = { TYPLE_MEASURE_SAVES: '1' }
   await answerRecords(request(user, 'POST', { accountId: user.owner, listId: 'l1', record: run }), open, withSettings, env)
   const added = await latest()
@@ -127,7 +131,7 @@ test('a record added and deleted is measured when TYPLE_MEASURE_SAVES is 1', dat
     assert.deepEqual([added.operation, added.status], ['record.add', 201])
     assert.deepEqual([deleted.operation, deleted.status], ['record.delete', 200])
   } finally {
-    await db.query('DELETE FROM typle_save_metrics WHERE id = ANY($1)', [[added.id, deleted.id]])
+    await sql.query('DELETE FROM typle_save_metrics WHERE id = ANY($1)', [[added.id, deleted.id]])
   }
 })
 
@@ -154,15 +158,15 @@ test('every answer is one the contract declares, and every declared one is answe
   const user = account()
   const full = Array.from({ length: MAX_RECORDS }, (_, n) => ({ id: `r${n}`, time: 1, date: '2026-10-01T00:00:00.000Z' }))
   const lists = ['one', 'full'].map(id => ({ id, name: id, packId: 'p', words: [{ display: 'a', input: 'a', annotation: '' }], records: id === 'full' ? full : [], createdAt: at }))
-  await db.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, revision, records_split) VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, 1, false)`,
+  await sql.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, revision, records_split) VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, 1, false)`,
     [user.owner, JSON.stringify(lists), JSON.stringify([{ id: 'p', name: 'P', createdAt: at }]), JSON.stringify([{ id: 'mac', name: 'Mac', layout: 'JIS' }])])
   const aRun = { id: 'run-1', time: 2.5, date: '2026-10-02T10:00:00.000Z', mistakes: 1, accuracy: 95.5, wordCount: 1, deviceId: 'mac' }
   const body = (listId, record, owner = user.owner) => ({ accountId: owner, listId, record })
   const del = (listId, recordId, owner = user.owner) => ({ accountId: owner, listId, recordId })
   const tooLarge = JSON.stringify({ ...body('one', aRun), pad: 'x'.repeat(1 << 20) })
   // A database that answers the login's questions but cannot hold the workspace, and one that cannot answer at all.
-  const writeDown = () => ({ query: (...args) => db.query(...args), connect: () => Promise.reject(new Error('down')) })
-  const allDown = () => ({ query: () => Promise.reject(new Error('down')), connect: () => Promise.reject(new Error('down')) })
+  const writeDown = () => withoutTransactions(db)
+  const allDown = () => failingDb()
   const anonymous = { cookie: '' }
   const calls = [
     ['POST', body('one', aRun)], ['POST', body('one', aRun)], ['POST', ''],

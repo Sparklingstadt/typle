@@ -1,4 +1,4 @@
-import type { Pool } from 'pg'
+import type { Db } from './database'
 import { dropCookie, revokeLogins, signedIn } from './account'
 import { reportFailure } from './report'
 import { sameOrigin } from './request'
@@ -12,13 +12,13 @@ import { readLoginSettings, type LoginSettings } from './settings'
  * removes the cookie of this browser. It needs the app's own Origin and a login that is itself not revoked, and the
  * cookie is kept when the revocations cannot be read or written, so that the user can try again.
  */
-export async function answerSignOutEverywhere(request: Request, open: () => Pool,
+export async function answerSignOutEverywhere(request: Request, open: () => Db,
   settings: () => LoginSettings | null = readLoginSettings, now: number = Date.now() / 1000): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (request.method !== 'POST') return methodNotAllowed(['POST'])
   if (!sameOrigin(request, login.origin)) return refuse(403, 'forbiddenRequest')
-  let db: Pool
+  let db: Db
   try {
     db = open()
   } catch (error) {

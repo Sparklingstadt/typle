@@ -53,6 +53,7 @@ http://localhost:3000/local-login を開き「練習を始める」を押しま�
 Dockerを起動してマイグレーションを実行した状態で。`npm run verify` は、公開の前に通す検査をすべて同じ順に流し、最初の失敗で止まります（E2E と API の文書を省くときは `npm run verify -- --fast`）。1つずつなら:
 
 ```sh
+npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --exit-code   # スキーマと DB のずれ
 npm run typecheck
 npm test
 npm run lint
@@ -61,6 +62,12 @@ npm run build
 npx playwright install chromium
 npm run test:e2e
 ```
+
+### テーブルを変えるとき
+
+アプリは DB を Prisma Client（`prisma/schema.prisma` から作る `src/generated/prisma`）で読み書きしますが、テーブルを作るのは `db/migrations` の SQL です（Prisma Migrate は使いません）。テーブルを変えるときは、`db/migrations` に新しいマイグレーションを足し、同じ変更を `prisma/schema.prisma` に書いて `npx prisma generate` します。`npm run verify` は `db:migrate` のあとに、マイグレーションを当てた DB と `schema.prisma` の差を `prisma migrate diff` で確かめ、違えば止まります（CHECK 制約は `schema.prisma` に書けないので比べません）。DB の形から `schema.prisma` を作り直すときは `npx prisma db pull` ですが、モデル名・フィールド名とコメントが消えるので、差分を見て戻します。
+
+SQL のまま残しているのは4か所です。Prisma で書けない `modifyWorkspace` の行のロック（`FOR UPDATE`）、`writeWorkspace` の最初の保存どうしのロック（`pg_advisory_xact_lock`）、`revokeLogins` の時刻の upsert と、速さのための `syncRecords` の記録の挿入（`unnest` の1文。Prisma の `createMany` では記録 5,000 件の保存が約3倍遅くなったため）です。
 
 API の Route Handler は、DB を使うテスト（`tests/api*.test.cjs` など）が、マイグレーション済みのテスト用DB（`TYPLE_TEST_DATABASE_URL`）で確かめます（`npm run verify` は `db:migrate` の後に実行します）。v2.46.11 まで動いていた Go のバックエンドの答え・Cookie・トークンは `tests/fixtures`（`sessions.json`・`auth-answers.json` など）に記録してあり、TS が同じ答えを返し、Go の発行した Cookie・トークンを読めることを確かめます。
 
@@ -78,4 +85,4 @@ Tailwind 4の対象ブラウザーはSafari 16.4以上、Chrome 111以上、Fire
 
 ## 依存関係の監査
 
-2026-11-06 の `npm audit` の指摘は13件（low 2・moderate 11）で、どれも開発用の ESLint と shadcn の依存（`minimatch`・`deepmerge`）です。本番の依存には入っていません。v2.36.19 で Prisma をなくし、そのための override もなくなりました。
+2026-11-06 の `npm audit` の指摘は13件（low 2・moderate 11）で、どれも開発用の ESLint と shadcn の依存（`minimatch`・`deepmerge`）です。本番の依存には入っていません。v2.36.19 で Prisma をなくし、そのための override もなくなりました。v2.60.7 で Prisma Client（7.10.1）を戻しました。

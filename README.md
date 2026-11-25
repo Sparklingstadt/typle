@@ -43,7 +43,7 @@
 | 分野 | 使っているもの |
 |---|---|
 | 画面 | Next.js 16（App Router）・React 19・TypeScript（strict）・Tailwind CSS 4・shadcn/ui（Radix）・next-intl |
-| API と DB | Next.js の Route Handler・PostgreSQL（ORM を使わず `pg` で SQL を書く）・SQL のマイグレーション |
+| API と DB | Next.js の Route Handler・PostgreSQL（Prisma Client で読み書き）・SQL のマイグレーション |
 | ログイン | Auth.js v5（OpenID Connect・GitHub OAuth）。セッションは署名した Cookie で、DB のセッションは持ちません |
 | 手書きの読み取り | onnxruntime-web と PaddleOCR の韓国語のモデル。サーバーに送らず、ブラウザーの中で読みます |
 | テスト | node:test（単体と、実際の DB を使う API）・Playwright（E2E・スクリーンショット・ARIA スナップショット） |
@@ -119,6 +119,7 @@ http://localhost:3000 を開きます。GitHub のログインや開発用のロ
 | `src/i18n`・`src/messages` | 多言語化（next-intl）と各言語の文言 |
 | `src/proxy.ts` | ページごとの nonce と CSP |
 | `src/server` | Route Handler が使うサーバーのコード（DB・ログイン・保存） |
+| `prisma/schema.prisma` | DB のテーブルの形。Prisma Client（`src/generated/prisma`。`npm install` と `npm run build` で作られ、git には入れない）の元 |
 | `db/migrations` | SQL のマイグレーション |
 | `tests` | 単体テスト（`*.test.cjs`）と E2E（`e2e/`） |
 | `infra` | AWS CDK（移行の準備） |

@@ -50,3 +50,6 @@ next-env.d.ts
 
 # Third-party license list, written by scripts/generate-licenses.cjs
 /public/licenses/
+
+# Prisma Client, made by prisma generate (postinstall, prebuild)
+/src/generated/

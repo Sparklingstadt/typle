@@ -7,7 +7,7 @@
 段階 0〜2 は v2.36.1 から v2.36.14 で、#16 は v2.36.19 で終わりました。`/api/v1` と `typle-api` は使う人がいないので v2.36.20 で消しました。
 
 - 検査: `staticcheck`・`knip`・単体テストのカバレッジ、`.claude` を除いた `npm run lint`、`cn` の import の規則を CI に入れました。
-- 依存: 範囲内の依存を更新し、Prisma をなくしました。マイグレーションは `db/migrations` の SQL を `scripts/migrate.cjs` が適用します（事故の手順は `docs/release-workflow.md`）。
+- 依存: 範囲内の依存を更新し、Prisma をなくしました。マイグレーションは `db/migrations` の SQL を `scripts/migrate.cjs` が適用します（事故の手順は `docs/release-workflow.md`）。v2.60.7 で、アプリの読み書きだけ Prisma Client に戻しました（マイグレーションは SQL のまま）。
 - 画面: 旧 `Page`／`PageContainer` を消し、200 行を超えていた画面を分けました。
 - TS と Go: 上限値を `tests/fixtures` の共通の fixture で照合しています。
 - CI: `verify` を Node・Go・E2E の並列ジョブに分けました。

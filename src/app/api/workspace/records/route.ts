@@ -1,15 +1,15 @@
-import { pool } from '../../../../server/database'
+import { prisma } from '../../../../server/database'
 import { methodNotAllowed } from '../../../../server/response'
 import { answerRecords } from '../../../../server/workspace'
 
 // /api/workspace/records: POST adds a practice record to a list of the account's workspace, DELETE deletes one.
 
 export async function POST(request: Request) {
-  return answerRecords(request, pool)
+  return answerRecords(request, prisma)
 }
 
 export async function DELETE(request: Request) {
-  return answerRecords(request, pool)
+  return answerRecords(request, prisma)
 }
 
 const notServed = async () => methodNotAllowed(['POST', 'DELETE'])

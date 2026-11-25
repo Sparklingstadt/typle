@@ -5,32 +5,21 @@ const { answerWorkspace, answerRecords } = require('../src/server/workspace.ts')
 const { answerSignOutEverywhere } = require('../src/server/accountApi.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 const { sealSession, newSession } = require('../src/server/session.ts')
+const { failingDb } = require('./fakeDb.cjs')
 
 // What the API answers when the database fails at each point it is used: a 503 with the same key for every cause, and
 // the operation in the log (src/server/report.ts) so that the failures of one kind can be found together. No database
-// is needed: the pools here are made up, and answer only the queries a test lets through.
+// is needed: the databases here are made up (tests/fakeDb.cjs), and answer only the calls a test lets through.
 
 const origin = 'http://127.0.0.1:3104'
 const settings = readLoginSettings({ AUTH_SECRET: 'typle-unavailable-test-secret', AUTH_URL: origin })
 const withSettings = () => settings
-const failure = () => Promise.reject(new Error('the database is down'))
-
-/** A pool that answers the queries whose text holds one of the keys of answers with its rows, and fails every other use. */
-function pool(answers = {}) {
-  return {
-    query: text => {
-      const found = Object.entries(answers).find(([part]) => String(text).includes(part))
-      return found ? Promise.resolve({ rows: found[1], rowCount: found[1].length }) : failure()
-    },
-    connect: failure,
-  }
-}
-const NOT_REVOKED = { 'SELECT revoked_at FROM typle_session_revocations': [] }
+const NOT_REVOKED = { 'sessionRevocation.findUnique': null }
 /** Every use fails. */
-const down = () => pool()
+const down = () => failingDb()
 /** The login is checked (it was never revoked), and every later use fails. */
-const afterLogin = () => pool(NOT_REVOKED)
-/** No pool at all, as when DATABASE_URL is not set. */
+const afterLogin = () => failingDb(NOT_REVOKED)
+/** No database at all, as when DATABASE_URL is not set. */
 const none = () => { throw new Error('DATABASE_URL is not set') }
 
 const cookieOf = sub => `typle-session=${sealSession(settings.sessionKey, newSession(sub, 'N', '', Math.floor(Date.now() / 1000) - 60))}`

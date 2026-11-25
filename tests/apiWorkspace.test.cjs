@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
 const { createHmac, hkdfSync, randomInt } = require('node:crypto')
-const { createPool } = require('../src/server/database.ts')
+const { createPool, createPrisma } = require('../src/server/database.ts')
 const { answerWorkspace } = require('../src/server/workspace.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 const { DEFAULT_INTERESTS } = require('../src/lib/interests.ts')
@@ -10,7 +10,9 @@ const { DEFAULT_INTERESTS } = require('../src/lib/interests.ts')
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
-const db = url ? createPool(url) : null
+// The code under test gets Prisma Client; the tests set up and look at the tables with SQL, as the fixtures were made.
+const sql = url ? createPool(url) : null
+const db = url ? createPrisma(url) : null
 const secret = 'typle-workspace-test-secret'
 const origin = 'http://127.0.0.1:3101'
 const settings = readLoginSettings({ AUTH_SECRET: secret, AUTH_URL: origin })
@@ -20,9 +22,10 @@ const owners = []
 after(async () => {
   if (!db) return
   for (const table of ['typle_session_revocations', 'typle_records', 'typle_workspaces']) {
-    await db.query(`DELETE FROM ${table} WHERE owner_id = ANY($1)`, [owners])
+    await sql.query(`DELETE FROM ${table} WHERE owner_id = ANY($1)`, [owners])
   }
-  await db.end()
+  await sql.end()
+  await db.$disconnect()
 })
 
 function seal(info, sub) {
@@ -85,7 +88,7 @@ test('a save is refused as the Go backend refused it', database, async () => {
 
 test('a revoked login can neither read nor save, and a browser loses its cookie', database, async () => {
   const user = account()
-  await db.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now())', [user.owner])
+  await sql.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now())', [user.owner])
   for (const request of [get(user), put(user, { revision: 0, accountId: user.owner, ...library('one') })]) {
     const response = await answerWorkspace(request, open, withSettings)
     await expectError(response, 401, 'loginRequired')
@@ -95,20 +98,20 @@ test('a revoked login can neither read nor save, and a browser loses its cookie'
 
 test('a save is measured when TYPLE_MEASURE_SAVES is 1', database, async () => {
   const user = account()
-  const count = async () => Number((await db.query(`SELECT count(*) AS n FROM typle_save_metrics WHERE operation = 'workspace.write'`)).rows[0].n)
+  const count = async () => Number((await sql.query(`SELECT count(*) AS n FROM typle_save_metrics WHERE operation = 'workspace.write'`)).rows[0].n)
   const before = await count()
   await answerWorkspace(put(user, { revision: 0, accountId: user.owner, ...library('one') }), open, withSettings, {})
   assert.equal(await count(), before)
   const body = JSON.stringify({ revision: 1, accountId: user.owner, ...library('two') })
   const response = await answerWorkspace(put(user, body), open, withSettings, { TYPLE_MEASURE_SAVES: '1' })
   const text = await response.text()
-  const { rows } = await db.query(`SELECT id, status, request_bytes, response_bytes FROM typle_save_metrics WHERE operation = 'workspace.write' ORDER BY id DESC LIMIT 1`)
+  const { rows } = await sql.query(`SELECT id, status, request_bytes, response_bytes FROM typle_save_metrics WHERE operation = 'workspace.write' ORDER BY id DESC LIMIT 1`)
   const { id, ...measured } = rows[0]
   try {
     assert.deepEqual(measured, { status: 200, request_bytes: Buffer.byteLength(body), response_bytes: Buffer.byteLength(text) })
     assert.equal(await count(), before + 1)
   } finally {
-    await db.query('DELETE FROM typle_save_metrics WHERE id = $1', [id])
+    await sql.query('DELETE FROM typle_save_metrics WHERE id = $1', [id])
   }
 })
 

@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
 const { createHmac, hkdfSync, randomInt } = require('node:crypto')
-const { createPool } = require('../src/server/database.ts')
+const { createPool, createPrisma } = require('../src/server/database.ts')
 const { currentUser, revokedSoon } = require('../src/server/account.ts')
 const { answerSignOutEverywhere } = require('../src/server/accountApi.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
@@ -11,7 +11,9 @@ const { readLoginSettings } = require('../src/server/settings.ts')
 // database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
-const db = url ? createPool(url) : null
+// The code under test gets Prisma Client; the tests set up and look at the tables with SQL, as the fixtures were made.
+const sql = url ? createPool(url) : null
+const db = url ? createPrisma(url) : null
 const secret = 'typle-revocation-test-secret'
 const origin = 'http://127.0.0.1:3101'
 const settings = readLoginSettings({ AUTH_SECRET: secret, AUTH_URL: origin })
@@ -20,8 +22,9 @@ const open = () => db
 const owners = []
 after(async () => {
   if (!db) return
-  await db.query('DELETE FROM typle_session_revocations WHERE owner_id = ANY($1)', [owners])
-  await db.end()
+  await sql.query('DELETE FROM typle_session_revocations WHERE owner_id = ANY($1)', [owners])
+  await sql.end()
+  await db.$disconnect()
 })
 
 function seal(info, sub) {
@@ -41,7 +44,7 @@ const signOut = headers => new Request(`${origin}/api/account/signout-everywhere
 test('a login before the revocation is revoked, one after it is not', database, async () => {
   const owner = newOwner()
   assert.equal(await revokedSoon(open, owner, now), false)
-  await db.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, to_timestamp($2))', [owner, now])
+  await sql.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, to_timestamp($2))', [owner, now])
   assert.equal(await revokedSoon(open, owner, now - 10), true)
   assert.equal(await revokedSoon(open, owner, now), true)
   assert.equal(await revokedSoon(open, owner, now + 1), false)
@@ -53,7 +56,7 @@ test('revokedSoon gives up with null after about a second, and says so', async (
   console.warn = (...args) => warned.push(args.map(String).join(' '))
   const started = Date.now()
   try {
-    assert.equal(await revokedSoon(() => ({ query: () => new Promise(() => {}) }), 'github:1', now), null)
+    assert.equal(await revokedSoon(() => ({ sessionRevocation: { findUnique: () => new Promise(() => {}) } }), 'github:1', now), null)
     assert.equal(await revokedSoon(() => { throw new Error('no database') }, 'github:1', now), null)
   } finally {
     console.warn = original
@@ -92,7 +95,7 @@ test('signing out of every device revokes the logins and removes the cookie', da
 test('signing out of every device never leaves the revocation in a second some login was dated after', database, async () => {
   const owner = newOwner()
   // An earlier revocation ahead of the clock: the logins made after it are dated from its next whole second.
-  await db.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, to_timestamp($2))', [owner, now + 100])
+  await sql.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, to_timestamp($2))', [owner, now + 100])
   const key = Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), 'typle session v1', 32))
   const payload = Buffer.from(JSON.stringify({ sub: owner, name: 'N', image: '', iat: now + 101, exp: now + 3600 })).toString('base64url')
   const cookie = `typle-session=${payload}.${createHmac('sha256', key).update(payload).digest('base64url')}`
@@ -102,7 +105,7 @@ test('signing out of every device never leaves the revocation in a second some l
 })
 
 test('signing out of every device is 503 when the revocations cannot be written, and 503 without login settings', async () => {
-  const down = createPool('postgres://user:pass@127.0.0.1:1/none')
+  const down = createPrisma('postgres://user:pass@127.0.0.1:1/none')
   const original = console.error
   console.error = () => {}
   try {
@@ -116,7 +119,7 @@ test('signing out of every device is 503 when the revocations cannot be written,
     assert.equal(await unset.text(), '{"error":"authUnavailable"}\n')
   } finally {
     console.error = original
-    await down.end()
+    await down.$disconnect()
   }
 })
 

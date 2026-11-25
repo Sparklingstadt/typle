@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
 const { createHmac, hkdfSync, randomInt } = require('node:crypto')
-const { createPool } = require('../src/server/database.ts')
+const { createPool, createPrisma } = require('../src/server/database.ts')
 const { currentUser, signedIn } = require('../src/server/account.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 
@@ -33,12 +33,15 @@ test('the user is read from the cookie alone', () => {
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
-const db = url ? createPool(url) : null
+// The code under test gets Prisma Client; the tests set up and look at the tables with SQL, as the fixtures were made.
+const sql = url ? createPool(url) : null
+const db = url ? createPrisma(url) : null
 const owners = []
 after(async () => {
   if (!db) return
-  await db.query('DELETE FROM typle_session_revocations WHERE owner_id = ANY($1)', [owners])
-  await db.end()
+  await sql.query('DELETE FROM typle_session_revocations WHERE owner_id = ANY($1)', [owners])
+  await sql.end()
+  await db.$disconnect()
 })
 const newOwner = () => {
   const owner = `github:${randomInt(1e9, 2e9)}`
@@ -55,7 +58,7 @@ test('a session that was not revoked is signed in', database, async () => {
 // Signing out of every device revokes every login until then, the login in that very second too.
 test('a revoked session is signed out, and a browser loses its cookie', database, async () => {
   const owner = newOwner()
-  await db.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, to_timestamp($2))', [owner, now - 60])
+  await sql.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, to_timestamp($2))', [owner, now - 60])
   const browser = await signedIn(request({ Cookie: `typle-session=${cookie(owner)}` }), db, http)
   assert.equal(browser.refusal.status, 401)
   assert.equal(await browser.refusal.text(), '{"error":"loginRequired"}\n')
@@ -66,7 +69,7 @@ test('a revoked session is signed out, and a browser loses its cookie', database
 
 test('a login after the revocation is signed in', database, async () => {
   const owner = newOwner()
-  await db.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, to_timestamp($2))', [owner, now - 61])
+  await sql.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, to_timestamp($2))', [owner, now - 61])
   assert.equal((await signedIn(request({ Cookie: `typle-session=${cookie(owner)}` }), db, http)).user.sub, owner)
 })
 
@@ -77,7 +80,7 @@ test('without a session the request is refused with loginRequired', async () => 
 })
 
 test('503 when the revocations cannot be read', async () => {
-  const down = createPool('postgres://user:pass@127.0.0.1:1/none')
+  const down = createPrisma('postgres://user:pass@127.0.0.1:1/none')
   const original = console.error
   const logged = []
   console.error = (...args) => logged.push(args.map(String).join(' '))
@@ -87,7 +90,7 @@ test('503 when the revocations cannot be read', async () => {
     assert.equal(await result.refusal.text(), '{"error":"databaseUnavailable"}\n')
   } finally {
     console.error = original
-    await down.end()
+    await down.$disconnect()
   }
   assert.match(logged[0], /: session\.check:/)
 })

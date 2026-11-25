@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
 const { randomInt } = require('node:crypto')
-const { createPool } = require('../src/server/database.ts')
+const { createPool, createPrisma } = require('../src/server/database.ts')
 const { linkedAccount } = require('../src/server/sidLinks.ts')
 const { databaseLabel, linkSid, parseSub } = require('../scripts/sid-link.cjs')
 
@@ -10,15 +10,18 @@ const { databaseLabel, linkSid, parseSub } = require('../scripts/sid-link.cjs')
 // and what npm run sid:link adds. Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
-const db = url ? createPool(url) : null
+// The code under test gets Prisma Client; the tests set up and look at the tables with SQL.
+const sql = url ? createPool(url) : null
+const db = url ? createPrisma(url) : null
 const subs = []
 const owners = []
 after(async () => {
   if (!db) return
-  await db.query('DELETE FROM typle_sid_links WHERE sub = ANY($1)', [subs])
-  await db.query('DELETE FROM typle_workspaces WHERE owner_id = ANY($1)', [owners])
-  await db.query('DELETE FROM typle_records WHERE owner_id = ANY($1)', [owners])
-  await db.end()
+  await sql.query('DELETE FROM typle_sid_links WHERE sub = ANY($1)', [subs])
+  await sql.query('DELETE FROM typle_workspaces WHERE owner_id = ANY($1)', [owners])
+  await sql.query('DELETE FROM typle_records WHERE owner_id = ANY($1)', [owners])
+  await sql.end()
+  await db.$disconnect()
 })
 
 const newSub = () => {
@@ -30,7 +33,7 @@ const newSub = () => {
 async function newAccount({ empty = false } = {}) {
   const owner = `github:${randomInt(1e9, 2e9)}`
   owners.push(owner)
-  if (!empty) await db.query('INSERT INTO typle_workspaces (owner_id) VALUES ($1)', [owner])
+  if (!empty) await sql.query('INSERT INTO typle_workspaces (owner_id) VALUES ($1)', [owner])
   return owner
 }
 
@@ -64,7 +67,7 @@ test('a sub links once, and an account to one sub', database, async () => {
 
 test('an account with an account record but no workspace can be linked', database, async () => {
   const owner = await newAccount({ empty: true })
-  await db.query(`INSERT INTO typle_records (owner_id, list_id, record_id, position, at, data)
+  await sql.query(`INSERT INTO typle_records (owner_id, list_id, record_id, position, at, data)
     VALUES ($1, 'l', 'r', 0, now(), '{}')`, [owner])
   assert.equal(await linkSid(db, newSub(), owner), 'linked')
 })
@@ -76,7 +79,7 @@ test('an account with nothing saved is refused, as a mistyped one', database, as
 test('a sub whose own account sid:<sub> has saved data is refused, as the link would leave that data behind', database, async () => {
   const sub = newSub()
   owners.push(`sid:${sub}`)
-  await db.query('INSERT INTO typle_workspaces (owner_id) VALUES ($1)', [`sid:${sub}`])
+  await sql.query('INSERT INTO typle_workspaces (owner_id) VALUES ($1)', [`sid:${sub}`])
   assert.equal(await linkSid(db, sub, await newAccount()), 'sidHasData')
 })
 

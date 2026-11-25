@@ -17,5 +17,5 @@ export default defineConfig([
       ] }],
     },
   },
-  globalIgnores(['.next/**', '.next-production/**', 'test-results/**', 'playwright-report/**', 'next-env.d.ts', 'api-docs/**', 'infra/**', '.claude/**']),
+  globalIgnores(['.next/**', '.next-production/**', 'test-results/**', 'playwright-report/**', 'next-env.d.ts', 'api-docs/**', 'infra/**', '.claude/**', 'src/generated/**']),
 ])

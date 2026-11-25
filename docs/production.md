@@ -18,7 +18,7 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 
 関数は Vercel のシンガポール（`sin1`）で動かします（`vercel.json` の `regions`。v2.55.1 から。それまでは既定の米国東部 `iad1`）。Neon の DB も同じシンガポール（Vercel Marketplace のリージョン `sin1`）に置きます。DB を別のリージョンに移すときは、`regions` も DB に一番近いところに合わせます。
 
-対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/migrate.cjs` が `pg` で適用します（v2.36.19 から Prisma は使いません。アプリの DB の読み書きは Route Handler の `pg`）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](release-workflow.md)）。
+対象DBの環境変数を使って `npm run db:migrate` を実行してからデプロイします。マイグレーションは `db/migrations` の SQL で、`scripts/migrate.cjs` が `pg` で適用します（v2.36.19 から。Prisma Migrate は使いません）。アプリの DB の読み書きは Prisma Client です（v2.36.19〜v2.60.6 は `pg` の SQL、v2.60.7 から Prisma Client に戻しました）。DockerのDBからNeonへのデータコピーは自動ではありません。必要な場合はバックアップと復元を別途行います。本番への反映は、マージ後の main で `npm run verify` を通してから、手元の Vercel CLI（`vercel deploy --prod`）で行います（v2.38.1 から。[リリース運用](release-workflow.md)）。
 
 公式資料: [GitHub OAuth App](https://docs.github.com/ja/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)、[PostgreSQL Docker image](https://hub.docker.com/_/postgres)。
 

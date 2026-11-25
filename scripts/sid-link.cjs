@@ -1,4 +1,8 @@
 const path = require('node:path')
+// The database code is TypeScript (src/server/database.ts, and Prisma Client generated into src/generated); the tests'
+// loader compiles it as it is required.
+require('../tests/register.cjs')
+const { createPrisma } = require('../src/server/database.ts')
 
 // npm run sid:link -- <sub> <account_id>: links a Sparklingstadt ID (its sub, with or without sid:) to the account of
 // another login, so that signing in with that ID opens the account (typle_sid_links, read by src/server/sidLinks.ts).
@@ -31,47 +35,32 @@ function databaseLabel(url) {
 }
 
 /** Whether owner has a saved workspace or a practice record. */
-async function hasData(client, owner) {
-  const { rows } = await client.query(`SELECT EXISTS (SELECT 1 FROM typle_workspaces WHERE owner_id = $1)
-    OR EXISTS (SELECT 1 FROM typle_records WHERE owner_id = $1) AS found`, [owner])
-  return rows[0].found
+async function hasData(db, owner) {
+  const workspace = await db.workspace.findUnique({ where: { ownerId: owner } })
+  const record = await db.record.findFirst({ where: { ownerId: owner } })
+  return workspace !== null || record !== null
 }
 
 /**
- * Links sub to accountId in one transaction. Answers 'linked', or why not: 'subLinked', 'accountLinked',
- * 'accountInvalid', 'accountEmpty' or 'sidHasData'.
+ * Links sub to accountId in one transaction (db is Prisma Client). Answers 'linked', or why not: 'subLinked',
+ * 'accountLinked', 'accountInvalid', 'accountEmpty' or 'sidHasData'.
  */
 async function linkSid(db, sub, accountId) {
   if (!OTHER_ACCOUNT.test(accountId)) return 'accountInvalid'
-  const client = await db.connect()
   try {
-    await client.query('BEGIN')
-    const linked = await client.query('SELECT sub, account_id FROM typle_sid_links WHERE sub = $1 OR account_id = $2',
-      [sub, accountId])
-    let answer = null
-    if (linked.rows.some(row => row.sub === sub)) answer = 'subLinked'
-    else if (linked.rows.length > 0) answer = 'accountLinked'
-    else if (!(await hasData(client, accountId))) answer = 'accountEmpty'
-    else if (await hasData(client, `sid:${sub}`)) answer = 'sidHasData'
-    if (answer) {
-      await client.query('ROLLBACK')
-      return answer
-    }
-    try {
-      await client.query('INSERT INTO typle_sid_links (sub, account_id) VALUES ($1, $2)', [sub, accountId])
-    } catch (error) {
-      await client.query('ROLLBACK')
-      // Another run linked one of them between the check and the insert.
-      if (error.code === '23505') return error.constraint === 'typle_sid_links_pkey' ? 'subLinked' : 'accountLinked'
-      throw error
-    }
-    await client.query('COMMIT')
-    return 'linked'
+    return await db.$transaction(async tx => {
+      const linked = await tx.sidLink.findMany({ where: { OR: [{ sub }, { accountId }] } })
+      if (linked.some(link => link.sub === sub)) return 'subLinked'
+      if (linked.length > 0) return 'accountLinked'
+      if (!(await hasData(tx, accountId))) return 'accountEmpty'
+      if (await hasData(tx, `sid:${sub}`)) return 'sidHasData'
+      await tx.sidLink.create({ data: { sub, accountId } })
+      return 'linked'
+    })
   } catch (error) {
-    await client.query('ROLLBACK').catch(() => {})
-    throw error
-  } finally {
-    client.release()
+    // Another run linked one of them between the check and the insert (a unique key, P2002): say which.
+    if (error?.code !== 'P2002') throw error
+    return (await db.sidLink.findUnique({ where: { sub } })) ? 'subLinked' : 'accountLinked'
   }
 }
 
@@ -91,14 +80,13 @@ async function main(args) {
   require('@next/env').loadEnvConfig(path.join(__dirname, '..'))
   const url = process.env.DATABASE_URL
   if (!url) throw new Error('DATABASE_URL を設定してください。')
-  const { Pool } = require('pg')
-  const db = new Pool({ connectionString: url, max: 1 })
+  const db = createPrisma(url)
   try {
     const answer = await linkSid(db, sub, accountId)
     console.log(`${MESSAGES[answer]}（sid:${sub} → ${accountId}、DB: ${databaseLabel(url)}）`)
     return answer === 'linked'
   } finally {
-    await db.end()
+    await db.$disconnect()
   }
 }
 

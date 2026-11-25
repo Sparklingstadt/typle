@@ -1,4 +1,4 @@
-import type { Pool } from 'pg'
+import type { Db } from './database'
 
 // Saves can be measured (TYPLE_MEASURE_SAVES=1, Issue #174, docs/save-metrics.md): how long each took, the status it was
 // answered with, and the bytes of its request and of its answer, one row of typle_save_metrics each.
@@ -6,12 +6,15 @@ import type { Pool } from 'pg'
 /** The longest a measurement may hold the answer of the save it measured. */
 const MEASURE_TIMEOUT_MS = 2000
 
+/** How long a measurement is kept. */
+const KEEP_DAYS = 90
+
 /**
  * The answer of save, measured as operation when env turns measuring on. The row is written before the answer is
  * returned, because a serverless instance may stop once a request is answered; so it holds the answer for one INSERT,
  * never longer than MEASURE_TIMEOUT_MS. A measurement that fails is only logged.
  */
-export async function measureSave(request: Request, operation: string, open: () => Pool, save: () => Promise<Response>,
+export async function measureSave(request: Request, operation: string, open: () => Db, save: () => Promise<Response>,
   env: Record<string, string | undefined> = process.env): Promise<Response> {
   if (env.TYPLE_MEASURE_SAVES !== '1') return save()
   const length = Number(request.headers.get('Content-Length'))
@@ -21,9 +24,11 @@ export async function measureSave(request: Request, operation: string, open: () 
   const durationMs = Date.now() - started
   const responseBytes = (await response.clone().arrayBuffer()).byteLength
   const write = (async () => {
-    await open().query(`WITH old AS (DELETE FROM typle_save_metrics WHERE at < now() - interval '90 days')
-      INSERT INTO typle_save_metrics (operation, status, duration_ms, request_bytes, response_bytes) VALUES ($1, $2, $3, $4, $5)`,
-    [operation, response.status, durationMs, requestBytes, responseBytes])
+    const db = open()
+    await db.$transaction([
+      db.saveMetric.deleteMany({ where: { at: { lt: new Date(Date.now() - KEEP_DAYS * 24 * 60 * 60 * 1000) } } }),
+      db.saveMetric.create({ data: { operation, status: response.status, durationMs, requestBytes, responseBytes } }),
+    ])
   })()
   let timer: ReturnType<typeof setTimeout> | undefined
   try {

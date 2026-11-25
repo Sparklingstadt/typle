@@ -13,7 +13,8 @@
   "ignoreDependencies": [
     "shadcn",
     "tw-animate-css",
-    "tailwindcss"
+    "tailwindcss",
+    "@prisma/client"
   ],
   "ignore": [
     "infra/**"
