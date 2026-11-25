@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test'
 import { cookieName, deleteWorkspace, newAccountId, origin, sessionFor as login, signIn } from './account'
 import { openPacks } from './packRows'
+import { skipWelcome } from './welcome'
 let accountId = ''
-test.beforeEach(async ({ context }) => {
+test.beforeEach(async ({ context, page }) => {
   accountId = newAccountId()
   await signIn(context, accountId)
+  await skipWelcome(page, accountId)
 })
 // Test users are isolated; their rows are deleted through a direct DB connection.
 test.afterEach(() => deleteWorkspace(accountId))

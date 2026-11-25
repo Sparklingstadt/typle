@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import { openPacks } from './packRows'
 import { guestWorkspace } from './guestData'
+import { skipWelcome } from './welcome'
 const key = 'typle-r:guest-workspace:v1'
 async function importWords(page: import('@playwright/test').Page, files: Parameters<import('@playwright/test').Locator['setInputFiles']>[0]) {
   await page.getByRole('button', { name: 'CSVを読み込む', exact: true }).click()
@@ -105,6 +106,7 @@ test('create, reorder, edit, play, reload and delete records', async ({ page }) 
 
 
 test('each page has its own title, and pages of one\'s own data are kept out of search', async ({ page }) => {
+  await skipWelcome(page)
   await page.goto('/play')
   await expect(page).toHaveTitle('練習する | Typle')
   await expect(page.locator('meta[name="robots"]')).toHaveCount(0)
@@ -310,6 +312,7 @@ test('mobile drawer closes by link, Esc and backdrop and returns focus to the me
 })
 
 test('narrow desktop windows use the drawer so the page keeps its width', async ({ page }) => {
+  await skipWelcome(page)
   // A laptop or a half-screen window: the 240px sidebar would squeeze the practice area, so it stays in the drawer until 1280px.
   await page.setViewportSize({ width: 1100, height: 800 })
   await page.goto('/play')

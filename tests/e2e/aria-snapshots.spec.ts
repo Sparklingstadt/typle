@@ -5,6 +5,7 @@ import { guestWorkspace } from './guestData'
 import { openPacks } from './packRows'
 import { seedSaved } from './snapshotData'
 import { deleteWorkspace, newAccountId, signIn } from './account'
+import { skipWelcome } from './welcome'
 
 // ARIA snapshots compare the accessibility tree (roles, names and their order), not pixels, so fonts and the OS do
 // not change them. They catch a control that lost its label, a heading that changed level or a link that went missing.
@@ -12,6 +13,9 @@ import { deleteWorkspace, newAccountId, signIn } from './account'
 // `npx playwright test tests/e2e/aria-snapshots.spec.ts --update-snapshots --update-source-method=overwrite`, and
 // those kept in aria-snapshots.spec.ts-snapshots/ with TYPLE_ARIA_WRITE=1 (matchAriaFile below). Review the diff
 // before committing it.
+
+// A new workspace is sent to /welcome, so the pages that show it empty are opened with the tour marked as seen.
+test.beforeEach(({ page }) => skipWelcome(page))
 
 /**
  * Compares the locator's tree with aria-snapshots.spec.ts-snapshots/<name>. With TYPLE_ARIA_WRITE=1 it writes the
@@ -335,9 +339,10 @@ test('the pack editor keeps its fields and the lists of the pack', async ({ page
 // Signed in: an account of its own for each test (account.ts), whose rows are deleted afterwards.
 test.describe('signed in', () => {
   let accountId = ''
-  test.beforeEach(async ({ context }) => {
+  test.beforeEach(async ({ context, page }) => {
     accountId = newAccountId()
     await signIn(context, accountId)
+    await skipWelcome(page, accountId)
   })
   test.afterEach(() => deleteWorkspace(accountId))
 

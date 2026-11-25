@@ -3,6 +3,7 @@ import { guestWorkspace } from './guestData'
 import { openPacks } from './packRows'
 import { seedSaved } from './snapshotData'
 import { deleteWorkspace, newAccountId, signIn } from './account'
+import { skipWelcome } from './welcome'
 
 // Screenshot snapshots compare what a screen looks like with an image taken before
 // (tests/e2e/screenshots.spec.ts-snapshots/). Fonts and anti-aliasing differ between systems, so the images are taken
@@ -15,6 +16,8 @@ import { deleteWorkspace, newAccountId, signIn } from './account'
 test.skip(process.platform !== 'darwin', 'The screenshot snapshots are taken on macOS and only match there.')
 
 async function open(page: Page, path: string, colorScheme: 'light' | 'dark' = 'light') {
+  // A new workspace is sent to /welcome; the tour has its own test.
+  await skipWelcome(page)
   await page.emulateMedia({ colorScheme })
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto(path)
@@ -279,9 +282,10 @@ test('the pack editor shows the fields and the lists of the pack', async ({ page
 // and the name is always E2E User.
 test.describe('signed in', () => {
   let accountId = ''
-  test.beforeEach(async ({ context }) => {
+  test.beforeEach(async ({ context, page }) => {
     accountId = newAccountId()
     await signIn(context, accountId)
+    await skipWelcome(page, accountId)
   })
   test.afterEach(() => deleteWorkspace(accountId))
 

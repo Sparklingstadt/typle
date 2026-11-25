@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 import { openPacks } from './packRows'
 import { guestWorkspace } from './guestData'
 import { origin } from './account'
+import { skipWelcome } from './welcome'
 
 // Auth.js answers only its own paths (authPathKnown, tests/authOptions.test.cjs): the route answers 404 to the rest,
 // such as the app's token of the login before Auth.js.
@@ -21,6 +22,7 @@ test('the development login is not served by the production build', async ({ pag
 // The top bar goes to /signin with the page being viewed, and /signin offers GitHub alone (no FFPF ID), coming back to
 // that page.
 test('/signin has the GitHub button, and the login comes back to the page', async ({ page }) => {
+  await skipWelcome(page)
   await page.goto('/home')
   const signIn = page.getByRole('link', { name: 'ログイン', exact: true })
   await expect(signIn).toHaveAttribute('href', '/signin?returnTo=%2Fhome')
