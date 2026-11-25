@@ -96,25 +96,6 @@ test('a revoked login can neither read nor save, and a browser loses its cookie'
   }
 })
 
-test('a save is measured when TYPLE_MEASURE_SAVES is 1', database, async () => {
-  const user = account()
-  const count = async () => Number((await sql.query(`SELECT count(*) AS n FROM typle_save_metrics WHERE operation = 'workspace.write'`)).rows[0].n)
-  const before = await count()
-  await answerWorkspace(put(user, { revision: 0, accountId: user.owner, ...library('one') }), open, withSettings, {})
-  assert.equal(await count(), before)
-  const body = JSON.stringify({ revision: 1, accountId: user.owner, ...library('two') })
-  const response = await answerWorkspace(put(user, body), open, withSettings, { TYPLE_MEASURE_SAVES: '1' })
-  const text = await response.text()
-  const { rows } = await sql.query(`SELECT id, status, request_bytes, response_bytes FROM typle_save_metrics WHERE operation = 'workspace.write' ORDER BY id DESC LIMIT 1`)
-  const { id, ...measured } = rows[0]
-  try {
-    assert.deepEqual(measured, { status: 200, request_bytes: Buffer.byteLength(body), response_bytes: Buffer.byteLength(text) })
-    assert.equal(await count(), before + 1)
-  } finally {
-    await sql.query('DELETE FROM typle_save_metrics WHERE id = $1', [id])
-  }
-})
-
 test('the route answers other methods with 405', async () => {
   const route = require('../src/app/api/workspace/route.ts')
   for (const method of ['POST', 'PATCH', 'DELETE', 'OPTIONS']) {

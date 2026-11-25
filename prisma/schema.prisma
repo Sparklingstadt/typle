@@ -54,20 +54,6 @@ model SessionRevocation {
   @@map("typle_session_revocations")
 }
 
-// One measured save (TYPLE_MEASURE_SAVES=1, docs/save-metrics.md); rows older than 90 days are deleted.
-model SaveMetric {
-  id            BigInt   @id @default(autoincrement())
-  at            DateTime @default(now()) @db.Timestamptz(6)
-  operation     String
-  status        Int
-  durationMs    Int      @map("duration_ms")
-  requestBytes  Int      @map("request_bytes")
-  responseBytes Int      @map("response_bytes")
-
-  @@index([at], map: "typle_save_metrics_at")
-  @@map("typle_save_metrics")
-}
-
 // An account of the password login. Not read by the app yet (migration 0039).
 model User {
   id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid

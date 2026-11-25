@@ -118,23 +118,6 @@ test('a revoked login is refused, and a browser loses its cookie', database, asy
   assert.equal(response.headers.get('set-cookie'), 'typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax')
 })
 
-test('a record added and deleted is measured when TYPLE_MEASURE_SAVES is 1', database, async () => {
-  const user = account()
-  await withRow(user)
-  const latest = async () => (await sql.query(`SELECT id, operation, status FROM typle_save_metrics ORDER BY id DESC LIMIT 1`)).rows[0]
-  const env = { TYPLE_MEASURE_SAVES: '1' }
-  await answerRecords(request(user, 'POST', { accountId: user.owner, listId: 'l1', record: run }), open, withSettings, env)
-  const added = await latest()
-  await answerRecords(request(user, 'DELETE', { accountId: user.owner, listId: 'l1', recordId: 'run-1' }), open, withSettings, env)
-  const deleted = await latest()
-  try {
-    assert.deepEqual([added.operation, added.status], ['record.add', 201])
-    assert.deepEqual([deleted.operation, deleted.status], ['record.delete', 200])
-  } finally {
-    await sql.query('DELETE FROM typle_save_metrics WHERE id = ANY($1)', [[added.id, deleted.id]])
-  }
-})
-
 test('the route answers other methods with 405', async () => {
   const route = require('../src/app/api/workspace/records/route.ts')
   for (const method of ['GET', 'HEAD', 'PUT', 'PATCH', 'OPTIONS']) {

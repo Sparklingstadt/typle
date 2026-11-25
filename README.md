@@ -141,7 +141,6 @@ http://localhost:3000 を開きます。GitHub のログインや開発用のロ
 | [docs/design/](docs/design) | 画面ごとのデザインレビュー |
 | [docs/word-list-sources.md](docs/word-list-sources.md) | 公式の単語リストの出典と検証 |
 | [api-docs/](api-docs/src/README.md) | アプリの API の仕様（VuePress。`cd api-docs && npm ci && npm run docs:dev`） |
-| [docs/save-metrics.md](docs/save-metrics.md) | 保存の時間と大きさの計測 |
 | [docs/aws/](docs/aws/README.md) | AWS の練習環境を作って消す手順書と、本番を CDK で作る手順（[production.md](docs/aws/production.md)） |
 | [CHANGELOG.md](CHANGELOG.md) | バージョンごとの変更（v2.1.3 まで。以降は [GitHub Releases](https://github.com/Sparklingstadt/typle-r/releases)） |
 
