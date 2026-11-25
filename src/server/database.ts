@@ -33,7 +33,11 @@ export function createPool(url: string, timeoutMs = 5_000): Pool {
  * Tests pass a pool of their own to look into it.
  */
 export function prismaOn(pool: Pool): PrismaClient {
-  return new PrismaClient({ adapter: new PrismaPg(pool, { disposeExternalPool: true }) })
+  return new PrismaClient({
+    adapter: new PrismaPg(pool, { disposeExternalPool: true }),
+    // A transaction waits for a free connection as long as a query does (connectionTimeoutMillis), not Prisma's 2 s.
+    transactionOptions: { maxWait: 5_000 },
+  })
 }
 
 /** Prisma Client for the database at url, over a pool of createPool. */
@@ -47,7 +51,26 @@ export type Db = PrismaClient
 export type Tx = Prisma.TransactionClient
 
 /** How long an interactive transaction may take before Prisma gives it up (its default is 5 seconds). */
-export const TRANSACTION_TIMEOUT_MS = 15_000
+const TRANSACTION_TIMEOUT_MS = 15_000
+
+/** How long the server lets a statement of a transaction run: shorter than the pool's query timeout (5 s). */
+const STATEMENT_TIMEOUT_MS = 4_000
+
+/**
+ * Runs work in one transaction of db, which may take TRANSACTION_TIMEOUT_MS. Its statements are cancelled by the server
+ * after STATEMENT_TIMEOUT_MS, before the client stops waiting for them: a statement the client gave up on would
+ * otherwise go on (waiting for a row's lock, say) and the connection would go back to the pool inside the transaction,
+ * holding what it locked. Cancelled by the server, the statement fails, the transaction is rolled back, and the
+ * connection comes back clean.
+ */
+export function transaction<T>(db: Db, work: (tx: Tx) => Promise<T>,
+  options: { isolationLevel?: Prisma.TransactionIsolationLevel } = {}): Promise<T> {
+  return db.$transaction(async tx => {
+    // SQL: Prisma has no setting for this. set_config(..., true) holds for this transaction only.
+    await tx.$executeRaw`SELECT set_config('statement_timeout', ${String(STATEMENT_TIMEOUT_MS)}, true)`
+    return work(tx)
+  }, { ...options, timeout: TRANSACTION_TIMEOUT_MS })
+}
 
 let shared: PrismaClient | undefined
 

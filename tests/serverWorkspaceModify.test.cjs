@@ -101,3 +101,22 @@ test('two record adds at once keep both records', database, async () => {
   assert.deepEqual(rows.map(row => row.record_id), ['a', 'b'])
   assert.equal(await revision(owner), 3)
 })
+
+// A change that waits too long for the row gives up, and its connection goes back to the pool out of its transaction:
+// the server cancels the statement before the client stops waiting, so nothing is left waiting for, or holding, the row.
+test('a change that times out waiting for the row leaves nothing behind', database, async () => {
+  const owner = await account()
+  const holder = await sql.connect()
+  try {
+    await holder.query('BEGIN')
+    await holder.query('SELECT 1 FROM typle_workspaces WHERE owner_id = $1 FOR UPDATE', [owner])
+    const { rows: [{ pid }] } = await holder.query('SELECT pg_backend_pid() AS pid')
+    await assert.rejects(modifyWorkspace(db, owner, add('l1', run('late'))))
+    const { rows: [{ waiting }] } = await sql.query(
+      'SELECT count(*)::int AS waiting FROM pg_stat_activity WHERE $1 = ANY(pg_blocking_pids(pid))', [pid])
+    assert.equal(waiting, 0)
+  } finally {
+    await holder.query('ROLLBACK')
+    holder.release()
+  }
+})

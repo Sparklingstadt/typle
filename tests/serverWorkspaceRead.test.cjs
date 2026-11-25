@@ -94,3 +94,13 @@ test('a row that cannot be read is an error', database, async () => {
   await insertRow(owner, { lists: [{ id: 'broken' }] })
   await assert.rejects(readSavedWorkspace(db, owner))
 })
+
+// A read waits for a free connection as a query does (5 s), not Prisma's 2 s for a transaction.
+test('a read waits for a connection while all of them are busy', database, async () => {
+  // Prisma runs a query once it is awaited: then() starts the five now, which take every connection of the pool.
+  const busy = Array.from({ length: 5 }, () => db.$queryRaw`SELECT 1 FROM pg_sleep(2.6)`.then(rows => rows))
+  await new Promise(resolve => setTimeout(resolve, 200))
+  const { readWorkspace } = require('../src/server/workspace.ts')
+  assert.equal(await readWorkspace(db, `github:${randomInt(1e9, 2e9)}`), null)
+  await Promise.all(busy)
+})

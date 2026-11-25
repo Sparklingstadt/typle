@@ -10,7 +10,7 @@ import { type Library, repairLibrary } from '../lib/wordPacks'
 import { decodeDocument, type WorkspaceChange, type WorkspaceDocument } from '../lib/workspaceDocument'
 import { validateWorkspaceRequest } from '../lib/workspaceRequest'
 import { signedIn } from './account'
-import { type Db, type Tx, TRANSACTION_TIMEOUT_MS } from './database'
+import { type Db, type Tx, transaction } from './database'
 import { measureSave } from './metrics'
 import { recordRows, syncRecords, withRecords } from './records'
 import { reportFailure } from './report'
@@ -61,7 +61,7 @@ async function readRecords(db: Tx, owner: string): Promise<Map<string, unknown[]
  * read in one (repeatable read), so that a save between the two reads cannot mix two revisions in the answer.
  */
 export function readWorkspace(db: Db, owner: string): Promise<SavedWorkspace | null> {
-  return db.$transaction(tx => readSavedWorkspace(tx, owner), { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead })
+  return transaction(db, tx => readSavedWorkspace(tx, owner), { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead })
 }
 
 /** The answer of GET and PUT /api/workspace for owner's saved workspace; revision 0 and no lists when there is none. */
@@ -180,7 +180,7 @@ const MAX_LISTS_BYTES = 896 << 10
  */
 export async function modifyWorkspace<T>(db: Db, owner: string,
   change: (document: WorkspaceDocument) => { document: WorkspaceDocument, changed: boolean, result: T }): Promise<{ result: T, saved: SavedWorkspace | null }> {
-  return db.$transaction(async tx => {
+  return transaction(db, async tx => {
     // SQL, not Prisma (which cannot lock a row): the row is held until the transaction ends, so that two changes of the
     // same workspace are made one after the other, each from the workspace the other left.
     await tx.$queryRaw`SELECT 1 FROM typle_workspaces WHERE owner_id = ${owner} FOR UPDATE`
@@ -204,7 +204,7 @@ export async function modifyWorkspace<T>(db: Db, owner: string,
       await syncRecords(tx, owner, library!.rows)
     }
     return { result, saved: await readSavedWorkspace(tx, owner) }
-  }, { timeout: TRANSACTION_TIMEOUT_MS })
+  })
 }
 
 /** A value for a jsonb column: undefined leaves the column as it is. */
@@ -221,7 +221,7 @@ const nullableJson = (value: unknown) => value === null ? Prisma.DbNull : json(v
  */
 export async function writeWorkspace(db: Db, owner: string, revision: number, change: WorkspaceChange): Promise<SavedWorkspace> {
   const { devices, interests, library } = encodeChange(change)
-  return db.$transaction(async tx => {
+  return transaction(db, async tx => {
     if (revision === 0) {
       if (library && library.own > MAX_LISTS) throw refusal('listLimit')
       if (library && library.followed > MAX_FOLLOWED_PACKS) throw refusal('followLimit')
@@ -254,7 +254,7 @@ export async function writeWorkspace(db: Db, owner: string, revision: number, ch
     }
     if (library) await syncRecords(tx, owner, library.rows)
     return (await readSavedWorkspace(tx, owner))!
-  }, { timeout: TRANSACTION_TIMEOUT_MS })
+  })
 }
 
 /** The largest body a save may send. */
