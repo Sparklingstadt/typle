@@ -11,7 +11,6 @@ import { decodeDocument, type WorkspaceChange, type WorkspaceDocument } from '..
 import { validateWorkspaceRequest } from '../lib/workspaceRequest'
 import { signedIn } from './account'
 import { type Db, type Tx, transaction } from './database'
-import { measureSave } from './metrics'
 import { recordRows, syncRecords, withRecords } from './records'
 import { reportFailure } from './report'
 import { sameOrigin, jsonContent } from './request'
@@ -322,10 +321,9 @@ async function saveWorkspaceAnswer(request: Request, db: Db, login: LoginSetting
 
 /**
  * /api/workspace: GET (and HEAD) reads the owner's workspace, PUT saves a change of it by revision. A save must come
- * from the app's own page; both need the login. Saves are measured when env turns it on (src/server/metrics.ts).
+ * from the app's own page; both need the login.
  */
-export async function answerWorkspace(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings,
-  env: Record<string, string | undefined> = process.env): Promise<Response> {
+export async function answerWorkspace(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (request.method === 'PUT' && (!sameOrigin(request, login.origin) || !jsonContent(request))) return refuse(403, 'forbiddenRequest')
@@ -337,7 +335,7 @@ export async function answerWorkspace(request: Request, open: () => Db, settings
     return refuse(503, 'databaseUnavailable')
   }
   if (request.method !== 'PUT') return readWorkspaceAnswer(request, db, login)
-  return measureSave(request, 'workspace.write', () => db, () => saveWorkspaceAnswer(request, db, login), env)
+  return saveWorkspaceAnswer(request, db, login)
 }
 
 /** The fields a record of POST /api/workspace/records may have: the Go backend's RecordInput. */
@@ -420,8 +418,7 @@ async function changeRecordAnswer(request: Request, db: Db, login: LoginSettings
 }
 
 /** /api/workspace/records, as answerWorkspace answers /api/workspace: POST adds a record, DELETE deletes one. */
-export async function answerRecords(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings,
-  env: Record<string, string | undefined> = process.env): Promise<Response> {
+export async function answerRecords(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (!sameOrigin(request, login.origin) || !jsonContent(request)) return refuse(403, 'forbiddenRequest')
@@ -432,5 +429,5 @@ export async function answerRecords(request: Request, open: () => Db, settings: 
     reportFailure(request, error, 'workspace.open')
     return refuse(503, 'databaseUnavailable')
   }
-  return measureSave(request, request.method === 'POST' ? 'record.add' : 'record.delete', () => db, () => changeRecordAnswer(request, db, login), env)
+  return changeRecordAnswer(request, db, login)
 }

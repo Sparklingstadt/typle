@@ -59,33 +59,33 @@ const save = { accountId: 'github:5', revision: 0, packs: [{ id: 'p', name: 'P',
 const run = { id: 'run-1', time: 2.5, date: '2026-10-02T10:00:00.000Z', mistakes: 0, accuracy: 100, wordCount: 1 }
 
 test('/api/workspace is 503 databaseUnavailable when there is no pool or the workspace cannot be read', async () => {
-  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'GET', undefined, github), none, withSettings, {}),
+  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'GET', undefined, github), none, withSettings),
     'databaseUnavailable', 'GET /api/workspace: workspace.open')
-  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'PUT', save, github), none, withSettings, {}),
+  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'PUT', save, github), none, withSettings),
     'databaseUnavailable', 'PUT /api/workspace: workspace.open')
-  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'GET', undefined, github), afterLogin, withSettings, {}),
+  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'GET', undefined, github), afterLogin, withSettings),
     'databaseUnavailable', 'GET /api/workspace: workspace.read')
 })
 
 test('a save that cannot be written, or whose body cannot be read, is 503 workspaceSaveFailed', async () => {
-  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'PUT', save, github), afterLogin, withSettings, {}),
+  await expectUnavailable(() => answerWorkspace(request('/api/workspace', 'PUT', save, github), afterLogin, withSettings),
     'workspaceSaveFailed', 'PUT /api/workspace: workspace.write')
   // The connection ends while the body is still being sent.
   const cut = new Request(`${origin}/api/workspace`, {
     method: 'PUT', duplex: 'half', body: new ReadableStream({ pull(controller) { controller.error(new Error('the connection was cut')) } }),
     headers: { Origin: origin, 'Content-Type': 'application/json', Cookie: github },
   })
-  await expectUnavailable(() => answerWorkspace(cut, afterLogin, withSettings, {}), 'workspaceSaveFailed', 'PUT /api/workspace: workspace.write')
+  await expectUnavailable(() => answerWorkspace(cut, afterLogin, withSettings), 'workspaceSaveFailed', 'PUT /api/workspace: workspace.write')
 })
 
 test('/api/workspace/records is 503 when there is no pool or the record cannot be written', async () => {
   const add = { accountId: 'github:5', listId: 'l', record: run }
   const remove = { accountId: 'github:5', listId: 'l', recordId: 'run-1' }
-  await expectUnavailable(() => answerRecords(request('/api/workspace/records', 'POST', add, github), none, withSettings, {}),
+  await expectUnavailable(() => answerRecords(request('/api/workspace/records', 'POST', add, github), none, withSettings),
     'databaseUnavailable', 'POST /api/workspace/records: workspace.open')
-  await expectUnavailable(() => answerRecords(request('/api/workspace/records', 'POST', add, github), afterLogin, withSettings, {}),
+  await expectUnavailable(() => answerRecords(request('/api/workspace/records', 'POST', add, github), afterLogin, withSettings),
     'workspaceSaveFailed', 'POST /api/workspace/records: record.add')
-  await expectUnavailable(() => answerRecords(request('/api/workspace/records', 'DELETE', remove, github), afterLogin, withSettings, {}),
+  await expectUnavailable(() => answerRecords(request('/api/workspace/records', 'DELETE', remove, github), afterLogin, withSettings),
     'workspaceSaveFailed', 'DELETE /api/workspace/records: record.delete')
 })
 
