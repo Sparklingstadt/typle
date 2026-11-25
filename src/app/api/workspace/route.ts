@@ -1,4 +1,4 @@
-import { pool } from '../../../server/database'
+import { prisma } from '../../../server/database'
 import { methodNotAllowed, withoutBody } from '../../../server/response'
 import { answerWorkspace } from '../../../server/workspace'
 
@@ -6,15 +6,15 @@ import { answerWorkspace } from '../../../server/workspace'
 // by revision.
 
 export async function GET(request: Request) {
-  return answerWorkspace(request, pool)
+  return answerWorkspace(request, prisma)
 }
 
 export async function HEAD(request: Request) {
-  return withoutBody(await answerWorkspace(new Request(request, { method: 'GET' }), pool))
+  return withoutBody(await answerWorkspace(new Request(request, { method: 'GET' }), prisma))
 }
 
 export async function PUT(request: Request) {
-  return answerWorkspace(request, pool)
+  return answerWorkspace(request, prisma)
 }
 
 const notServed = async () => methodNotAllowed(['GET', 'HEAD', 'PUT'])

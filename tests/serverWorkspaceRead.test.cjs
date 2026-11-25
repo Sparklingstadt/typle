@@ -2,7 +2,7 @@ require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
 const { randomInt } = require('node:crypto')
-const { createPool } = require('../src/server/database.ts')
+const { createPool, createPrisma } = require('../src/server/database.ts')
 const { readSavedWorkspace, workspaceAnswer } = require('../src/server/workspace.ts')
 const { withRecords } = require('../src/server/records.ts')
 const { DEFAULT_INTERESTS } = require('../src/lib/interests.ts')
@@ -26,13 +26,16 @@ test('the stored records are put back in their lists', () => {
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
-const db = url ? createPool(url) : null
+// The code under test gets Prisma Client; the tests set up and look at the tables with SQL, as the fixtures were made.
+const sql = url ? createPool(url) : null
+const db = url ? createPrisma(url) : null
 const owners = []
 after(async () => {
   if (!db) return
-  await db.query('DELETE FROM typle_records WHERE owner_id = ANY($1)', [owners])
-  await db.query('DELETE FROM typle_workspaces WHERE owner_id = ANY($1)', [owners])
-  await db.end()
+  await sql.query('DELETE FROM typle_records WHERE owner_id = ANY($1)', [owners])
+  await sql.query('DELETE FROM typle_workspaces WHERE owner_id = ANY($1)', [owners])
+  await sql.end()
+  await db.$disconnect()
 })
 const newOwner = () => {
   const owner = `github:${randomInt(1e9, 2e9)}`
@@ -41,7 +44,7 @@ const newOwner = () => {
 }
 
 async function insertRow(owner, { lists, packs: rowPacks = packs, devices = [], interests = null, revision = 3, split = false }) {
-  await db.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, interests, revision, records_split)
+  await sql.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, interests, revision, records_split)
     VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5::jsonb, $6, $7)`,
   [owner, JSON.stringify(lists), rowPacks === null ? null : JSON.stringify(rowPacks), JSON.stringify(devices),
     interests === null ? null : JSON.stringify(interests), revision, split])
@@ -67,7 +70,7 @@ test('the records of a split row come back from typle_records', database, async 
   const owner = newOwner()
   await insertRow(owner, { lists: [list('l1', [record('own', 1)]), list('l2')], interests: ['programming'], split: true })
   for (const [listId, recordId, position, data] of [['l1', 'b', 0, record('b', 2)], ['l1', 'c', 1, record('c', 3)], ['gone', 'z', 0, record('z', 9)]]) {
-    await db.query(`INSERT INTO typle_records (owner_id, list_id, record_id, position, at, data) VALUES ($1, $2, $3, $4, $5, $6::jsonb)`,
+    await sql.query(`INSERT INTO typle_records (owner_id, list_id, record_id, position, at, data) VALUES ($1, $2, $3, $4, $5, $6::jsonb)`,
       [owner, listId, recordId, position, at, JSON.stringify(data)])
   }
   const answer = workspaceAnswer(await readSavedWorkspace(db, owner), owner)

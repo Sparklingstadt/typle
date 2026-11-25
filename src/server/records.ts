@@ -1,4 +1,6 @@
 import { createHash } from 'node:crypto'
+import { isDeepStrictEqual } from 'node:util'
+import type { Tx } from './database'
 
 // Practice records are kept in typle_records, one row each, rather than in their lists (as the Go backend, removed in
 // v2.47.0, kept them; docs/superpowers/specs/2026-10-29-record-table.md). A workspace whose records_split
@@ -79,27 +81,42 @@ const recordIdOf = (record: unknown) => {
   return typeof id === 'string' ? id : ''
 }
 
-/** Anything that runs queries: a pool, or the client of a transaction. */
-type Queryable = { query: (text: string, values?: unknown[]) => Promise<{ rows: Record<string, unknown>[] }> }
+/** The key of a record in typle_records within an owner's rows. */
+const rowKey = (row: { listId: string, recordId: string }) => `${row.listId}\u0000${row.recordId}`
 
 /**
- * Makes the owner's rows of typle_records exactly rows, as the Go backend's syncRecords did for a save of the lists:
- * the rows of records no longer saved are deleted, and the others written where they changed. The number of rows is
- * checked afterwards, so a save never leaves records behind or missing.
+ * Makes the owner's rows of typle_records exactly rows, as the Go backend's syncRecords did for a save of the lists.
+ * The saved rows are compared with rows: those no longer saved, and those that changed, are deleted in one statement;
+ * the new ones and the changed ones are then added in one statement, so a save costs the same few statements however
+ * many records moved. A row that did not change is not written. The number of rows is checked afterwards, so a save
+ * never leaves records behind or missing.
  */
-export async function syncRecords(db: Queryable, owner: string, rows: RecordRow[]): Promise<void> {
-  const lists = rows.map(row => row.listId)
-  const ids = rows.map(row => row.recordId)
-  await db.query(`DELETE FROM typle_records r WHERE r.owner_id = $1 AND NOT EXISTS (SELECT 1 FROM
-    unnest($2::text[], $3::text[]) AS k(list_id, record_id) WHERE k.list_id = r.list_id AND k.record_id = r.record_id)`, [owner, lists, ids])
-  if (rows.length) {
-    await db.query(`INSERT INTO typle_records (owner_id, list_id, record_id, position, at, data)
-      SELECT $1, k.list_id, k.record_id, k.position, k.at, k.data
-      FROM unnest($2::text[], $3::text[], $4::int[], $5::timestamptz[], $6::jsonb[]) AS k(list_id, record_id, position, at, data)
-      ON CONFLICT (owner_id, list_id, record_id) DO UPDATE SET position = EXCLUDED.position, at = EXCLUDED.at, data = EXCLUDED.data
-      WHERE (typle_records.position, typle_records.at, typle_records.data) IS DISTINCT FROM (EXCLUDED.position, EXCLUDED.at, EXCLUDED.data)`,
-    [owner, lists, ids, rows.map(row => row.position), rows.map(row => row.at), rows.map(row => row.data)])
+export async function syncRecords(db: Tx, owner: string, rows: RecordRow[]): Promise<void> {
+  const saved = new Map((await db.record.findMany({ where: { ownerId: owner } })).map(row => [rowKey(row), row]))
+  const wanted = new Map(rows.map(row => [rowKey(row), row]))
+  const removed = [...saved.values()].filter(row => !wanted.has(rowKey(row)))
+  const written = rows.filter(row => {
+    const before = saved.get(rowKey(row))
+    if (!before) return true
+    // jsonb keeps its own order of keys, so the data is compared as values, not as text.
+    const same = before.position === row.position && before.at.getTime() === row.at.getTime() &&
+      isDeepStrictEqual(before.data, JSON.parse(row.data))
+    if (!same) removed.push(before)
+    return !same
+  })
+  if (removed.length) {
+    // One condition per list (its record ids), rather than one per record, keeps the statement small and quick.
+    const byList = new Map<string, string[]>()
+    for (const row of removed) byList.set(row.listId, [...byList.get(row.listId) ?? [], row.recordId])
+    await db.record.deleteMany({
+      where: { ownerId: owner, OR: [...byList].map(([listId, recordIds]) => ({ listId, recordId: { in: recordIds } })) },
+    })
   }
-  const { rows: counted } = await db.query('SELECT count(*)::int AS n FROM typle_records WHERE owner_id = $1', [owner])
-  if (counted[0].n !== rows.length) throw new Error(`records of ${owner}: ${counted[0].n} rows saved for ${rows.length} records`)
+  if (written.length) {
+    await db.record.createMany({
+      data: written.map(row => ({ ownerId: owner, listId: row.listId, recordId: row.recordId, position: row.position, at: row.at, data: JSON.parse(row.data) })),
+    })
+  }
+  const count = await db.record.count({ where: { ownerId: owner } })
+  if (count !== rows.length) throw new Error(`records of ${owner}: ${count} rows saved for ${rows.length} records`)
 }

@@ -2,19 +2,22 @@ require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
 const { randomInt } = require('node:crypto')
-const { createPool } = require('../src/server/database.ts')
+const { createPool, createPrisma } = require('../src/server/database.ts')
 const { modifyWorkspace, writeWorkspace, readWorkspaceChange, Conflict } = require('../src/server/workspace.ts')
 const { addRecord } = require('../src/lib/records.ts')
 
 // Runs against a real database, as npm run verify does: `TYPLE_TEST_DATABASE_URL=… npm test`.
 const url = process.env.TYPLE_TEST_DATABASE_URL
 const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
-const db = url ? createPool(url) : null
+// The code under test gets Prisma Client; the tests set up and look at the tables with SQL, as the fixtures were made.
+const sql = url ? createPool(url) : null
+const db = url ? createPrisma(url) : null
 const owners = []
 after(async () => {
   if (!db) return
-  for (const table of ['typle_records', 'typle_workspaces']) await db.query(`DELETE FROM ${table} WHERE owner_id = ANY($1)`, [owners])
-  await db.end()
+  for (const table of ['typle_records', 'typle_workspaces']) await sql.query(`DELETE FROM ${table} WHERE owner_id = ANY($1)`, [owners])
+  await sql.end()
+  await db.$disconnect()
 })
 
 const at = '2026-09-07T00:00:00.000Z'
@@ -29,7 +32,7 @@ async function account(lists = [list('l1')]) {
   await writeWorkspace(db, owner, 0, read.change)
   return owner
 }
-const revision = async owner => (await db.query('SELECT revision FROM typle_workspaces WHERE owner_id = $1', [owner])).rows[0].revision
+const revision = async owner => (await sql.query('SELECT revision FROM typle_workspaces WHERE owner_id = $1', [owner])).rows[0].revision
 const add = (listId, input) => document => {
   const { document: next, record, added } = addRecord(document, listId, input)
   return { document: next, changed: added, result: record }
@@ -41,7 +44,7 @@ test('a change is saved with its records, and the revision goes up', database, a
   assert.equal(result.id, 'r1')
   assert.equal(saved.revision, 2)
   assert.deepEqual(saved.lists[0].records.map(record => record.id), ['r1'])
-  const { rows } = await db.query('SELECT record_id FROM typle_records WHERE owner_id = $1', [owner])
+  const { rows } = await sql.query('SELECT record_id FROM typle_records WHERE owner_id = $1', [owner])
   assert.deepEqual(rows.map(row => row.record_id), ['r1'])
 })
 
@@ -85,6 +88,16 @@ test('a record added at the same time as a save is kept, and the save from befor
   } else {
     assert.ok(saved.reason instanceof Conflict)
   }
-  const { rows } = await db.query('SELECT record_id FROM typle_records WHERE owner_id = $1', [owner])
+  const { rows } = await sql.query('SELECT record_id FROM typle_records WHERE owner_id = $1', [owner])
   assert.deepEqual(rows.map(row => row.record_id), ['r1'])
+})
+
+// Two records added at once: the row is held by one change at a time, so both are kept and the revision goes up twice.
+test('two record adds at once keep both records', database, async () => {
+  const owner = await account()
+  const results = await Promise.allSettled([modifyWorkspace(db, owner, add('l1', run('a'))), modifyWorkspace(db, owner, add('l1', run('b')))])
+  assert.deepEqual(results.map(result => result.status), ['fulfilled', 'fulfilled'])
+  const { rows } = await sql.query('SELECT record_id FROM typle_records WHERE owner_id = $1 ORDER BY record_id', [owner])
+  assert.deepEqual(rows.map(row => row.record_id), ['a', 'b'])
+  assert.equal(await revision(owner), 3)
 })

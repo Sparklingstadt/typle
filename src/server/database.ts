@@ -49,18 +49,6 @@ export type Tx = Prisma.TransactionClient
 /** How long an interactive transaction may take before Prisma gives it up (its default is 5 seconds). */
 export const TRANSACTION_TIMEOUT_MS = 15_000
 
-let sharedPool: Pool | undefined
-
-/** The pg pool the code not yet moved to Prisma uses. Removed once every query goes through prisma(). */
-export function pool(): Pool {
-  if (!sharedPool) {
-    const url = process.env.DATABASE_URL || process.env.POSTGRES_URL
-    if (!url) throw new Error('DATABASE_URL is not set')
-    sharedPool = createPool(url)
-  }
-  return sharedPool
-}
-
 let shared: PrismaClient | undefined
 
 /** The Prisma Client of this server instance, opened on first use from DATABASE_URL (or POSTGRES_URL). */

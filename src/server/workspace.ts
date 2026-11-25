@@ -1,4 +1,4 @@
-import type { Pool, PoolClient } from 'pg'
+import { Prisma } from '../generated/prisma/client'
 import { AppError } from '../lib/appError'
 import { DEFAULT_INTERESTS } from '../lib/interests'
 import { MAX_LEVEL, MAX_SAVED_LEVELS } from '../lib/wordLists'
@@ -6,10 +6,11 @@ import { withoutFollowedWords } from '../lib/followedPacks'
 import { followedPackCount, MAX_FOLLOWED_PACKS, MAX_LISTS, ownListCount } from '../lib/listOverview'
 import { followed } from '../lib/packs/catalog'
 import { addRecord, deleteRecord, type RecordInput } from '../lib/records'
-import { repairLibrary } from '../lib/wordPacks'
+import { type Library, repairLibrary } from '../lib/wordPacks'
 import { decodeDocument, type WorkspaceChange, type WorkspaceDocument } from '../lib/workspaceDocument'
 import { validateWorkspaceRequest } from '../lib/workspaceRequest'
 import { signedIn } from './account'
+import { type Db, type Tx, TRANSACTION_TIMEOUT_MS } from './database'
 import { measureSave } from './metrics'
 import { recordRows, syncRecords, withRecords } from './records'
 import { reportFailure } from './report'
@@ -25,36 +26,42 @@ import { readLoginSettings, type LoginSettings } from './settings'
 export type SavedWorkspace = { lists: unknown[], packs: unknown[] | null, devices: unknown[], interests: unknown[] | null, revision: number }
 
 /**
- * The owner's saved workspace, or null when nothing has been saved. The row and its records are read in one statement,
- * so from one snapshot. The row is checked as the app reads it (decodeDocument, then the followed packs), so saved data
- * that cannot be read throws; but it is answered as saved, not as checked, as the Go backend answered it.
+ * The owner's saved workspace, or null when nothing has been saved. The row and its records are read with db, which is
+ * a transaction's client: inside one transaction both come from the same moment (readWorkspace starts one). The row is
+ * checked as the app reads it (decodeDocument, then the followed packs), so saved data that cannot be read throws; but
+ * it is answered as saved, not as checked, as the Go backend answered it.
  */
-export async function readSavedWorkspace(db: Pool | PoolClient, owner: string): Promise<SavedWorkspace | null> {
-  const { rows } = await db.query<{ lists: string, packs: string | null, devices: string, interests: string | null, revision: number, records: string | null }>(
-    `SELECT lists::text AS lists, packs::text AS packs, devices::text AS devices, interests::text AS interests, revision,
-      CASE WHEN records_split THEN (SELECT COALESCE(jsonb_agg(jsonb_build_array(r.list_id, r.data) ORDER BY r.list_id, r.position), '[]'::jsonb)
-        FROM typle_records r WHERE r.owner_id = typle_workspaces.owner_id)::text END AS records
-    FROM typle_workspaces WHERE owner_id = $1`, [owner])
-  if (!rows.length) return null
-  const row = rows[0]
-  let lists = JSON.parse(row.lists) as unknown[]
-  if (row.records !== null) {
-    const stored = new Map<string, unknown[]>()
-    for (const [listId, record] of JSON.parse(row.records) as [string, unknown][]) {
-      stored.set(listId, [...stored.get(listId) ?? [], record])
-    }
-    lists = withRecords(lists, stored)
-  }
+export async function readSavedWorkspace(db: Tx, owner: string): Promise<SavedWorkspace | null> {
+  const row = await db.workspace.findUnique({ where: { ownerId: owner } })
+  if (!row) return null
+  let lists = row.lists as unknown[]
+  if (row.recordsSplit) lists = withRecords(lists, await readRecords(db, owner))
   const saved: SavedWorkspace = {
     lists,
-    packs: row.packs === null ? null : JSON.parse(row.packs),
-    devices: JSON.parse(row.devices),
-    interests: row.interests === null ? null : JSON.parse(row.interests),
+    packs: row.packs as unknown[] | null,
+    devices: row.devices as unknown[],
+    interests: row.interests as unknown[] | null,
     revision: row.revision,
   }
   // Throws on saved data the app could not read either.
   followed(decodeDocument({ lists: saved.lists, packs: saved.packs, devices: saved.devices, interests: saved.interests ?? undefined }))
   return saved
+}
+
+/** The owner's records in typle_records, by list, each list's in their order. */
+async function readRecords(db: Tx, owner: string): Promise<Map<string, unknown[]>> {
+  const rows = await db.record.findMany({ where: { ownerId: owner }, orderBy: [{ listId: 'asc' }, { position: 'asc' }] })
+  const records = new Map<string, unknown[]>()
+  for (const row of rows) records.set(row.listId, [...records.get(row.listId) ?? [], row.data])
+  return records
+}
+
+/**
+ * The owner's saved workspace, as readSavedWorkspace reads it, from outside a transaction: the row and its records are
+ * read in one (repeatable read), so that a save between the two reads cannot mix two revisions in the answer.
+ */
+export function readWorkspace(db: Db, owner: string): Promise<SavedWorkspace | null> {
+  return db.$transaction(tx => readSavedWorkspace(tx, owner), { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead })
 }
 
 /** The answer of GET and PUT /api/workspace for owner's saved workspace; revision 0 and no lists when there is none. */
@@ -171,113 +178,94 @@ const MAX_LISTS_BYTES = 896 << 10
  * with the revision one up, and is refused when it makes them larger than MAX_LISTS_BYTES. A refusal change throws is
  * thrown, with nothing written. Returns change's result and the workspace as saved afterwards, null when there is none.
  */
-export async function modifyWorkspace<T>(db: Pool, owner: string,
+export async function modifyWorkspace<T>(db: Db, owner: string,
   change: (document: WorkspaceDocument) => { document: WorkspaceDocument, changed: boolean, result: T }): Promise<{ result: T, saved: SavedWorkspace | null }> {
-  const connection = await db.connect()
-  try {
-    await connection.query('BEGIN')
-    const { rows } = await connection.query<{ lists: string, packs: string | null, devices: string, split: boolean }>(
-      'SELECT lists::text AS lists, packs::text AS packs, devices::text AS devices, records_split AS split FROM typle_workspaces WHERE owner_id = $1 FOR UPDATE',
-      [owner])
+  return db.$transaction(async tx => {
+    // SQL, not Prisma (which cannot lock a row): the row is held until the transaction ends, so that two changes of the
+    // same workspace are made one after the other, each from the workspace the other left.
+    await tx.$queryRaw`SELECT 1 FROM typle_workspaces WHERE owner_id = ${owner} FOR UPDATE`
+    const row = await tx.workspace.findUnique({ where: { ownerId: owner } })
     let document: WorkspaceDocument = { lists: [], packs: [], devices: [], interests: [] }
-    if (rows.length) {
-      let lists = JSON.parse(rows[0].lists) as unknown[]
-      if (rows[0].split) {
-        const stored = await connection.query<{ list_id: string, data: string }>(
-          'SELECT list_id, data::text AS data FROM typle_records WHERE owner_id = $1 ORDER BY list_id, position', [owner])
-        const records = new Map<string, unknown[]>()
-        for (const row of stored.rows) records.set(row.list_id, [...records.get(row.list_id) ?? [], JSON.parse(row.data)])
-        lists = withRecords(lists, records)
-      }
-      document = followed(decodeDocument({ lists, packs: rows[0].packs === null ? null : JSON.parse(rows[0].packs), devices: JSON.parse(rows[0].devices) }))
+    if (row) {
+      let lists = row.lists as unknown[]
+      if (row.recordsSplit) lists = withRecords(lists, await readRecords(tx, owner))
+      document = followed(decodeDocument({ lists, packs: row.packs as unknown[] | null, devices: row.devices as unknown[] }))
     }
     const before = encodeChange({ lists: document.lists, packs: document.packs }).library!.size
     const { document: next, changed, result } = change(document)
     if (changed) {
-      if (!rows.length) throw new Error(`no workspace of ${owner} to change`)
+      if (!row) throw new Error(`no workspace of ${owner} to change`)
       const { library } = encodeChange({ lists: next.lists, packs: next.packs, devices: next.devices })
       if (library!.size > MAX_LISTS_BYTES && library!.size > before) throw new AppError('workspaceTooLarge')
-      await connection.query(`UPDATE typle_workspaces SET lists = $2::jsonb, packs = $3::jsonb, devices = $4::jsonb,
-          records_split = true, revision = revision + 1, updated_at = now() WHERE owner_id = $1`,
-      [owner, JSON.stringify(library!.lists), JSON.stringify(library!.packs), JSON.stringify(next.devices)])
-      await syncRecords(connection, owner, library!.rows)
+      await tx.workspace.update({
+        where: { ownerId: owner },
+        data: { lists: library!.lists, packs: library!.packs, devices: next.devices, recordsSplit: true, revision: { increment: 1 }, updatedAt: new Date() },
+      })
+      await syncRecords(tx, owner, library!.rows)
     }
-    const saved = await readSavedWorkspace(connection, owner)
-    await connection.query('COMMIT')
-    connection.release()
-    return { result, saved }
-  } catch (error) {
-    await connection.query('ROLLBACK').catch(() => {})
-    connection.release(true)
-    throw error
-  }
+    return { result, saved: await readSavedWorkspace(tx, owner) }
+  }, { timeout: TRANSACTION_TIMEOUT_MS })
 }
 
-const json = (value: unknown) => value === undefined ? null : JSON.stringify(value)
+/** A value for a jsonb column: undefined leaves the column as it is. */
+const json = (value: unknown) => value as Prisma.InputJsonValue | undefined
+/** A value for a jsonb column that may be NULL (packs, interests): null is SQL NULL, not the JSON value null. */
+const nullableJson = (value: unknown) => value === null ? Prisma.DbNull : json(value)
 
 /**
  * Saves change over the owner's workspace at revision, as the Go backend's WriteRevision did: revision 0 creates the
  * row, any other replaces what is saved only if it is still that revision (else Conflict). Parts not sent stay as they
- * are. Lists saved bring their records (typle_records becomes exactly theirs). More lists or followed packs than allowed are refused, unless the saved workspace already had more
- * and the save does not raise the number. Returns the workspace as now saved.
+ * are. Lists saved bring their records (typle_records becomes exactly theirs). More lists or followed packs than
+ * allowed are refused, unless the saved workspace already had more and the save does not raise the number. Returns the
+ * workspace as now saved.
  */
-export async function writeWorkspace(db: Pool, owner: string, revision: number, change: WorkspaceChange): Promise<SavedWorkspace> {
+export async function writeWorkspace(db: Db, owner: string, revision: number, change: WorkspaceChange): Promise<SavedWorkspace> {
   const { devices, interests, library } = encodeChange(change)
-  const connection = await db.connect()
-  try {
-    await connection.query('BEGIN')
+  return db.$transaction(async tx => {
     if (revision === 0) {
       if (library && library.own > MAX_LISTS) throw refusal('listLimit')
       if (library && library.followed > MAX_FOLLOWED_PACKS) throw refusal('followLimit')
-      // Two first saves of the same owner wait here for each other.
-      await connection.query(`SELECT pg_advisory_xact_lock(hashtext('typle_workspaces:' || $1))`, [owner])
-      const { rows } = await connection.query(`INSERT INTO typle_workspaces (owner_id, lists, packs, devices, interests, records_split)
-        VALUES ($1, $2::jsonb, $3::jsonb, $4::jsonb, $5::jsonb, true) ON CONFLICT (owner_id) DO NOTHING RETURNING revision`,
-      [owner, json(library?.lists ?? []), json(library?.packs), json(devices ?? []), json(interests)])
-      if (!rows.length) throw new Conflict()
-      await connection.query('DELETE FROM typle_records WHERE owner_id = $1', [owner])
+      // SQL, not Prisma (which has no locks): two first saves of the same owner wait here for each other.
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext('typle_workspaces:' || ${owner}))`
+      // A row already there (another first save) is a conflict, not an error: createMany skips it and counts 0.
+      const created = await tx.workspace.createMany({
+        data: [{ ownerId: owner, lists: json(library?.lists ?? [])!, packs: nullableJson(library?.packs ?? null),
+          devices: json(devices ?? [])!, interests: nullableJson(interests ?? null), recordsSplit: true }],
+        skipDuplicates: true,
+      })
+      if (created.count === 0) throw new Conflict()
+      await tx.record.deleteMany({ where: { ownerId: owner } })
     } else {
-      // The saved lists and followed packs, counted as ownListCount and followedPackCount count them.
-      const { rows } = await connection.query<{ revision: number, own: string, followed: string }>(`WITH followed AS (
-          SELECT p->>'id' AS id FROM typle_workspaces, jsonb_array_elements(COALESCE(packs, '[]'::jsonb)) AS p
-          WHERE owner_id = $1 AND p->'origin'->>'followed' = 'true')
-        SELECT revision,
-          (SELECT count(*) FROM jsonb_array_elements(lists) AS l
-            WHERE l->>'packId' IS NULL OR l->>'packId' NOT IN (SELECT id FROM followed)) AS own,
-          (SELECT count(*) FROM followed) AS followed
-        FROM typle_workspaces WHERE owner_id = $1`, [owner])
-      if (!rows.length || rows[0].revision !== revision) throw new Conflict()
-      if (library && library.own > MAX_LISTS && library.own > Number(rows[0].own)) throw refusal('listLimit')
-      if (library && library.followed > MAX_FOLLOWED_PACKS && library.followed > Number(rows[0].followed)) throw refusal('followLimit')
-      // Matching the revision in the UPDATE itself makes the comparison and the write one atomic operation.
-      const updated = await connection.query(`UPDATE typle_workspaces SET lists = COALESCE($3::jsonb, lists),
-          packs = COALESCE($4::jsonb, packs), devices = COALESCE($5::jsonb, devices), interests = COALESCE($6::jsonb, interests),
-          records_split = records_split OR $3::jsonb IS NOT NULL, revision = revision + 1, updated_at = now()
-        WHERE owner_id = $1 AND revision = $2 RETURNING revision`,
-      [owner, revision, json(library?.lists), json(library?.packs), json(devices), json(interests)])
-      if (!updated.rows.length) throw new Conflict()
+      const saved = await tx.workspace.findUnique({ where: { ownerId: owner } })
+      if (!saved || saved.revision !== revision) throw new Conflict()
+      // The saved lists and followed packs, counted as encodeChange counts the ones sent.
+      const savedLibrary = { lists: saved.lists as Library['lists'], packs: (saved.packs ?? []) as Library['packs'] }
+      if (library && library.own > MAX_LISTS && library.own > ownListCount(savedLibrary)) throw refusal('listLimit')
+      if (library && library.followed > MAX_FOLLOWED_PACKS && library.followed > followedPackCount(savedLibrary.packs)) throw refusal('followLimit')
+      // Matching the revision in the update itself makes the comparison and the write one atomic operation.
+      const updated = await tx.workspace.updateMany({
+        where: { ownerId: owner, revision },
+        data: {
+          lists: json(library?.lists), packs: json(library?.packs), devices: json(devices), interests: json(interests),
+          recordsSplit: library ? true : undefined, revision: { increment: 1 }, updatedAt: new Date(),
+        },
+      })
+      if (updated.count === 0) throw new Conflict()
     }
-    if (library) await syncRecords(connection, owner, library.rows)
-    const saved = await readSavedWorkspace(connection, owner)
-    await connection.query('COMMIT')
-    connection.release()
-    return saved!
-  } catch (error) {
-    await connection.query('ROLLBACK').catch(() => {})
-    connection.release(true)
-    throw error
-  }
+    if (library) await syncRecords(tx, owner, library.rows)
+    return (await readSavedWorkspace(tx, owner))!
+  }, { timeout: TRANSACTION_TIMEOUT_MS })
 }
 
 /** The largest body a save may send. */
 const MAX_BODY_BYTES = 1 << 20
 
 /** GET /api/workspace: the owner's workspace as saved. */
-async function readWorkspaceAnswer(request: Request, db: Pool, login: LoginSettings): Promise<Response> {
+async function readWorkspaceAnswer(request: Request, db: Db, login: LoginSettings): Promise<Response> {
   const account = await signedIn(request, db, login)
   if ('refusal' in account) return account.refusal
   try {
-    return reply(200, workspaceAnswer(await readSavedWorkspace(db, account.user.sub), account.user.sub))
+    return reply(200, workspaceAnswer(await readWorkspace(db, account.user.sub), account.user.sub))
   } catch (error) {
     reportFailure(request, error, 'workspace.read')
     return refuse(503, 'databaseUnavailable')
@@ -290,7 +278,7 @@ async function readWorkspaceAnswer(request: Request, db: Pool, login: LoginSetti
  * object invalid, one that cannot be read workspaceSaveFailed, reported as operation), then its accountId, which must be
  * the login's (loginAccountChanged), so a screen that signed in as someone else is told so first.
  */
-async function readSaveRequest(request: Request, db: Pool, login: LoginSettings, operation: string, invalid: string):
+async function readSaveRequest(request: Request, db: Db, login: LoginSettings, operation: string, invalid: string):
   Promise<{ owner: string, fields: Record<string, unknown> } | { refusal: Response }> {
   const account = await signedIn(request, db, login)
   if ('refusal' in account) return account
@@ -316,7 +304,7 @@ async function readSaveRequest(request: Request, db: Pool, login: LoginSettings,
 }
 
 /** PUT /api/workspace: checked as the Go backend's saveRequest and saveWorkspace checked it, in that order. */
-async function saveWorkspaceAnswer(request: Request, db: Pool, login: LoginSettings): Promise<Response> {
+async function saveWorkspaceAnswer(request: Request, db: Db, login: LoginSettings): Promise<Response> {
   const save = await readSaveRequest(request, db, login, 'workspace.write', 'invalidWorkspace')
   if ('refusal' in save) return save.refusal
   const { owner, fields } = save
@@ -336,12 +324,12 @@ async function saveWorkspaceAnswer(request: Request, db: Pool, login: LoginSetti
  * /api/workspace: GET (and HEAD) reads the owner's workspace, PUT saves a change of it by revision. A save must come
  * from the app's own page; both need the login. Saves are measured when env turns it on (src/server/metrics.ts).
  */
-export async function answerWorkspace(request: Request, open: () => Pool, settings: () => LoginSettings | null = readLoginSettings,
+export async function answerWorkspace(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings,
   env: Record<string, string | undefined> = process.env): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (request.method === 'PUT' && (!sameOrigin(request, login.origin) || !jsonContent(request))) return refuse(403, 'forbiddenRequest')
-  let db: Pool
+  let db: Db
   try {
     db = open()
   } catch (error) {
@@ -398,7 +386,7 @@ function recordRefusal(request: Request, error: unknown, operation: string): Res
  * answers the workspace as now saved with the record; DELETE {accountId, listId, recordId} deletes it, 200 also when it,
  * or its list, is already gone, and answers the workspace as now saved.
  */
-async function changeRecordAnswer(request: Request, db: Pool, login: LoginSettings): Promise<Response> {
+async function changeRecordAnswer(request: Request, db: Db, login: LoginSettings): Promise<Response> {
   const adding = request.method === 'POST'
   const operation = adding ? 'record.add' : 'record.delete'
   const save = await readSaveRequest(request, db, login, operation, 'invalidRecord')
@@ -432,12 +420,12 @@ async function changeRecordAnswer(request: Request, db: Pool, login: LoginSettin
 }
 
 /** /api/workspace/records, as answerWorkspace answers /api/workspace: POST adds a record, DELETE deletes one. */
-export async function answerRecords(request: Request, open: () => Pool, settings: () => LoginSettings | null = readLoginSettings,
+export async function answerRecords(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings,
   env: Record<string, string | undefined> = process.env): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (!sameOrigin(request, login.origin) || !jsonContent(request)) return refuse(403, 'forbiddenRequest')
-  let db: Pool
+  let db: Db
   try {
     db = open()
   } catch (error) {

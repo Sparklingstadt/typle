@@ -1,4 +1,4 @@
-import type { Pool } from 'pg'
+import type { Db, Tx } from './database'
 import { reportFailure } from './report'
 import { refuse } from './response'
 import { openSession, sessionCookieName, type Session } from './session'
@@ -25,9 +25,9 @@ export function currentUser(request: Request, settings: LoginSettings, now: numb
 }
 
 /** When the owner last signed out of every device, or null when they never did. */
-export async function readRevokedAt(db: Pick<Pool, 'query'>, owner: string): Promise<Date | null> {
-  const { rows } = await db.query<{ revoked_at: Date }>('SELECT revoked_at FROM typle_session_revocations WHERE owner_id = $1', [owner])
-  return rows[0]?.revoked_at ?? null
+export async function readRevokedAt(db: Tx, owner: string): Promise<Date | null> {
+  const revocation = await db.sessionRevocation.findUnique({ where: { ownerId: owner } })
+  return revocation?.revokedAt ?? null
 }
 
 /** Whether signing out of every device at revokedAt revoked user: a login in that very second counts too (whole seconds). */
@@ -38,10 +38,12 @@ export const revokedBy = (user: Session, revokedAt: Date | null) => !!revokedAt 
  * revoked_at is the clock's time when the statement runs, and never earlier than the second after the revocation
  * before it, so that a later revocation is always later than the one it replaces.
  */
-export async function revokeLogins(db: Pick<Pool, 'query'>, owner: string): Promise<void> {
-  await db.query(`INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, clock_timestamp())
+export async function revokeLogins(db: Tx, owner: string): Promise<void> {
+  // SQL, not Prisma: the new time is decided from the saved one in the same statement, so that two revocations at once
+  // still end later than the one before them. Prisma's upsert cannot compute a value from the row it updates.
+  await db.$executeRaw`INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES (${owner}, clock_timestamp())
     ON CONFLICT (owner_id) DO UPDATE SET revoked_at =
-      GREATEST(clock_timestamp(), date_trunc('second', typle_session_revocations.revoked_at) + interval '1 second')`, [owner])
+      GREATEST(clock_timestamp(), date_trunc('second', typle_session_revocations.revoked_at) + interval '1 second')`
 }
 
 /** How long the session check waits for the revocations before it goes on without them. */
@@ -52,7 +54,7 @@ const REVOCATION_WAIT_MS = 1000
  * cannot be told within REVOCATION_WAIT_MS, as the session never waits for the database (the account's data, read with
  * the revocations, stays out of reach all the same). The failure is only logged, and the answer goes on.
  */
-export async function revokedSoon(open: () => Pool, sub: string, issuedAt: number): Promise<boolean | null> {
+export async function revokedSoon(open: () => Db, sub: string, issuedAt: number): Promise<boolean | null> {
   const late = Symbol('late')
   let timer: ReturnType<typeof setTimeout> | undefined
   try {
@@ -81,7 +83,7 @@ export function dropCookie(response: Response, settings: LoginSettings): Respons
  * without a session or with a revoked one (whose cookie is then removed), and databaseUnavailable when the revocations
  * cannot be read, as the data cannot be either.
  */
-export async function signedIn(request: Request, db: Pool | null, settings: LoginSettings,
+export async function signedIn(request: Request, db: Db | null, settings: LoginSettings,
   now: number = Date.now() / 1000): Promise<{ user: Session } | { refusal: Response }> {
   const user = currentUser(request, settings, now)
   if (!user) return { refusal: refuse(401, 'loginRequired') }

@@ -9,7 +9,7 @@ import {
 import { githubConfigured } from './lib/githubLogin'
 import { sidConfigured } from './lib/sidLogin'
 import { decodeSession, encodeSession } from './server/authJwt'
-import { pool } from './server/database'
+import { prisma } from './server/database'
 import { linkedAccount } from './server/sidLinks'
 import { SID_PROVIDER_ID, sidProfile, type SidClaims } from './server/sidLogin'
 import { SESSION_MAX_AGE, sessionCookieName } from './server/session'
@@ -92,7 +92,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     decode: ({ token }) => token ? decodeSession(token, sessionKey()) : null,
   },
   callbacks: {
-    jwt: jwtCallback((sub, issuedAt) => revokedSoon(pool, sub, issuedAt), sub => linkedAccount(pool(), sub)),
+    jwt: jwtCallback((sub, issuedAt) => revokedSoon(prisma, sub, issuedAt), sub => linkedAccount(prisma(), sub)),
     session: ({ session, token }) => sessionCallback({ session, token }),
     ...(settings ? { redirect: redirectCallback(settings.origin) } : {}),
   },
