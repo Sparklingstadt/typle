@@ -2,27 +2,17 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const {
-  githubProfile, authorizeLocal, LOCAL_USER, jwtCallback, sessionCallback, redirectCallback,
-  redirectProxyUrl, authPathKnown, authErrorLogger,
+  jwtCallback, sessionCallback, redirectCallback, redirectProxyUrl, authErrorLogger,
 } = require('../src/server/authOptions.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
 const { githubConfigured } = require('../src/lib/githubLogin.ts')
 const { sidConfigured } = require('../src/lib/sidLogin.ts')
-const { sidProfile, SID_PROVIDER_ID } = require('../src/server/sidLogin.ts')
 
-// What src/auth.ts hands Auth.js: the GitHub profile, the callbacks that give the session its account ID, its end and
-// its revocation, the made-up local login, and the paths under /api/auth that Auth.js answers.
+// What the Auth.js configuration (removed with its route) handed Auth.js: the callbacks that gave the session its
+// account ID, its end and its revocation, and where it sent the browser. Removed with src/server/authOptions.ts.
 
 const secret = 'typle-auth-options-test-secret'
 const settings = (env = {}) => readLoginSettings({ AUTH_SECRET: secret, AUTH_URL: 'http://127.0.0.1:3101', ...env })
-
-test('the GitHub profile is the account github:<id>, named by its name, or by its login when the name is blank', () => {
-  const profile = { id: 42, login: ' octocat ', name: '  Mona Lisa  ', avatar_url: 'https://avatars.example/42' }
-  assert.deepEqual(githubProfile(profile), { id: 'github:42', name: 'Mona Lisa', image: 'https://avatars.example/42' })
-  for (const name of [null, undefined, '', '   ']) {
-    assert.deepEqual(githubProfile({ ...profile, name }), { id: 'github:42', name: 'octocat', image: 'https://avatars.example/42' })
-  }
-})
 
 test('GitHub is offered only with both its client ID and secret', () => {
   assert.equal(githubConfigured({ AUTH_GITHUB_ID: 'id', AUTH_GITHUB_SECRET: 'secret' }), true)
@@ -30,14 +20,6 @@ test('GitHub is offered only with both its client ID and secret', () => {
   assert.equal(githubConfigured({ AUTH_GITHUB_SECRET: 'secret' }), false)
   assert.equal(githubConfigured({ AUTH_GITHUB_ID: '', AUTH_GITHUB_SECRET: 'secret' }), false)
   assert.equal(githubConfigured({}), false)
-})
-
-test('the local login signs in as github:0 only when it is on', () => {
-  assert.deepEqual(LOCAL_USER, { id: 'github:0', name: 'ローカル練習用', image: '' })
-  assert.deepEqual(authorizeLocal(settings({ LOCAL_DEVELOPMENT_LOGIN: '1' })), LOCAL_USER)
-  assert.equal(authorizeLocal(settings()), null)
-  assert.equal(authorizeLocal(settings({ LOCAL_DEVELOPMENT_LOGIN: '1', VERCEL: '1' })), null)
-  assert.equal(authorizeLocal(null), null)
 })
 
 test('at a login, the session is the provider account: the account ID, not the random id Auth.js gives the user', async () => {
@@ -108,20 +90,6 @@ test('only a loopback address gets the GitHub callback at AUTH_URL, as Next.js r
   assert.equal(redirectProxyUrl(null), undefined)
 })
 
-test('Auth.js answers its own paths and the providers in use; every other /api/auth path is not found', () => {
-  const providers = ['github', 'local']
-  for (const path of ['/api/auth/session', '/api/auth/csrf', '/api/auth/providers', '/api/auth/signout', '/api/auth/error',
-    '/api/auth/signin', '/api/auth/signin/github', '/api/auth/callback/github', '/api/auth/callback/local']) {
-    assert.equal(authPathKnown(path, providers), true, path)
-  }
-  for (const path of ['/api/auth/token', '/api/auth/local', '/api/auth/callback/ffpf', '/api/auth/signin/ffpf',
-    '/api/auth/callback', '/api/auth/session/x', '/api/auth/signout/github', '/api/auth/verify-request', '/api/auth',
-    '/api/auth/', '/api/auth/callback/github/x']) {
-    assert.equal(authPathKnown(path, providers), false, path)
-  }
-  assert.equal(authPathKnown('/api/auth/callback/github', ['local']), false)
-})
-
 test('the Auth.js logger logs every error but the unreadable session cookie', () => {
   const lines = []
   const log = authErrorLogger((...args) => lines.push(args.join(' ')))
@@ -157,21 +125,6 @@ test('Sparklingstadt ID is offered only with its issuer, client ID and secret', 
     assert.equal(sidConfigured({ ...all, [name]: undefined }), false, name)
     assert.equal(sidConfigured({ ...all, [name]: '' }), false, name)
   }
-  assert.equal(SID_PROVIDER_ID, 'sid')
-})
-
-test('the Sparklingstadt ID profile is the account sid:<sub>, named by its name, or by its address before @', () => {
-  const profile = { sub: 'cm3abc', email: 'ann@example.test', email_verified: true, name: ' Ann ' }
-  assert.deepEqual(sidProfile(profile), { id: 'sid:cm3abc', name: 'Ann', image: '' })
-  for (const name of [null, undefined, '', '  ']) assert.deepEqual(sidProfile({ ...profile, name }), { id: 'sid:cm3abc', name: 'ann', image: '' })
-})
-
-test('a Sparklingstadt ID whose address is not confirmed, or whose sub is not of its form, is refused', () => {
-  const profile = { sub: 'cm3abc', email: 'ann@example.test', email_verified: true, name: 'Ann' }
-  for (const changed of [{ email_verified: false }, { email_verified: undefined }, { email_verified: 'true' },
-    { sub: 'A!' }, { sub: '' }, { sub: 'a'.repeat(65) }]) {
-    assert.throws(() => sidProfile({ ...profile, ...changed }), JSON.stringify(changed))
-  }
 })
 
 test('a Sparklingstadt ID login opens the account it is linked to, else its own sid:<sub>', async () => {
@@ -189,11 +142,4 @@ test('a Sparklingstadt ID login opens the account it is linked to, else its own 
 test('a Sparklingstadt ID login fails when its link cannot be read, rather than open an empty account', async () => {
   const jwt = jwtCallback(async () => false, async () => { throw new Error('database down') })
   await assert.rejects(jwt({ token: { sub: 'x' }, account: { provider: 'sid', providerAccountId: 'sid:cm3abc' } }), /database down/)
-})
-
-test('Auth.js answers the Sparklingstadt ID paths only when it is in use', () => {
-  assert.equal(authPathKnown('/api/auth/signin/sid', ['github', 'sid']), true)
-  assert.equal(authPathKnown('/api/auth/callback/sid', ['github', 'sid']), true)
-  assert.equal(authPathKnown('/api/auth/signin/sid', ['github']), false)
-  assert.equal(authPathKnown('/api/auth/callback/sid', ['github']), false)
 })

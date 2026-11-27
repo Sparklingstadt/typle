@@ -1,28 +1,12 @@
 import type { Session, User } from 'next-auth'
 import type { JWT } from 'next-auth/jwt'
 import { SESSION_MAX_AGE } from './session'
-import { readLoginSettings, type LoginSettings } from './settings'
+import type { LoginSettings } from './settings'
 import { SID_PROVIDER_ID } from './sidLogin'
 
-// The parts of the Auth.js configuration (src/auth.ts) that decide something, kept apart from NextAuth so that the unit
-// tests can run them: the account a login makes, the session's account ID, end and revocation, where Auth.js sends the
-// browser, and which paths under /api/auth it answers.
-
-/** The account a GitHub login makes: github:<numeric id>, named as the login before Auth.js named it. */
-export function githubProfile(profile: { id: number | string, login: string, name?: string | null, avatar_url: string }) {
-  // The profile name if it says anything, else the login.
-  const name = profile.name?.trim() ? profile.name.trim() : profile.login.trim()
-  return { id: `github:${profile.id}`, name, image: profile.avatar_url }
-}
-
-
-/** The made-up account of the local login, for development on this machine. */
-export const LOCAL_USER = { id: 'github:0', name: 'ローカル練習用', image: '' } // i18n-ignore: a stored account name, as the Go backend gave it
-
-/** The local login's user when it is on (readLoginSettings decides, as the Go backend did), else null: no login. */
-export function authorizeLocal(settings: LoginSettings | null = readLoginSettings()) {
-  return settings?.localLogin ? { ...LOCAL_USER } : null
-}
+// What the Auth.js configuration (removed with the Auth.js route; the login is Better Auth's, src/server/betterAuth.ts)
+// decided: the session's account ID, end and revocation, and where Auth.js sent the browser. Removed in the clean-up of
+// Auth.js, with its tests.
 
 /**
  * The jwt callback. At a login the account is the provider's: for OAuth, Auth.js gives the user a random id and keeps
@@ -93,23 +77,6 @@ export function redirectProxyUrl(settings: LoginSettings | null): string | undef
   const host = new URL(settings.origin).hostname
   const loopback = host === '[::1]' || /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host)
   return loopback ? `${settings.origin}/api/auth` : undefined
-}
-
-/** The actions under /api/auth that take no provider. */
-const PLAIN_ACTIONS = new Set(['session', 'csrf', 'providers', 'signout', 'error'])
-
-/**
- * Whether pathname is one Auth.js answers for these providers. Others (the removed /api/auth/token and /api/auth/local,
- * a provider not in use such as ffpf) are not found, where Auth.js would answer 400 or 500.
- */
-export function authPathKnown(pathname: string, providers: readonly string[]): boolean {
-  const match = /^\/api\/auth\/([^/]+)(?:\/([^/]+))?$/.exec(pathname)
-  if (!match) return false
-  const [, action, provider] = match
-  if (PLAIN_ACTIONS.has(action)) return provider === undefined
-  if (action === 'signin') return provider === undefined || providers.includes(provider)
-  if (action === 'callback') return provider !== undefined && providers.includes(provider)
-  return false
 }
 
 /**

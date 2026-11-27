@@ -20,14 +20,14 @@ const RETRY_DELAYS_MS = [1000, 2000, 4000]
 const SESSION_TIMEOUT_MS = 10_000
 
 /**
- * Reads the signed-in user from /api/auth/session, Auth.js's answer. Only a 200 answer says who is signed in: null when
+ * Reads the signed-in user from /api/auth/get-session, Better Auth's answer. Only a 200 answer says who is signed in: null when
  * the body is null or has no `user`. Anything else (a failed request, one that timed out, another status, a body that is
  * not the session) rejects, since it does not say that the user signed out.
  */
 async function fetchSession(): Promise<SessionData> {
   // A request that hangs (a network that is half there) fails after a while, so that it does not stay in flight for good
   // and hold back every later check.
-  const response = await fetch('/api/auth/session', { cache: 'no-store', signal: AbortSignal.timeout(SESSION_TIMEOUT_MS) })
+  const response = await fetch('/api/auth/get-session', { cache: 'no-store', signal: AbortSignal.timeout(SESSION_TIMEOUT_MS) })
   if (response.status !== 200) throw new Error(`session answered ${response.status}`)
   const body: unknown = await response.json()
   if (body === null) return null

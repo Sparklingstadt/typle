@@ -4,19 +4,32 @@ import { guestWorkspace } from './guestData'
 import { origin } from './account'
 import { skipWelcome } from './welcome'
 
-// Auth.js answers only its own paths (authPathKnown, tests/authOptions.test.cjs): the route answers 404 to the rest,
-// such as the app's token of the login before Auth.js.
-test('an /api/auth path that Auth.js does not answer is not found', async ({ page }) => {
-  expect((await page.request.get('/api/auth/token')).status()).toBe(404)
-  expect((await page.request.post('/api/auth/token')).status()).toBe(404)
+// /api/auth answers only the paths the logins use (src/server/authPaths.ts, tests/betterAuthProviders.test.cjs): every
+// other one is not found, in the form of the app's other 404s, such as the app's token of the login before Auth.js,
+// Auth.js's own paths, and the Better Auth endpoints the app does not use.
+test('an /api/auth path that the logins do not use is not found', async ({ page }) => {
+  for (const path of ['/api/auth/token', '/api/auth/signin/github', '/api/auth/callback/ffpf', '/api/auth/list-sessions',
+    '/api/auth/list-accounts', '/api/auth/ok', '/api/auth/error']) {
+    const response = await page.request.get(path)
+    expect(response.status(), path).toBe(404)
+    expect(await response.json(), path).toEqual({ error: 'notFound' })
+  }
+  for (const path of ['/api/auth/token', '/api/auth/sign-up/email', '/api/auth/sign-in/email', '/api/auth/revoke-sessions',
+    '/api/auth/update-user', '/api/auth/delete-user', '/api/auth/link-social', '/api/auth/get-session']) {
+    const response = await page.request.post(path, { headers: { Origin: origin }, data: {} })
+    expect(response.status(), path).toBe(404)
+  }
 })
 
-// The made-up login of development (src/app/local-login, the Credentials provider `local`) is only there when the app
-// runs for development on this machine (src/lib/localDevelopment.ts): the production build serves neither.
-test('the development login is not served by the production build', async ({ page }) => {
+// The made-up login of development (src/app/local-login, POST /api/auth/sign-in/local) is only there when the app runs
+// for development on this machine (src/lib/localDevelopment.ts, src/server/settings.ts): the production build with
+// the production settings serves neither, nor the paths of Auth.js that listed the logins.
+test('local login is not found in production', async ({ page }) => {
   expect((await page.goto('/local-login'))!.status()).toBe(404)
-  const providers = await (await page.request.get('/api/auth/providers')).json()
-  expect(Object.keys(providers)).not.toContain('local')
+  expect((await page.request.post('/api/auth/sign-in/local', { headers: { Origin: origin } })).status()).toBe(404)
+  for (const path of ['/api/auth/session', '/api/auth/providers', '/api/auth/csrf']) {
+    expect((await page.request.get(path)).status(), path).toBe(404)
+  }
 })
 
 // The top bar goes to /signin with the page being viewed, and /signin offers GitHub alone (no FFPF ID), coming back to
@@ -54,20 +67,6 @@ test('a GitHub login that fails to start stays on /signin and says so', async ({
   await expect(page.getByRole('alert').filter({ hasText: 'ログインできませんでした' })).toBeVisible()
   await expect(page).toHaveURL(/\/signin\?returnTo=%2Fplay$/)
   await expect(page.getByRole('button', { name: 'GitHubでログイン' })).toBeEnabled()
-})
-
-// Auth.js answers at the address the app is served at (AUTH_URL), not at localhost, which Next.js makes of 127.0.0.1.
-test('the GitHub login comes back to AUTH_URL', async ({ page }) => {
-  const { csrfToken } = await (await page.request.get('/api/auth/csrf')).json()
-  const response = await page.request.post('/api/auth/signin/github', {
-    headers: { 'X-Auth-Return-Redirect': '1' },
-    form: { csrfToken, callbackUrl: '/play' },
-  })
-  expect(response.status()).toBe(200)
-  const url = new URL((await response.json()).url)
-  expect(url.origin + url.pathname).toBe('https://github.com/login/oauth/authorize')
-  expect(url.searchParams.get('redirect_uri')).toBe(`${origin}/api/auth/callback/github`)
-  expect(url.searchParams.get('scope')).toBe('')
 })
 
 test('a link to a shared pack says sharing has ended, and asks nothing of the server', async ({ page }) => {
