@@ -39,7 +39,8 @@
     "resume": "點擊或按任意鍵繼續",
     "inputLabel": "輸入顯示的文字",
     "simpleKeys": "簡易輸入",
-    "simpleKeysAll": "完整對照表"
+    "simpleKeysAll": "完整對照表",
+    "romaji": "羅馬字"
   },
   "recall": {
     "toggle": "憑記憶輸入",
