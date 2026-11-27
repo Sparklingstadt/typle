@@ -189,3 +189,28 @@ test('on a phone the next button stays on screen', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, 0))
   await expect(page.getByRole('button', { name: '次へ', exact: true })).toBeInViewport()
 })
+
+test('on a phone the next button can be pressed over the keys', async ({ page }) => {
+  // Short enough that the sticky row sits over the keys.
+  await page.setViewportSize({ width: 375, height: 480 })
+  await page.goto('/welcome')
+  for (const name of ['中国語', 'ロシア語', '韓国語', '英語', 'Go', 'TypeScript']) await chip(page, name).check()
+  // Here the last row of keys passes under the sticky row.
+  await page.evaluate(() => window.scrollTo(0, 150))
+  // A tap where the button is (locator.click would scroll until nothing covers it).
+  const box = await page.getByRole('button', { name: '次へ', exact: true }).boundingBox()
+  await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2)
+  await expect(page.getByRole('region', { name: 'パックをフォローする' })).toBeVisible()
+})
+
+test('Escape that closes the menu leaves the tour open', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 })
+  await page.goto('/welcome')
+  await expect(firstStep(page)).toBeVisible()
+  await page.getByRole('button', { name: 'メニューを開く', exact: true }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).toBeHidden()
+  await expect(page).toHaveURL(/\/welcome$/)
+  await expect(firstStep(page)).toBeVisible()
+})

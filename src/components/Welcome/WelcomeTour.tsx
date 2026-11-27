@@ -23,9 +23,11 @@ import { NATIVE_LANGUAGE_NAMES, carryChecks, dismissWelcome, hasChildInterest, t
 
 const STEPS: readonly WelcomeStep[] = ['interests', 'packs', 'start']
 
-// What has the focus, for the tour's keyboard: Enter on a link or on a button other than a key is left to it.
+// What has the focus, for the tour's keyboard: Enter on a link or on a button other than a key is left to it, and keys
+// pressed in the navigation, a menu or a dialog are not the tour's. With nothing focused the target is the body.
 function targetKind(target: EventTarget | null): WelcomeKey['targetKind'] {
-  if (!(target instanceof Element)) return 'none'
+  if (!(target instanceof Element) || target === document.body || target === document.documentElement) return 'none'
+  if (!target.closest('[data-welcome-tour]') || target.closest('[role="menu"], [role="dialog"]')) return 'outside'
   if (target.closest('a[href]')) return 'link'
   if (target instanceof HTMLInputElement) return target.type === 'checkbox' ? 'none' : 'otherButton'
   return target.closest('button, select, textarea, [role="button"]') ? 'otherButton' : 'none'
@@ -115,16 +117,17 @@ export default function WelcomeTour() {
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (!admitted) return
-      const busy = step === 'packs' && (saving || interestsFailed)
+      const state = saving ? 'saving' : interestsFailed ? 'retry' : 'idle'
       const action = welcomeKey({ key: event.key, isComposing: event.isComposing, ctrlKey: event.ctrlKey, metaKey: event.metaKey,
-        altKey: event.altKey, targetKind: targetKind(event.target) }, step, entries.length, busy)
+        altKey: event.altKey, repeat: event.repeat, defaultPrevented: event.defaultPrevented, targetKind: targetKind(event.target) },
+      step, entries.length, state)
       if (!action) return
       event.preventDefault()
       if (action.kind === 'later') later()
       else if (action.kind === 'back') setStep('interests')
       else if (action.kind === 'toggle') check(entries[action.index].catalogId, !checked.has(entries[action.index].catalogId))
       else if (step === 'interests') toPacks()
-      else if (step === 'packs') void follow()
+      else if (step === 'packs') void (interestsFailed ? saveInterests() : follow())
       else start()
     }
     document.addEventListener('keydown', listener)
@@ -136,7 +139,7 @@ export default function WelcomeTour() {
     stats={(listCount, words) => t('packs.stats', { lists: listCount, words })} select={name => t('packs.select', { name })} />
 
   return <LazyMotion features={domMax} strict><MotionConfig reducedMotion="user">
-    <PageMain width="wide">
+    <PageMain width="wide" data-welcome-tour="">
       <h1 className="sr-only">{t('title')}</h1>
       <header className="mb-8 flex items-center justify-between gap-3">
         {admitted ? <StepDots current={STEPS.indexOf(step) + 1} total={STEPS.length} label={t('step', { current: STEPS.indexOf(step) + 1, total: STEPS.length })} /> : <span />}

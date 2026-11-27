@@ -31,7 +31,7 @@
       "stats": "{lists, plural, one {# list} other {# lists}} · {words, plural, one {# word} other {# words}}",
       "first": "First list: {list}",
       "retryInterests": "Save interests again",
-      "heading": "{count, plural, one {Start with this one} other {Start with these #}}",
+      "heading": "{count, plural, =1 {Start with this one} other {Start with these #}}",
       "keys": "<key>1</key>–<key>{last}</key> to toggle, <key>←</key> to go back to interests",
       "back": "Back"
     },

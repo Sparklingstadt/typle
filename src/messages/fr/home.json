@@ -31,7 +31,7 @@
       "stats": "{lists, plural, one {# liste} other {# listes}} · {words, plural, one {# mot} other {# mots}}",
       "first": "Première liste : {list}",
       "retryInterests": "Enregistrer à nouveau les centres d’intérêt",
-      "heading": "{count, plural, one {Commencez par celui-ci} other {Commencez par ces #}}",
+      "heading": "{count, plural, =1 {Commencez par celui-ci} other {Commencez par ces #}}",
       "keys": "<key>1</key>–<key>{last}</key> pour cocher, <key>←</key> pour revenir aux centres d’intérêt",
       "back": "Retour"
     },

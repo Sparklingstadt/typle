@@ -76,15 +76,24 @@ export type WelcomeKey = {
   ctrlKey: boolean
   metaKey: boolean
   altKey: boolean
-  // What has the focus: Enter on a link or on a button other than a key is left to that element.
-  targetKind: 'link' | 'otherButton' | 'none'
+  // A key held down repeats; only the first press counts, so holding Enter never follows packs unseen.
+  repeat: boolean
+  // A menu or dialog that handled the key (Radix closes on Escape and prevents its default).
+  defaultPrevented: boolean
+  // What has the focus: Enter on a link or on a button other than a key is left to that element, and keys pressed
+  // outside the tour (the navigation, a menu, a dialog) are not the tour's.
+  targetKind: 'link' | 'otherButton' | 'outside' | 'none'
 }
+// 'saving': a save is running. 'retry': the packs are followed but the interests were not saved.
+export type WelcomeKeyState = 'idle' | 'saving' | 'retry'
 
 // The tour's keyboard: Enter for the step's main button, Esc for 「あとで」, ← back to the interests, 1-9 to check packs.
-export function welcomeKey(event: WelcomeKey, step: WelcomeStep, packCount: number, busy: boolean): WelcomeKeyAction {
-  if (busy || event.isComposing || event.ctrlKey || event.metaKey || event.altKey) return null
+export function welcomeKey(event: WelcomeKey, step: WelcomeStep, packCount: number, state: WelcomeKeyState): WelcomeKeyAction {
+  if (state === 'saving' || event.repeat || event.defaultPrevented || event.targetKind === 'outside') return null
+  if (event.isComposing || event.ctrlKey || event.metaKey || event.altKey) return null
   if (event.key === 'Enter') return event.targetKind === 'none' ? { kind: 'primary' } : null
   if (event.key === 'Escape') return step === 'start' ? null : { kind: 'later' }
+  if (state === 'retry') return null
   if (event.key === 'ArrowLeft') return step === 'packs' ? { kind: 'back' } : null
   if (step === 'packs' && /^[1-9]$/.test(event.key)) {
     const index = Number(event.key) - 1

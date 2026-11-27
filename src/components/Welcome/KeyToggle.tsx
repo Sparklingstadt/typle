@@ -14,7 +14,7 @@ type Props = {
 
 // A checkbox drawn as a keycap: Space toggles it, so Enter stays free for the tour's main button.
 export default function KeyToggle({ checked, onChange, label, sub, mono = false, accessibleName, disabled = false, shortcut }: Props) {
-  return <label className={cn('relative inline-flex', disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer')}>
+  return <label className={cn('relative isolate inline-flex', disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer')}>
     <input type="checkbox" aria-label={accessibleName} checked={checked} disabled={disabled}
       onChange={event => onChange(event.target.checked)} className="peer absolute inset-0 z-10 size-full cursor-[inherit] opacity-0" />
     <span aria-hidden="true" className={cn(
