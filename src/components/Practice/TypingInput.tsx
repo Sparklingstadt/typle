@@ -6,12 +6,13 @@ import { ArrowRight, CircleAlert } from "lucide-react"
 import type { InputComparison, TypingSession } from "@/lib/typing"
 import Kbd from "./Kbd"
 
-export default function TypingInput({ inputRef, session, composition, comparison, simpleKeys, onFocus, onBlur, onRestart, onCompositionStart, onCompositionEnd, onChange }: {
+export default function TypingInput({ inputRef, session, composition, comparison, simpleKeys, romaji, onFocus, onBlur, onRestart, onCompositionStart, onCompositionEnd, onChange }: {
   inputRef: RefObject<HTMLInputElement | null>
   session: TypingSession
   composition: string | null
   comparison: InputComparison
   simpleKeys: [string, string][]
+  romaji: { typed: string; rest: string } | null
   onFocus: () => void
   onBlur: () => void
   onRestart: () => void
@@ -48,6 +49,10 @@ export default function TypingInput({ inputRef, session, composition, comparison
       onCompositionStart={onCompositionStart}
       onCompositionEnd={event => onCompositionEnd(event.currentTarget.value)}
       onChange={event => onChange(event.target.value, (event.nativeEvent as InputEvent).isComposing)} />
+    {romaji && <p id="romajiGuide" className="max-w-full font-mono text-base tracking-wide break-all" lang="ja-Latn">
+      <span className="sr-only">{t('word.romaji')}</span>
+      <span className="text-muted-foreground/70">{romaji.typed}</span><span className="text-foreground">{romaji.rest}</span>
+    </p>}
     <p id="practice-feedback" aria-live="polite" className="flex min-h-5 flex-wrap items-center justify-center text-xs text-muted-foreground">{feedback}</p>
     {simpleKeys.length > 0 && <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
       <span>{t('word.simpleKeys')}</span>

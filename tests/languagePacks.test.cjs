@@ -199,3 +199,28 @@ test('the Korean intermediate and advanced handwriting packs hold six themed lis
     .flatMap(list => list.words.map(word => word.display)))
   assert.ok(words.every(word => !others.has(word)))
 })
+
+test('the Japanese romaji pack has three lists of kana words, each typed by following its romaji guide', () => {
+  const { newSession, typeInput } = require('../src/lib/typing.ts')
+  const { romajiGuide } = require('../src/lib/romaji.ts')
+  const lists = initialLists.filter(list => list.group === '日本語：ローマ字入力の基礎')
+  assert.deepEqual(lists.map(list => [list.id, list.levels, list.words.length]), [
+    ['japanese-romaji-beginner', ['初級'], 40], ['japanese-romaji-intermediate', ['中級'], 40], ['japanese-romaji-advanced', ['上級'], 40],
+  ])
+  const entry = officialPacks().find(pack => pack.catalogId === 'pack-japanese-romaji-beginner')
+  assert.equal(entry.pack.name, '日本語：ローマ字入力の基礎')
+  assert.equal(entry.pack.category, '語学')
+  assert.deepEqual(entry.pack.tags, ['日本語', 'ローマ字'])
+  for (const list of lists) {
+    for (const word of list.words) {
+      assert.equal(word.input_type, 'word')
+      assert.ok(word.annotation.trim(), word.input)
+      const { rest } = romajiGuide(word.input, 0, '', '')
+      assert.match(rest, /^[a-z'-]+$/, word.input)
+      let session = newSession()
+      for (const key of rest) session = typeInput(session, [word], session.input + key, 100)
+      assert.equal(session.finishedAt, 100, word.input)
+      assert.equal(session.mistakes, 0, word.input)
+    }
+  }
+})

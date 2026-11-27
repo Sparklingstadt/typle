@@ -15,6 +15,7 @@ import { usePractice, type WeakReviewSave } from "@/hooks/usePractice"
 import { usePracticeSwitch } from "@/hooks/usePracticeSwitch"
 import { usePracticeFocus } from "@/hooks/usePracticeFocus"
 import { compareInput, simpleInputKeys, typingSpeed } from "@/lib/typing"
+import { romajiGuide } from "@/lib/romaji"
 import { comparableRecords, recordsOfMode, type PracticeMode } from "@/lib/records"
 import { practiceMode as writingChoiceFor, useWritingMode, type WritingChoice } from "@/lib/writingMode"
 import { currentMode } from "@/lib/practiceView"
@@ -99,6 +100,9 @@ export default function PracticeScreen({ wordLists, packs, listId, weak = false,
   // With simple input on, the keys that stand for the word's accented and Cyrillic letters are shown under it.
   // Recall mode leaves them out, as they would give away the answer.
   const simpleKeys = typingOptions.ignoreAccents && word && !recall ? simpleInputKeys(word.input) : []
+  // Kana are typed in romaji: a spelling of the word is shown, following the keys already typed. Recall mode leaves it
+  // out, as it would give away the answer.
+  const romaji = word && !recall ? romajiGuide(word.input, Array.from(session.input).length, session.romajiTyped ?? '', session.pendingKana ?? '') : null
   const { pending, cancels, requestList, requestWriting, confirm, cancel } = usePracticeSwitch({ wordLists, selected, running, currentChoice: writingChoice, onSwitchList: switchTo, onChooseWriting: chooseWriting })
   const dialogOpen = pickerOpen || pending !== null || menuOpen
   const showResume = mode !== 'writing' && focusedOnce && !inputFocused && !finished && !dialogOpen && words.length > 0
@@ -171,7 +175,7 @@ export default function PracticeScreen({ wordLists, packs, listId, weak = false,
         : <>
           <WordPrompt key={`${list.id}:${session.index}:${displayRun}`} word={word} recall={recall} comparison={comparison} revealed={session.revealed} showResume={showResume}
             onReveal={reveal} onResume={() => input.current?.focus()} />
-          <TypingInput inputRef={input} session={session} composition={composition} comparison={comparison} simpleKeys={simpleKeys}
+          <TypingInput inputRef={input} session={session} composition={composition} comparison={comparison} simpleKeys={simpleKeys} romaji={romaji}
             onFocus={() => { setInputFocused(true); setFocusedOnce(true); resume() }} onBlur={() => { setInputFocused(false); pause() }} onRestart={() => restart()}
             onCompositionStart={startComposition} onCompositionEnd={endComposition} onChange={changeInput} />
           {statsVisible && <LiveStats mode={mode} session={session} accuracy={result.accuracy} />}

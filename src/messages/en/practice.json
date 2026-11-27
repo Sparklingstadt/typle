@@ -39,7 +39,8 @@
     "resume": "Click or press any key to resume",
     "inputLabel": "Type the text shown",
     "simpleKeys": "Simple input",
-    "simpleKeysAll": "Full table"
+    "simpleKeysAll": "Full table",
+    "romaji": "Romaji"
   },
   "recall": {
     "toggle": "Type from memory",

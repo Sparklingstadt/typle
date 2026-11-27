@@ -168,6 +168,7 @@ test('the initial lists decode in Typle with their own ids and names', () => {
     ['chinese-hsk6-handwriting-24-words-4', [15]], ['chinese-hsk6-handwriting-24-words-5', [15]], ['chinese-hsk6-handwriting-24-words-6', [15]],
     ['chinese-hsk6-handwriting-25-words-1', [15]], ['chinese-hsk6-handwriting-25-words-2', [15]], ['chinese-hsk6-handwriting-25-words-3', [15]],
     ['chinese-hsk6-handwriting-25-words-4', [15]], ['chinese-hsk6-handwriting-25-words-5', [15]], ['chinese-hsk6-handwriting-25-words-6', [15]],
+    ['japanese-romaji', [40, 40, 40]],
   ])
   assert.equal(lists.length, commands.length)
   const { initialLists } = require('../src/lib/packs/index.ts')
@@ -190,7 +191,7 @@ test('a list split into parts has the fewest parts of at most 40, from the easie
   const labels = { 2: ['初級', '上級'], 3: ['初級', '中級', '上級'], 4: ['初級', '中級1', '中級2', '上級'], 5: ['初級1', '初級2', '中級', '上級1', '上級2'] }
   const grouped = [...new Set(initialLists.map(list => source(list.id)))]
     .map(id => initialLists.filter(list => list.id !== id && source(list.id) === id)).filter(group => group.length > 1)
-  assert.equal(grouped.length, 18)
+  assert.equal(grouped.length, 19)
   for (const group of grouped) {
     const total = group.reduce((sum, list) => sum + list.words.length, 0)
     assert.equal(group.length, Math.max(Math.ceil(total / 40), leveled.includes(source(group[0].id)) ? 3 : 1), group[0].id)

@@ -39,7 +39,8 @@
     "resume": "Cliquez ou appuyez sur une touche pour reprendre",
     "inputLabel": "Saisissez le texte affiché",
     "simpleKeys": "Saisie simplifiée",
-    "simpleKeysAll": "Tableau complet"
+    "simpleKeysAll": "Tableau complet",
+    "romaji": "Rōmaji"
   },
   "recall": {
     "toggle": "Taper de mémoire",

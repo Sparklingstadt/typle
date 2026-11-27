@@ -25,5 +25,13 @@
     "description": "Treats upper and lower case, such as A and a, as the same letter. Typing with or without Shift is correct either way.",
     "label": "Ignore upper and lower case",
     "hint": "When on, capitals such as A and É count as correct when you type a and é (and the other way round)."
+  },
+  "romaji": {
+    "heading": "Romaji input for Japanese",
+    "description": "Words written in kana can be typed in romaji with the Japanese input method turned off. Every common spelling is accepted, such as shi or si for し and sha or sya for しゃ. Kana committed through a Japanese input method are accepted too. A romaji spelling is shown under the word while you practise.",
+    "kana": "Kana",
+    "keys": "Keys",
+    "syllabicN": "Before a consonant other than n and y, a single n is enough (かんじ → kanji).",
+    "smallTsu": "You can also double the consonant of the next kana (きって → kitte, まっちゃ → maccha)."
   }
 }
