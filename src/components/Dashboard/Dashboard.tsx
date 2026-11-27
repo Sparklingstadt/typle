@@ -26,14 +26,16 @@ function Section({ title, description, children }: { title: string; description:
   </section>
 }
 
-export default function Dashboard({ lists, storage }: { lists: SavedWordList[]; storage?: WorkspaceLocation }) {
+/** The home screen's summary of the records. As a preview (sample lists before the first record), it leaves out its
+ * heading and buttons, which the page has for itself. */
+export default function Dashboard({ lists, storage, preview = false }: { lists: SavedWordList[]; storage?: WorkspaceLocation; preview?: boolean }) {
   const t = useTranslations('dashboard')
   const format = useFormat()
   const [now] = useState(() => new Date())
   const summary = summarize(lists, now)
   const next = continueList(lists)
   return <div className="flex flex-col gap-9 lg:gap-12">
-    <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+    {!preview && <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
       <div className="space-y-2">
         <h1 className="text-2xl lg:text-3xl">{t('title')}</h1>
         <p className="text-sm text-muted-foreground">{t(storage === 'browser' ? 'sourceGuest' : 'sourceAccount')}</p>
@@ -43,7 +45,7 @@ export default function Dashboard({ lists, storage }: { lists: SavedWordList[]; 
         {!next && <Button asChild><Link href="/play"><Keyboard aria-hidden="true" />{t('practice')}</Link></Button>}
         <Button asChild variant="outline"><Link href="/create"><Plus aria-hidden="true" />{t('create')}</Link></Button>
       </nav>
-    </div>
+    </div>}
     {next && <ContinueCard item={next} now={now} />}
     <Section title={t('week.title')} description={t('week.description', { start: format.dateWithWeekday(summary.weekStart, now), end: format.dateWithWeekday(addDays(summary.weekStart, 6), now) })}>
       <WeekStats summary={summary} />
