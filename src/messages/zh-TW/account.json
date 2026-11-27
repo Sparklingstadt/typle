@@ -24,5 +24,19 @@
     "description": "可以用 193 個國家的國名開始練習。清單與練習紀錄會儲存在這台 Mac 專用的資料庫中。",
     "start": "開始練習",
     "failed": "無法登入。請再試一次。"
+  },
+  "typingDemo": {
+    "word1": {
+      "input": "huanying",
+      "meaning": "歡迎"
+    },
+    "word2": {
+      "input": "lianxi",
+      "meaning": "練習"
+    },
+    "word3": {
+      "input": "jianpan",
+      "meaning": "鍵盤"
+    }
   }
 }
