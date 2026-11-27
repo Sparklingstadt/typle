@@ -150,6 +150,17 @@ export async function signInLocal(): Promise<void> {
 }
 
 /**
+ * Signs in to the shared demo account (POST /api/auth/sign-in/demo, only answered while DEMO_LOGIN is 1) and goes to
+ * returnTo, a path of this site, with a full page load so that every screen reads the new session. Rejects, staying on
+ * the page, when it is refused or does not answer with a user.
+ */
+export async function signInDemo(returnTo: string): Promise<void> {
+  const { data, error } = await authClient.$fetch<{ user?: { id?: string } }>('/sign-in/demo', { method: 'POST' })
+  if (error || !data?.user?.id) throw new Error('demo login was refused')
+  location.assign(returnTo)
+}
+
+/**
  * Signs out of every device, this browser included, and goes home: every login until now
  * stops working, such as one that was stolen. Rejects, and stays on the page signed in, when the request fails or is
  * refused.

@@ -8,7 +8,7 @@ export function accountEmail(accountId: string): string {
 }
 
 const ACCOUNT_EMAIL_SUFFIX = '@users.invalid'
-const ACCOUNT_ID = /^(github:\d+|sid:[a-z0-9]{1,64})$/
+const ACCOUNT_ID = /^(github:\d+|sid:[a-z0-9]{1,64}|demo:shared)$/
 
 /**
  * The account ID an address made by accountEmail stands for, or null for any other address (a real one, a missing

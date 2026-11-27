@@ -65,5 +65,6 @@
   "sharedPackNotFound": "This share has ended.",
   "invalidPage": "The page number is not valid.",
   "importInputTypeInvalid": "Line {line}: input_type must be command, code or word.",
-  "invalidRequest": "The request is not valid."
+  "invalidRequest": "The request is not valid.",
+  "demoAccount": "This is not available for the demo account."
 }
