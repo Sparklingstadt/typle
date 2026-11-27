@@ -356,5 +356,10 @@
     "slug": "korean-handwriting-advanced",
     "catalogId": "pack-korean-handwriting-advanced-words-1",
     "description": "韓国語の上級の単語90個を、手書きやローマ字で練習します。社会・政治、経済・産業、科学・環境、文化・歴史、動詞、形容詞の6つのテーマに分かれ、ローマ字と日本語の意味が付いています。"
+  },
+  {
+    "slug": "japanese-romaji",
+    "catalogId": "pack-japanese-romaji-beginner",
+    "description": "日本語をローマ字で打つ練習です。犬（いぬ）・猫（ねこ）など2文字の語から、しゃ・っ・ん・ー を含む語、ファ・ティ・ウィ などの外来語まで、初級・中級・上級の3つのリストで120語を打ちます。shi・si、tsu・tu のように、よく使うつづりはどれでも正解になります。"
   }
 ]

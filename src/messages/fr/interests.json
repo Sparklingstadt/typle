@@ -15,7 +15,8 @@
       "es": "Espagnol",
       "fr": "Français",
       "de": "Allemand",
-      "cs": "Tchèque"
+      "cs": "Tchèque",
+      "ja": "Japonais"
     },
     "programming": {
       "go": "Go",

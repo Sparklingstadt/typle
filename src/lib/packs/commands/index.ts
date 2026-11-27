@@ -269,6 +269,9 @@ import list265 from './chinese-hsk6-handwriting-25-words-3.json'
 import list266 from './chinese-hsk6-handwriting-25-words-4.json'
 import list267 from './chinese-hsk6-handwriting-25-words-5.json'
 import list268 from './chinese-hsk6-handwriting-25-words-6.json'
+import list269 from './japanese-romaji-beginner.json'
+import list270 from './japanese-romaji-intermediate.json'
+import list271 from './japanese-romaji-advanced.json'
 
 const commands: SavedWordList[] = [
   list0,
@@ -540,6 +543,9 @@ const commands: SavedWordList[] = [
   list266,
   list267,
   list268,
+  list269,
+  list270,
+  list271,
 ].map(list => ({
   ...list,
   words: list.words.map(word => {
