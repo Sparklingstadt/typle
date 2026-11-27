@@ -65,5 +65,6 @@
   "sharedPackNotFound": "この共有は終了しました。",
   "invalidPage": "ページの指定が正しくありません。",
   "importInputTypeInvalid": "{line}行目の input_type は command、code、word のいずれかにしてください。",
-  "invalidRequest": "リクエストの内容が正しくありません。"
+  "invalidRequest": "リクエストの内容が正しくありません。",
+  "demoAccount": "デモアカウントでは使えません。"
 }

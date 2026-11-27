@@ -4,6 +4,8 @@
   "signInIntro": "Connectez-vous avec un compte <b>Sparklingstadt ID</b> ou <b>GitHub</b>. Sparklingstadt ID est un compte unique, utilisable dans tous les services Sparklingstadt.",
   "signInWithSid": "Se connecter avec Sparklingstadt ID",
   "signInWithGitHub": "Se connecter avec GitHub",
+  "signInDemo": "Essayer le compte de démonstration",
+  "demoNote": "Essayez sans compte. Le compte de démonstration est partagé par tous les visiteurs : ce que vous saisissez est visible par les autres. Il est réinitialisé chaque jour à 4 h (heure du Japon).",
   "signInNote": "Vos listes et vos résultats d’entraînement sont enregistrés dans le compte utilisé pour vous connecter. La prochaine fois, connectez-vous de la même façon.",
   "signInFailed": "Connexion impossible. Veuillez réessayer.",
   "githubUser": "Utilisateur GitHub",

@@ -33,6 +33,7 @@
 - **単語リスト**：自分で作るか、公式リストをフォローします。CSV とパックのファイル（`.typle-pack.json`）で読み込み・書き出しができます
 - **記録**：リストごとのベスト、今週のまとめ、間違えた単語と、その単語だけの練習
 - **保存**：ログインなしではブラウザーに、ログイン（Sparklingstadt ID・GitHub）するとアカウントに保存します
+- **デモアカウント**：アカウントがなくても、ログイン画面の「デモアカウントで試す」で、見本のリストと1週間分の記録が入った共有のアカウントを試せます。毎日 4:00（日本時間）に見本へ戻ります
 - **簡易入力**：é を e、ш を sh、ß を ss のように、アクセントやキリル文字をふつうのキーで打てます
 - **表示**：6言語（日本語・英語・フランス語・ロシア語・中国語の簡体字と繁体字）、ライトとダーク、スマートフォンの幅
 
@@ -44,7 +45,7 @@
 |---|---|
 | 画面 | Next.js 16（App Router）・React 19・TypeScript（strict）・Tailwind CSS 4・shadcn/ui（Radix）・next-intl |
 | API と DB | Next.js の Route Handler・PostgreSQL（Prisma Client で読み書き）・SQL のマイグレーション |
-| ログイン | Better Auth（OpenID Connect・GitHub OAuth）。セッションは DB に持ち、Cookie に最大5分キャッシュします |
+| ログイン | Better Auth（OpenID Connect・GitHub OAuth・共有のデモアカウント）。セッションは DB に持ち、Cookie に最大5分キャッシュします |
 | 手書きの読み取り | onnxruntime-web と PaddleOCR の韓国語のモデル。サーバーに送らず、ブラウザーの中で読みます |
 | テスト | node:test（単体と、実際の DB を使う API）・Playwright（E2E・スクリーンショット・ARIA スナップショット） |
 | 運用 | Vercel（シンガポール）と Neon。AWS へ移す準備として Dockerfile と AWS CDK（`infra/`） |

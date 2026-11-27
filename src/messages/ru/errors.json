@@ -65,5 +65,6 @@
   "sharedPackNotFound": "Общий доступ закончился.",
   "invalidPage": "Неверный номер страницы.",
   "importInputTypeInvalid": "Строка {line}: input_type должен быть command, code или word.",
-  "invalidRequest": "Запрос составлен неверно."
+  "invalidRequest": "Запрос составлен неверно.",
+  "demoAccount": "Недоступно для демо-аккаунта."
 }

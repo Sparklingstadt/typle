@@ -65,5 +65,6 @@
   "sharedPackNotFound": "Ce partage est terminé.",
   "invalidPage": "Le numéro de page n’est pas valide.",
   "importInputTypeInvalid": "Ligne {line} : input_type doit être command, code ou word.",
-  "invalidRequest": "La requête n’est pas valide."
+  "invalidRequest": "La requête n’est pas valide.",
+  "demoAccount": "Cette action n’est pas disponible pour le compte de démonstration."
 }

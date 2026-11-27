@@ -9,11 +9,14 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader,
 import { signOutEverywhere, useSession } from '@/lib/session'
 import { IconTile } from '@/components/ui/icon-tile'
 
+/** The shared demo account's ID, as src/server/demoLogin.ts makes it. */
+const DEMO_ACCOUNT_ID = 'demo:shared'
+
 // Signing out of every device, for an account signed in to the cloud: shown only then, as a guest has no session.
 export default function SessionSettings() {
   const t = useTranslations('settings.sessions')
   const form = useTranslations('common.form')
-  const { status } = useSession()
+  const { status, data } = useSession()
   const id = useId()
   const [open, setOpen] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -29,7 +32,8 @@ export default function SessionSettings() {
       </div>
     </div>
     <div className="mt-4 sm:pl-14">
-      <AlertDialog open={open} onOpenChange={value => { if (!busy) { setOpen(value); setFailed(false) } }}>
+      {/* The demo account is shared (src/server/demoLogin.ts): the server refuses this for it, so it is not offered. */}
+      {data?.user.id === DEMO_ACCOUNT_ID ? <p className="text-sm text-muted-foreground">{t('demoUnavailable')}</p> : <AlertDialog open={open} onOpenChange={value => { if (!busy) { setOpen(value); setFailed(false) } }}>
         <AlertDialogTrigger asChild><Button variant="outline">{t('action')}</Button></AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -49,7 +53,7 @@ export default function SessionSettings() {
             }}>{busy ? t('signingOut') : t('confirm')}</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
+      </AlertDialog>}
     </div>
   </section>
 }
