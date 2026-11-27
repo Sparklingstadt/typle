@@ -6,15 +6,15 @@ const { decodeLists } = require('../src/lib/wordLists.ts')
 const { localDevelopmentEnabled } = require('../src/lib/localDevelopment.ts')
 
 test('local login requires explicit development opt-in, secret and loopback URL', () => {
-  const env = { NODE_ENV: 'development', LOCAL_DEVELOPMENT_LOGIN: '1', AUTH_SECRET: 'test-only', AUTH_URL: 'http://localhost:3000' }
+  const env = { NODE_ENV: 'development', LOCAL_DEVELOPMENT_LOGIN: '1', BETTER_AUTH_SECRET: 'test-only', AUTH_URL: 'http://localhost:3000' }
   assert.equal(localDevelopmentEnabled(env), true)
-  for (const patch of [{ NODE_ENV: 'production' }, { NODE_ENV: 'test' }, { LOCAL_DEVELOPMENT_LOGIN: '0' }, { AUTH_SECRET: '' }, { AUTH_URL: 'https://example.com' }, { AUTH_URL: 'http://localhost.example.com' }, { AUTH_URL: '' }]) {
+  for (const patch of [{ NODE_ENV: 'production' }, { NODE_ENV: 'test' }, { LOCAL_DEVELOPMENT_LOGIN: '0' }, { BETTER_AUTH_SECRET: '' }, { AUTH_URL: 'https://example.com' }, { AUTH_URL: 'http://localhost.example.com' }, { AUTH_URL: '' }]) {
     assert.equal(localDevelopmentEnabled({ ...env, ...patch }), false)
   }
 })
 
 test('LAN login only permits an explicitly selected private IPv4 in development', () => {
-  const env = { NODE_ENV: 'development', LOCAL_DEVELOPMENT_LOGIN: '1', AUTH_SECRET: 'test-only', AUTH_URL: 'http://192.168.3.49:3000', LOCAL_DEVELOPMENT_LAN_HOST: '192.168.3.49' }
+  const env = { NODE_ENV: 'development', LOCAL_DEVELOPMENT_LOGIN: '1', BETTER_AUTH_SECRET: 'test-only', AUTH_URL: 'http://192.168.3.49:3000', LOCAL_DEVELOPMENT_LAN_HOST: '192.168.3.49' }
   assert.equal(localDevelopmentEnabled(env), true)
   for (const patch of [{ NODE_ENV: 'production' }, { LOCAL_DEVELOPMENT_LAN_HOST: '' }, { LOCAL_DEVELOPMENT_LAN_HOST: '192.168.3.50' }, { AUTH_URL: 'http://8.8.8.8:3000', LOCAL_DEVELOPMENT_LAN_HOST: '8.8.8.8' }, { AUTH_URL: 'http://172.32.0.1:3000', LOCAL_DEVELOPMENT_LAN_HOST: '172.32.0.1' }]) {
     assert.equal(localDevelopmentEnabled({ ...env, ...patch }), false)

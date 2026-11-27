@@ -29,6 +29,7 @@ export default defineConfig({
     {
       env: {
         AUTH_SECRET: 'typle-e2e-only-not-a-production-secret-32-bytes',
+        BETTER_AUTH_SECRET: 'typle-e2e-only-better-auth-secret-32-bytes',
         AUTH_URL: 'http://127.0.0.1:3101',
         // The session lists GitHub as a login, as the Go backend did with these.
         AUTH_GITHUB_ID: 'e2e',

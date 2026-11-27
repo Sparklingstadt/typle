@@ -3,7 +3,8 @@
   "entry": [
     "tests/*.test.cjs",
     "tests/e2e/*.spec.ts",
-    "scripts/*.cjs"
+    "scripts/*.cjs",
+    "src/server/betterAuth.ts"
   ],
   "project": [
     "src/**/*.{ts,tsx}",
