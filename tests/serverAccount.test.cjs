@@ -115,3 +115,32 @@ test('signing out of every device deletes every session of the user and removes 
 test('the made-up session of the other tests reads as a user', async () => {
   assert.equal((await readTestSession(new Headers({ cookie: cookieFor('github:1') }))).user.id, 'github:1')
 })
+
+test('signing out of every device reads the session fresh, not from the cookie cache', async () => {
+  const seen = []
+  const read = async (headers, options) => { seen.push(options); return { user: { id: 'github:1', name: 'N', image: '' } } }
+  const end = { revokeAll: async () => {}, loginCookies: async () => [] }
+  assert.equal((await answerSignOutEverywhere(signOut({ Origin: origin }), login0, read, end)).status, 204)
+  assert.deepEqual(seen, [{ fresh: true }])
+  // The reads of the account's data may use the cache.
+  await signedIn(request({}), read)
+  assert.equal(seen[1], undefined)
+})
+
+test('the fresh read of Better Auth disables the cookie cache, so a revoked session cannot sign out the others', database, async () => {
+  const user = await login()
+  const { auth } = require('../src/server/betterAuth.ts')
+  // A browser with the cache: its session_data cookie, from a read through the endpoint.
+  const first = await auth.api.getSession({ headers: new Headers({ Cookie: user.cookie }), returnHeaders: true })
+  const cache = first.headers.getSetCookie().find(line => line.startsWith('better-auth.session_data='))?.split(';')[0]
+  assert.ok(cache)
+  const cookie = `${user.cookie}; ${cache}`
+  // The stolen session is revoked; the owner has signed in again since.
+  await sql.query(`INSERT INTO typle_auth_sessions (id, expires_at, token, user_id) VALUES ('newer', now() + interval '1 hour', 'newer-token', $1)`, [user.id])
+  await sql.query(`DELETE FROM typle_auth_sessions WHERE user_id = $1 AND id <> 'newer'`, [user.id])
+  assert.equal((await signedIn(request({ Cookie: cookie }))).user.sub, user.id)
+  assert.equal((await signedIn(request({ Cookie: cookie }), undefined, { fresh: true })).refusal.status, 401)
+  const stolen = await answerSignOutEverywhere(signOut({ Cookie: cookie, Origin: origin }), login0)
+  assert.equal(stolen.status, 401)
+  assert.equal(await sessionsOf(user.id), 1)
+})

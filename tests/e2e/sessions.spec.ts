@@ -5,8 +5,9 @@ let accountId = ''
 test.beforeEach(() => { accountId = newAccountId() })
 test.afterEach(() => deleteWorkspace(accountId))
 
-// The e2e login sets no session_data cookie (the cookie cache), so the server reads the database on every request: a
-// session that ended is refused at once, without waiting the 5 minutes the cache lasts in a real browser.
+// The e2e login sets no session_data cookie (the cookie cache), so the server reads the database on every request and a
+// session that ended is refused at once. A real browser may be served from the cache for up to its window (5 minutes)
+// after its session ended; the last test goes through the cache, with the window shortened to 3 s (playwright.config.ts).
 const sessionCount = () => withDatabase(async pool =>
   Number((await pool.query('SELECT count(*) FROM typle_auth_sessions WHERE user_id = $1', [accountId])).rows[0].count))
 
@@ -106,4 +107,17 @@ test('a failed sign-out of every device keeps the user signed in and says so', a
   await expect(dialog.getByRole('alert')).toHaveText('ログアウトできませんでした。もう一度お試しください。')
   await expect(page).toHaveURL(/\/settings$/)
   expect((await page.request.get('/api/workspace')).status()).toBe(200)
+})
+
+test('a browser with the cookie cache keeps its access until the cache window passes, then is signed out', async ({ context }) => {
+  await signIn(context, accountId)
+  // Reading the session through Better Auth's own endpoint gives the browser the session_data cookie (the cache).
+  expect((await context.request.get('/api/auth/get-session')).status()).toBe(200)
+  expect((await context.cookies(origin)).some(cookie => cookie.name === 'better-auth.session_data')).toBe(true)
+  await withDatabase(pool => pool.query('DELETE FROM typle_auth_sessions WHERE user_id = $1', [accountId]))
+  expect((await context.request.get('/api/workspace')).status()).toBe(200)
+  // Signing out of every device is not served from the cache: the session is gone, so it is refused.
+  expect((await context.request.post('/api/account/signout-everywhere', { headers: { Origin: origin } })).status()).toBe(401)
+  await new Promise(resolve => setTimeout(resolve, 3500))
+  expect((await context.request.get('/api/workspace')).status()).toBe(401)
 })

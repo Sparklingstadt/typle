@@ -38,7 +38,8 @@ export async function answerSignOutEverywhere(request: Request, settings: () => 
   if (!login) return refuse(503, 'authUnavailable')
   if (request.method !== 'POST') return methodNotAllowed(['POST'])
   if (!sameOrigin(request, login.origin)) return refuse(403, 'forbiddenRequest')
-  const result = await signedIn(request, read)
+  // Not from the cookie cache: a session that was revoked must not end the owner's other logins.
+  const result = await signedIn(request, read, { fresh: true })
   if ('refusal' in result) return result.refusal
   let cookies: Awaited<ReturnType<SessionEnd['loginCookies']>>
   try {

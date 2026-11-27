@@ -111,7 +111,7 @@ test('a save refused because another screen saved first says so, keeps the draft
   expect((await saved(page)).lists.map(list => list.name)).toEqual(['Mine'])
 })
 
-test('an open screen shows itself signed out once the login was ended on another device', async ({ page, playwright }) => {
+test('an open screen shows itself signed out once the login was ended on another device', async ({ page, context, playwright }) => {
   await seed(page, 'Private')
   await page.goto('/edit')
   await openPacks(page)
@@ -123,6 +123,9 @@ test('an open screen shows itself signed out once the login was ended on another
   expect((await elsewhere.post('/api/account/signout-everywhere')).status()).toBe(204)
   await elsewhere.dispose()
 
+  // The browser's cookie cache (session_data) would still serve the ended session for its window (5 minutes); it is dropped
+  // here, as it is when the window has passed.
+  await context.clearCookies({ name: 'better-auth.session_data' })
   // Coming back to the window reads the workspace again: the 401 makes the screen read its login again.
   await page.evaluate(() => window.dispatchEvent(new Event('focus')))
   await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()

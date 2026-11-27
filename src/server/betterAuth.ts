@@ -19,6 +19,16 @@ const settings = betterAuthSettings(building ? { BETTER_AUTH_SECRET: 'build-time
 // Without this Better Auth would fall back to AUTH_SECRET and infer the base URL from requests.
 if (!settings) throw new Error('BETTER_AUTH_SECRET must be set, and AUTH_URL must be an http(s) URL')
 
+/**
+ * How long the cookie cache serves a session without asking the database: 300 s, the longest another device can still read
+ * as signed in after sign-out everywhere. COOKIE_CACHE_SECONDS may only shorten it (the end-to-end tests use 3 s); a value
+ * that is not a whole number of seconds from 1 to 300 is ignored.
+ */
+export function cookieCacheSeconds(value: string | undefined): number {
+  const seconds = Number(value)
+  return value !== undefined && /^\d+$/.test(value) && seconds >= 1 && seconds <= 300 ? seconds : 300
+}
+
 const MONTH_SECONDS = 30 * 24 * 60 * 60
 /** The provider's tokens of an account row, cleared before it is written. */
 const NO_TOKENS = { accessToken: null, refreshToken: null, idToken: null, accessTokenExpiresAt: null, refreshTokenExpiresAt: null }
@@ -101,7 +111,7 @@ export const auth = betterAuth({
     expiresIn: MONTH_SECONDS,
     updateAge: MONTH_SECONDS,
     disableSessionRefresh: true,
-    cookieCache: { enabled: true, maxAge: 300 },
+    cookieCache: { enabled: true, maxAge: cookieCacheSeconds(process.env.COOKIE_CACHE_SECONDS) },
   },
   account: {
     modelName: 'authAccount',
