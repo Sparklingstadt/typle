@@ -156,15 +156,15 @@ put() {
 |---|---|
 | `APP_DB_PASSWORD` | `openssl rand -hex 24` で作る（英数字だけ） |
 | `DATABASE_URL` | `postgresql://typle_app:<APP_DB_PASSWORD>@<出力の DatabaseEndpoint>:5432/typle?sslmode=verify-full&sslrootcert=/app/certs/rds-global-bundle.pem` |
-| `AUTH_SECRET` | **Vercel の本番と同じ値**（下を参照） |
+| `BETTER_AUTH_SECRET` | **Vercel の本番と同じ値**（下を参照。v2.62.0 から。以前の `AUTH_SECRET` はもう読みません） |
 | `AUTH_GITHUB_SECRET` | 本番の GitHub OAuth App で **Generate a new client secret** した新しい値（Vercel のものはそのまま使い続けられる） |
 | `RESEND_API_KEY` | Resend のダッシュボードで AWS 用に新しく作ったキー |
 
 `put APP_DB_PASSWORD` のように1つずつ実行し、値を貼り付けます。
 
-**`AUTH_SECRET` について**:
+**`BETTER_AUTH_SECRET` について**:
 
-- ログインの Cookie は `AUTH_SECRET` から作った鍵で守られています。値が変わると、切り替えた瞬間に全員がログアウトされます。
+- ログインの Cookie と署名は `BETTER_AUTH_SECRET` で守られています。値が変わると、既存のセッションの Cookie が読めなくなり、切り替えた瞬間に全員がログアウトされます。
 - Vercel で `vercel env pull` して読めれば、同じ値を入れます。
 - 「Sensitive」にしてあって読めないときは、新しい値（`openssl rand -base64 32`）を作ります。この場合、切り替えのときに一度ログアウトされることを受け入れることになります。
 

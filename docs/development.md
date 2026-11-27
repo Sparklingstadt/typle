@@ -15,7 +15,7 @@ docker compose --env-file .env.local up -d --wait
 npm run db:migrate
 ```
 
-`setup-local.cjs` はランダムなDBパスワードとAUTH_SECRET・BETTER_AUTH_SECRETを `.env.local` に生成します。既存ファイルは上書きしません。DBは `127.0.0.1:5433` のみ公開し、名前付きボリューム `typle-r_postgres_data` にデータを保持します。
+`setup-local.cjs` はランダムなDBパスワードと `BETTER_AUTH_SECRET`（Better Auth が Cookie とトークンを署名・暗号化する秘密値。以前の `AUTH_SECRET` はもう読みません）を `.env.local` に生成します。既存ファイルは上書きしません。DBは `127.0.0.1:5433` のみ公開し、名前付きボリューム `typle-r_postgres_data` にデータを保持します。
 
 GitHubの Settings → Developer settings → OAuth Apps でローカル用OAuth Appを作成します。
 
@@ -28,9 +28,9 @@ Client IDとClient secretを `.env.local` の `AUTH_GITHUB_ID` / `AUTH_GITHUB_SE
 npm run dev
 ```
 
-`npm run dev` は `next dev`（`127.0.0.1:3000`）を起動します。ページも API（Route Handler）も Next.js が答えます（v2.47.0 から。それまでは Go のバックエンドも一緒に起動していました）。`npm run dev:local`・`npm run dev:lan` も同じです。DB に接続できなくても起動し、その間 `/api/workspace`・`/api/health`（どちらも Next.js）は 503（`databaseUnavailable`）を返しますが、ログインは使えます。GitHub のログインは `AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET` が揃っているときだけ使え、揃っていなければ `/api/auth/signin` だけが 503 になります（開発ログインだけで開発できます）。
+`npm run dev` は `next dev`（`127.0.0.1:3000`）を起動します。ページも API（Route Handler）も Next.js が答えます（v2.47.0 から。それまでは Go のバックエンドも一緒に起動していました）。`npm run dev:local`・`npm run dev:lan` も同じです。DB に接続できなくても起動し、その間 `/api/workspace`・`/api/health`（どちらも Next.js）は 503（`databaseUnavailable`）を返しますが、ログインは使えます。GitHub のログインは `AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET` が揃っているときだけ使え、揃っていなければ GitHub のログインの開始（`POST /api/auth/sign-in/social`）だけが失敗します（開発ログインだけで開発できます）。
 
-[ローカルアプリ](http://localhost:3000) を開いてGitHubでログインします。通常の停止は `docker compose --env-file .env.local stop`、再開は `up -d --wait` です。`down -v` は保存データを削除するため使用しないでください。
+[ローカルアプリ](http://localhost:3000) を開いてGitHubでログインします。**アプリは `AUTH_URL` のホストとまったく同じアドレスで開いてください**（`localhost` と `127.0.0.1` は別のサイトとして Cookie が分かれるため、`AUTH_URL=http://localhost:3000` なら `http://127.0.0.1:3000` で開くとログインの Cookie が戻りません）。通常の停止は `docker compose --env-file .env.local stop`、再開は `up -d --wait` です。`down -v` は保存データを削除するため使用しないでください。
 
 ### 開発用ログインで起動
 
@@ -40,7 +40,7 @@ npm run dev:local
 
 http://localhost:3000/local-login を開き「練習を始める」を押します。このMacのチェックアウトの `.env.local` は設定済みです。新規クローンでは上記のセットアップ後、`.env.local` に `LOCAL_DEVELOPMENT_LOGIN=1` を設定してください。DBは `docker compose --env-file .env.local up -d --wait` で再開できます。
 
-開発ログインは `NODE_ENV=development`、`LOCAL_DEVELOPMENT_LOGIN=1`、`AUTH_URL` がHTTPのloopbackまたは明示指定したLAN内IPv4、`BETTER_AUTH_SECRET` 設定済みのすべてを満たす場合だけ有効です。専用アカウント `github:0` を使用し、GitHubアカウントとは分離します。本番ビルドでは無効です。GitHub OAuthを使用する場合は `LOCAL_DEVELOPMENT_LOGIN=0` とし、従来どおりOAuthの設定を行ってください。
+開発ログインは `NODE_ENV=development`、`LOCAL_DEVELOPMENT_LOGIN=1`、`AUTH_URL` がHTTPのloopbackまたは明示指定したLAN内IPv4、`BETTER_AUTH_SECRET` 設定済みのすべてを満たす場合だけ有効です。専用アカウント `github:0` を使用し、GitHubアカウントとは分離します。本番ビルドでは無効です。`COOKIE_CACHE_SECONDS` はテスト用で（Cookie のキャッシュを1〜300秒に短くします。300を超える値は無視されます）、手元の開発や本番では設定しません。GitHub OAuthを使用する場合は `LOCAL_DEVELOPMENT_LOGIN=0` とし、従来どおりOAuthの設定を行ってください。
 
 ### LAN内の別端末から利用
 

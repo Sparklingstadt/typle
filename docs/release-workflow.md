@@ -76,10 +76,13 @@ Actions が止まってマージできなくなったら、Settings → Rules �
    そのあと `scripts/check-production.cjs`（手元では `npm run check:production`）で次を確かめます。1つでも失敗すればジョブは失敗です。
    本番（`https://typle.sparklingstadt.com`）のホームの成功応答、Vercel のドメインのページが本番へ308で移ること（クエリも残す）、
    両方のドメインで Route Handler（`src/app/api/health/route.ts`）が返す`/api/health`の200（本番DBへの接続を含む）と匿名APIアクセスの401。
-   ログインの関数（Auth.js）も確かめます。`/api/auth/session`が200で、本文に`user`がないこと、`/api/auth/providers`が`sid`と`github`だけであること、
-   `/api/auth/csrf`でCSRFトークンとCookieをもらい、それを付けた`POST /api/auth/signin/github`がリダイレクトを辿らずに302を返し、
-   `Location`が`https://github.com/login/oauth/authorize?`で始まり本番の`redirect_uri`（`https://typle.sparklingstadt.com/api/auth/callback/github`）を含むことです。
-   これにより、本番の関数で`AUTH_SECRET`・`AUTH_URL`・`AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET`が揃って設定されていることまで確かめます。
+   ログインの関数（Better Auth）も本番のドメインで確かめます。匿名の`GET /api/auth/get-session`が200で本文が`null`であること、
+   Originを付けた`POST /api/auth/sign-in/social`（`provider`が`github`）が`https://github.com/login/oauth/authorize`のURLを返し、
+   その`redirect_uri`が`https://typle.sparklingstadt.com/api/auth/callback/github`であること、`provider`が`sid`のときは
+   ID サーバー（`AUTH_SID_ISSUER`のホスト。既定は`id.sparklingstadt.com`）のURLを返し、`redirect_uri`が`.../api/auth/callback/sid`であること、
+   Auth.jsの`/api/auth/session`・`/api/auth/providers`・`/api/auth/csrf`が404であることです。
+   これにより、本番の関数で`BETTER_AUTH_SECRET`・`AUTH_URL`・`AUTH_GITHUB_ID`・`AUTH_GITHUB_SECRET`・`AUTH_SID_*`が揃って設定され、
+   起動時の ID サーバーの discovery が読めたことまで確かめます。
 10. マージした人は、main の CI の実行が deploy まで成功したことを Actions で確かめます。
 11. API の文書（`api-docs/`）は、v2.25.2 から CI では公開せず、必要なときに手で公開します。deploy が成功した後、
     Actions の「Docs deploy」を main で実行します（Run workflow。`docs-deploy.yml`、main 以外では何もしません）。

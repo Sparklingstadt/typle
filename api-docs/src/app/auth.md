@@ -1,25 +1,22 @@
 # ログイン
 
-ログインは Auth.js（next-auth v5）で、Sparklingstadt ID（OpenID Connect、v2.58.0 から）と GitHub（OAuth App）の2つです（開発用の `local` が手元だけにあります）。FFPF ID のログインは v2.54.0 で、iPad・Mac のアプリのログイン（`/api/auth/token`・アプリのトークン）は v2.55.0 で、ID とパスワードのログインは v2.59.0 でなくしました。ログイン後のリクエストの扱いは [認証](./README.md#認証) を見てください。
+ログインは Better Auth（v1.7.28。v2.62.0 から。それまでは Auth.js）で、Sparklingstadt ID（OpenID Connect、v2.58.0 から）と GitHub（OAuth App）の2つです（開発用の `local` が手元だけにあります）。FFPF ID のログインは v2.54.0 で、iPad・Mac のアプリのログイン（`/api/auth/token`・アプリのトークン）は v2.55.0 で、ID とパスワードのログインは v2.59.0 でなくしました。ログイン後のリクエストの扱いは [認証](./README.md#認証) を見てください。
 
-## Auth.js の経路（`/api/auth/*`）
+## Better Auth の経路（`/api/auth/*`）
 
-`src/app/api/auth/[...nextauth]/route.ts` が Auth.js の `handlers` を出します。次のパスだけが答えで、ほかの `/api/auth/*` は `404 notFound` です。
+`src/app/api/auth/[...all]/route.ts` が Better Auth の `auth` に渡します。次のパスだけが答えで、ほかの `/api/auth/*` は `404 notFound` です（Auth.js の `/api/auth/session`・`/api/auth/csrf`・`/api/auth/providers` も 404 です）。
 
 | パス | 内容 |
 |---|---|
-| `GET /api/auth/session` | セッション。ログインしていなければ `null`、していれば `{ "user": { "id": "github:123", "name": "…", "image": "https://…" }, "expires": "…" }`（`expires` は中身の `exp` と同じ時刻） |
-| `GET /api/auth/csrf` | CSRF トークン（`{ "csrfToken" }`）と、その Cookie |
-| `GET /api/auth/providers` | 使えるプロバイダー。`sid`・`github`（設定があるとき）、手元では `local` |
-| `POST /api/auth/signin/<provider>` | ログインを始める。CSRF のトークンを付けた `application/x-www-form-urlencoded` の POST。`github` は GitHub の、`sid` は Sparklingstadt ID の認可ページへの `302`。ログアウトのあとの `sid` には `prompt=login` を付けます（Cookie `typle-sid-relogin`） |
-| `GET /api/auth/callback/<github・sid>`・`POST /api/auth/callback/local` | ログインから戻る先 |
-| `POST /api/auth/signout` | ログアウト（この端末の Cookie を消す） |
-| `GET /api/auth/error` | ログインの失敗（画面 `/signin?error=…` に移ります） |
+| `GET /api/auth/get-session` | セッション。ログインしていなければ `null`、していれば `{ "session": { … }, "user": { "id": "github:123", "name": "…", "image": "https://…", … } }` |
+| `POST /api/auth/sign-in/social` | ログインを始める。`Origin` が `AUTH_URL` のオリジンの JSON の POST で、本文は `{ "provider": "github" or "sid", "callbackURL": "/home", "errorCallbackURL": "/signin" }`。答えは `{ "url": "<認可ページ>", "redirect": true }`（`github` は GitHub の、`sid` は Sparklingstadt ID の認可ページ）。ログアウトのあとの `sid` には `prompt=login` を付けます（Cookie `typle-sid-relogin`） |
+| `GET /api/auth/callback/<github・sid>` | ログインから戻る先（Auth.js のときと同じ URL） |
+| `POST /api/auth/sign-in/local` | 開発用のログイン（手元だけ。本番は 404） |
+| `POST /api/auth/sign-out` | ログアウト（この端末のセッションを消す） |
 
-- ログインの Cookie は `__Host-typle-session`（`AUTH_URL` が HTTPS のとき。HTTP なら `typle-session`）、`HttpOnly`・`SameSite=Lax`・`Path=/` で、中身は `{sub,name,image,iat,exp}` を HMAC-SHA256 で署名したものです。**ログインから30日で切れ、延長しません**。ブラウザーの Cookie の `Expires` は Auth.js がセッションを読むたびに「今から30日」に書き直しますが、切れるかどうかは中身の `exp` で決まります。
-- アカウント ID は `github:<GitHub のユーザー番号>`・`password:<小文字の UUID>`（v2.58.0 までの ID とパスワードのアカウント。ひも付けた Sparklingstadt ID か、切れるまでのセッションで使います）・`sid:<Sparklingstadt ID の sub>`（ほかのアカウントにひも付けた ID はそのアカウント）・`ffpf:…`（v2.53.1 までのログインが切れるまで）です。開発用のログインは `github:0` です。
-- 「すべての端末からログアウト」で無効にされたセッションは、`/api/auth/session` が `null` を返して Cookie を消します。この確認は1秒までしか待たず、間に合わなければ確かめずに答えます。
-- 本番では環境変数 `AUTH_REDIRECT_PROXY_URL` を設定しないでください（Auth.js が読んで GitHub と Sparklingstadt ID の callback の向きを変えます）。
+- ログインの Cookie は `__Secure-better-auth.session_token`（`AUTH_URL` が HTTPS のとき。HTTP なら `better-auth.session_token`）、`HttpOnly`・`SameSite=Lax`・`Path=/` で、署名した値です。セッションは DB（`typle_auth_sessions`）にあり、**ログインから30日で切れ、延長しません**。Cookie に最大300秒（5分）キャッシュするので、「すべての端末からログアウト」のあと、ほかの端末は最大5分ログインしたままに見えます。
+- アカウント ID（ユーザーの `id`）は `github:<GitHub のユーザー番号>`・`password:<小文字の UUID>`（v2.58.0 までの ID とパスワードのアカウント。ひも付けた Sparklingstadt ID で使います）・`sid:<Sparklingstadt ID の sub>`（ほかのアカウントにひも付けた ID はそのアカウント）・`ffpf:…`（取り込んだ古いアカウント）です。開発用のログインは `github:0` です。
+- 「すべての端末からログアウト」で消されたセッションは、キャッシュの切れたあと `get-session` が `null` を返します。
 
 ## `POST /api/account/signout-everywhere`
 

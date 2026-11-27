@@ -12,7 +12,7 @@ Mac で、アプリ用の DB ユーザーのパスワードと、ログインの
 
 ```bash
 openssl rand -hex 24      # アプリ用の DB ユーザー（typle_app）のパスワード。英数字だけなので URL に入れても崩れない
-openssl rand -base64 32   # AUTH_SECRET
+openssl rand -base64 32   # BETTER_AUTH_SECRET
 ```
 
 出てきた値は、次の 5-2 で入れたら、ターミナルの画面を消して、どこにも保存しないでください。
@@ -36,7 +36,7 @@ GitHub のログインには、**練習環境用の OAuth App** を新しく作�
 |---|---|
 | `typle-lab/DATABASE_URL` | `postgresql://typle_app:<パスワード>@<RDS のエンドポイント>:5432/typle?sslmode=verify-full&sslrootcert=/app/certs/rds-global-bundle.pem` |
 | `typle-lab/APP_DB_PASSWORD` | 5-1 で作った `typle_app` のパスワード（[6](06-app.md) でユーザーを作るときだけ使う） |
-| `typle-lab/AUTH_SECRET` | 5-1 で作った `AUTH_SECRET` |
+| `typle-lab/BETTER_AUTH_SECRET` | 5-1 で作った `BETTER_AUTH_SECRET` |
 | `typle-lab/AUTH_GITHUB_SECRET` | 練習用の OAuth App の Client secret |
 
 それぞれの**シークレットの ARN** を控えます。

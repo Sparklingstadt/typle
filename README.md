@@ -44,7 +44,7 @@
 |---|---|
 | 画面 | Next.js 16（App Router）・React 19・TypeScript（strict）・Tailwind CSS 4・shadcn/ui（Radix）・next-intl |
 | API と DB | Next.js の Route Handler・PostgreSQL（Prisma Client で読み書き）・SQL のマイグレーション |
-| ログイン | Auth.js v5（OpenID Connect・GitHub OAuth）。セッションは署名した Cookie で、DB のセッションは持ちません |
+| ログイン | Better Auth（OpenID Connect・GitHub OAuth）。セッションは DB に持ち、Cookie に最大5分キャッシュします |
 | 手書きの読み取り | onnxruntime-web と PaddleOCR の韓国語のモデル。サーバーに送らず、ブラウザーの中で読みます |
 | テスト | node:test（単体と、実際の DB を使う API）・Playwright（E2E・スクリーンショット・ARIA スナップショット） |
 | 運用 | Vercel（シンガポール）と Neon。AWS へ移す準備として Dockerfile と AWS CDK（`infra/`） |

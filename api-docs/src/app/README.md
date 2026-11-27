@@ -13,7 +13,7 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 | [`PUT /api/workspace`](./workspace.md#put-api-workspace) | 要 | ワークスペースを保存する |
 | [`POST /api/workspace/records`](./workspace.md#記録の追加と削除) | 要 | 記録を1件追加する |
 | [`DELETE /api/workspace/records`](./workspace.md#記録の追加と削除) | 要 | 記録を1件削除する |
-| [`/api/auth/*`](./auth.md#auth-js-の経路-api-auth) | — | Auth.js（セッション・CSRF・プロバイダー・ログイン・ログアウト） |
+| [`/api/auth/*`](./auth.md#better-auth-の経路-api-auth) | — | Better Auth（セッション・ログイン・ログアウト） |
 | [`/api/account/signout-everywhere`](./auth.md#post-api-account-signout-everywhere) | 要 | すべての端末からのログアウト |
 
 ## 共通事項
@@ -46,8 +46,8 @@ Web版は v2.41.1 から、ワークスペース・記録を下の REST のパ�
 
 アカウントは `github:<GitHubのユーザーID>`、`sid:<Sparklingstadt ID の sub>`（ほかのアカウントにひも付けた ID はそのアカウント）か `password:<UUID>`（v2.58.0 までの ID とパスワードのアカウント）です（v2.53.1 までに FFPF ID でログインしたセッションは、30日で切れるまで `ffpf:` のアカウントです）。ログインの流れは [ログイン](./auth.md) を見てください。
 
-- リクエストはセッションの Cookie で判断します（v2.55.0 から `Authorization: Bearer` のアプリのトークンは読みません）。名前は HTTPS では `__Host-` 付きで、`HttpOnly`・`SameSite=Lax`・`Path=/` です。セッションはログインから30日で切れ、使っても延びません。
-- データを読み書きするリクエストは、そのたびにセッションが無効にされていないか（`POST /api/account/signout-everywhere` の後のログインか）をDBで確かめます。無効なら `401 loginRequired` で、Cookie を消します。確かめられなければ `503 databaseUnavailable` です。
+- リクエストはセッションの Cookie で判断します（v2.55.0 から `Authorization: Bearer` のアプリのトークンは読みません）。名前は HTTPS では `__Secure-` 付きで、`HttpOnly`・`SameSite=Lax`・`Path=/` です。セッションはログインから30日で切れ、使っても延びません。
+- データを読み書きするリクエストは、セッションが生きているか（`POST /api/account/signout-everywhere` で消されていないか）を確かめます。確かめは Cookie のキャッシュ（最大5分）を使うので、消されたあとも最大5分は通ることがあります。無効なら `401 loginRequired` です。確かめられなければ `503 databaseUnavailable` です。
 
 ### 書き込みの制限（CSRF 対策）
 
