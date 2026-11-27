@@ -23,7 +23,7 @@ const CREATE_APP_USER = [
   '| psql -v ON_ERROR_STOP=1 -v pw="$APP_PASSWORD"',
 ].join(' ')
 
-type Secrets = Record<'databaseUrl' | 'authSecret' | 'betterAuthSecret' | 'githubSecret' | 'resendApiKey' | 'appDbPassword' | 'neonDirectUrl', secretsmanager.Secret>
+type Secrets = Record<'databaseUrl' | 'betterAuthSecret' | 'githubSecret' | 'resendApiKey' | 'appDbPassword' | 'neonDirectUrl', secretsmanager.Secret>
 
 /**
  * The secrets, and on the cluster: the app's service behind the load balancer, and three task
@@ -50,8 +50,6 @@ export class App extends Construct {
       new secretsmanager.Secret(this, key, { secretName: `typle/${name}`, description })
     const secrets: Secrets = {
       databaseUrl: secret('DatabaseUrl', 'DATABASE_URL', 'postgresql://typle_app:…@<endpoint>:5432/typle?sslmode=verify-full&sslrootcert=/app/certs/rds-global-bundle.pem'),
-      // Kept so that the next deploy does not delete the secret: the app no longer reads it, and the owner removes it later.
-      authSecret: secret('AuthSecret', 'AUTH_SECRET', 'No longer read by the app (replaced by BETTER_AUTH_SECRET); removed in a later PR'),
       betterAuthSecret: secret('BetterAuthSecret', 'BETTER_AUTH_SECRET', 'The secret Better Auth signs and encrypts its cookies and tokens with; the same as production on Vercel'),
       githubSecret: secret('GithubSecret', 'AUTH_GITHUB_SECRET', 'The client secret of the GitHub OAuth App'),
       resendApiKey: secret('ResendApiKey', 'RESEND_API_KEY', 'The Resend API key that sends the mails'),

@@ -20,7 +20,7 @@ Typle（Web 版と Go のバックエンド）のバージョンごとの変更�
 - Auth.js の `/api/auth/session`・`/api/auth/providers`・`/api/auth/csrf` は 404 になりました。環境変数は `AUTH_SECRET` から `BETTER_AUTH_SECRET` に替わりました（`AUTH_SECRET` はもう読みません）。
 - `npm run sid:link` は `typle_auth_accounts` に Sparklingstadt ID の行を足します。`npm run check:production` は Better Auth のログインの開始を確かめます。
 - 戻すときは Vercel の Instant Rollback だけです。古い表は残してありますが、v2.61.0 のソースをもう一度デプロイしようとしても、check-migrations が断ります。
-- 古い表 `typle_session_revocations`・`typle_sid_links` と `AUTH_SECRET` は、後日の PR で消します。
+- 古い表 `typle_session_revocations`・`typle_sid_links` と `AUTH_SECRET` は、後日の PR で消します。（追記：v2.62.3 で、表をマイグレーション `0044_drop_auth_js_tables` で消し、AWS の `typle/AUTH_SECRET` を CDK から外しました。Vercel の `AUTH_SECRET` は、公開のときに持ち主が手で消します。）
 
 ## v2.1.3 — API の文書のサイトを Vercel でビルドできるようにする
 
