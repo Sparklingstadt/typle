@@ -79,7 +79,11 @@ export const auth = betterAuth({
   // Better Auth limits /sign-in/* to 3 requests in 10 s for the password logins it guards. Starting a GitHub or
   // Sparklingstadt ID login checks no secret (the provider does), so it is limited like the other paths instead, and a
   // few clicks of the login button are not refused.
-  rateLimit: { customRules: { '/sign-in/social': { window: 60, max: 100 } } },
+  //
+  // The screens read /get-session on every page load and focus, and the default of 100 per 10 s is kept per IP and path:
+  // users behind one address (a school, a NAT) share it, and a 429 makes the screen fall back to signed out. The read
+  // checks no secret and the cookie cache answers most of them without the database, so its limit is only a high ceiling.
+  rateLimit: { customRules: { '/sign-in/social': { window: 60, max: 100 }, '/get-session': { window: 10, max: 1000 } } },
   socialProviders: githubConfigured() ? {
     github: {
       clientId: process.env.AUTH_GITHUB_ID ?? '',
