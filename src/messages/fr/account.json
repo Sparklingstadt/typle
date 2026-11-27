@@ -24,5 +24,19 @@
     "description": "Commencez à vous entraîner avec les noms de 193 pays. Les listes et les résultats sont enregistrés dans une base de données propre à ce Mac.",
     "start": "Commencer l’entraînement",
     "failed": "Connexion impossible. Veuillez réessayer."
+  },
+  "typingDemo": {
+    "word1": {
+      "input": "bienvenue",
+      "meaning": "Ravi de vous voir"
+    },
+    "word2": {
+      "input": "pratique",
+      "meaning": "Un peu chaque jour"
+    },
+    "word3": {
+      "input": "clavier",
+      "meaning": "Dix doigts, un rythme"
+    }
   }
 }

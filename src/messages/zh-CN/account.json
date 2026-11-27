@@ -24,5 +24,19 @@
     "description": "可以用 193 个国家的国名开始练习。列表和练习记录保存在这台 Mac 专用的数据库中。",
     "start": "开始练习",
     "failed": "无法登录。请重试。"
+  },
+  "typingDemo": {
+    "word1": {
+      "input": "huanying",
+      "meaning": "欢迎"
+    },
+    "word2": {
+      "input": "lianxi",
+      "meaning": "练习"
+    },
+    "word3": {
+      "input": "jianpan",
+      "meaning": "键盘"
+    }
   }
 }
