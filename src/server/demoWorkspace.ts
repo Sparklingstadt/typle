@@ -18,10 +18,10 @@ const DAY = 24 * 60 * MINUTE
 
 const word = (input: string, annotation: string) => ({ input, display: input, annotation })
 
-/** A run of the list, ago before now. */
-const run = (id: string, now: Date, ago: number, time: number, accuracy: number, wordCount: number): PracticeRecord => ({
-  id, time, accuracy, mistakes: accuracy === 100 ? 0 : Math.max(1, Math.round(wordCount * (100 - accuracy) / 20)),
-  wordCount, date: new Date(now.getTime() - ago).toISOString(), device: DEVICE,
+/** A run of the list, ago before now, that went wrong once on each of missed (none for a perfect run). */
+const run = (id: string, now: Date, ago: number, time: number, accuracy: number, wordCount: number, missed: string[] = []): PracticeRecord => ({
+  id, time, accuracy, mistakes: missed.length, wordCount, date: new Date(now.getTime() - ago).toISOString(), device: DEVICE,
+  ...(missed.length ? { missed: missed.map(word => ({ word, count: 1 })) } : {}),
 })
 
 function ownLists(now: Date): SavedWordList[] {
@@ -36,8 +36,8 @@ function ownLists(now: Date): SavedWordList[] {
         word('git stash', '変更を一時的に退避する'), // i18n-ignore
       ],
       records: [
-        run('demo-git-1', now, 6 * DAY - 3 * 60 * MINUTE, 42.8, 91.4, 7), run('demo-git-2', now, 5 * DAY, 38.1, 94.2, 7),
-        run('demo-git-3', now, 3 * DAY + 40 * MINUTE, 33.5, 97.1, 7), run('demo-git-4', now, 2 * DAY, 31.9, 97.6, 7),
+        run('demo-git-1', now, 6 * DAY - 3 * 60 * MINUTE, 42.8, 91.4, 7, ['git rebase -i', 'git commit --amend']), run('demo-git-2', now, 5 * DAY, 38.1, 94.2, 7, ['git rebase -i']),
+        run('demo-git-3', now, 3 * DAY + 40 * MINUTE, 33.5, 97.1, 7, ['git add -p']), run('demo-git-4', now, 2 * DAY, 31.9, 97.6, 7, ['git rebase -i']),
         run('demo-git-5', now, DAY + 10 * MINUTE, 29.4, 100, 7), run('demo-git-6', now, 2 * 60 * MINUTE, 27.6, 100, 7),
       ],
     },
@@ -48,8 +48,8 @@ function ownLists(now: Date): SavedWordList[] {
         word('latency', '遅延'), word('throughput', '処理量'), word('fallback', '代わりの手段'), // i18n-ignore
       ],
       records: [
-        run('demo-words-1', now, 5 * DAY + 2 * 60 * MINUTE, 35.2, 88.9, 6), run('demo-words-2', now, 4 * DAY, 30.7, 93.8, 6),
-        run('demo-words-3', now, 3 * DAY, 28.3, 95.5, 6), run('demo-words-4', now, DAY, 26.1, 97.0, 6),
+        run('demo-words-1', now, 5 * DAY + 2 * 60 * MINUTE, 35.2, 88.9, 6, ['idempotent', 'throughput']), run('demo-words-2', now, 4 * DAY, 30.7, 93.8, 6, ['idempotent']),
+        run('demo-words-3', now, 3 * DAY, 28.3, 95.5, 6, ['deprecate']), run('demo-words-4', now, DAY, 26.1, 97.0, 6, ['idempotent']),
         run('demo-words-5', now, 30 * MINUTE, 24.8, 100, 6),
       ],
     },

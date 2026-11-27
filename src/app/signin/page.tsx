@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import { PageMain } from '@/components/ui/page-layout'
+import { demoConfigured } from '@/lib/demoLogin'
 import { githubConfigured } from '@/lib/githubLogin'
 import { sidConfigured } from '@/lib/sidLogin'
 import { returnPath } from '@/lib/returnPath'
@@ -18,6 +19,7 @@ export default async function SignIn({ searchParams }: { searchParams: Promise<{
   const returnTo = returnPath(params.returnTo)
   const github = githubConfigured()
   const sid = sidConfigured()
+  const demo = demoConfigured()
   return <PageMain width="narrow">
     <header className="mb-6 space-y-1">
       <h1 className="text-2xl font-bold">{t('signIn')}</h1>
@@ -27,6 +29,6 @@ export default async function SignIn({ searchParams }: { searchParams: Promise<{
       </p>}
     </header>
     {/* Better Auth sends a login that failed on its side here with ?error=<code> (errorCallbackURL, onAPIError.errorURL): every code is the one message. */}
-    <SignInForm returnTo={returnTo} github={github} sid={sid} authError={params.error !== undefined} />
+    <SignInForm returnTo={returnTo} github={github} sid={sid} demo={demo} authError={params.error !== undefined} />
   </PageMain>
 }

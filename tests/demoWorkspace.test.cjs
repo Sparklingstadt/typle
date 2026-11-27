@@ -42,3 +42,11 @@ test('an official pack gone from the catalog is left out of the demo sample, not
 test('the demo sample is the same for the same time', () => {
   assert.deepEqual(demoWorkspace(now), demoWorkspace(now))
 })
+
+test('the demo runs that were not perfect name their missed words, so the weak words have some', () => {
+  const records = demoWorkspace(now).lists.flatMap(list => list.records ?? [])
+  const missed = records.filter(record => record.accuracy < 100)
+  assert.ok(missed.length > 0)
+  for (const record of missed) assert.ok(record.missed?.length > 0, record.id)
+  assert.ok(records.some(record => record.missed?.some(item => item.word === 'idempotent')))
+})

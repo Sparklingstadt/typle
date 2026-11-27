@@ -39,6 +39,9 @@ export default defineConfig({
         AUTH_SID_ISSUER: 'http://127.0.0.1:3197',
         AUTH_SID_ID: 'e2e',
         AUTH_SID_SECRET: 'e2e',
+        // The shared demo account and the secret of its daily reset (tests/e2e/demo-login.spec.ts).
+        DEMO_LOGIN: '1',
+        CRON_SECRET: 'e2e-cron',
       },
       command: 'node node_modules/next/dist/bin/next start -p 3101 -H 127.0.0.1',
       url: 'http://127.0.0.1:3101',

@@ -4,6 +4,8 @@
   "signInIntro": "Sign in with a <b>Sparklingstadt ID</b> or <b>GitHub</b> account. Sparklingstadt ID is one account you can use across Sparklingstadt services.",
   "signInWithSid": "Sign in with Sparklingstadt ID",
   "signInWithGitHub": "Sign in with GitHub",
+  "signInDemo": "Try the demo account",
+  "demoNote": "Try it without an account. The demo account is shared by every visitor, so what you enter is visible to others. It is reset every day at 4:00 (Japan time).",
   "signInNote": "Your lists and practice records are saved to the account you sign in with. Next time, sign in the same way.",
   "signInFailed": "Could not sign in. Please try again.",
   "githubUser": "GitHub user",

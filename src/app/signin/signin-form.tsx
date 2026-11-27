@@ -1,13 +1,13 @@
 "use client"
 import { useState } from 'react'
-import { LogIn } from 'lucide-react'
+import { LogIn, UserRound } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
-import { signInWithGitHub, signInWithSid } from '@/lib/session'
+import { signInDemo, signInWithGitHub, signInWithSid } from '@/lib/session'
 
-// The sign-in: Sparklingstadt ID and GitHub, the only logins.
-export default function SignInForm({ returnTo, github, sid, authError }: {
-  returnTo: string, github: boolean, sid: boolean, authError: boolean,
+// The sign-in: Sparklingstadt ID and GitHub, and the shared demo account for visitors who have neither.
+export default function SignInForm({ returnTo, github, sid, demo, authError }: {
+  returnTo: string, github: boolean, sid: boolean, demo: boolean, authError: boolean,
 }) {
   const t = useTranslations('account')
   const errors = useTranslations('errors')
@@ -32,7 +32,14 @@ export default function SignInForm({ returnTo, github, sid, authError }: {
     </Button>}
     {/* A Sparklingstadt ID and a GitHub login are separate accounts (accountLinking is off) unless the owner links them (npm run sid:link). */}
     {(sid || github) && <p className="text-xs text-muted-foreground">{t('signInNote')}</p>}
-    {!sid && !github && <p className="text-sm text-muted-foreground">{errors('authUnavailable')}</p>}
+    {/* The demo account is shared, and put back every day (src/server/demoReset.ts): the note says so before it is used. */}
+    {demo && <div className={(sid || github) ? 'space-y-2 border-t pt-4' : 'space-y-2'}>
+      <Button size="lg" className="w-full" variant="outline" disabled={busy} onClick={start(signInDemo)}>
+        <UserRound aria-hidden="true" />{t('signInDemo')}
+      </Button>
+      <p className="text-xs text-muted-foreground">{t('demoNote')}</p>
+    </div>}
+    {!sid && !github && !demo && <p className="text-sm text-muted-foreground">{errors('authUnavailable')}</p>}
     {failed && <p role="alert" className="text-sm text-destructive">{t('signInFailed')}</p>}
   </div>
 }

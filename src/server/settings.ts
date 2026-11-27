@@ -1,3 +1,5 @@
+import { demoConfigured } from '../lib/demoLogin'
+
 // The login settings that the Route Handlers need: AUTH_URL, whose origin is the only one a write may come from.
 
 export type LoginSettings = {
@@ -26,7 +28,7 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
   return {
     origin: base.origin,
     localLogin: env.VERCEL !== '1' && localLoginAllowed(env, base),
-    demoLogin: env.DEMO_LOGIN === '1',
+    demoLogin: demoConfigured(env),
     secure: base.protocol === 'https:',
   }
 }

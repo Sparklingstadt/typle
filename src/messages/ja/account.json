@@ -4,6 +4,8 @@
   "signInIntro": "<b>Sparklingstadt ID</b>または<b>GitHub</b>のアカウントでログインできます。Sparklingstadt IDは、Sparklingstadtのサービスで共通して使えるアカウントです。",
   "signInWithSid": "Sparklingstadt IDでログイン",
   "signInWithGitHub": "GitHubでログイン",
+  "signInDemo": "デモアカウントで試す",
+  "demoNote": "アカウントがなくても試せます。見学に来た方みんなで使う共有のアカウントなので、入力した内容はほかの人にも見えます。毎日 4:00（日本時間）に元に戻ります。",
   "signInNote": "ログインに使ったアカウントごとに、リストと練習記録が保存されます。次からも同じ方法でログインしてください。",
   "signInFailed": "ログインできませんでした。もう一度お試しください。",
   "githubUser": "GitHubユーザー",
