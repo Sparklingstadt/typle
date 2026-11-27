@@ -25,14 +25,26 @@ test('the demo sample has lists of its own, with words, and follows two official
   for (const list of own) assert.ok(list.words.length >= 5, `${list.name}: ${list.words.length} words`)
 })
 
-test('every demo record is from the week before now, so this week\'s summary has them', () => {
-  const records = demoWorkspace(now).lists.flatMap(list => list.records ?? [])
-  assert.ok(records.length >= 10, `${records.length} records`)
-  for (const record of records) {
-    const at = Date.parse(record.date)
-    assert.ok(at <= now.getTime() && at > now.getTime() - 7 * day, record.date)
-  }
-})
+/** Monday 00:00 in Japan of the week of at: the week the dashboard shows to a viewer there. */
+const weekStartInJapan = (at) => {
+  const japan = new Date(at.getTime() + 9 * 60 * 60 * 1000)
+  const monday = Date.UTC(japan.getUTCFullYear(), japan.getUTCMonth(), japan.getUTCDate()) - ((japan.getUTCDay() + 6) % 7) * day
+  return monday - 9 * 60 * 60 * 1000
+}
+
+// The cron runs at 4:00 in Japan: a Monday reset leaves the least of the week, a Thursday one more, and the first
+// login may come just after midnight.
+for (const [when, iso] of [['Monday', '2026-11-29T19:00:00Z'], ['Thursday', '2026-12-02T19:00:00Z'], ['Monday just after midnight', '2026-11-29T15:10:00Z']]) {
+  test(`the demo records of a ${when} reset fill this week in Japan, with some the week before`, () => {
+    const at = new Date(iso)
+    const start = weekStartInJapan(at)
+    const dates = demoWorkspace(at).lists.flatMap(list => list.records ?? []).map(record => Date.parse(record.date))
+    assert.ok(dates.length >= 10, `${dates.length} records`)
+    for (const date of dates) assert.ok(date <= at.getTime() && date > start - 7 * day, new Date(date).toISOString())
+    assert.ok(dates.filter(date => date >= start).length >= 8, 'this week')
+    assert.ok(dates.some(date => date < start), 'last week')
+  })
+}
 
 test('an official pack gone from the catalog is left out of the demo sample, not an error', () => {
   const { packs } = demoWorkspace(now, ['pack-english-basic-words', 'pack-no-such-pack'])

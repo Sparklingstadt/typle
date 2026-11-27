@@ -1,9 +1,13 @@
+import { demoConfigured } from '../lib/demoLogin'
 import { reportFailure } from './report'
 import { refuse } from './response'
 
 // Who a request is signed in as: the Better Auth session its cookie names (src/server/betterAuth.ts). Signing out of
 // every device deletes the user's session rows (src/server/accountApi.ts), the one way to stop a stolen cookie before
 // it expires; the cookie cache (5 minutes) is the longest another device can still be read as signed in.
+
+/** The shared demo account's ID (src/server/demoLogin.ts makes it). */
+const DEMO_ACCOUNT_ID = 'demo:shared'
 
 /** The signed-in user of a request, as the routes use it: sub is the account ID (the owner_id of its data). */
 export type SessionUser = { sub: string, name: string, image: string }
@@ -34,5 +38,7 @@ export async function signedIn(request: Request, read: ReadSession = betterAuthS
   }
   if (!session) return { refusal: refuse(401, 'loginRequired') }
   const { id, name, image } = session.user
+  // The shared demo account's sessions stop working when its login is turned off (DEMO_LOGIN), not only new logins.
+  if (id === DEMO_ACCOUNT_ID && !demoConfigured()) return { refusal: refuse(401, 'loginRequired') }
   return { user: { sub: id, name, image: image ?? '' } }
 }

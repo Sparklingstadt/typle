@@ -153,6 +153,8 @@ test('the shared demo account cannot sign out of every device, which would sign 
   const token = randomBytes(24).toString('base64url')
   await sql.query('INSERT INTO typle_auth_sessions (id, expires_at, token, user_id) VALUES ($1, now() + interval \'1 hour\', $2, $3)', [token.slice(0, 12), token, id])
   const cookie = `better-auth.session_token=${encodeURIComponent(`${token}.${createHmac('sha256', secret).update(token).digest('base64')}`)}`
+  const demo = process.env.DEMO_LOGIN
+  process.env.DEMO_LOGIN = '1'
   try {
     const before = await sessionsOf(id)
     const revoked = []
@@ -163,6 +165,31 @@ test('the shared demo account cannot sign out of every device, which would sign 
     assert.deepEqual(revoked, [])
     assert.equal(await sessionsOf(id), before)
   } finally {
+    if (demo === undefined) delete process.env.DEMO_LOGIN
+    else process.env.DEMO_LOGIN = demo
+    await sql.query('DELETE FROM typle_auth_sessions WHERE token = $1', [token])
+  }
+})
+
+test('a demo session signs no one in once the demo login is turned off', database, async () => {
+  const id = 'demo:shared'
+  const made = await sql.query(`INSERT INTO typle_auth_users (id, name, email, email_verified, image) VALUES ($1, 'デモアカウント', $2, true, '')
+    ON CONFLICT (id) DO NOTHING`, [id, `${id}@users.invalid`])
+  if (made.rowCount === 1) users.push(id)
+  const token = randomBytes(24).toString('base64url')
+  await sql.query('INSERT INTO typle_auth_sessions (id, expires_at, token, user_id) VALUES ($1, now() + interval \'1 hour\', $2, $3)', [token.slice(0, 12), token, id])
+  const cookie = `better-auth.session_token=${encodeURIComponent(`${token}.${createHmac('sha256', secret).update(token).digest('base64')}`)}`
+  const before = process.env.DEMO_LOGIN
+  try {
+    process.env.DEMO_LOGIN = '1'
+    assert.equal((await signedIn(request({ Cookie: cookie }), undefined, { fresh: true })).user.sub, id)
+    delete process.env.DEMO_LOGIN
+    const off = await signedIn(request({ Cookie: cookie }), undefined, { fresh: true })
+    assert.equal(off.refusal.status, 401)
+    assert.equal(await off.refusal.text(), '{"error":"loginRequired"}\n')
+  } finally {
+    if (before === undefined) delete process.env.DEMO_LOGIN
+    else process.env.DEMO_LOGIN = before
     await sql.query('DELETE FROM typle_auth_sessions WHERE token = $1', [token])
   }
 })

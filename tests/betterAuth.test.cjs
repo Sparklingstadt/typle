@@ -84,3 +84,34 @@ test('the session read has a high rate limit, since every page of a shared addre
   assert.deepEqual(rules['/sign-in/social'], { window: 60, max: 100 })
   assert.deepEqual(rules['/sign-in/demo'], { window: 60, max: 20 })
 })
+
+// A demo session lasts 2 days, not 30: it outlives one daily reset, and the sessions of the shared account do not
+// pile up for a month (the reset deletes the ended ones).
+test('a demo login starts a session of the shared account that lasts 2 days', database, async () => {
+  const context = await auth.$context
+  const existed = await context.internalAdapter.findUserById('demo:shared')
+  const before = process.env.DEMO_LOGIN
+  process.env.DEMO_LOGIN = '1'
+  let token
+  try {
+    const response = await auth.handler(new Request('http://127.0.0.1:3101/api/auth/sign-in/demo', {
+      method: 'POST', headers: { Origin: 'http://127.0.0.1:3101' },
+    }))
+    assert.equal(response.status, 200)
+    assert.equal((await response.json()).user.id, 'demo:shared')
+    token = decodeURIComponent(/better-auth\.session_token=([^;]+)/.exec(response.headers.get('set-cookie'))[1]).split('.')[0]
+    const session = await context.internalAdapter.findSession(token)
+    const days = (session.session.expiresAt - session.session.createdAt) / (24 * 3600 * 1000)
+    assert.ok(Math.abs(days - 2) < 0.01, `${days} days`)
+  } finally {
+    if (before === undefined) delete process.env.DEMO_LOGIN
+    else process.env.DEMO_LOGIN = before
+    if (token) await context.internalAdapter.deleteSession(token)
+    if (!existed) {
+      ids.push('demo:shared')
+      const { prisma } = require('../src/server/database.ts')
+      await prisma().record.deleteMany({ where: { ownerId: 'demo:shared' } })
+      await prisma().workspace.deleteMany({ where: { ownerId: 'demo:shared' } })
+    }
+  }
+})

@@ -47,6 +47,20 @@ test('a reset puts back what a visitor changed, with a higher revision, and an o
   await assert.rejects(writeWorkspace(db, owner, changed.revision, { interests: [] }), Conflict)
 })
 
+test('a reset deletes the demo account\'s ended sessions and keeps the live ones', database, async () => {
+  const owner = newOwner()
+  await sql.query(`INSERT INTO typle_auth_users (id, name, email, email_verified, image) VALUES ($1, 'N', $2, true, '')`, [owner, `${owner}@users.invalid`])
+  try {
+    await sql.query(`INSERT INTO typle_auth_sessions (id, expires_at, token, user_id) VALUES
+      ($1, now() - interval '1 hour', $1, $3), ($2, now() + interval '1 hour', $2, $3)`, [`ended-${owner}`, `live-${owner}`, owner])
+    await resetDemoWorkspace(db, now, owner)
+    const left = (await sql.query('SELECT token FROM typle_auth_sessions WHERE user_id = $1', [owner])).rows.map(row => row.token)
+    assert.deepEqual(left, [`live-${owner}`])
+  } finally {
+    await sql.query('DELETE FROM typle_auth_users WHERE id = $1', [owner])
+  }
+})
+
 // The cron's request: GET with the secret, as Vercel Cron sends it.
 const on = { DEMO_LOGIN: '1', CRON_SECRET: 'cron-secret' }
 const request = (authorization, method = 'GET') =>

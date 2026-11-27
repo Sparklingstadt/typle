@@ -7,7 +7,7 @@ import type { WorkspaceChange } from '../lib/workspaceDocument'
 
 // The sample the shared demo account starts from and is put back to every day (src/server/demoReset.ts): two lists of
 // its own with a week of practice, two followed official packs and interests already chosen (so the welcome tour is
-// done). Every value is fixed but the dates, which are counted back from now so that this week's summary has them.
+// done). Every value is fixed but the dates, which are placed in this week and the one before in Japan (times).
 
 /** The official packs the demo follows: one of programming, one of languages. */
 export const DEMO_FOLLOWED = ['pack-0b27f311-38aa-40aa-9c29-ea17e374e1fe', 'pack-english-basic-words']
@@ -18,14 +18,36 @@ const DAY = 24 * 60 * MINUTE
 
 const word = (input: string, annotation: string) => ({ input, display: input, annotation })
 
-/** A run of the list, ago before now, that went wrong once on each of missed (none for a perfect run). */
-const run = (id: string, now: Date, ago: number, time: number, accuracy: number, wordCount: number, missed: string[] = []): PracticeRecord => ({
-  id, time, accuracy, mistakes: missed.length, wordCount, date: new Date(now.getTime() - ago).toISOString(), device: DEVICE,
+/** A run of the list at the time at, that went wrong once on each of missed (none for a perfect run). */
+const run = (id: string, at: number, time: number, accuracy: number, wordCount: number, missed: string[] = []): PracticeRecord => ({
+  id, time, accuracy, mistakes: missed.length, wordCount, date: new Date(at).toISOString(), device: DEVICE,
   ...(missed.length ? { missed: missed.map(word => ({ word, count: 1 })) } : {}),
 })
 
+/** Japan's offset from UTC: the cron resets at 4:00 there, and the dashboard's week starts on Monday at 0:00. */
+const JAPAN = 9 * 60 * MINUTE
+
+/** Monday 0:00 in Japan of the week of now. */
+function weekStart(now: Date): number {
+  const japan = new Date(now.getTime() + JAPAN)
+  const midnight = Date.UTC(japan.getUTCFullYear(), japan.getUTCMonth(), japan.getUTCDate())
+  return midnight - ((japan.getUTCDay() + 6) % 7) * DAY - JAPAN
+}
+
+/**
+ * When the runs fall: eight between Monday 0:00 in Japan and now, spread evenly (so a reset on any day fills this
+ * week's summary), and three in the week before (so its comparison with last week has something to compare).
+ */
+function times(now: Date) {
+  const start = weekStart(now)
+  const thisWeek = (slot: number) => start + (now.getTime() - start) * slot / 9
+  const lastWeek = (daysBefore: number) => start - daysBefore * DAY + 21 * 60 * MINUTE
+  return { start, thisWeek, lastWeek }
+}
+
 function ownLists(now: Date): SavedWordList[] {
-  const created = new Date(now.getTime() - 6 * DAY).toISOString()
+  const { start, thisWeek, lastWeek } = times(now)
+  const created = new Date(start - 7 * DAY).toISOString()
   return [
     {
       id: 'demo-git', name: 'よく使う Git コマンド', group: 'Git', category: 'プログラミング', tags: ['Git'], createdAt: created, // i18n-ignore: sample data
@@ -36,9 +58,9 @@ function ownLists(now: Date): SavedWordList[] {
         word('git stash', '変更を一時的に退避する'), // i18n-ignore
       ],
       records: [
-        run('demo-git-1', now, 6 * DAY - 3 * 60 * MINUTE, 42.8, 91.4, 7, ['git rebase -i', 'git commit --amend']), run('demo-git-2', now, 5 * DAY, 38.1, 94.2, 7, ['git rebase -i']),
-        run('demo-git-3', now, 3 * DAY + 40 * MINUTE, 33.5, 97.1, 7, ['git add -p']), run('demo-git-4', now, 2 * DAY, 31.9, 97.6, 7, ['git rebase -i']),
-        run('demo-git-5', now, DAY + 10 * MINUTE, 29.4, 100, 7), run('demo-git-6', now, 2 * 60 * MINUTE, 27.6, 100, 7),
+        run('demo-git-1', lastWeek(3), 42.8, 91.4, 7, ['git rebase -i', 'git commit --amend']), run('demo-git-2', lastWeek(1), 38.1, 94.2, 7, ['git rebase -i']),
+        run('demo-git-3', thisWeek(1), 33.5, 97.1, 7, ['git add -p']), run('demo-git-4', thisWeek(3), 31.9, 97.6, 7, ['git rebase -i']),
+        run('demo-git-5', thisWeek(5), 29.4, 100, 7), run('demo-git-6', thisWeek(7), 27.6, 100, 7),
       ],
     },
     {
@@ -48,9 +70,9 @@ function ownLists(now: Date): SavedWordList[] {
         word('latency', '遅延'), word('throughput', '処理量'), word('fallback', '代わりの手段'), // i18n-ignore
       ],
       records: [
-        run('demo-words-1', now, 5 * DAY + 2 * 60 * MINUTE, 35.2, 88.9, 6, ['idempotent', 'throughput']), run('demo-words-2', now, 4 * DAY, 30.7, 93.8, 6, ['idempotent']),
-        run('demo-words-3', now, 3 * DAY, 28.3, 95.5, 6, ['deprecate']), run('demo-words-4', now, DAY, 26.1, 97.0, 6, ['idempotent']),
-        run('demo-words-5', now, 30 * MINUTE, 24.8, 100, 6),
+        run('demo-words-1', lastWeek(2), 35.2, 88.9, 6, ['idempotent', 'throughput']), run('demo-words-2', thisWeek(2), 30.7, 93.8, 6, ['idempotent']),
+        run('demo-words-3', thisWeek(4), 28.3, 95.5, 6, ['deprecate']), run('demo-words-4', thisWeek(6), 26.1, 97.0, 6, ['idempotent']),
+        run('demo-words-5', thisWeek(8), 24.8, 100, 6),
       ],
     },
   ]

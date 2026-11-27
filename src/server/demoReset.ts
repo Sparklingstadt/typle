@@ -15,9 +15,11 @@ const ATTEMPTS = 3
 /**
  * Writes the sample over owner's workspace as a save would (writeWorkspace): its records become the sample's, and the
  * revision goes up, never back to 1, so that a screen still open on the old data gets a conflict and reads it again.
- * The sessions are left alone: a visitor stays signed in and sees the sample on the next read.
+ * The live sessions are left alone (a visitor stays signed in and sees the sample on the next read); ended ones are deleted.
  */
 export async function resetDemoWorkspace(db: Db, now = new Date(), owner = DEMO_USER.id): Promise<SavedWorkspace> {
+  // Better Auth deletes an ended session only when it is read again; the demo's are many and short (2 days).
+  await db.authSession.deleteMany({ where: { userId: owner, expiresAt: { lt: now } } })
   for (let attempt = 1; ; attempt++) {
     const saved = await readWorkspace(db, owner)
     try {

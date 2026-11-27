@@ -11,6 +11,9 @@ import { DEMO_LOGIN_PATH } from './authPaths'
 /** The shared demo account. */
 export const DEMO_USER = { id: 'demo:shared', name: 'デモアカウント', image: '' } // i18n-ignore: a stored account name
 
+/** How long a demo login lasts. */
+const DEMO_SESSION_MS = 2 * 24 * 60 * 60 * 1000
+
 /**
  * A Better Auth plugin with the demo login's endpoint. It makes the user demo:shared the first time, through Better
  * Auth's own user creation (so that the user-create hook gives it its ID from the made-up address), calls created
@@ -30,7 +33,9 @@ export function demoLogin(enabled: () => boolean, created: () => Promise<unknown
           }, { method: 'demo-login' })
           await created()
         }
-        const session = await adapter.createSession(user.id)
+        // 2 days instead of the usual 30: long enough to outlive one daily reset, short enough that the shared
+        // account's sessions do not pile up (the reset deletes the ended ones).
+        const session = await adapter.createSession(user.id, false, { expiresAt: new Date(Date.now() + DEMO_SESSION_MS) }, true)
         await setSessionCookie(ctx, { session, user })
         return ctx.json({ user: { id: user.id, name: user.name, image: user.image ?? '' } })
       }),
