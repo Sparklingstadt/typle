@@ -108,9 +108,22 @@ function runAuth(env, script, prelude = '') {
 
 // The whole GitHub login against a GitHub stubbed at fetch: the account keeps its address private, and no scope asks
 // for it, so GitHub gives none; Better Auth would refuse such a login (email_not_found) without the made-up address.
-test('a GitHub login without an address makes the user github:<id>', database, () => {
-  const githubId = 9e8 + Math.floor(Math.random() * 1e8)
-  const result = runAuth({ AUTH_GITHUB_ID: 'test', AUTH_GITHUB_SECRET: 'test' }, `
+const githubStub = `
+  const realFetch = globalThis.fetch
+  const asked = []
+  // The profile the stubbed GitHub answers next: the account keeps its address private.
+  let profile = null
+  globalThis.fetch = async (input, init) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
+    asked.push(url)
+    if (url.startsWith('https://github.com/login/oauth/access_token')) return Response.json({ access_token: 'gho_test', refresh_token: 'ghr_test', expires_in: 28800, token_type: 'bearer', scope: '' })
+    if (url === 'https://api.github.com/user') return Response.json({ email: null, ...profile })
+    if (url === 'https://api.github.com/user/emails') return Response.json({ message: 'Not Found' }, { status: 404 })
+    return realFetch(input, init)
+  }
+  /** A GitHub login of next, as a browser makes it: its callback's answer, and the session it made. */
+  async function githubLogin(next) {
+    profile = next
     const start = await auth.handler(new Request(origin + '/api/auth/sign-in/social', { method: 'POST',
       headers: { 'Content-Type': 'application/json', Origin: origin },
       body: JSON.stringify({ provider: 'github', callbackURL: '/home', errorCallbackURL: '/signin' }) }))
@@ -119,29 +132,56 @@ test('a GitHub login without an address makes the user github:<id>', database, (
     const back = await auth.handler(new Request(origin + '/api/auth/callback/github?code=c&state=' + state,
       { headers: { Cookie: cookiesOf(start) } }))
     const session = await auth.handler(new Request(origin + '/api/auth/get-session', { headers: { Cookie: cookiesOf(back) } }))
-    const context = await auth.$context
-    const user = await context.internalAdapter.findUserById('github:${githubId}')
-    if (user) await context.internalAdapter.deleteUser(user.id)
-    report({ status: back.status, location: back.headers.get('location'), session: await session.json(), user, asked })
-  `, `
-    const realFetch = globalThis.fetch
-    const asked = []
-    globalThis.fetch = async (input, init) => {
-      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url
-      asked.push(url)
-      if (url.startsWith('https://github.com/login/oauth/access_token')) return Response.json({ access_token: 'gho_test', token_type: 'bearer', scope: '' })
-      if (url === 'https://api.github.com/user') return Response.json({ id: ${githubId}, login: 'octo', name: null, email: null, avatar_url: 'https://avatars.example/1' })
-      if (url === 'https://api.github.com/user/emails') return Response.json({ message: 'Not Found' }, { status: 404 })
-      return realFetch(input, init)
-    }
-  `)
-  assert.equal(result.status, 302)
-  assert.equal(result.location, '/home')
-  assert.equal(result.session.user.id, `github:${githubId}`)
-  assert.equal(result.session.user.name, 'octo')
-  assert.equal(result.user.email, `github:${githubId}@users.invalid`)
-  assert.equal(result.user.image, 'https://avatars.example/1')
+    return { status: back.status, location: back.headers.get('location'), session: await session.json() }
+  }
+  const db = () => require('./src/server/database.ts').prisma()
+  const userRow = async id => (await db().$queryRawUnsafe('SELECT name, image, email, email_verified FROM typle_auth_users WHERE id = $1', id))[0]
+  const tokensOf = id => db().$queryRawUnsafe('SELECT access_token, refresh_token, id_token, access_token_expires_at, refresh_token_expires_at FROM typle_auth_accounts WHERE user_id = $1', id)
+`
+const noTokens = { access_token: null, refresh_token: null, id_token: null, access_token_expires_at: null, refresh_token_expires_at: null }
+
+// The whole GitHub login against a GitHub stubbed at fetch: the account keeps its address private, and no scope asks
+// for it, so GitHub gives none; Better Auth would refuse such a login (email_not_found) without the made-up address.
+test('a GitHub login without an address makes the user github:<id>, keeping no token', database, () => {
+  const githubId = 9e8 + Math.floor(Math.random() * 1e8)
+  const result = runAuth({ AUTH_GITHUB_ID: 'test', AUTH_GITHUB_SECRET: 'test' }, `
+    const id = 'github:${githubId}'
+    try {
+      const first = await githubLogin({ id: ${githubId}, login: 'octo', name: null, avatar_url: 'https://avatars.example/1' })
+      const created = { user: await userRow(id), tokens: await tokensOf(id) }
+      // The second login takes the account's update path.
+      const second = await githubLogin({ id: ${githubId}, login: 'octo', name: 'Mona', avatar_url: 'https://avatars.example/2' })
+      report({ first, created, second, updated: { user: await userRow(id), tokens: await tokensOf(id) }, asked })
+    } finally { await (await auth.$context).internalAdapter.deleteUser(id) }
+  `, githubStub)
+  assert.equal(result.first.status, 302)
+  assert.equal(result.first.location, '/home')
+  assert.equal(result.first.session.user.id, `github:${githubId}`)
+  assert.deepEqual(result.created.user,
+    { name: 'octo', image: 'https://avatars.example/1', email: `github:${githubId}@users.invalid`, email_verified: true })
+  assert.deepEqual(result.created.tokens, [noTokens])
+  assert.equal(result.second.session.user.id, `github:${githubId}`)
+  assert.deepEqual(result.updated.user,
+    { name: 'Mona', image: 'https://avatars.example/2', email: `github:${githubId}@users.invalid`, email_verified: true })
+  assert.deepEqual(result.updated.tokens, [noTokens])
   assert.ok(result.asked.includes('https://api.github.com/user'))
+})
+
+// An account imported from the login before (migration 0043) has no name; its first login gives it the profile's.
+test('a GitHub login of an imported account fills in its name and picture, not its address', database, () => {
+  const githubId = 9e8 + Math.floor(Math.random() * 1e8)
+  const result = runAuth({ AUTH_GITHUB_ID: 'test', AUTH_GITHUB_SECRET: 'test' }, `
+    const id = 'github:${githubId}'
+    try {
+      await db().$executeRawUnsafe("INSERT INTO typle_auth_users (id, name, email, email_verified) VALUES ($1, '', $2, true)", id, id + '@users.invalid')
+      await db().$executeRawUnsafe("INSERT INTO typle_auth_accounts (id, account_id, provider_id, user_id) VALUES ($1, $2, 'github', $3)", 'test-' + ${githubId}, '${githubId}', id)
+      const login = await githubLogin({ id: ${githubId}, login: 'owner', name: ' Owner ', avatar_url: 'https://avatars.example/3' })
+      report({ login, user: await userRow(id), tokens: await tokensOf(id) })
+    } finally { await (await auth.$context).internalAdapter.deleteUser(id) }
+  `, githubStub)
+  assert.equal(result.login.session.user.id, `github:${githubId}`)
+  assert.deepEqual(result.user, { name: 'Owner', image: 'https://avatars.example/3', email: `github:${githubId}@users.invalid`, email_verified: true })
+  assert.deepEqual(result.tokens, [noTokens])
 })
 
 const localLoginScript = `

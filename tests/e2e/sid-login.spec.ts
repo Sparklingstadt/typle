@@ -54,6 +54,11 @@ async function signInWithSid(page: Page): Promise<string> {
 const sessionUser = async (page: Page) =>
   (await (await page.request.get('/api/auth/get-session')).json() as { user?: { id: string, name: string } } | null)?.user ?? null
 
+/** The provider tokens kept on the user's account rows: none, as the app uses none and the ID token holds the address. */
+const keptTokens = (userId: string) => withDatabase(async pool => (await pool.query(
+  `SELECT 1 FROM typle_auth_accounts WHERE user_id = $1 AND (access_token IS NOT NULL OR refresh_token IS NOT NULL
+    OR id_token IS NOT NULL OR access_token_expires_at IS NOT NULL OR refresh_token_expires_at IS NOT NULL)`, [userId])).rowCount)
+
 const reloginCookie = async (page: Page) =>
   (await page.context().cookies(origin)).find(cookie => cookie.name === 'typle-sid-relogin')?.value
 
@@ -70,11 +75,13 @@ test('sid login of a new sub makes sid:<sub>', async ({ page }) => {
   const row = await withDatabase(async pool => (await pool.query(
     'SELECT email, email_verified FROM typle_auth_users WHERE id = $1', [`sid:${sub}`])).rows[0])
   expect(row).toEqual({ email: `sid:${sub}@users.invalid`, email_verified: true })
+  expect(await keptTokens(`sid:${sub}`)).toBe(0)
 })
 
 test('sid login of a linked sub opens the github account', async ({ page }) => {
   await withDatabase(async pool => {
-    await pool.query(`INSERT INTO typle_auth_users (id, name, email, email_verified) VALUES ($1, 'Owner', $2, true)`,
+    // As migration 0043 imports the owner: no name yet.
+    await pool.query(`INSERT INTO typle_auth_users (id, name, email, email_verified) VALUES ($1, '', $2, true)`,
       [linkedTo, `${linkedTo}@users.invalid`])
     await pool.query(`INSERT INTO typle_auth_accounts (id, account_id, provider_id, user_id) VALUES
       ($1, $2, 'github', $4), ($3, $5, 'sid', $4)`,
@@ -83,7 +90,12 @@ test('sid login of a linked sub opens the github account', async ({ page }) => {
   })
   await nextIdentity()
   expect(await signInWithSid(page)).toBe('/home')
-  expect(await sessionUser(page)).toMatchObject({ id: linkedTo, name: 'Owner' })
+  // The login names the user after the ID, and leaves its address the one made from its own ID.
+  expect(await sessionUser(page)).toMatchObject({ id: linkedTo, name: 'Ann' })
+  const row = await withDatabase(async pool => (await pool.query(
+    'SELECT name, email, email_verified FROM typle_auth_users WHERE id = $1', [linkedTo])).rows[0])
+  expect(row).toEqual({ name: 'Ann', email: `${linkedTo}@users.invalid`, email_verified: true })
+  expect(await keptTokens(linkedTo)).toBe(0)
   // No user sid:<sub> is made beside it.
   const own = await withDatabase(async pool => (await pool.query('SELECT 1 FROM typle_auth_users WHERE id = $1', [`sid:${sub}`])).rowCount)
   expect(own).toBe(0)
@@ -114,6 +126,8 @@ test('sid login after sign-out asks for the password again', async ({ page }) =>
   expect(await reloginCookie(page)).toBeUndefined()
   expect(await signInWithSid(page)).toBe('/home')
   expect((await lastAuthorization()).prompt).toBeUndefined()
+  // Logins of an existing account (the update of its row) keep no token either.
+  expect(await keptTokens(`sid:${sub}`)).toBe(0)
 })
 
 test('a refused sid login keeps asking for the password', async ({ page }) => {

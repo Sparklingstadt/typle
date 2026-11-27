@@ -20,6 +20,8 @@ const settings = betterAuthSettings(building ? { BETTER_AUTH_SECRET: 'build-time
 if (!settings) throw new Error('BETTER_AUTH_SECRET must be set, and AUTH_URL must be an http(s) URL')
 
 const MONTH_SECONDS = 30 * 24 * 60 * 60
+/** The provider's tokens of an account row, cleared before it is written. */
+const NO_TOKENS = { accessToken: null, refreshToken: null, idToken: null, accessTokenExpiresAt: null, refreshTokenExpiresAt: null }
 const origin = settings ? new URL(settings.baseURL).origin : ''
 const secure = origin.startsWith('https:')
 /** Whether the development login is on, read on every request as Auth.js's Credentials provider did. */
@@ -44,6 +46,8 @@ const sidProvider = () => genericOAuth({
     requireIdTokenVerification: true,
     authentication: 'basic',
     disableProviderLogout: true,
+    // The name follows the ID at each login (the address does not: see databaseHooks).
+    overrideUserInfo: true,
     getUserInfo: async tokens => sidAccountInfo(tokens),
   }],
 })
@@ -72,6 +76,8 @@ export const auth = betterAuth({
       clientSecret: process.env.AUTH_GITHUB_SECRET ?? '',
       // No scope: the app only needs to know who the user is, as before. The address is made up (githubUser).
       disableDefaultScope: true,
+      // The name and the picture follow the GitHub profile at each login (the address does not: see databaseHooks).
+      overrideUserInfoOnSignIn: true,
       mapProfileToUser: profile => {
         const { id: _id, ...user } = githubUser(profile)
         return user
@@ -114,6 +120,21 @@ export const auth = betterAuth({
           return { data: { ...user, id, email: accountEmail(id), emailVerified: true } }
         },
       },
+      update: {
+        // A login copies the provider's name and picture onto the user (overrideUserInfo), and with them its address,
+        // which is the one made from the login's own account ID: a Sparklingstadt ID linked to github:<n> would give
+        // that user the address of sid:<sub>. A user's address is made from its ID once, at its creation, and never
+        // changes; a blank name leaves the name as it is. (undefined is a field the update leaves alone.)
+        before: async user => ({
+          data: { ...user, email: undefined, emailVerified: undefined, ...(user.name?.trim() ? {} : { name: undefined }) },
+        }),
+      },
+    },
+    account: {
+      // The app uses no provider token after the login, and Sparklingstadt ID's ID token carries the real address and
+      // name: none of them is kept, so the account row holds only which login belongs to which user.
+      create: { before: async account => ({ data: { ...account, ...NO_TOKENS } }) },
+      update: { before: async account => ({ data: { ...account, ...NO_TOKENS } }) },
     },
   },
 })
