@@ -1,14 +1,65 @@
 import { test, expect } from '@playwright/test'
-import { deleteWorkspace, newAccountId, origin, signIn, withDatabase } from './account'
+import { cookieName, deleteWorkspace, newAccountId, origin, sessionFor, signIn, withDatabase } from './account'
 
 let accountId = ''
 test.beforeEach(() => { accountId = newAccountId() })
-test.afterEach(async () => {
-  await deleteWorkspace(accountId)
-  await withDatabase(pool => pool.query('DELETE FROM typle_session_revocations WHERE owner_id = $1', [accountId]))
+test.afterEach(() => deleteWorkspace(accountId))
+
+// The e2e login sets no session_data cookie (the cookie cache), so the server reads the database on every request: a
+// session that ended is refused at once, without waiting the 5 minutes the cache lasts in a real browser.
+const sessionCount = () => withDatabase(async pool =>
+  Number((await pool.query('SELECT count(*) FROM typle_auth_sessions WHERE user_id = $1', [accountId])).rows[0].count))
+
+test('signout everywhere ends the other browser\'s session', async ({ browser }) => {
+  const here = await browser.newContext()
+  const elsewhere = await browser.newContext()
+  try {
+    await signIn(here, accountId)
+    await signIn(elsewhere, accountId)
+    expect(await sessionCount()).toBe(2)
+    expect((await elsewhere.request.get('/api/workspace')).status()).toBe(200)
+
+    const refused = await here.request.post('/api/account/signout-everywhere')
+    expect(refused.status()).toBe(403)
+    const done = await here.request.post('/api/account/signout-everywhere', { headers: { Origin: origin } })
+    expect(done.status()).toBe(204)
+    expect(await sessionCount()).toBe(0)
+    // This browser's cookies are removed, and the sign-out leaves the cookie that makes the next Sparklingstadt ID login ask for the password.
+    expect((await here.cookies(origin)).find(cookie => cookie.name === cookieName)).toBeUndefined()
+    expect((await here.cookies(origin)).find(cookie => cookie.name === 'typle-sid-relogin')?.value).toBe('1')
+
+    // The other browser still holds its cookie, but its session is gone.
+    const gone = await elsewhere.request.get('/api/workspace')
+    expect(gone.status()).toBe(401)
+    expect(await gone.json()).toEqual({ error: 'loginRequired' })
+
+    // A new login is let in.
+    await signIn(elsewhere, accountId)
+    expect((await elsewhere.request.get('/api/workspace')).status()).toBe(200)
+    // Nor can it be done without a login.
+    expect((await here.request.post('/api/account/signout-everywhere', { headers: { Origin: origin } })).status()).toBe(401)
+  } finally {
+    await here.close()
+    await elsewhere.close()
+  }
 })
 
-test('signing out of every device signs out the other browsers too', async ({ browser }) => {
+test('a deleted session is signed out', async ({ context }) => {
+  await signIn(context, accountId)
+  expect((await context.request.get('/api/workspace')).status()).toBe(200)
+  await withDatabase(pool => pool.query('DELETE FROM typle_auth_sessions WHERE user_id = $1', [accountId]))
+  expect((await context.request.get('/api/workspace')).status()).toBe(401)
+})
+
+test('a login ends 30 days after it was made', async ({ context }) => {
+  const day = 24 * 3600 * 1000
+  await context.addCookies([{ name: cookieName, value: await sessionFor(accountId, 'E2E User', new Date(Date.now() + day)), url: origin }])
+  expect((await context.request.get('/api/workspace')).status()).toBe(200)
+  await withDatabase(pool => pool.query(`UPDATE typle_auth_sessions SET expires_at = now() - interval '1 second' WHERE user_id = $1`, [accountId]))
+  expect((await context.request.get('/api/workspace')).status()).toBe(401)
+})
+
+test('signing out of every device from the settings page signs out the other browsers too', async ({ browser }) => {
   const here = await browser.newContext()
   const elsewhere = await browser.newContext()
   try {
@@ -26,16 +77,11 @@ test('signing out of every device signs out the other browsers too', async ({ br
     await expect(page).toHaveURL(/\/home$/)
     await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()
 
-    // The other browser still holds its cookie, but it no longer reaches the account's data, and the cookie is removed.
+    // The other browser still holds its cookie, but its session is gone and it no longer reaches the account's data.
     const refused = await other.request.get('/api/workspace')
     expect(refused.status()).toBe(401)
     expect(await refused.json()).toEqual({ error: 'loginRequired' })
-    const cookies = await elsewhere.cookies(origin)
-    expect(cookies.find(cookie => cookie.name === 'typle-session')).toBeUndefined()
 
-    // A new login is let in. Its time is in whole seconds and one in the second of the revocation counts as revoked,
-    // so it is made in the next second.
-    await new Promise(resolve => setTimeout(resolve, 1100))
     await signIn(elsewhere, accountId)
     expect((await other.request.get('/api/workspace')).status()).toBe(200)
   } finally {

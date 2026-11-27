@@ -9,7 +9,7 @@ import { addRecord, deleteRecord, type RecordInput } from '../lib/records'
 import { type Library, repairLibrary } from '../lib/wordPacks'
 import { decodeDocument, type WorkspaceChange, type WorkspaceDocument } from '../lib/workspaceDocument'
 import { validateWorkspaceRequest } from '../lib/workspaceRequest'
-import { signedIn } from './account'
+import { signedIn, type ReadSession } from './account'
 import { type Db, type Tx, transaction } from './database'
 import { recordRows, syncRecords, withRecords } from './records'
 import { reportFailure } from './report'
@@ -260,8 +260,8 @@ export async function writeWorkspace(db: Db, owner: string, revision: number, ch
 const MAX_BODY_BYTES = 1 << 20
 
 /** GET /api/workspace: the owner's workspace as saved. */
-async function readWorkspaceAnswer(request: Request, db: Db, login: LoginSettings): Promise<Response> {
-  const account = await signedIn(request, db, login)
+async function readWorkspaceAnswer(request: Request, db: Db, readSession?: ReadSession): Promise<Response> {
+  const account = await signedIn(request, readSession)
   if ('refusal' in account) return account.refusal
   try {
     return reply(200, workspaceAnswer(await readWorkspace(db, account.user.sub), account.user.sub))
@@ -277,9 +277,9 @@ async function readWorkspaceAnswer(request: Request, db: Db, login: LoginSetting
  * object invalid, one that cannot be read workspaceSaveFailed, reported as operation), then its accountId, which must be
  * the login's (loginAccountChanged), so a screen that signed in as someone else is told so first.
  */
-async function readSaveRequest(request: Request, db: Db, login: LoginSettings, operation: string, invalid: string):
+async function readSaveRequest(request: Request, readSession: ReadSession | undefined, operation: string, invalid: string):
   Promise<{ owner: string, fields: Record<string, unknown> } | { refusal: Response }> {
-  const account = await signedIn(request, db, login)
+  const account = await signedIn(request, readSession)
   if ('refusal' in account) return account
   const owner = account.user.sub
   let body: ArrayBuffer
@@ -303,8 +303,8 @@ async function readSaveRequest(request: Request, db: Db, login: LoginSettings, o
 }
 
 /** PUT /api/workspace: checked as the Go backend's saveRequest and saveWorkspace checked it, in that order. */
-async function saveWorkspaceAnswer(request: Request, db: Db, login: LoginSettings): Promise<Response> {
-  const save = await readSaveRequest(request, db, login, 'workspace.write', 'invalidWorkspace')
+async function saveWorkspaceAnswer(request: Request, db: Db, readSession?: ReadSession): Promise<Response> {
+  const save = await readSaveRequest(request, readSession, 'workspace.write', 'invalidWorkspace')
   if ('refusal' in save) return save.refusal
   const { owner, fields } = save
   const read = readWorkspaceChange(fields)
@@ -323,7 +323,7 @@ async function saveWorkspaceAnswer(request: Request, db: Db, login: LoginSetting
  * /api/workspace: GET (and HEAD) reads the owner's workspace, PUT saves a change of it by revision. A save must come
  * from the app's own page; both need the login.
  */
-export async function answerWorkspace(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings): Promise<Response> {
+export async function answerWorkspace(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings, readSession?: ReadSession): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (request.method === 'PUT' && (!sameOrigin(request, login.origin) || !jsonContent(request))) return refuse(403, 'forbiddenRequest')
@@ -334,8 +334,8 @@ export async function answerWorkspace(request: Request, open: () => Db, settings
     reportFailure(request, error, 'workspace.open')
     return refuse(503, 'databaseUnavailable')
   }
-  if (request.method !== 'PUT') return readWorkspaceAnswer(request, db, login)
-  return saveWorkspaceAnswer(request, db, login)
+  if (request.method !== 'PUT') return readWorkspaceAnswer(request, db, readSession)
+  return saveWorkspaceAnswer(request, db, readSession)
 }
 
 /** The fields a record of POST /api/workspace/records may have: the Go backend's RecordInput. */
@@ -384,10 +384,10 @@ function recordRefusal(request: Request, error: unknown, operation: string): Res
  * answers the workspace as now saved with the record; DELETE {accountId, listId, recordId} deletes it, 200 also when it,
  * or its list, is already gone, and answers the workspace as now saved.
  */
-async function changeRecordAnswer(request: Request, db: Db, login: LoginSettings): Promise<Response> {
+async function changeRecordAnswer(request: Request, db: Db, readSession?: ReadSession): Promise<Response> {
   const adding = request.method === 'POST'
   const operation = adding ? 'record.add' : 'record.delete'
-  const save = await readSaveRequest(request, db, login, operation, 'invalidRecord')
+  const save = await readSaveRequest(request, readSession, operation, 'invalidRecord')
   if ('refusal' in save) return save.refusal
   const { owner, fields } = save
   let outcome: { result: { record: unknown, added: boolean } | null, saved: SavedWorkspace | null }
@@ -418,7 +418,7 @@ async function changeRecordAnswer(request: Request, db: Db, login: LoginSettings
 }
 
 /** /api/workspace/records, as answerWorkspace answers /api/workspace: POST adds a record, DELETE deletes one. */
-export async function answerRecords(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings): Promise<Response> {
+export async function answerRecords(request: Request, open: () => Db, settings: () => LoginSettings | null = readLoginSettings, readSession?: ReadSession): Promise<Response> {
   const login = settings()
   if (!login) return refuse(503, 'authUnavailable')
   if (!sameOrigin(request, login.origin) || !jsonContent(request)) return refuse(403, 'forbiddenRequest')
@@ -429,5 +429,5 @@ export async function answerRecords(request: Request, open: () => Db, settings: 
     reportFailure(request, error, 'workspace.open')
     return refuse(503, 'databaseUnavailable')
   }
-  return changeRecordAnswer(request, db, login)
+  return changeRecordAnswer(request, db, readSession)
 }

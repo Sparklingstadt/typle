@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { deleteWorkspace, newAccountId, origin, sessionFor, signIn, withDatabase } from './account'
+import { cookieName, deleteWorkspace, newAccountId, origin, sessionFor, signIn } from './account'
 import { openPacks } from './packRows'
 
 // What a signed-in user does on the screens reaches the account: the other signed-in specs seed and read through the
@@ -13,7 +13,6 @@ test.beforeEach(async ({ context }) => {
 })
 test.afterEach(async () => {
   await deleteWorkspace(accountId)
-  await withDatabase(pool => pool.query('DELETE FROM typle_session_revocations WHERE owner_id = $1', [accountId]))
 })
 
 type Saved = { revision: number, lists: { id: string, name: string, words: { display: string }[], records: { id: string }[] }[], packs: unknown }
@@ -120,7 +119,7 @@ test('an open screen shows itself signed out once the login was ended on another
   await expect(page.getByRole('button', { name: 'アカウントメニュー', exact: true })).toBeVisible()
 
   // Another device of the account signs out of every device; this browser keeps its cookie.
-  const elsewhere = await playwright.request.newContext({ baseURL: origin, extraHTTPHeaders: { Origin: origin, Cookie: `typle-session=${sessionFor(accountId)}` } })
+  const elsewhere = await playwright.request.newContext({ baseURL: origin, extraHTTPHeaders: { Origin: origin, Cookie: `${cookieName}=${await sessionFor(accountId)}` } })
   expect((await elsewhere.post('/api/account/signout-everywhere')).status()).toBe(204)
   await elsewhere.dispose()
 
