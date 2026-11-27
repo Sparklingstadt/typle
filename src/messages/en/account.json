@@ -1,8 +1,10 @@
 {
   "checking": "Checking sign-in status",
   "signIn": "Sign in",
+  "signInIntro": "Sign in with a <b>Sparklingstadt ID</b> or <b>GitHub</b> account. Sparklingstadt ID is one account you can use across Sparklingstadt services.",
   "signInWithSid": "Sign in with Sparklingstadt ID",
   "signInWithGitHub": "Sign in with GitHub",
+  "signInNote": "Your lists and practice records are saved to the account you sign in with. Next time, sign in the same way.",
   "signInFailed": "Could not sign in. Please try again.",
   "githubUser": "GitHub user",
   "ffpfUser": "FFPF ID user",

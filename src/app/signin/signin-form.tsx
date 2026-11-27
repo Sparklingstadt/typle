@@ -30,6 +30,8 @@ export default function SignInForm({ returnTo, github, sid, authError }: {
     {github && <Button size="lg" className="w-full" variant={sid ? 'outline' : 'default'} disabled={busy} onClick={start(signInWithGitHub)}>
       <LogIn aria-hidden="true" />{t('signInWithGitHub')}
     </Button>}
+    {/* A Sparklingstadt ID and a GitHub login are separate accounts (accountLinking is off) unless the owner links them (npm run sid:link). */}
+    {(sid || github) && <p className="text-xs text-muted-foreground">{t('signInNote')}</p>}
     {!sid && !github && <p className="text-sm text-muted-foreground">{errors('authUnavailable')}</p>}
     {failed && <p role="alert" className="text-sm text-destructive">{t('signInFailed')}</p>}
   </div>

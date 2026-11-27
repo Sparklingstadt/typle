@@ -1,8 +1,10 @@
 {
   "checking": "Проверка статуса входа",
   "signIn": "Войти",
+  "signInIntro": "Войдите с учётной записью <b>Sparklingstadt ID</b> или <b>GitHub</b>. Sparklingstadt ID — единая учётная запись для всех сервисов Sparklingstadt.",
   "signInWithSid": "Войти через Sparklingstadt ID",
   "signInWithGitHub": "Войти через GitHub",
+  "signInNote": "Списки и результаты тренировок сохраняются в той учётной записи, через которую вы вошли. В следующий раз входите тем же способом.",
   "signInFailed": "Не удалось войти. Повторите попытку.",
   "githubUser": "Пользователь GitHub",
   "ffpfUser": "Пользователь FFPF ID",

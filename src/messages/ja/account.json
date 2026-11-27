@@ -1,8 +1,10 @@
 {
   "checking": "ログイン状態を確認中",
   "signIn": "ログイン",
+  "signInIntro": "<b>Sparklingstadt ID</b>または<b>GitHub</b>のアカウントでログインできます。Sparklingstadt IDは、Sparklingstadtのサービスで共通して使えるアカウントです。",
   "signInWithSid": "Sparklingstadt IDでログイン",
   "signInWithGitHub": "GitHubでログイン",
+  "signInNote": "ログインに使ったアカウントごとに、リストと練習記録が保存されます。次からも同じ方法でログインしてください。",
   "signInFailed": "ログインできませんでした。もう一度お試しください。",
   "githubUser": "GitHubユーザー",
   "ffpfUser": "FFPF IDユーザー",
