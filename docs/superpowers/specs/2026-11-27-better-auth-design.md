@@ -33,7 +33,7 @@ typle-r のログイン（今は Auth.js、next-auth v5 beta）を Better Auth �
 **失敗とみなすもの（動いていても）**
 
 - 切り替えのあとに持ち主がログインすると、データのない別のアカウント（新しい ID）になる。
-- GitHub の OAuth アプリや ID サーバーの登録を変えないと、ログインできない。
+- GitHub の OAuth アプリの設定を変えないと、ログインできない（ID サーバーの登録に新しい callback の URL を足すのは、5 章の手順として行う）。
 - Sparklingstadt ID でログインしたときに、`email_verified` が true でない ID でも入れてしまう（今は断っています）。
 - ログアウトしたあと、次の Sparklingstadt ID のログインで、パスワードを聞かれずに ID サーバーから戻ってくる。今は Cookie `typle-sid-relogin` で `prompt=login` を付けています。
 - 本番で開発用のローカルログインが使えてしまう。
