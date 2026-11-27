@@ -19,23 +19,31 @@
     "next": "次へ",
     "interests": {
       "title": "関心を選ぶ",
-      "text": "練習したい言語や分野を選んでください。あとから「関心」で変えられます。"
+      "text": "選ぶたびに、右に最初の練習が並びます。あとから「関心」で変えられます。",
+      "heading": "何を打てるようになりたい？"
     },
     "packs": {
       "title": "パックをフォローする",
-      "text": "選んだ関心に合う公式パックです。チェックしたパックをフォローします。",
       "follow": "フォローする",
       "following": "フォローしています…",
       "more": "<catalog>カタログでもっと見る</catalog>",
       "select": "{name} を選ぶ",
       "stats": "{lists, plural, other {#リスト}}・{words, plural, other {#語}}",
       "first": "最初のリスト：{list}",
-      "retryInterests": "関心をもう一度保存"
+      "retryInterests": "関心をもう一度保存",
+      "heading": "{count, plural, other {この#つから始めよう}}",
+      "keys": "<key>1</key>〜<key>{last}</key> で切り替え、<key>←</key> で関心に戻る",
+      "back": "戻る"
     },
     "start": {
       "title": "練習を始める",
-      "text": "「{pack}」をフォローしました。最初のリストから練習しましょう。ほかのパックは「練習する」の画面から選べます。",
-      "button": "練習を始める"
+      "text": "「{pack}」の最初の単語から打ってみましょう。ほかのパックは「練習する」の画面から選べます。",
+      "button": "練習を始める",
+      "heading": "準備ができました"
+    },
+    "panel": {
+      "title": "あなたの最初の練習",
+      "empty": "関心を選ぶと、ここに練習が並びます。"
     }
   }
 }

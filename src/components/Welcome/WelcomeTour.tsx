@@ -2,22 +2,34 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { LazyMotion, MotionConfig, domMax } from 'motion/react'
 import { useWordLists } from '@/hooks/useWordLists'
 import { ErrorAlert } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PageMain } from '@/components/ui/page-layout'
-import InterestSettings from '@/components/Settings/InterestSettings'
+import Kbd from '@/components/Practice/Kbd'
+import KeyToggle from '@/components/Welcome/KeyToggle'
 import PackStep from '@/components/Welcome/PackStep'
+import PracticePanel from '@/components/Welcome/PracticePanel'
 import StartStep from '@/components/Welcome/StartStep'
-import { normalizeInterests } from '@/lib/interests'
+import StepDots from '@/components/Welcome/StepDots'
+import TypedHeading from '@/components/Welcome/TypedHeading'
+import { INTEREST_OPTIONS, normalizeInterests } from '@/lib/interests'
 import { applyCatalogChoices } from '@/lib/packs/catalog'
 import { randomId } from '@/lib/randomId'
 import { practicePath } from '@/lib/routes'
-import { dismissWelcome, hasChildInterest, welcomePacks } from '@/lib/welcome'
+import { NATIVE_LANGUAGE_NAMES, carryChecks, dismissWelcome, hasChildInterest, toggleWelcomeInterest, welcomeKey, welcomePacks, type WelcomeKey, type WelcomeStep } from '@/lib/welcome'
 
-const STEPS = ['interests', 'packs', 'start'] as const
-type Step = typeof STEPS[number]
+const STEPS: readonly WelcomeStep[] = ['interests', 'packs', 'start']
+
+// What has the focus, for the tour's keyboard: Enter on a link or on a button other than a key is left to it.
+function targetKind(target: EventTarget | null): WelcomeKey['targetKind'] {
+  if (!(target instanceof Element)) return 'none'
+  if (target.closest('a[href]')) return 'link'
+  if (target instanceof HTMLInputElement) return target.type === 'checkbox' ? 'none' : 'otherButton'
+  return target.closest('button, select, textarea, [role="button"]') ? 'otherButton' : 'none'
+}
 
 // The first-visit tour: pick interests, follow an entry pack for each, start practice. Nothing is saved until 「フォローする」,
 // which saves the follow first and the interests second, so leaving halfway never narrows the interests without packs.
@@ -25,10 +37,13 @@ export default function WelcomeTour() {
   const { ready, revision, accountId, error, saving, packs, lists, updateLibrary, updateInterests } = useWordLists()
   const router = useRouter()
   const t = useTranslations('home.tour')
+  const names = useTranslations('interests')
   const common = useTranslations('common')
-  const [step, setStep] = useState<Step>('interests')
+  const [step, setStep] = useState<WelcomeStep>('interests')
   const [chosen, setChosen] = useState<string[]>([])
   const [checked, setChecked] = useState<ReadonlySet<string>>(new Set())
+  // The packs the checks were set for, so that coming back from the interests keeps the checks of the packs that stay.
+  const [checkedFor, setCheckedFor] = useState<string[]>([])
   const [followedCatalogId, setFollowedCatalogId] = useState<string | null>(null)
   // The packs are followed but saving the interests failed: step 2 offers to save them again.
   const [interestsFailed, setInterestsFailed] = useState(false)
@@ -48,6 +63,10 @@ export default function WelcomeTour() {
   }, [step])
 
   const entries = welcomePacks(chosen)
+  const entryIds = entries.map(entry => entry.catalogId)
+  const checkedCount = entries.filter(entry => checked.has(entry.catalogId)).length
+  const followed = packs.find(pack => pack.origin?.catalogId === followedCatalogId)
+  const firstList = followed && lists.find(list => list.packId === followed.id)
 
   function later() {
     if (accountId) dismissWelcome(accountId)
@@ -63,6 +82,13 @@ export default function WelcomeTour() {
     })
   }
 
+  function toPacks() {
+    if (!hasChildInterest(chosen)) return
+    setChecked(carryChecks(checked, checkedFor, entryIds))
+    setCheckedFor(entryIds)
+    setStep('packs')
+  }
+
   async function saveInterests() {
     const saved = await updateInterests(() => normalizeInterests(chosen))
     setInterestsFailed(!saved)
@@ -71,7 +97,7 @@ export default function WelcomeTour() {
 
   async function follow() {
     const choices = entries.filter(entry => checked.has(entry.catalogId)).map(entry => ({ catalogId: entry.catalogId, follow: true }))
-    if (!choices.length) return
+    if (!choices.length || saving) return
     // Another tab or device saved meanwhile: the tour must not overwrite it.
     if (revision !== 0) { router.replace('/home'); return }
     const saved = await updateLibrary(library =>
@@ -81,35 +107,73 @@ export default function WelcomeTour() {
     await saveInterests()
   }
 
-  const followed = packs.find(pack => pack.origin?.catalogId === followedCatalogId)
-  const firstList = followed && lists.find(list => list.packId === followed.id)
+  function start() {
+    router.push(firstList ? practicePath(firstList.id) : '/play')
+  }
 
-  return <PageMain width="narrow">
-    <header className="mb-6 flex flex-wrap items-end justify-between gap-3">
-      <div className="space-y-1">
-        {admitted && <p className="text-sm text-muted-foreground">{t('step', { current: STEPS.indexOf(step) + 1, total: STEPS.length })}</p>}
-        <h1 className="text-2xl font-bold">{t('title')}</h1>
-      </div>
-      {admitted && <Button variant="ghost" onClick={later}>{t('later')}</Button>}
-    </header>
-    {error && <ErrorAlert className="mb-6">{error}</ErrorAlert>}
-    {!admitted ? <div role="status" className="space-y-3"><p className="sr-only">{common('loading')}</p><Skeleton className="h-10 w-72 max-w-full" /><Skeleton className="h-24 w-full" /></div>
-      : step === 'interests' ? <section aria-labelledby="welcome-interests" className="space-y-5">
-        <div className="space-y-1">
-          <h2 id="welcome-interests" tabIndex={-1} className="text-lg font-bold">{t('interests.title')}</h2>
-          <p className="text-sm text-muted-foreground">{t('interests.text')}</p>
-        </div>
-        <InterestSettings interests={chosen} saving={false} updateInterests={async change => { setChosen(change); return true }} />
-        <div className="flex justify-end">
-          <Button disabled={!hasChildInterest(chosen)} onClick={() => {
-            setChecked(new Set(entries.map(entry => entry.catalogId)))
-            setStep('packs')
-          }}>{t('next')}</Button>
-        </div>
-      </section>
-      : step === 'packs' ? <PackStep entries={entries} checked={checked} check={check} saving={saving}
-        interestsFailed={interestsFailed} follow={() => void follow()} retryInterests={() => void saveInterests()} />
-      : <StartStep pack={followed?.name ?? ''} list={firstList}
-        start={() => router.push(firstList ? practicePath(firstList.id) : '/play')} />}
-  </PageMain>
+  // Added again on each render, so it always sees the current step and checks.
+  useEffect(() => {
+    const listener = (event: KeyboardEvent) => {
+      if (!admitted) return
+      const busy = step === 'packs' && (saving || interestsFailed)
+      const action = welcomeKey({ key: event.key, isComposing: event.isComposing, ctrlKey: event.ctrlKey, metaKey: event.metaKey,
+        altKey: event.altKey, targetKind: targetKind(event.target) }, step, entries.length, busy)
+      if (!action) return
+      event.preventDefault()
+      if (action.kind === 'later') later()
+      else if (action.kind === 'back') setStep('interests')
+      else if (action.kind === 'toggle') check(entries[action.index].catalogId, !checked.has(entries[action.index].catalogId))
+      else if (step === 'interests') toPacks()
+      else if (step === 'packs') void follow()
+      else start()
+    }
+    document.addEventListener('keydown', listener)
+    return () => document.removeEventListener('keydown', listener)
+  })
+
+  const panel = <PracticePanel entries={entries} mode={step === 'packs' ? 'choose' : 'preview'} checked={checked} onCheck={check}
+    disabled={saving || interestsFailed} title={t('panel.title')} empty={t('panel.empty')}
+    stats={(listCount, words) => t('packs.stats', { lists: listCount, words })} select={name => t('packs.select', { name })} />
+
+  return <LazyMotion features={domMax} strict><MotionConfig reducedMotion="user">
+    <PageMain width="wide">
+      <h1 className="sr-only">{t('title')}</h1>
+      <header className="mb-8 flex items-center justify-between gap-3">
+        {admitted ? <StepDots current={STEPS.indexOf(step) + 1} total={STEPS.length} label={t('step', { current: STEPS.indexOf(step) + 1, total: STEPS.length })} /> : <span />}
+        {admitted && step !== 'start' && <Button variant="ghost" size="sm" onClick={later}>{t('later')}<span aria-hidden="true"><Kbd className="ml-1">Esc</Kbd></span></Button>}
+      </header>
+      {error && <ErrorAlert className="mb-6">{error}</ErrorAlert>}
+      {!admitted ? <div role="status" className="space-y-3"><p className="sr-only">{common('loading')}</p><Skeleton className="h-10 w-72 max-w-full" /><Skeleton className="h-24 w-full" /></div>
+        : step === 'start' ? <StartStep pack={followed?.name ?? ''} list={firstList} start={start} />
+        : <div className="grid items-start gap-6 sm:grid-cols-[1.15fr_1fr] sm:gap-10">
+          {step === 'interests' ? <section aria-label={t('interests.title')} className="flex flex-col gap-5">
+            <div className="space-y-2">
+              <TypedHeading id="welcome-interests" text={t('interests.heading')} />
+              <p className="text-sm text-muted-foreground">{t('interests.text')}</p>
+            </div>
+            {INTEREST_OPTIONS.map(option => {
+              const parent = option.id as 'language' | 'programming'
+              return <div key={option.id} role="group" aria-labelledby={`welcome-parent-${option.id}`} className="space-y-2">
+                <h3 id={`welcome-parent-${option.id}`} className="text-xs font-medium text-muted-foreground">{names(`parents.${parent}`)}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {option.children.map(item => {
+                    const name = names(`children.${option.id as 'language'}.${item.id.split('/')[1] as 'zh'}`)
+                    const native = NATIVE_LANGUAGE_NAMES[item.id]
+                    return <KeyToggle key={item.id} checked={chosen.includes(item.id)} accessibleName={name}
+                      label={native ?? name} sub={native ? name : undefined} mono={!native}
+                      onChange={() => setChosen(current => toggleWelcomeInterest(current, item.id))} />
+                  })}
+                </div>
+              </div>
+            })}
+            <div className="sticky bottom-0 -mx-1 bg-background/95 px-1 py-3 sm:static sm:bg-transparent sm:py-0">
+              <Button disabled={!hasChildInterest(chosen)} onClick={toPacks}>{t('next')}<span aria-hidden="true">↵</span></Button>
+            </div>
+          </section>
+          : <PackStep count={entries.length} checkedCount={checkedCount} saving={saving} interestsFailed={interestsFailed}
+            follow={() => void follow()} retryInterests={() => void saveInterests()} back={() => setStep('interests')} />}
+          {panel}
+        </div>}
+    </PageMain>
+  </MotionConfig></LazyMotion>
 }

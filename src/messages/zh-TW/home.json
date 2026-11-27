@@ -19,23 +19,31 @@
     "next": "下一步",
     "interests": {
       "title": "選擇興趣",
-      "text": "請選擇想練習的語言和領域。之後可以在「興趣」中變更。"
+      "text": "每選擇一項，右側就會出現你的第一個練習。之後可以在「興趣」中變更。",
+      "heading": "你想學會打什麼？"
     },
     "packs": {
       "title": "追蹤單字包",
-      "text": "這些官方單字包符合你選擇的興趣。將追蹤已勾選的單字包。",
       "follow": "追蹤",
       "following": "正在追蹤…",
       "more": "<catalog>在目錄中查看更多</catalog>",
       "select": "選擇 {name}",
       "stats": "{lists, plural, other {# 個列表}} · {words, plural, other {# 個單字}}",
       "first": "第一個列表：{list}",
-      "retryInterests": "重新儲存興趣"
+      "retryInterests": "重新儲存興趣",
+      "heading": "{count, plural, other {從這 # 個開始吧}}",
+      "keys": "按 <key>1</key>–<key>{last}</key> 切換，按 <key>←</key> 返回興趣",
+      "back": "返回"
     },
     "start": {
       "title": "開始練習",
-      "text": "已追蹤「{pack}」。從第一個列表開始練習吧。其他單字包可以在「開始練習」頁面中選擇。",
-      "button": "開始練習"
+      "text": "試著輸入「{pack}」的第一個單字吧。其他單字包可以在「開始練習」頁面中選擇。",
+      "button": "開始練習",
+      "heading": "準備好了"
+    },
+    "panel": {
+      "title": "你的第一個練習",
+      "empty": "選擇興趣後，練習會顯示在這裡。"
     }
   }
 }
