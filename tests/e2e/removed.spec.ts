@@ -83,7 +83,7 @@ test('the gallery goes to the catalog of the official packs', async ({ page }) =
   await expect(page).toHaveURL(/\/packs\/catalog$/)
 })
 
-// typle-session=stale is an unreadable cookie of the current format: it signs no one in.
+// typle-session=stale stands for the login cookie from before Better Auth: it is no longer read, so it signs no one in.
 test('an unreadable typle-session cookie falls back to the data in this browser', async ({ page, context }) => {
   await context.addCookies([{ name: 'typle-session', value: 'stale', url: 'http://127.0.0.1:3101' }])
   const key = 'typle-r:guest-workspace:v1'

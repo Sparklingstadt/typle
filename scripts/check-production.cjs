@@ -49,7 +49,7 @@ async function authResults(site, send, idIssuer = ID_ISSUER) {
   // Starting a login is a POST that answers the provider's authorize URL (status 200, {url}), which carries the
   // production callback as its redirect_uri. A Sparklingstadt ID login that fails here is one whose discovery failed at
   // startup (the provider is dropped), which the instance keeps until it restarts.
-  const start = async (provider, expectedHost, label) => {
+  const start = async (provider, expectedHost, expectedPath, label) => {
     const response = await send(`${origin}/api/auth/sign-in/social`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Origin: origin },
@@ -58,13 +58,17 @@ async function authResults(site, send, idIssuer = ID_ISSUER) {
     const body = await response.text()
     let target = null
     try { target = new URL(JSON.parse(body).url) } catch { target = null }
-    add(response.status === 200 && target !== null && target.host === expectedHost &&
+    add(response.status === 200 && target !== null && target.host === expectedHost && (expectedPath === null || target.pathname === expectedPath) &&
       target.searchParams.get('redirect_uri') === `${origin}/api/auth/callback/${provider}`,
-    `POST ${origin}/api/auth/sign-in/social for ${label} answers ${expectedHost} with the production callback`,
+    `POST ${origin}/api/auth/sign-in/social for ${label} answers ${expectedHost}${expectedPath ?? ''} with the production callback`,
     `HTTP ${response.status} ${body}`)
   }
-  await start('github', 'github.com', 'GitHub')
-  await start('sid', new URL(idIssuer).host, 'Sparklingstadt ID')
+  await start('github', 'github.com', '/login/oauth/authorize', 'GitHub')
+  await start('sid', new URL(idIssuer).host, null, 'Sparklingstadt ID')
+
+  // The development login is off in production.
+  const local = await send(`${origin}/api/auth/sign-in/local`, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: '{}' })
+  add(local.status === 404, `POST ${origin}/api/auth/sign-in/local answers 404 (the development login is off)`, `HTTP ${local.status}`)
 
   // The Auth.js endpoints are gone.
   for (const path of ['session', 'providers', 'csrf']) {

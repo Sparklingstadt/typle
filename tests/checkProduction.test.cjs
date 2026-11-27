@@ -7,7 +7,7 @@ const ID = 'https://id.example.test'
 const github = (origin = SITE) => `https://github.com/login/oauth/authorize?client_id=x&redirect_uri=${encodeURIComponent(`${origin}/api/auth/callback/github`)}`
 const sid = (origin = SITE) => `${ID}/authorize?client_id=x&redirect_uri=${encodeURIComponent(`${origin}/api/auth/callback/sid`)}`
 
-function fake({ session = { status: 200, body: 'null' }, githubUrl = github(), sidUrl = sid(), start, old = 404 } = {}) {
+function fake({ session = { status: 200, body: 'null' }, githubUrl = github(), sidUrl = sid(), start, old = 404, local = 404 } = {}) {
   const seen = []
   const send = async (url, init = {}) => {
     const path = new URL(url).pathname
@@ -19,14 +19,15 @@ function fake({ session = { status: 200, body: 'null' }, githubUrl = github(), s
       const target = provider === 'github' ? githubUrl : sidUrl
       return new Response(JSON.stringify({ url: target, redirect: true }), { status: 200 })
     }
+    if (path === '/api/auth/sign-in/local') return new Response('', { status: local })
     return new Response('', { status: old })
   }
   send.seen = seen
   return send
 }
 const run = async options => (await authResults(SITE, fake(options), ID)).map(r => r.ok)
-// get-session, GitHub, Sparklingstadt ID, then the removed /session, /providers and /csrf.
-const ALL_OK = [true, true, true, true, true, true]
+// get-session, GitHub, Sparklingstadt ID, the development login (404), then the removed /session, /providers and /csrf.
+const ALL_OK = [true, true, true, true, true, true, true]
 
 test('everything as Better Auth answers is OK', async () => {
   assert.deepEqual(await run(), ALL_OK)
@@ -52,6 +53,16 @@ test('the Sparklingstadt ID login starts at the ID server with the production ca
     ? new Response('{"message":"Provider not found"}', { status: 404 }) : new Response(JSON.stringify({ url: github() }), { status: 200 }) }))[2], false)
 })
 
+test('a GitHub authorize URL must be at /login/oauth/authorize', async () => {
+  const wrong = `https://github.com/other?redirect_uri=${encodeURIComponent(`${SITE}/api/auth/callback/github`)}`
+  assert.equal((await run({ githubUrl: wrong }))[1], false)
+})
+
+test('the development login must be 404 in production', async () => {
+  assert.equal((await run({ local: 200 }))[3], false)
+  assert.equal((await run({ local: 401 }))[3], false)
+})
+
 test('a start is sent with the site origin as its Origin header', async () => {
   const send = fake()
   await authResults(SITE, send, ID)
@@ -61,5 +72,5 @@ test('a start is sent with the site origin as its Origin header', async () => {
 })
 
 test('Auth.js\'s endpoints must be gone', async () => {
-  assert.deepEqual(await run({ old: 200 }), [true, true, true, false, false, false])
+  assert.deepEqual(await run({ old: 200 }), [true, true, true, true, false, false, false])
 })

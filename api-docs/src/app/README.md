@@ -61,4 +61,4 @@ Cookie で書き込むリクエストは、`Origin` がアプリの origin（`AU
 
 | 場所 | 内容 |
 |---|---|
-| `src/app/api`・`src/server` | Next.js の Route Handler。すべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/lib/records.ts`、ログインは `src/auth.ts`・`src/server/authOptions.ts`、アカウントの API は `src/server/accountApi.ts`・`accountRecovery.ts`） |
+| `src/app/api`・`src/server` | Next.js の Route Handler。すべてのパス（記録の追加・削除は `src/server/workspace.ts` の `answerRecords` と `src/lib/records.ts`、ログインは `src/server/betterAuth.ts`・`authPaths.ts`・`sidLogin.ts`、アカウントの API は `src/server/accountApi.ts`） |

@@ -46,7 +46,7 @@ API（workspace など）は `auth.api.getSession` でログインを読みま�
 今のアカウント（GitHub か、v2.58.0 までの ID・パスワード）のデータを Sparklingstadt ID で使うには、その ID の `sub` をアカウントにひも付けます。Better Auth では、1人のユーザー（`github:219588180`）の `typle_auth_accounts` に、GitHub の行（`provider_id = 'github'`）と Sparklingstadt ID の行（`provider_id = 'sid'`、`account_id` は `sub`）の2つがつく形です。画面はなく、手元から1回だけ行います（利用者が持ち主だけのため）。
 
 1. ID サーバー（`sparklingstadt-id`）の `OIDC_CLIENTS` に typle-r を登録します（`pnpm run oidc:client typle-r`）。`redirectUris` は `https://typle.sparklingstadt.com/api/auth/callback/sid` と `https://typle-r-six.vercel.app/api/auth/callback/sid` です。出てきたシークレットを typle-r の `AUTH_SID_SECRET` に入れます。
-2. typle-r で Sparklingstadt ID でログインし、**何も保存せずに** `/api/auth/get-session` を開いて `user.id`（`sid:<sub>`）を写します。
+2. typle-r で Sparklingstadt ID でログインし、**何も保存せずに** `/api/auth/get-session` を開いて `user.id`（`sid:<sub>`）を写します。ログイン中のブラウザーでそのままログアウトします（キャッシュされたセッションが残っていると、3. の後に消えた `sid:<sub>` のユーザーでデータを保存してしまうことがあるため）。
 3. 本番の DB に向けて `DATABASE_URL=<本番の接続文字列> npm run sid:link -- sid:<sub> <アカウント ID>`（例 `github:219588180`）を実行します。`sub` は `sid:` なしでも受け付けます。
 4. ログアウトしてもう一度 Sparklingstadt ID でログインすると、ひも付けたアカウントで入ります。
 

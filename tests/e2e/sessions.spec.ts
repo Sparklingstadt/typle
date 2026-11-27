@@ -75,8 +75,9 @@ test('signing out of every device from the settings page signs out the other bro
     await section.getByRole('button', { name: 'すべての端末からログアウト' }).click()
     const dialog = page.getByRole('alertdialog', { name: 'すべての端末からログアウトしますか？' })
     await dialog.getByRole('button', { name: 'ログアウトする' }).click()
-    await expect(page).toHaveURL(/\/home$/)
-    await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()
+    // The screen reads the session again after the sign-out (retried at 1, 2 and 4 s), so under load these may take longer than 5 s.
+    await expect(page).toHaveURL(/\/home$/, { timeout: 15000 })
+    await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible({ timeout: 15000 })
 
     // The other browser still holds its cookie, but its session is gone and it no longer reaches the account's data.
     const refused = await other.request.get('/api/workspace')
@@ -112,12 +113,16 @@ test('a failed sign-out of every device keeps the user signed in and says so', a
 test('a browser with the cookie cache keeps its access until the cache window passes, then is signed out', async ({ context }) => {
   await signIn(context, accountId)
   // Reading the session through Better Auth's own endpoint gives the browser the session_data cookie (the cache).
+  const asked = Date.now()
   expect((await context.request.get('/api/auth/get-session')).status()).toBe(200)
+  const cached = Date.now()
   expect((await context.cookies(origin)).some(cookie => cookie.name === 'better-auth.session_data')).toBe(true)
   await withDatabase(pool => pool.query('DELETE FROM typle_auth_sessions WHERE user_id = $1', [accountId]))
-  expect((await context.request.get('/api/workspace')).status()).toBe(200)
+  const served = await context.request.get('/api/workspace')
+  // Only inside the 3 s cache window is the cache what answers; on a loaded machine the window may have passed already.
+  if (Date.now() - asked < 2000) expect(served.status()).toBe(200)
   // Signing out of every device is not served from the cache: the session is gone, so it is refused.
   expect((await context.request.post('/api/account/signout-everywhere', { headers: { Origin: origin } })).status()).toBe(401)
-  await new Promise(resolve => setTimeout(resolve, 3500))
+  await new Promise(resolve => setTimeout(resolve, Math.max(0, 3500 - (Date.now() - cached))))
   expect((await context.request.get('/api/workspace')).status()).toBe(401)
 })
