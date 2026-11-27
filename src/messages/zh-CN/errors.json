@@ -65,5 +65,6 @@
   "sharedPackNotFound": "此共享已结束。",
   "invalidPage": "页码无效。",
   "importInputTypeInvalid": "第 {line} 行的 input_type 必须是 command、code 或 word。",
-  "invalidRequest": "请求内容无效。"
+  "invalidRequest": "请求内容无效。",
+  "demoAccount": "演示账户无法使用此功能。"
 }

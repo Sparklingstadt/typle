@@ -1,4 +1,5 @@
 import { signedIn, type ReadSession } from './account'
+import { DEMO_USER } from './demoLogin'
 import { reportFailure } from './report'
 import { sameOrigin } from './request'
 import { methodNotAllowed, refuse } from './response'
@@ -41,6 +42,8 @@ export async function answerSignOutEverywhere(request: Request, settings: () => 
   // Not from the cookie cache: a session that was revoked must not end the owner's other logins.
   const result = await signedIn(request, read, { fresh: true })
   if ('refusal' in result) return result.refusal
+  // The demo account is shared: ending its sessions would sign every other visitor out.
+  if (result.user.sub === DEMO_USER.id) return refuse(403, 'demoAccount')
   let cookies: Awaited<ReturnType<SessionEnd['loginCookies']>>
   try {
     await end.revokeAll(result.user.sub)

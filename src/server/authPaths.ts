@@ -10,6 +10,8 @@ import { refuse } from './response'
 export const AUTH_BASE_PATH = '/api/auth'
 /** The development login's endpoint (src/server/localLogin.ts), answered only when it is on. */
 export const LOCAL_LOGIN_PATH = '/sign-in/local'
+/** The shared demo account's login (src/server/demoLogin.ts), answered only when it is on. */
+export const DEMO_LOGIN_PATH = '/sign-in/demo'
 
 /** Each path the logins use, by its method. */
 const ALLOWED: ReadonlySet<string> = new Set([
@@ -23,24 +25,25 @@ const ALLOWED: ReadonlySet<string> = new Set([
 ])
 
 /** Whether method and pathname (the URL's, as received) are one /api/auth answers. */
-export function authPathAllowed(method: string, pathname: string, settings: { localLogin: boolean }): boolean {
+export function authPathAllowed(method: string, pathname: string, settings: { localLogin: boolean, demoLogin?: boolean }): boolean {
   if (!pathname.startsWith(`${AUTH_BASE_PATH}/`)) return false
   const path = pathname.slice(AUTH_BASE_PATH.length)
   if (method === 'POST' && path === LOCAL_LOGIN_PATH) return settings.localLogin
+  if (method === 'POST' && path === DEMO_LOGIN_PATH) return settings.demoLogin === true
   return ALLOWED.has(`${method} ${path}`)
 }
 
 /**
  * A Better Auth plugin that answers 404 to every HTTP request outside authPathAllowed, before Better Auth routes it, in
- * the form of the app's other 404s. localLogin is read on each request, so the development login is never answered
+ * the form of the app's other 404s. localLogin and demoLogin are read on each request, so neither login is answered
  * once it is off. A login started with an ID token instead of a redirect to the provider is refused too: the app never
  * starts one so, and the provider's own check (the ID token's audience and nonce) is the whole defence there.
  */
-export function authPaths(localLogin: () => boolean) {
+export function authPaths(localLogin: () => boolean, demoLogin: () => boolean = () => false) {
   return {
     id: 'auth-paths',
     onRequest: async (request: Request) => {
-      if (authPathAllowed(request.method, new URL(request.url).pathname, { localLogin: localLogin() })) return
+      if (authPathAllowed(request.method, new URL(request.url).pathname, { localLogin: localLogin(), demoLogin: demoLogin() })) return
       return { response: refuse(404, 'notFound') }
     },
     hooks: {

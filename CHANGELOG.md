@@ -4,9 +4,18 @@ Typle（Web 版と Go のバックエンド）のバージョンごとの変更�
 
 - v2.1.3 までは README に書いていた記録を、v2.5.5 でこのファイルへ移しました。文章は当時のままです。
 - それ以降の変更は、リリースごとに作る [GitHub Releases](https://github.com/Sparklingstadt/typle-r/releases) を見てください（Release notes は GitHub の自動生成です。v2.38.0 までは GitHub Actions が、v2.38.1 からは公開する人が手元で作ります）。
-- v2.62.1 は、公開の前に所有者がすることがあるため、例外としてここにも書きました。
+- v2.62.1 と v2.63.0 は、公開の前に所有者がすることがあるため、例外としてここにも書きました。
 - v0.2.0〜v0.8.0 の詳しい記録は [docs/release-notes](docs/release-notes) にもあります。
 - このファイルにないバージョン（v1.0.0〜v2.0.0 の間など）は、README に記録を書いていなかったものです。
+
+## v2.63.0 — デモアカウントでログインできるようにする
+
+ログイン画面の「デモアカウントで試す」で、見本のデータが入った共有のアカウント `demo:shared` にログインできるようにしました。毎日 4:00（日本時間）に見本へ戻します。
+
+- **マージの前に**、所有者が Vercel の Production に環境変数 `DEMO_LOGIN=1` と `CRON_SECRET`（ランダムな値）を入れます。入れなければデモのボタンは出ず、戻す API は断ります。
+- Vercel Cron（`vercel.json` の `crons`）が毎日 19:00 UTC に `GET /api/demo/reset` を呼びます。
+- デモアカウントでは「すべての端末からログアウト」を断ります。
+- AWS（`infra/`）へ移るときは、EventBridge などで同じ API を同じ時刻に呼ぶ必要があります。
 
 ## v2.62.1 — ログインを Auth.js から Better Auth に移す
 

@@ -4,6 +4,8 @@
   "signInIntro": "可以使用 <b>Sparklingstadt ID</b> 或 <b>GitHub</b> 帳號登入。Sparklingstadt ID 是可在各項 Sparklingstadt 服務中通用的帳號。",
   "signInWithSid": "使用 Sparklingstadt ID 登入",
   "signInWithGitHub": "使用 GitHub 登入",
+  "signInDemo": "使用示範帳號試用",
+  "demoNote": "不需要帳號即可試用。示範帳號由所有訪客共用，您輸入的內容其他人也看得到。每天 4:00（日本時間）恢復原狀。",
   "signInNote": "清單與練習紀錄會依登入所用的帳號分別儲存。下次請使用相同的方式登入。",
   "signInFailed": "無法登入。請再試一次。",
   "githubUser": "GitHub 使用者",

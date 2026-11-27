@@ -31,8 +31,9 @@ test('the account ID comes back from its address, and only from one made by acco
   assert.equal(accountIdFromEmail('github:219588180@users.invalid'), 'github:219588180')
   assert.equal(accountIdFromEmail('github:0@users.invalid'), 'github:0')
   assert.equal(accountIdFromEmail('sid:abc123@users.invalid'), 'sid:abc123')
+  assert.equal(accountIdFromEmail('demo:shared@users.invalid'), 'demo:shared')
   for (const email of ['someone@example.com', 'sid:ABC@users.invalid', 'github:abc@users.invalid', 'github:12', 'sid:@users.invalid',
-    'password:x@users.invalid', '@users.invalid', 'github:1@users.invalid.example']) {
+    'password:x@users.invalid', 'demo:x@users.invalid', 'demo:@users.invalid', '@users.invalid', 'github:1@users.invalid.example']) {
     assert.equal(accountIdFromEmail(email), null, email)
   }
 })
