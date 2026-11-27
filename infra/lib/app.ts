@@ -23,7 +23,7 @@ const CREATE_APP_USER = [
   '| psql -v ON_ERROR_STOP=1 -v pw="$APP_PASSWORD"',
 ].join(' ')
 
-type Secrets = Record<'databaseUrl' | 'authSecret' | 'githubSecret' | 'resendApiKey' | 'appDbPassword' | 'neonDirectUrl', secretsmanager.Secret>
+type Secrets = Record<'databaseUrl' | 'authSecret' | 'betterAuthSecret' | 'githubSecret' | 'resendApiKey' | 'appDbPassword' | 'neonDirectUrl', secretsmanager.Secret>
 
 /**
  * The secrets, and on the cluster: the app's service behind the load balancer, and three task
@@ -51,6 +51,7 @@ export class App extends Construct {
     const secrets: Secrets = {
       databaseUrl: secret('DatabaseUrl', 'DATABASE_URL', 'postgresql://typle_app:…@<endpoint>:5432/typle?sslmode=verify-full&sslrootcert=/app/certs/rds-global-bundle.pem'),
       authSecret: secret('AuthSecret', 'AUTH_SECRET', 'The same AUTH_SECRET as production on Vercel, so sessions and mail links stay valid'),
+      betterAuthSecret: secret('BetterAuthSecret', 'BETTER_AUTH_SECRET', 'The secret Better Auth signs and encrypts its cookies and tokens with; the same as production on Vercel'),
       githubSecret: secret('GithubSecret', 'AUTH_GITHUB_SECRET', 'The client secret of the GitHub OAuth App'),
       resendApiKey: secret('ResendApiKey', 'RESEND_API_KEY', 'The Resend API key that sends the mails'),
       appDbPassword: secret('AppDbPassword', 'APP_DB_PASSWORD', 'The password of typle_app (letters and digits only), also in DATABASE_URL'),
@@ -81,6 +82,7 @@ export class App extends Construct {
       secrets: {
         DATABASE_URL: fromSecret(secrets.databaseUrl),
         AUTH_SECRET: fromSecret(secrets.authSecret),
+        BETTER_AUTH_SECRET: fromSecret(secrets.betterAuthSecret),
         AUTH_GITHUB_SECRET: fromSecret(secrets.githubSecret),
         RESEND_API_KEY: fromSecret(secrets.resendApiKey),
       },
