@@ -15,10 +15,11 @@ import { skipWelcome } from './welcome'
 // Anywhere else (the CI runs on Linux) there is no image to compare with, so the whole file is skipped.
 test.skip(process.platform !== 'darwin', 'The screenshot snapshots are taken on macOS and only match there.')
 
-async function open(page: Page, path: string, colorScheme: 'light' | 'dark' = 'light') {
+// The sign-in page's word types itself: reduced motion keeps it on one frame, so its images stay the same.
+async function open(page: Page, path: string, colorScheme: 'light' | 'dark' = 'light', reducedMotion?: 'reduce') {
   // A new workspace is sent to /welcome; the tour has its own test.
   await skipWelcome(page)
-  await page.emulateMedia({ colorScheme })
+  await page.emulateMedia({ colorScheme, reducedMotion })
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto(path)
   // Noto Sans JP comes from next/font; wait for it so that no image is taken with the fallback font.
@@ -29,12 +30,12 @@ async function open(page: Page, path: string, colorScheme: 'light' | 'dark' = 'l
 const masks = (page: Page) => ({ mask: [page.getByText(/^v\d+\.\d+\.\d+$/)] })
 
 test('the sign-in page looks the same', async ({ page }) => {
-  await open(page, '/signin')
+  await open(page, '/signin', 'light', 'reduce')
   await expect(page).toHaveScreenshot('signin.png', masks(page))
 })
 
 test('the sign-in page looks the same in dark mode', async ({ page }) => {
-  await open(page, '/signin', 'dark')
+  await open(page, '/signin', 'dark', 'reduce')
   await expect(page).toHaveScreenshot('signin-dark.png', masks(page))
 })
 
@@ -44,7 +45,7 @@ test('the top of the guide looks the same', async ({ page }) => {
 })
 
 test('the sign-in page looks the same on a phone', async ({ page }) => {
-  await open(page, '/signin')
+  await open(page, '/signin', 'light', 'reduce')
   await page.setViewportSize({ width: 390, height: 844 })
   await expect(page).toHaveScreenshot('signin-phone.png', masks(page))
 })
@@ -364,6 +365,7 @@ test('home looks the same in English', async ({ page }) => {
 })
 test('the sign-in page looks the same in English', async ({ page }) => {
   await useEnglish(page)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/signin')
   await expect(page.locator('html')).toHaveAttribute('lang', 'en')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()

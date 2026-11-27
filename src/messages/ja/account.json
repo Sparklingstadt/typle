@@ -24,5 +24,19 @@
     "description": "国名193か国の練習を始められます。リストと練習記録は、このMacの専用データベースに保存されます。",
     "start": "練習を始める",
     "failed": "ログインできませんでした。もう一度お試しください。"
+  },
+  "typingDemo": {
+    "word1": {
+      "input": "youkoso",
+      "meaning": "ようこそ"
+    },
+    "word2": {
+      "input": "renshuu",
+      "meaning": "練習"
+    },
+    "word3": {
+      "input": "taipingu",
+      "meaning": "タイピング"
+    }
   }
 }

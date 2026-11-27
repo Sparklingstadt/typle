@@ -33,7 +33,8 @@ export default function SignInForm({ returnTo, github, sid, demo, authError }: {
     {/* A Sparklingstadt ID and a GitHub login are separate accounts (accountLinking is off) unless the owner links them (npm run sid:link). */}
     {(sid || github) && <p className="text-xs text-muted-foreground">{t('signInNote')}</p>}
     {/* The demo account is shared, and put back every day (src/server/demoReset.ts): the note says so before it is used. */}
-    {demo && <div className={(sid || github) ? 'space-y-2 border-t pt-4' : 'space-y-2'}>
+    {/* A grey panel sets the shared demo account apart from the two logins. */}
+    {demo && <div className="space-y-2 rounded-lg bg-muted p-4">
       <Button size="lg" className="w-full" variant="outline" disabled={busy} onClick={start(signInDemo)}>
         <UserRound aria-hidden="true" />{t('signInDemo')}
       </Button>
