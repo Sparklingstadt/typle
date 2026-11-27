@@ -16,7 +16,7 @@ type Props = {
 export default function KeyToggle({ checked, onChange, label, sub, mono = false, accessibleName, disabled = false, shortcut }: Props) {
   return <label className={cn('relative inline-flex', disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer')}>
     <input type="checkbox" aria-label={accessibleName} checked={checked} disabled={disabled}
-      onChange={event => onChange(event.target.checked)} className="peer absolute inset-0 size-full cursor-[inherit] opacity-0" />
+      onChange={event => onChange(event.target.checked)} className="peer absolute inset-0 z-10 size-full cursor-[inherit] opacity-0" />
     <span aria-hidden="true" className={cn(
       'inline-flex min-h-10 flex-col items-center justify-center rounded-lg border border-b-[3px] px-3 py-1 text-sm leading-tight font-medium transition-[transform,background-color,border-color] duration-150',
       'peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50 motion-reduce:transition-none',
