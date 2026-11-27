@@ -39,7 +39,7 @@ API（workspace など）は `auth.api.getSession` でログインを読みま�
 
 - 注意：`genericOAuth` は、**インスタンスの起動時**に ID サーバーの discovery（`<AUTH_SID_ISSUER>/.well-known/openid-configuration`）を読みます。失敗するとその間 `sid` のプロバイダーは外れ、Sparklingstadt ID でログインできなくなります。ID サーバーが止まっているときに起動（コールドスタート）したインスタンスは、再起動するまでこの状態です。`npm run check:production` が Sparklingstadt ID のログインの開始を確かめるので、デプロイ後に気づけます。
 - 注意：`COOKIE_CACHE_SECONDS`（テスト用。Cookie のキャッシュを1〜300秒に短くする。300 を超える値や整数でない値は無視）は本番では設定しません。
-- 古い表 `typle_session_revocations`・`typle_sid_links` は DB に残していますが、もう読みません（後日のマイグレーションで消します）。
+- Auth.js のときの表 `typle_session_revocations`（すべての端末からのログアウトの時刻）と `typle_sid_links`（Sparklingstadt ID のひも付け）は、v2.62.3 のマイグレーション `0044_drop_auth_js_tables` で消しました。ひも付けは `0043_import_auth_accounts` で `typle_auth_accounts` に取り込み済みです。
 
 #### Sparklingstadt ID のひも付け
 

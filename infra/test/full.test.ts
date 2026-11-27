@@ -99,7 +99,7 @@ test('the app cannot read the master password, the user password or the Neon URL
   const master = ofType('AWS::SecretsManager::Secret').find(([, r]) => JSON.stringify(r.Properties.GenerateSecretString ?? {}).includes('postgres'))![0]
   assert.ok(!appPolicies.includes(master))
   const migratePolicies = secretsOf(taskDefinition('typle-migrate').ExecutionRoleArn['Fn::GetAtt'][0])
-  for (const name of ['typle/AUTH_SECRET', 'typle/BETTER_AUTH_SECRET', 'typle/APP_DB_PASSWORD', 'typle/NEON_DIRECT_URL']) assert.ok(!migratePolicies.includes(secretIds[name]), name)
+  for (const name of ['typle/BETTER_AUTH_SECRET', 'typle/APP_DB_PASSWORD', 'typle/NEON_DIRECT_URL']) assert.ok(!migratePolicies.includes(secretIds[name]), name)
   const movePolicies = secretsOf(taskDefinition('typle-datamove').ExecutionRoleArn['Fn::GetAtt'][0])
   assert.ok(!movePolicies.includes(master), 'datamove connects as the app user')
 })
@@ -107,7 +107,7 @@ test('the app cannot read the master password, the user password or the Neon URL
 test('the secrets are created as empty shells: no value is in the template', () => {
   for (const [id, secret] of ofType('AWS::SecretsManager::Secret')) assert.equal(secret.Properties.SecretString, undefined, id)
   const names = ofType('AWS::SecretsManager::Secret').map(([, r]) => r.Properties.Name).filter(Boolean).sort()
-  assert.deepEqual(names, ['typle/APP_DB_PASSWORD', 'typle/AUTH_GITHUB_SECRET', 'typle/AUTH_SECRET', 'typle/BETTER_AUTH_SECRET', 'typle/DATABASE_URL', 'typle/NEON_DIRECT_URL', 'typle/RESEND_API_KEY'])
+  assert.deepEqual(names, ['typle/APP_DB_PASSWORD', 'typle/AUTH_GITHUB_SECRET', 'typle/BETTER_AUTH_SECRET', 'typle/DATABASE_URL', 'typle/NEON_DIRECT_URL', 'typle/RESEND_API_KEY'])
 })
 
 test('the image repository keeps tags immutable and outlives the stack', () => {

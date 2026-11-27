@@ -46,14 +46,6 @@ model Record {
   @@map("typle_records")
 }
 
-// When an account last signed out of every device: its logins made no later than revokedAt are refused.
-model SessionRevocation {
-  ownerId   String   @id @map("owner_id")
-  revokedAt DateTime @default(now()) @map("revoked_at") @db.Timestamptz(6)
-
-  @@map("typle_session_revocations")
-}
-
 // An account of the password login. Not read by the app yet (migration 0039).
 model User {
   id              String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
@@ -92,16 +84,6 @@ model AuthLimit {
   blockedUntil DateTime? @map("blocked_until") @db.Timestamptz(6)
 
   @@map("typle_auth_limits")
-}
-
-// A Sparklingstadt ID (its sub) linked to the account of another login, so that signing in with the ID opens that
-// account (npm run sid:link).
-model SidLink {
-  sub       String   @id
-  accountId String   @unique @map("account_id")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-
-  @@map("typle_sid_links")
 }
 
 // Better Auth's tables (migration 0042). Better Auth finds them by the names it is given in src/server/betterAuth.ts
