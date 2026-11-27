@@ -44,24 +44,22 @@ test('/signin has the GitHub button, and the login comes back to the page', asyn
   await expect(page.getByRole('heading', { level: 1, name: 'ログイン' })).toBeVisible()
   await expect(page.getByText('FFPF ID')).toHaveCount(0)
   const bodies: string[] = []
-  // next-auth/react posts to /api/auth/signin/github? (with the provider's own query, empty here).
-  await page.route(url => url.pathname === '/api/auth/signin/github', route => {
+  // Better Auth's client starts a login at POST /api/auth/sign-in/social.
+  await page.route(url => url.pathname === '/api/auth/sign-in/social', route => {
     bodies.push(route.request().postData() ?? '')
-    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ url: `${origin}/home` }) })
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ url: `${origin}/home`, redirect: false }) })
   })
   await page.getByRole('button', { name: 'GitHubでログイン' }).click()
   await expect.poll(() => bodies.length).toBe(1)
-  const body = new URLSearchParams(bodies[0])
-  expect(body.get('callbackUrl')).toBe('/home')
-  expect(body.get('csrfToken')).toBeTruthy()
+  expect(JSON.parse(bodies[0])).toMatchObject({ provider: 'github', callbackURL: '/home', errorCallbackURL: '/signin' })
   await expect(page).toHaveURL(/\/home$/)
 })
 
-// A login that cannot start (Auth.js answers with an error) stays on /signin and says so, instead of going on as if it
+// A login that cannot start (Better Auth answers with an error) stays on /signin and says so, instead of going on as if it
 // had worked.
 test('a GitHub login that fails to start stays on /signin and says so', async ({ page }) => {
-  await page.route(url => url.pathname === '/api/auth/signin/github', route =>
-    route.fulfill({ status: 500, contentType: 'application/json', body: '{"message":"There was a problem with the server configuration."}' }))
+  await page.route(url => url.pathname === '/api/auth/sign-in/social', route =>
+    route.fulfill({ status: 500, contentType: 'application/json', body: '{"message":"Internal error"}' }))
   await page.goto('/signin?returnTo=%2Fplay')
   await page.getByRole('button', { name: 'GitHubでログイン' }).click()
   await expect(page.getByRole('alert').filter({ hasText: 'ログインできませんでした' })).toBeVisible()
@@ -96,4 +94,14 @@ test('an unreadable typle-session cookie falls back to the data in this browser'
   await openPacks(page)
   await expect(page.getByRole('button', { name: 'Kept in browser を編集', exact: true })).toBeVisible()
   await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()
+})
+
+// Better Auth sends a login that failed on its side back to /signin?error=<code>: any code is the one message.
+test('the sign-in page shows the error for a refused login', async ({ page }) => {
+  for (const code of ['access_denied', 'unable_to_get_user_info', 'state_mismatch']) {
+    await page.goto(`/signin?returnTo=%2Fplay&error=${code}`)
+    await expect(page.getByRole('alert').filter({ hasText: 'ログインできませんでした' })).toBeVisible()
+  }
+  await page.goto('/signin?returnTo=%2Fplay')
+  await expect(page.getByRole('alert').filter({ hasText: 'ログインできませんでした' })).toHaveCount(0)
 })

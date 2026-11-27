@@ -12,7 +12,7 @@ export default function SignInForm({ returnTo, github, sid, authError }: {
   const t = useTranslations('account')
   const errors = useTranslations('errors')
   const [busy, setBusy] = useState(false)
-  // A login that could not start, or that Auth.js sent back here, is one message.
+  // A login that could not start, or that Better Auth sent back here, is one message.
   const [failed, setFailed] = useState(authError)
 
   /** Goes to the provider; on success the page is gone, so the buttons stay busy. */

@@ -35,7 +35,7 @@ test('user menu signs out and returns to home', async ({ page }) => {
 })
 
 test('a failed sign-out keeps the user signed in and says so', async ({ page }) => {
-  await page.route('**/api/auth/signout', route => route.fulfill({ status: 500, contentType: 'application/json', body: '{"message":"There was a problem with the server configuration."}' }))
+  await page.route('**/api/auth/sign-out', route => route.fulfill({ status: 500, contentType: 'application/json', body: '{"message":"Internal error"}' }))
   await page.goto('/home')
   await page.getByRole('button', { name: 'アカウントメニュー', exact: true }).click()
   await page.getByRole('menuitem', { name: 'ログアウト', exact: true }).click()
@@ -91,9 +91,9 @@ test('a failed session check keeps the signed-in user and the cloud lists', asyn
     ['not JSON', route => route.fulfill({ status: 200, contentType: 'application/json', body: '<html>' })],
   ]
   for (const [name, fail] of failures) {
-    await page.route('**/api/auth/session', fail)
+    await page.route('**/api/auth/get-session', fail)
     for (const trigger of ['visibilitychange', 'focus']) {
-      const checked = page.waitForRequest('**/api/auth/session')
+      const checked = page.waitForRequest('**/api/auth/get-session')
       await page.evaluate(event => event === 'focus' ? window.dispatchEvent(new Event('focus')) : document.dispatchEvent(new Event(event)), trigger)
       await checked
       // Give the failed answer time to be applied, were it taken for a sign-out.
@@ -102,13 +102,13 @@ test('a failed session check keeps the signed-in user and the cloud lists', asyn
       await expect(list, `${name} on ${trigger}`).toBeVisible()
       await expect(page.getByRole('link', { name: 'ログイン', exact: true }), `${name} on ${trigger}`).toHaveCount(0)
     }
-    await page.unroute('**/api/auth/session', fail)
+    await page.unroute('**/api/auth/get-session', fail)
   }
 })
 
 test('the first session check is tried again until it answers', async ({ page }) => {
   let calls = 0
-  await page.route('**/api/auth/session', route => ++calls <= 2
+  await page.route('**/api/auth/get-session', route => ++calls <= 2
     ? route.fulfill({ status: 503, contentType: 'application/json', body: '{"error":"authUnavailable"}' })
     : route.continue())
   await page.goto('/home')
@@ -118,7 +118,7 @@ test('the first session check is tried again until it answers', async ({ page })
 
 test('a session check that keeps failing settles on signed out', async ({ page }) => {
   let calls = 0
-  await page.route('**/api/auth/session', route => { calls++; return route.abort() })
+  await page.route('**/api/auth/get-session', route => { calls++; return route.abort() })
   await page.goto('/home')
   await expect(page.getByRole('link', { name: 'ログイン', exact: true })).toBeVisible()
   expect(calls).toBe(4)
@@ -132,11 +132,11 @@ test('a session check that hangs gives way to the next one', async ({ page }) =>
   await expect(menu).toBeVisible()
   // The first check is never answered; later ones go through.
   let checks = 0
-  await page.route('**/api/auth/session', route => ++checks === 1 ? undefined : route.continue())
+  await page.route('**/api/auth/get-session', route => ++checks === 1 ? undefined : route.continue())
   await page.evaluate(() => window.dispatchEvent(new Event('focus')))
   await expect.poll(() => checks).toBe(1)
   await page.waitForTimeout(11_000)
-  const next = page.waitForRequest('**/api/auth/session', { timeout: 5_000 })
+  const next = page.waitForRequest('**/api/auth/get-session', { timeout: 5_000 })
   await page.evaluate(() => window.dispatchEvent(new Event('focus')))
   await next
   await expect(menu).toBeVisible()

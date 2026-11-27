@@ -111,7 +111,7 @@ test('quota failure keeps draft and allows retry', async ({ page }) => {
 
 test('GitHub session uses a separate workspace and signing out restores guest data', async ({ page }) => {
   let loggedIn = false
-  await page.route('**/api/auth/session', route => route.fulfill({ json: loggedIn ? { user: { id: 'github:123', name: 'Cloud' }, expires: '2099-01-01' } : {} }))
+  await page.route('**/api/auth/get-session', route => route.fulfill({ json: loggedIn ? { session: { id: 's' }, user: { id: 'github:123', name: 'Cloud' } } : null }))
   await page.route(API, route => endpointOf(route.request()) === 'GET /api/workspace'
     ? route.fulfill({ json: { accountId: 'github:123', revision: 1, lists: [], packs: null, devices: [], interests: [] } })
     : route.fallback())
