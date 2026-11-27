@@ -53,7 +53,10 @@ typle-r のログイン（今は Auth.js、next-auth v5 beta）を Better Auth �
 
 - `better-auth` を 1.7 系で固定して入れる（ID サーバーと同じ 1.7.28）。DB は今の Prisma（`src/server/database.ts` の pool の上の Prisma Client）を `prismaAdapter` で使う。
 - ハンドラーは `src/app/api/auth/[...all]/route.ts`。`src/app/api/auth/[...nextauth]` と `src/auth.ts` は消す。
-- **シークレット**：今の環境変数 `AUTH_SECRET` を Better Auth の `secret` に渡す。Vercel と AWS（`infra/`）の設定名を変えずに済むようにするため（Claude の判断）。`AUTH_URL` を `baseURL` にする。
+- **シークレット（持ち主の決定）**：Better Auth の標準の環境変数 `BETTER_AUTH_SECRET` を使う。新しい値を作り、Vercel（Production と Preview）と AWS（`infra/` の Secrets Manager、`typle/BETTER_AUTH_SECRET`）に足す。`infra/` の CDK のコードとテストも、この名前を渡すように直す。
+  - 今の `AUTH_SECRET` は、自前の Cookie の鍵（`src/server/settings.ts`）にだけ使っていた。そのコードを消すので、アプリは `AUTH_SECRET` を読まなくなる。Vercel と AWS からの削除は、古い表を消す後日の PR で行う。
+  - 開発用ログインの条件（`src/lib/localDevelopment.ts`）と `scripts/setup-local.cjs`・`.env.example` も `BETTER_AUTH_SECRET` に替える。
+  - `AUTH_URL` を `baseURL` にする。
 - **表**：Better Auth の表（user・session・account・verification、DB のレート制限を使うなら rate limit）を Prisma のマイグレーションで足す。
   - 表の名前は今の `typle_` の接頭辞に合わせる（例 `typle_auth_users`・`typle_auth_sessions`・`typle_auth_accounts`・`typle_auth_verifications`）。
   - カラムは snake_case。
