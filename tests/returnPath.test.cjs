@@ -22,11 +22,8 @@ test('a value that leads to another site, or is no path, is home', () => {
   assert.equal(returnPath(['/play', '/home']), '/home')
 })
 
-test('an absolute URL of the site\'s own origin is its path when that origin is given (Auth.js\'s callbackUrl)', () => {
-  const origin = 'https://typle.example'
-  assert.equal(returnPath('https://typle.example/play?x=1', origin), '/play?x=1')
-  assert.equal(returnPath('/records', origin), '/records')
-  assert.equal(returnPath('https://evil.com/play', origin), '/home')
-  assert.equal(returnPath('https://typle.example//evil.com', origin), '/home')
-  assert.equal(returnPath('https://typle.example/play'), '/home')
+test('an absolute URL is never taken, whatever its origin', () => {
+  for (const value of ['https://typle.example/play?x=1', 'https://evil.com/play', 'https://typle.example//evil.com', 'play']) {
+    assert.equal(returnPath(value), '/home', value)
+  }
 })

@@ -75,7 +75,7 @@ test('503 when the session cannot be read', async () => {
   assert.match(logged[0], /: session\.check:/)
 })
 
-const login0 = () => readLoginSettings({ AUTH_SECRET: 'x', AUTH_URL: origin })
+const login0 = () => readLoginSettings({ AUTH_URL: origin })
 
 test('signing out of every device is refused without an Origin, without a login, and for other methods', database, async () => {
   const user = await login()

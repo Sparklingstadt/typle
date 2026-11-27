@@ -97,7 +97,7 @@ function runAuth(env, script, prelude = '') {
     })().catch(error => { console.error(error); process.exit(1) })
   `
   const childEnv = { ...process.env, DATABASE_URL: databaseUrl, BETTER_AUTH_SECRET: 'better-auth-test-secret-0123456789abcdef',
-    AUTH_SECRET: 'auth-test-secret-0123456789abcdef', AUTH_URL: 'http://127.0.0.1:3101', ...env }
+    AUTH_URL: 'http://127.0.0.1:3101', ...env }
   for (const name of ['AUTH_SID_ISSUER', 'AUTH_GITHUB_ID', 'LOCAL_DEVELOPMENT_LOGIN', 'VERCEL', 'NEXT_PHASE']) {
     if (!(name in env)) delete childEnv[name]
   }

@@ -240,6 +240,6 @@ jobs:
           echo "Production still serves ${served:-an unknown deployment} five minutes after deploying $expected"
           exit 1
       # The same checks as npm run check:production on the Mac: the home page, the Vercel domain's redirect, the API's
-      # health and its 401, and Auth.js's sign-in (scripts/check-production.cjs, which needs no dependencies).
+      # health and its 401, and the Better Auth sign-in (scripts/check-production.cjs, which needs no dependencies).
       - name: Check production
         run: node scripts/check-production.cjs

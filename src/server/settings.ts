@@ -1,42 +1,28 @@
-import { hkdfSync } from 'node:crypto'
-
-// The login settings that the Route Handlers need: AUTH_URL, whose origin is the only one a write may come from, and
-// AUTH_SECRET, from which the login cookie's key is derived as the Go backend derived it until v2.47.0, so that the
-// cookies it issued still open.
+// The login settings that the Route Handlers need: AUTH_URL, whose origin is the only one a write may come from.
 
 export type LoginSettings = {
   /** The app's own origin, as a browser writes it in the Origin header. */
   origin: string,
-  /** The key of the login cookie. */
-  sessionKey: Buffer,
   /** Whether the made-up login for development on this machine is on. */
   localLogin: boolean,
   /** Whether AUTH_URL is HTTPS, which names the login cookie __Host-. */
   secure: boolean,
 }
 
-/** The HKDF info of the key: the same as the Go backend's. */
-const SESSION_INFO = 'typle session v1'
-
-/** A key of 32 bytes derived from AUTH_SECRET for one kind of value. */
-const deriveKey = (secret: string, info: string) => Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), info, 32))
-
 /**
- * The login settings from the environment, or null when they cannot be used: AUTH_SECRET is empty, or AUTH_URL is not
- * an http or https URL with a host.
+ * The login settings from the environment, or null when they cannot be used: AUTH_URL is not an http or https URL
+ * with a host.
  */
 export function readLoginSettings(env: Record<string, string | undefined> = process.env): LoginSettings | null {
-  const secret = env.AUTH_SECRET ?? ''
   let base: URL
   try {
     base = new URL(env.AUTH_URL ?? '')
   } catch {
     return null
   }
-  if (!secret || (base.protocol !== 'http:' && base.protocol !== 'https:') || !base.hostname) return null
+  if ((base.protocol !== 'http:' && base.protocol !== 'https:') || !base.hostname) return null
   return {
     origin: base.origin,
-    sessionKey: deriveKey(secret, SESSION_INFO),
     localLogin: env.VERCEL !== '1' && localLoginAllowed(env, base),
     secure: base.protocol === 'https:',
   }

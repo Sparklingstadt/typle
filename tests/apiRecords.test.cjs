@@ -18,7 +18,7 @@ const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
 const sql = url ? createPool(url) : null
 const db = url ? createPrisma(url) : null
 const origin = 'http://127.0.0.1:3101'
-const settings = readLoginSettings({ AUTH_SECRET: 'typle-records-test-secret', AUTH_URL: origin })
+const settings = readLoginSettings({ AUTH_URL: origin })
 const withSettings = () => settings
 const open = () => db
 const answerRecords = (request, open, settings, read = readTestSession) => answer(request, open, settings, read)

@@ -7,6 +7,8 @@
 // can no longer sign in (the app tokens were removed in v2.55.0), so only its pages and /api/* are checked.
 const SITE = 'https://typle.sparklingstadt.com'
 const LEGACY = 'https://typle-r-six.vercel.app'
+// The Sparklingstadt ID server, where a Sparklingstadt ID login starts (AUTH_SID_ISSUER in the app's environment).
+const ID_ISSUER = process.env.AUTH_SID_ISSUER || 'https://id.sparklingstadt.com'
 
 const failures = []
 function check(ok, message, detail) {
@@ -29,48 +31,46 @@ async function request(url, init = {}) {
 }
 
 /**
- * The Auth.js checks against site, as {ok, message, detail} results; send is a fetch that does not follow redirects
- * (replaceable, so that tests/checkProduction.test.cjs runs without a network).
+ * The Better Auth checks against site, as {ok, message, detail} results; send is a fetch that does not follow redirects
+ * (replaceable, so that tests/checkProduction.test.cjs runs without a network). idIssuer is the Sparklingstadt ID
+ * server's origin: its host is where starting a Sparklingstadt ID login must lead. A POST carries the site's origin as
+ * its Origin header, which Better Auth checks.
  */
-async function authResults(site, send) {
+async function authResults(site, send, idIssuer = ID_ISSUER) {
   const results = []
   const add = (ok, message, detail) => results.push({ ok, message, detail })
   const origin = site
-  // Auth.js (src/auth.ts): no session for an anonymous visitor (the body is null), and Sparklingstadt ID and GitHub as
-  // the only providers (the ID and password login ended in v2.59.0).
-  const session = await send(`${origin}/api/auth/session`)
+  // Better Auth (src/server/betterAuth.ts): no session for an anonymous visitor (the body is null).
+  const session = await send(`${origin}/api/auth/get-session`)
   const sessionBody = await session.text()
-  let parsed
-  try { parsed = JSON.parse(sessionBody) } catch { parsed = undefined }
-  add(session.status === 200 && (parsed === null || (typeof parsed === 'object' && !Array.isArray(parsed) && !parsed.user)),
-    `anonymous ${origin}/api/auth/session answers 200 without a user`, `HTTP ${session.status} ${sessionBody}`)
+  add(session.status === 200 && sessionBody.trim() === 'null',
+    `anonymous GET ${origin}/api/auth/get-session answers 200 with null`, `HTTP ${session.status} ${sessionBody}`)
 
-  const providersResponse = await send(`${origin}/api/auth/providers`)
-  const providersBody = await providersResponse.text()
-  let providers
-  try { providers = JSON.parse(providersBody) } catch { providers = null }
-  add(providersResponse.status === 200 && providers !== null && typeof providers === 'object' &&
-    Object.keys(providers).sort().join(',') === 'github,sid',
-  `${origin}/api/auth/providers lists sid and github only`, `HTTP ${providersResponse.status} ${providersBody}`)
+  // Starting a login is a POST that answers the provider's authorize URL (status 200, {url}), which carries the
+  // production callback as its redirect_uri. A Sparklingstadt ID login that fails here is one whose discovery failed at
+  // startup (the provider is dropped), which the instance keeps until it restarts.
+  const start = async (provider, expectedHost, label) => {
+    const response = await send(`${origin}/api/auth/sign-in/social`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: origin },
+      body: JSON.stringify({ provider, callbackURL: '/' }),
+    })
+    const body = await response.text()
+    let target = null
+    try { target = new URL(JSON.parse(body).url) } catch { target = null }
+    add(response.status === 200 && target !== null && target.host === expectedHost &&
+      target.searchParams.get('redirect_uri') === `${origin}/api/auth/callback/${provider}`,
+    `POST ${origin}/api/auth/sign-in/social for ${label} answers ${expectedHost} with the production callback`,
+    `HTTP ${response.status} ${body}`)
+  }
+  await start('github', 'github.com', 'GitHub')
+  await start('sid', new URL(idIssuer).host, 'Sparklingstadt ID')
 
-  // Signing in with GitHub is a POST with Auth.js's CSRF token (and the cookie that came with it); the answer is a 302
-  // to GitHub's authorize page, which carries the production callback as its redirect_uri.
-  const csrf = await send(`${origin}/api/auth/csrf`)
-  let csrfToken
-  try { csrfToken = (await csrf.json()).csrfToken } catch { csrfToken = undefined }
-  const csrfCookies = csrf.headers.getSetCookie().map(cookie => cookie.split(';')[0]).join('; ')
-  add(csrf.status === 200 && typeof csrfToken === 'string' && csrfToken !== '' && csrfCookies !== '',
-    `${origin}/api/auth/csrf gives a token and its cookie`, `HTTP ${csrf.status}`)
-  const signin = await send(`${origin}/api/auth/signin/github`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded', Origin: origin, Cookie: csrfCookies },
-    body: new URLSearchParams({ csrfToken: csrfToken ?? '', callbackUrl: `${origin}/home` }),
-  })
-  const signinTarget = signin.headers.get('location') ?? ''
-  add(signin.status === 302 && signinTarget.startsWith('https://github.com/login/oauth/authorize?') &&
-    signinTarget.includes(`redirect_uri=${encodeURIComponent(`${origin}/api/auth/callback/github`)}`),
-  `POST ${origin}/api/auth/signin/github with the CSRF token redirects (302) to GitHub with the production callback`,
-  `HTTP ${signin.status} ${signinTarget}`)
+  // The Auth.js endpoints are gone.
+  for (const path of ['session', 'providers', 'csrf']) {
+    const response = await send(`${origin}/api/auth/${path}`)
+    add(response.status === 404, `${origin}/api/auth/${path} answers 404 (Auth.js is gone)`, `HTTP ${response.status}`)
+  }
   return results
 }
 

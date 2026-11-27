@@ -12,7 +12,7 @@ const { failingDb } = require('./fakeDb.cjs')
 // is needed: the databases here are made up (tests/fakeDb.cjs), and answer only the calls a test lets through.
 
 const origin = 'http://127.0.0.1:3104'
-const settings = readLoginSettings({ AUTH_SECRET: 'typle-unavailable-test-secret', AUTH_URL: origin })
+const settings = readLoginSettings({ AUTH_URL: origin })
 const withSettings = () => settings
 const answerWorkspace = (request, open, settings) => answerWorkspaceWith(request, open, settings, readTestSession)
 const answerRecords = (request, open, settings) => answerRecordsWith(request, open, settings, readTestSession)

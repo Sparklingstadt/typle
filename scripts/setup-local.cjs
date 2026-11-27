@@ -9,7 +9,6 @@ if (fs.existsSync(target)) {
   fs.writeFileSync(target, [
     `POSTGRES_PASSWORD=${password}`,
     `DATABASE_URL=postgresql://typle:${password}@127.0.0.1:5433/typle`,
-    `AUTH_SECRET=${randomBytes(32).toString('base64')}`,
     `BETTER_AUTH_SECRET=${randomBytes(32).toString('base64')}`,
     'AUTH_URL=http://localhost:3000',
     'AUTH_GITHUB_ID=',
