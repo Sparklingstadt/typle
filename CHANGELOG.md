@@ -4,8 +4,23 @@ Typle（Web 版と Go のバックエンド）のバージョンごとの変更�
 
 - v2.1.3 までは README に書いていた記録を、v2.5.5 でこのファイルへ移しました。文章は当時のままです。
 - それ以降の変更は、リリースごとに作る [GitHub Releases](https://github.com/Sparklingstadt/typle-r/releases) を見てください（Release notes は GitHub の自動生成です。v2.38.0 までは GitHub Actions が、v2.38.1 からは公開する人が手元で作ります）。
+- v2.62.1 は、公開の前に所有者がすることがあるため、例外としてここにも書きました。
 - v0.2.0〜v0.8.0 の詳しい記録は [docs/release-notes](docs/release-notes) にもあります。
 - このファイルにないバージョン（v1.0.0〜v2.0.0 の間など）は、README に記録を書いていなかったものです。
+
+## v2.62.1 — ログインを Auth.js から Better Auth に移す
+
+ログインを Auth.js（next-auth v5）から Better Auth（1.7.28）に替え、自前のログインの Cookie（`typle-session`）と、すべての端末からのログアウトの失効の表を使わなくしました。GitHub・Sparklingstadt ID・開発用のログインは今までどおりで、アカウントもデータも同じです。
+
+- v2.62.0 は欠番です。#389 のマージのタイトルに `(v2.62.0)` を付けましたが、Release は作らなかったため、この変更は v2.62.1 として出します。
+- **このリリースで、全員のログインが一度切れます。** 公開のあとに、もう一度ログインしてください。
+- **マージの前に**、所有者が Vercel の環境変数 `BETTER_AUTH_SECRET` を Production と Preview に入れ、同じ値を AWS Secrets Manager の `typle/BETTER_AUTH_SECRET` にも入れます。
+- セッションは DB（`typle_auth_*`）に持ち、ログインから30日で切れます（延長しません）。Cookie に最大5分キャッシュします。
+- GitHub・Sparklingstadt ID の callback は今までと同じ URL（`/api/auth/callback/github`・`/api/auth/callback/sid`）で、ID サーバーの登録と GitHub の OAuth アプリの設定は変わりません。ログインの開始は `POST /api/auth/sign-in/social` です。
+- Auth.js の `/api/auth/session`・`/api/auth/providers`・`/api/auth/csrf` は 404 になりました。環境変数は `AUTH_SECRET` から `BETTER_AUTH_SECRET` に替わりました（`AUTH_SECRET` はもう読みません）。
+- `npm run sid:link` は `typle_auth_accounts` に Sparklingstadt ID の行を足します。`npm run check:production` は Better Auth のログインの開始を確かめます。
+- 戻すときは Vercel の Instant Rollback だけです。古い表は残してありますが、v2.61.0 のソースをもう一度デプロイしようとしても、check-migrations が断ります。
+- 古い表 `typle_session_revocations`・`typle_sid_links` と `AUTH_SECRET` は、後日の PR で消します。
 
 ## v2.1.3 — API の文書のサイトを Vercel でビルドできるようにする
 

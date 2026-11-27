@@ -69,3 +69,17 @@ test('an OAuth sign-up with a real address is refused', database, async () => {
   assert.equal(result.data, null)
   assert.ok(result.error)
 })
+
+test('the cookie cache lasts 300 s, and the setting may only shorten it', database, () => {
+  const { cookieCacheSeconds } = require('../src/server/betterAuth.ts')
+  assert.equal(cookieCacheSeconds(undefined), 300)
+  assert.equal(cookieCacheSeconds('3'), 3)
+  assert.equal(cookieCacheSeconds('300'), 300)
+  for (const value of ['301', '86400', '0', '-5', '1.5', 'abc', '', ' 3']) assert.equal(cookieCacheSeconds(value), 300, value)
+})
+
+test('the session read has a high rate limit, since every page of a shared address reads it', database, () => {
+  const rules = require('../src/server/betterAuth.ts').auth.options.rateLimit.customRules
+  assert.deepEqual(rules['/get-session'], { window: 10, max: 1000 })
+  assert.deepEqual(rules['/sign-in/social'], { window: 60, max: 100 })
+})

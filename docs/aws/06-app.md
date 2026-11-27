@@ -31,7 +31,7 @@ ECS がタスクを起動するときに使うロールです。イメージの�
          "Action": "secretsmanager:GetSecretValue",
          "Resource": [
            "arn:aws:secretsmanager:ap-northeast-1:<アカウントID>:secret:typle-lab/DATABASE_URL-*",
-           "arn:aws:secretsmanager:ap-northeast-1:<アカウントID>:secret:typle-lab/AUTH_SECRET-*",
+           "arn:aws:secretsmanager:ap-northeast-1:<アカウントID>:secret:typle-lab/BETTER_AUTH_SECRET-*",
            "arn:aws:secretsmanager:ap-northeast-1:<アカウントID>:secret:typle-lab/AUTH_GITHUB_SECRET-*"
          ]
        },
@@ -88,7 +88,7 @@ Container Insights は、費用のためオフにします。
   - `AUTH_GITHUB_ID` = 練習用の OAuth App の Client ID
 - **ValueFrom**（シークレットの ARN を入れる）:
   - `DATABASE_URL` ← `typle-lab/DATABASE_URL`
-  - `AUTH_SECRET` ← `typle-lab/AUTH_SECRET`
+  - `BETTER_AUTH_SECRET` ← `typle-lab/BETTER_AUTH_SECRET`
   - `AUTH_GITHUB_SECRET` ← `typle-lab/AUTH_GITHUB_SECRET`
 
 コンテナのヘルスチェックは設定しません（ALB が確かめます）。

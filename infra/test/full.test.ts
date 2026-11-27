@@ -53,7 +53,7 @@ test('the app gets its settings and its five secrets', () => {
     AUTH_GITHUB_ID: 'gh-client',
     TYPLE_MAIL_FROM: 'Typle <no-reply@example.com>',
   })
-  assert.deepEqual(container.Secrets.map((s: { Name: string }) => s.Name).sort(), ['AUTH_GITHUB_SECRET', 'AUTH_SECRET', 'BETTER_AUTH_SECRET', 'DATABASE_URL', 'RESEND_API_KEY'])
+  assert.deepEqual(container.Secrets.map((s: { Name: string }) => s.Name).sort(), ['AUTH_GITHUB_SECRET', 'BETTER_AUTH_SECRET', 'DATABASE_URL', 'RESEND_API_KEY'])
   assert.deepEqual(container.PortMappings.map((p: { ContainerPort: number }) => p.ContainerPort), [3000])
 })
 

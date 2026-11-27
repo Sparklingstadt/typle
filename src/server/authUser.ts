@@ -32,3 +32,17 @@ export function betterAuthSettings(env: Record<string, string | undefined>): { s
   } catch { return null }
   return { secret, baseURL }
 }
+
+/** The GitHub profile fields a login reads (GitHub's /user answer). */
+export type GithubProfile = { id: number | string, login: string, name?: string | null, avatar_url: string }
+
+/**
+ * The user a GitHub login makes: github:<numeric id>, named by the profile's name, or by its login when the name is
+ * blank, with the address made up from the ID. GitHub's own address is never read: no scope asks for it, and an account
+ * that keeps it private has none, which Better Auth would otherwise refuse (email_not_found).
+ */
+export function githubUser(profile: GithubProfile) {
+  const id = `github:${profile.id}`
+  const name = profile.name?.trim() ? profile.name.trim() : profile.login.trim()
+  return { id, name, image: profile.avatar_url, email: accountEmail(id), emailVerified: true as const }
+}

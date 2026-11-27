@@ -1,6 +1,6 @@
 "use client"
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
-import { signIn as authSignIn, signOut as authSignOut } from 'next-auth/react'
+import { createAuthClient } from 'better-auth/react'
 import { api } from '@/lib/api'
 
 export type SessionUser = { id: string; name: string; image: string | null }
@@ -12,6 +12,9 @@ type SessionState = {
   update: () => Promise<SessionData>
 }
 
+// Better Auth's client, used for its requests only (the session is read by fetchSession). It talks to /api/auth of this site.
+const authClient = createAuthClient({ basePath: '/api/auth' })
+
 const SessionContext = createContext<SessionState>({ data: null, status: 'loading', update: async () => null })
 
 // The waits before the first read is tried again. When all have failed, the session settles on signed out, so the app is
@@ -20,14 +23,14 @@ const RETRY_DELAYS_MS = [1000, 2000, 4000]
 const SESSION_TIMEOUT_MS = 10_000
 
 /**
- * Reads the signed-in user from /api/auth/session, Auth.js's answer. Only a 200 answer says who is signed in: null when
+ * Reads the signed-in user from /api/auth/get-session, Better Auth's answer. Only a 200 answer says who is signed in: null when
  * the body is null or has no `user`. Anything else (a failed request, one that timed out, another status, a body that is
  * not the session) rejects, since it does not say that the user signed out.
  */
 async function fetchSession(): Promise<SessionData> {
   // A request that hangs (a network that is half there) fails after a while, so that it does not stay in flight for good
   // and hold back every later check.
-  const response = await fetch('/api/auth/session', { cache: 'no-store', signal: AbortSignal.timeout(SESSION_TIMEOUT_MS) })
+  const response = await fetch('/api/auth/get-session', { cache: 'no-store', signal: AbortSignal.timeout(SESSION_TIMEOUT_MS) })
   if (response.status !== 200) throw new Error(`session answered ${response.status}`)
   const body: unknown = await response.json()
   if (body === null) return null
@@ -118,24 +121,32 @@ export function useSession(): SessionState {
 }
 
 /**
- * Goes to Sparklingstadt ID, and comes back to returnTo, a path of this site. Rejects, staying on the page, when the
- * login cannot be started, as signInWithGitHub does.
+ * Starts a login with provider and goes to where Better Auth sends the browser: the provider. The login comes back to
+ * returnTo, a path of this site; a failed one comes back to /signin?error=<code>. Rejects, staying on the page, when the
+ * login cannot be started: the request fails, or Better Auth answers with an error or with no URL to go to.
  */
-export async function signInWithSid(returnTo: string): Promise<void> {
-  const result = await authSignIn('sid', { redirectTo: returnTo, redirect: false })
-  if (!result?.ok || result.error || !result.url) throw new Error('Sparklingstadt ID sign-in could not start')
-  location.assign(result.url)
+async function signInWith(provider: 'sid' | 'github', returnTo: string): Promise<void> {
+  // disableRedirect, so that a failed answer rejects here instead of the client following it.
+  const { data, error } = await authClient.signIn.social({
+    provider, callbackURL: returnTo, errorCallbackURL: '/signin', disableRedirect: true,
+  })
+  if (error || !data?.url) throw new Error(`${provider} sign-in could not start`)
+  location.assign(data.url)
 }
 
+/** Goes to Sparklingstadt ID, and comes back to returnTo, a path of this site. Rejects, staying on the page, when the login cannot be started. */
+export const signInWithSid = (returnTo: string): Promise<void> => signInWith('sid', returnTo)
+
+/** Goes to GitHub, and comes back to returnTo, a path of this site. Rejects, staying on the page, when the login cannot be started. */
+export const signInWithGitHub = (returnTo: string): Promise<void> => signInWith('github', returnTo)
+
 /**
- * Goes to GitHub, and comes back to returnTo, a path of this site. Rejects, staying on the page, when the login cannot
- * be started: the request fails, or Auth.js answers with an error (a 500, a refused CSRF token) or with no URL to go to.
+ * Signs in with the development login (POST /api/auth/sign-in/local, only answered while it is on). Rejects when it is
+ * refused or does not answer with a user.
  */
-export async function signInWithGitHub(returnTo: string): Promise<void> {
-  // redirect: false, so that a failed answer rejects here instead of being followed to returnTo or the error page.
-  const result = await authSignIn('github', { redirectTo: returnTo, redirect: false })
-  if (!result?.ok || result.error || !result.url) throw new Error('GitHub sign-in could not start')
-  location.assign(result.url)
+export async function signInLocal(): Promise<void> {
+  const { data, error } = await authClient.$fetch<{ user?: { id?: string } }>('/sign-in/local', { method: 'POST' })
+  if (error || !data?.user?.id) throw new Error('local login was refused')
 }
 
 /**
@@ -151,11 +162,8 @@ export async function signOutEverywhere(): Promise<void> {
 
 /** Signs out and goes home. Rejects, and stays on the page signed in, when the sign-out request fails or is refused. */
 export async function signOut(): Promise<void> {
-  // Auth.js answers a sign-out with the URL to go to; a failed one (a refused CSRF token, an error) with none, or with
-  // its error page.
-  const answer: unknown = await authSignOut({ redirect: false })
-  const url = (answer as { url?: unknown } | null)?.url
-  if (typeof url !== 'string' || new URL(url, location.href).searchParams.has('error')) throw new Error('sign-out failed')
+  const { data, error } = await authClient.signOut()
+  if (error || !data?.success) throw new Error('sign-out failed')
   // A full page load, so nothing from the signed-in session stays in memory.
   // eslint-disable-next-line @next/next/no-location-assign-relative-destination
   location.assign('/home')

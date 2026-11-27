@@ -11,7 +11,7 @@ typle を AWS に移す前に、同じ構成を**AWS コンソールで1つず�
 利用者 ─HTTPS─▶ Route 53（aws-lab.sparklingstadt.com。Cloudflare から委任）
                  └▶ ALB（パブリックサブネット×2 AZ、ACM の証明書）
                       └▶ ECS Fargate のタスク×1（パブリックサブネット、ARM64、:3000）
-                           ├─ Secrets Manager（DATABASE_URL・AUTH_SECRET・AUTH_GITHUB_SECRET）
+                           ├─ Secrets Manager（DATABASE_URL・BETTER_AUTH_SECRET・AUTH_GITHUB_SECRET）
                            ├─ CloudWatch Logs
                            └▶ RDS for PostgreSQL 17（プライベートサブネット×2 AZ）
 ```

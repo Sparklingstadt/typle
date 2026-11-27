@@ -1,8 +1,7 @@
 "use client"
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useSession } from '@/lib/session'
-import { signIn } from 'next-auth/react'
+import { signInLocal, useSession } from '@/lib/session'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 
@@ -14,9 +13,7 @@ export default function LocalLoginForm() {
   return <form action={async () => {
     setError('')
     try {
-      // The Credentials provider `local` of src/auth.ts; Auth.js answers a refused login with an error, not a rejection.
-      const result = await signIn('local', { redirect: false })
-      if (!result?.ok || result.error) throw new Error('local login was refused')
+      await signInLocal()
       // A session that could not be read keeps the one before, which is not this sign-in.
       if (!await update()) throw new Error('local login did not sign in')
       router.push('/play')

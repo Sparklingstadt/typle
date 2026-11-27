@@ -28,9 +28,10 @@ export default defineConfig({
   webServer: [
     {
       env: {
-        AUTH_SECRET: 'typle-e2e-only-not-a-production-secret-32-bytes',
         BETTER_AUTH_SECRET: 'typle-e2e-only-better-auth-secret-32-bytes',
         AUTH_URL: 'http://127.0.0.1:3101',
+        // The cookie cache of a session lasts 3 s instead of 5 minutes, so that tests can wait it out (tests/e2e/sessions.spec.ts).
+        COOKIE_CACHE_SECONDS: '3',
         // The session lists GitHub as a login, as the Go backend did with these.
         AUTH_GITHUB_ID: 'e2e',
         AUTH_GITHUB_SECRET: 'e2e',

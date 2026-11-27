@@ -6,10 +6,11 @@ const { createHash, generateKeyPairSync, randomBytes, sign } = require('node:cry
 // code for the identity set by POST /next ({ sub, email, email_verified, name }), and records its query, which GET
 // /requests answers (newest last) so that a test can see the prompt the app sent. /token checks the client (e2e:e2e,
 // client_secret_basic) and the PKCE verifier, and answers an ES256 ID token carrying the nonce, whose access token
-// /userinfo answers the same identity for. Kept in memory.
+// /userinfo answers the same identity for. Like the ID server, it sends a code only to a redirect URI registered for
+// the client: the app's Better Auth callback (/api/auth/callback/sid). Kept in memory.
 const port = Number(process.env.FAKE_SID_PORT || 3197)
 const issuer = `http://127.0.0.1:${port}`
-const CLIENT = { id: 'e2e', secret: 'e2e' }
+const CLIENT = { id: 'e2e', secret: 'e2e', redirectUris: ['http://127.0.0.1:3101/api/auth/callback/sid'] }
 const { privateKey, publicKey } = generateKeyPairSync('ec', { namedCurve: 'P-256' })
 const kid = 'e2e'
 const jwk = { ...publicKey.export({ format: 'jwk' }), kid, alg: 'ES256', use: 'sig' }
@@ -63,7 +64,8 @@ const server = http.createServer(async (request, response) => {
   if (url.pathname === '/authorize') {
     const query = Object.fromEntries(url.searchParams)
     requests.push(query)
-    if (query.client_id !== CLIENT.id || query.response_type !== 'code' || query.code_challenge_method !== 'S256') {
+    if (query.client_id !== CLIENT.id || query.response_type !== 'code' || query.code_challenge_method !== 'S256'
+      || !query.code_challenge || !CLIENT.redirectUris.includes(query.redirect_uri)) {
       return answer(400, { error: 'invalid_request' })
     }
     const code = randomBytes(16).toString('base64url')

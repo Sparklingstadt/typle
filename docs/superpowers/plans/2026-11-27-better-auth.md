@@ -36,7 +36,7 @@
 
 **callback と API**
 - GitHub の callback は `/api/auth/callback/github`（今と同じ）。
-- Sparklingstadt ID は `genericOAuth` の provider id `sid`、callback は標準の `/api/auth/oauth2/callback/sid`。今の URL から転送する仕組みは作らない。
+- Sparklingstadt ID は `genericOAuth` の provider id `sid`、callback は `/api/auth/callback/sid`（今と同じ。訂正：実装で確かめた。ログインの開始は `POST /api/auth/sign-in/social`、provider `sid`）。転送する仕組みは作らない。
 - Sparklingstadt ID は scope `openid email profile`、PKCE S256。`email_verified !== true` の ID と、`sub` が `/^[a-z0-9]{1,64}$/` でない ID は断る。
 - `/api/auth/*` は使うものだけを許可リストで通し、ほかは 404。
 
@@ -128,7 +128,7 @@
 - Create: `src/server/localLogin.ts`（開発用ログインのプラグイン）
 - Create: `src/server/authPaths.ts`（許可リスト）
 - Create: `src/app/api/auth/[...all]/route.ts`。Delete: `src/app/api/auth/[...nextauth]/route.ts`。`src/auth.ts` は Task 6 で消す。この Task では `[...all]` のほうが答えるようにする。
-- Modify: `tests/e2e/fakeSid.cjs`（新しい callback の URL を受け付ける）
+- Modify: `tests/e2e/fakeSid.cjs`（callback の URL は今と同じ `/api/auth/callback/sid`）
 - Test: `tests/betterAuthProviders.test.cjs`、`tests/e2e/sid-login.spec.ts`、`tests/e2e/github-login.spec.ts`（新規）、`tests/e2e/removed.spec.ts`
 
 **Interfaces:**
@@ -143,7 +143,7 @@
     - `POST /api/auth/sign-in/social`（GitHub）
     - `GET /api/auth/callback/github`
     - `POST /api/auth/sign-in/oauth2`（sid）
-    - `GET /api/auth/oauth2/callback/sid`
+    - `GET /api/auth/callback/sid`（訂正：`/oauth2/` は付かない）
     - 開発用ログインのエンドポイント（`localLogin` のときだけ）
     - ほかは 404。
   - ログインしているユーザーは、`account` の行の `user_id` で決まる。`sid` の `sub` がひも付いていれば、そのユーザーで入る。
@@ -154,7 +154,7 @@
     - `sidUser({ sub: 'abc', email_verified: false })` が throw。
     - `sidUser({ sub: 'ABC', email_verified: true })` が throw。
     - `authPathAllowed('GET', '/api/auth/session', { localLogin: false }) === false`。
-    - `authPathAllowed('GET', '/api/auth/oauth2/callback/sid', …) === true`。
+    - `authPathAllowed('GET', '/api/auth/callback/sid', …) === true`。
   - E2E（偽の ID サーバー `fakeSid.cjs` を使う）：
     - `sid login of a linked sub opens the github account`：`github:<n>` のユーザーとワークスペースと sid の account を DB に入れる。その sub でログインすると、`/api/auth/get-session` の `user.id` が `github:<n>`。
     - `sid login of a new sub makes sid:<sub>`。
@@ -237,7 +237,7 @@
 - Modify:
   - `docs/architecture.md`（ログインのしくみ、Cookie、ひも付け）
   - `docs/development.md`（`BETTER_AUTH_SECRET`、開発用ログイン）
-  - `docs/production.md`（環境変数と、ID サーバーの登録に新しい callback を足す手順）
+  - `docs/production.md`（環境変数。ID サーバーの登録は変わらない（訂正））
   - `docs/release-workflow.md` に関係があれば
   - `README.md`、`CHANGELOG.md`
 - Modify: `package.json`・`package-lock.json`（`npm version minor` で `2.62.0`。その前に `git tag` と GitHub Releases でまだ使われていないことを確かめる）
@@ -259,4 +259,4 @@
 - [ ] **Step 4: 通ることを確かめる。** `npm test`、`npm run typecheck`、`npm run lint`、`npm run knip`、`npm run build`、`cd infra && npm test`、`npm run test:e2e` が通る。
 - [ ] **Step 5: バージョンを上げる。** `npm version minor --no-git-tag-version` で `2.62.0`。CHANGELOG に v2.62.0 を足す。
 - [ ] **Step 6: コミットする。** `git commit -m "Auth.js と自前のログインの Cookie をなくし、ひも付けのスクリプトと本番の確認を Better Auth に合わせる"`
-- [ ] **Step 7: 持ち主に渡す。** `npm run verify`（Node 24・Docker）は持ち主の Mac で通してもらう。マージの前に、ID サーバーの登録に新しい callback を足してもらう（設計書 5 章）。
+- [ ] **Step 7: 持ち主に渡す。** `npm run verify`（Node 24・Docker）は持ち主の Mac で通してもらう。ID サーバーの登録は変わらない（訂正：callback は今と同じ URL）。マージの前に、Vercel と AWS に `BETTER_AUTH_SECRET` を足してもらう（設計書 5 章）。

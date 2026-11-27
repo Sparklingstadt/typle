@@ -1,10 +1,11 @@
 require('./register.cjs')
 const { test, after } = require('node:test')
 const assert = require('node:assert/strict')
-const { createHmac, hkdfSync, randomInt } = require('node:crypto')
+const { randomInt } = require('node:crypto')
 const { createPool, createPrisma } = require('../src/server/database.ts')
 const { failingDb, withoutTransactions } = require('./fakeDb.cjs')
-const { answerRecords } = require('../src/server/workspace.ts')
+const { answerRecords: answer } = require('../src/server/workspace.ts')
+const { cookieFor, readTestSession } = require('./fakeSession.cjs')
 const { readLoginSettings } = require('../src/server/settings.ts')
 
 // The scenarios were run by the Go backend against a real database (tests/fixtures/record-writes.json): each request here
@@ -16,31 +17,25 @@ const database = { skip: url ? false : 'TYPLE_TEST_DATABASE_URL is not set' }
 // The code under test gets Prisma Client; the tests set up and look at the tables with SQL, as the fixtures were made.
 const sql = url ? createPool(url) : null
 const db = url ? createPrisma(url) : null
-const secret = 'typle-records-test-secret'
 const origin = 'http://127.0.0.1:3101'
-const settings = readLoginSettings({ AUTH_SECRET: secret, AUTH_URL: origin })
+const settings = readLoginSettings({ AUTH_URL: origin })
 const withSettings = () => settings
 const open = () => db
+const answerRecords = (request, open, settings, read = readTestSession) => answer(request, open, settings, read)
 const owners = []
 after(async () => {
   if (!db) return
-  for (const table of ['typle_session_revocations', 'typle_records', 'typle_workspaces']) {
+  for (const table of ['typle_records', 'typle_workspaces']) {
     await sql.query(`DELETE FROM ${table} WHERE owner_id = ANY($1)`, [owners])
   }
   await sql.end()
   await db.$disconnect()
 })
 
-function seal(info, sub) {
-  const key = Buffer.from(hkdfSync('sha256', secret, Buffer.alloc(0), info, 32))
-  const now = Math.floor(Date.now() / 1000)
-  const payload = Buffer.from(JSON.stringify({ sub, name: 'N', image: '', iat: now - 60, exp: now + 3600 })).toString('base64url')
-  return `${payload}.${createHmac('sha256', key).update(payload).digest('base64url')}`
-}
 function account() {
   const owner = `github:${randomInt(1e9, 2e9)}`
   owners.push(owner)
-  return { owner, cookie: `typle-session=${seal('typle session v1', owner)}`, token: seal('typle app session v1', owner) }
+  return { owner, cookie: cookieFor(owner) }
 }
 const request = (user, method, body, headers = {}) => new Request(`${origin}/api/workspace/records`, {
   method, body: typeof body === 'string' ? body : JSON.stringify(body),
@@ -109,15 +104,6 @@ test('a request is refused as the Go backend refused it', database, async () => 
   await expectError(await answerRecords(request(user, 'POST', good), () => { throw new Error('not opened') }, () => null), 503, 'authUnavailable')
 })
 
-test('a revoked login is refused, and a browser loses its cookie', database, async () => {
-  const user = account()
-  await withRow(user)
-  await sql.query('INSERT INTO typle_session_revocations (owner_id, revoked_at) VALUES ($1, now())', [user.owner])
-  const response = await answerRecords(request(user, 'POST', { accountId: user.owner, listId: 'l1', record: run }), open, withSettings)
-  await expectError(response, 401, 'loginRequired')
-  assert.equal(response.headers.get('set-cookie'), 'typle-session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax')
-})
-
 test('the route answers other methods with 405', async () => {
   const route = require('../src/app/api/workspace/records/route.ts')
   for (const method of ['GET', 'HEAD', 'PUT', 'PATCH', 'OPTIONS']) {
@@ -150,6 +136,8 @@ test('every answer is one the contract declares, and every declared one is answe
   // A database that answers the login's questions but cannot hold the workspace, and one that cannot answer at all.
   const writeDown = () => withoutTransactions(db)
   const allDown = () => failingDb()
+  // A session that cannot be read: the login is what fails, whatever the database of the workspace.
+  const unreadable = async () => { throw new Error('the database is down') }
   const anonymous = { cookie: '' }
   const calls = [
     ['POST', body('one', aRun)], ['POST', body('one', aRun)], ['POST', ''],
@@ -159,18 +147,18 @@ test('every answer is one the contract declares, and every declared one is answe
     ['POST', body('full', { ...aRun, id: 'new' })], ['POST', body('gone', aRun)],
     ['POST', body('one', aRun), { user: anonymous }], ['POST', body('one', aRun, 'github:1')],
     ['POST', body('one', aRun), { headers: { Origin: 'https://evil.example' } }], ['POST', tooLarge],
-    ['POST', body('one', aRun), { open: writeDown }], ['POST', body('one', aRun), { open: allDown }],
+    ['POST', body('one', aRun), { open: writeDown }], ['POST', body('one', aRun), { open: allDown }], ['POST', body('one', aRun), { read: unreadable }],
     ['DELETE', del('one', 'run-1')], ['DELETE', ''], ['DELETE', { accountId: user.owner, listId: 'one' }],
     ['DELETE', del('one', 'run-1'), { user: anonymous }], ['DELETE', del('one', 'run-1', 'github:1')],
     ['DELETE', del('one', 'run-1'), { headers: { Origin: 'https://evil.example' } }], ['DELETE', tooLarge],
-    ['DELETE', del('one', 'run-1'), { open: writeDown }], ['DELETE', del('one', 'run-1'), { open: allDown }],
+    ['DELETE', del('one', 'run-1'), { open: writeDown }], ['DELETE', del('one', 'run-1'), { open: allDown }], ['DELETE', del('one', 'run-1'), { read: unreadable }],
   ]
   const seen = new Set()
   const original = console.error
   console.error = () => {}
   try {
     for (const [index, [method, sent, options = {}]] of calls.entries()) {
-      const response = await answerRecords(request(options.user ?? user, method, sent, options.headers), options.open ?? open, withSettings)
+      const response = await answerRecords(request(options.user ?? user, method, sent, options.headers), options.open ?? open, withSettings, options.read)
       const key = response.status >= 400 ? JSON.parse(await response.text()).error : ''
       assert.ok(declared[method][String(response.status)]?.includes(key), `call ${index} (${method}): ${response.status} ${key} is not declared`)
       seen.add(`${method} ${response.status} ${key}`)

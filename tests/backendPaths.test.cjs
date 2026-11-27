@@ -20,8 +20,8 @@ test('no other backend is left in the repository', () => {
   }
 })
 
-// The paths the apps (Web, iPad, Mac, Android, Windows) call. Every /api/auth path is Auth.js's (src/auth.ts).
-const nextRoutes = ['/api/health', '/api/workspace', '/api/workspace/records', '/api/auth/[...nextauth]']
+// The paths the apps (Web, iPad, Mac, Android, Windows) call. Every /api/auth path is Better Auth's (src/server/betterAuth.ts).
+const nextRoutes = ['/api/health', '/api/workspace', '/api/workspace/records', '/api/auth/[...all]']
 
 test('every path of the API is a Route Handler', () => {
   for (const route of nextRoutes) assert.ok(fs.existsSync(path.join(root, 'src/app', route, 'route.ts')), `${route} has no route.ts`)

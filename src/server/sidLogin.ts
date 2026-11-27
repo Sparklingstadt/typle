@@ -1,27 +1,65 @@
-// The login with Sparklingstadt ID (https://id.sparklingstadt.com), the OpenID Connect provider shared by the
-// Sparklingstadt services: the parts of its Auth.js provider that decide something, kept apart so that the unit tests
-// can run them. A Sparklingstadt ID is the account sid:<sub>, unless typle_sid_links links it to an account of another
-// login (src/server/sidLinks.ts, read by jwtCallback in src/server/authOptions.ts).
+import type { BetterAuthPlugin } from 'better-auth'
+import { createAuthMiddleware, isAPIError } from 'better-auth/api'
+import { accountEmail } from './authUser'
 
-/** The provider's id, which names /api/auth/signin/sid and /api/auth/callback/sid. */
+// The login with Sparklingstadt ID (https://id.sparklingstadt.com), the OpenID Connect provider shared by the
+// Sparklingstadt services, through Better Auth's genericOAuth (src/server/betterAuth.ts): what a login of it makes, kept
+// apart so that the unit tests can run it, and the cookie that makes the login after a sign-out ask for the password. A
+// Sparklingstadt ID is the account sid:<sub>, unless its account row belongs to another user (linked by npm run
+// sid:link), which Better Auth then signs in.
+
+/** The provider's id, which names its callback /api/auth/callback/sid. */
 export const SID_PROVIDER_ID = 'sid'
 
-/** The form of a sub, as src/server/session.ts accepts sid:<sub>. */
+/** The form of a sub, as the account ID sid:<sub> takes it (src/server/authUser.ts). */
 const SUB = /^[a-z0-9]{1,64}$/
 
 /** The claims of a Sparklingstadt ID token that the app reads. */
-export type SidClaims = { sub: string, email?: string, email_verified?: unknown, name?: string | null }
+export type SidClaims = { sub: unknown, email?: unknown, email_verified?: unknown, name?: unknown }
 
 /**
- * The account a Sparklingstadt ID login makes: sid:<sub>, named by the ID's name, or by its address before @ when the
- * name is blank. An ID whose address is not confirmed, or whose sub is not of its form, is refused (thrown), which
- * Auth.js answers by sending the browser back to the sign-in page with an error.
+ * The user a Sparklingstadt ID login makes: sid:<sub>, named by the ID's name, or by its address before @ when the name
+ * is blank, with the address made up from the ID (the real one is not kept). An ID whose address is not confirmed, or
+ * whose sub is not of its form, is refused (thrown).
  */
-export function sidProfile(profile: SidClaims): { id: string, name: string, image: '' } {
-  if (profile.email_verified !== true) throw new Error('Sparklingstadt ID: the address is not confirmed')
-  if (typeof profile.sub !== 'string' || !SUB.test(profile.sub)) throw new Error('Sparklingstadt ID: the sub is not of its form')
-  const name = profile.name?.trim() || (profile.email ?? '').split('@')[0]
-  return { id: `sid:${profile.sub}`, name, image: '' }
+export function sidUser(claims: SidClaims): { id: string, name: string, image: '', email: string, emailVerified: true } {
+  if (claims.email_verified !== true) throw new Error('Sparklingstadt ID: the address is not confirmed')
+  if (typeof claims.sub !== 'string' || !SUB.test(claims.sub)) throw new Error('Sparklingstadt ID: the sub is not of its form')
+  const id = `sid:${claims.sub}`
+  const given = typeof claims.name === 'string' ? claims.name.trim() : ''
+  const name = given || (typeof claims.email === 'string' ? claims.email : '').split('@')[0]
+  return { id, name, image: '', email: accountEmail(id), emailVerified: true }
+}
+
+/** The claims of a JWT, read without checking its signature, or null when it is not one. */
+function jwtClaims(token: string): Record<string, unknown> | null {
+  const parts = token.split('.')
+  if (parts.length !== 3) return null
+  try {
+    const claims: unknown = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf8'))
+    return claims && typeof claims === 'object' && !Array.isArray(claims) ? claims as Record<string, unknown> : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * genericOAuth's getUserInfo for Sparklingstadt ID: the user of the login's ID token, or null, which Better Auth answers
+ * by sending the browser to the error page (/signin?error=unable_to_get_user_info) without a session. Better Auth calls
+ * it only after it has checked the ID token against the ID server's keys, issuer, audience and nonce (the provider is
+ * built with requireIdTokenVerification), so the claims read here, email_verified among them, are the ID server's. A
+ * login without an ID token gets nothing: no claim of a userinfo answer stands in for it.
+ */
+export function sidAccountInfo(tokens: { idToken?: string }) {
+  const claims = tokens.idToken ? jwtClaims(tokens.idToken) : null
+  if (!claims) return null
+  try {
+    const user = sidUser(claims as SidClaims)
+    const sub = claims.sub as string
+    return { id: sub, sub, name: user.name, email: user.email, emailVerified: true }
+  } catch {
+    return null
+  }
 }
 
 /**
@@ -30,57 +68,60 @@ export function sidProfile(profile: SidClaims): { id: string, name: string, imag
  * that went through and removed by a Sparklingstadt ID login that succeeded, as the FFPF ID login did in v2.6.4.
  */
 export const SID_RELOGIN_COOKIE = 'typle-sid-relogin'
-/** How long the cookie is kept: the longest a login lasts (SESSION_MAX_AGE). */
+/** How long the cookie is kept: the longest a login lasts (30 days). */
 const RELOGIN_MAX_AGE = 30 * 24 * 3600
 
-const hasReloginCookie = (request: Request) => (request.headers.get('Cookie') ?? '').split(';')
+/** Whether a Cookie header carries the relogin cookie. */
+export const hasReloginCookie = (cookie: string | null | undefined) => (cookie ?? '').split(';')
   .some(part => part.trim().startsWith(`${SID_RELOGIN_COOKIE}=`))
 
-/** The URL to start a Sparklingstadt ID login at with prompt=login when the cookie asks for it, else null: as it is. */
-export function sidSignInUrl(request: Request): string | null {
-  const url = new URL(request.url)
-  if (url.pathname !== `/api/auth/signin/${SID_PROVIDER_ID}` || !hasReloginCookie(request)) return null
-  url.searchParams.set('prompt', 'login')
-  return url.href
-}
+const reloginAttributes = (secure: boolean) => ({ path: '/', httpOnly: true, sameSite: 'lax' as const, secure })
 
-/** Whether a URL Auth.js answered with (where to go next) is not its error page or the sign-in page with an error. */
-const withoutError = (location: string | null | undefined, base: string) => {
-  if (!location) return false
-  const url = new URL(location, base)
-  return !url.searchParams.has('error') && url.pathname !== '/api/auth/error'
-}
-
-/** Whether response is a sign-out that went through: Auth.js's answer for next-auth/react (JSON), or its redirect. */
-async function signedOut(request: Request, response: Response): Promise<boolean> {
-  const path = new URL(request.url).pathname
-  if (request.method !== 'POST') return false
-  if (path === '/api/account/signout-everywhere') return response.ok
-  if (path !== '/api/auth/signout') return false
-  if (response.status >= 300 && response.status < 400) return withoutError(response.headers.get('Location'), request.url)
-  if (!response.ok) return false
-  const body: unknown = await response.clone().json().catch(() => null)
-  const url = body && typeof body === 'object' && 'url' in body ? body.url : null
-  return typeof url === 'string' && withoutError(url, request.url)
+/**
+ * A Better Auth plugin for the relogin cookie: a Sparklingstadt ID login started with it asks for prompt=login, a
+ * sign-out (POST /api/auth/sign-out) that went through leaves it, and a Sparklingstadt ID login that made a session
+ * removes it. Signing out of every device is a Route Handler of its own, which leaves it with withSidRelogin.
+ */
+export function sidRelogin(secure: boolean) {
+  const cookieOf = (ctx: { request?: Request, headers?: Headers }) => (ctx.request?.headers ?? ctx.headers)?.get('cookie')
+  return {
+    id: 'sid-relogin',
+    hooks: {
+      before: [{
+        matcher: ctx => ctx.path === '/sign-in/social' && ctx.body?.provider === SID_PROVIDER_ID,
+        handler: createAuthMiddleware(async ctx => {
+          if (!hasReloginCookie(cookieOf(ctx))) return
+          const body = ctx.body as { additionalParams?: Record<string, string> }
+          return { context: { body: { ...body, additionalParams: { ...body.additionalParams, prompt: 'login' } } } }
+        }),
+      }],
+      after: [{
+        matcher: ctx => ctx.path === '/sign-out',
+        handler: createAuthMiddleware(async ctx => {
+          if (isAPIError(ctx.context.returned)) return
+          ctx.setCookie(SID_RELOGIN_COOKIE, '1', { ...reloginAttributes(secure), maxAge: RELOGIN_MAX_AGE })
+        }),
+      }, {
+        matcher: ctx => ctx.path === '/callback/:id' && ctx.params?.id === SID_PROVIDER_ID,
+        handler: createAuthMiddleware(async ctx => {
+          if (!ctx.context.newSession || !hasReloginCookie(cookieOf(ctx))) return
+          ctx.setCookie(SID_RELOGIN_COOKIE, '', { ...reloginAttributes(secure), maxAge: 0 })
+        }),
+      }],
+    },
+  } satisfies BetterAuthPlugin
 }
 
 /**
- * response, with the cookie left after a sign-out that went through (POST /api/auth/signout or
- * /api/account/signout-everywhere), or removed after a Sparklingstadt ID login that succeeded (the callback sends the
- * browser on, not back to the sign-in page with an error). Any other response is answered as it is.
+ * response, with the relogin cookie left after signing out of every device went through (POST
+ * /api/account/signout-everywhere answered 2xx). Any other response is answered as it is.
  */
 export async function withSidRelogin(request: Request, response: Response, secure: boolean): Promise<Response> {
-  const attributes = `Path=/; HttpOnly; SameSite=Lax${secure ? '; Secure' : ''}`
-  let cookie: string | null = null
-  if (await signedOut(request, response)) {
-    cookie = `${SID_RELOGIN_COOKIE}=1; ${attributes}; Max-Age=${RELOGIN_MAX_AGE}`
-  } else if (new URL(request.url).pathname === `/api/auth/callback/${SID_PROVIDER_ID}` && hasReloginCookie(request)
-    && response.status >= 300 && response.status < 400 && withoutError(response.headers.get('Location'), request.url)) {
-    cookie = `${SID_RELOGIN_COOKIE}=; ${attributes}; Max-Age=0`
-  }
-  if (!cookie) return response
+  const path = new URL(request.url).pathname
+  if (request.method !== 'POST' || path !== '/api/account/signout-everywhere' || !response.ok) return response
   // A copy, as the headers of a response may be immutable (Response.redirect).
   const answered = new Response(response.body, response)
-  answered.headers.append('Set-Cookie', cookie)
+  answered.headers.append('Set-Cookie',
+    `${SID_RELOGIN_COOKIE}=1; Path=/; HttpOnly; SameSite=Lax${secure ? '; Secure' : ''}; Max-Age=${RELOGIN_MAX_AGE}`)
   return answered
 }

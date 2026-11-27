@@ -2,40 +2,75 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { authResults, SITE } = require('../scripts/check-production.cjs')
 
-// The Auth.js checks of scripts/check-production.cjs, with a fake fetch instead of the production site.
-const CALLBACK = encodeURIComponent(`${SITE}/api/auth/callback/github`)
-const GITHUB = `https://github.com/login/oauth/authorize?client_id=x&redirect_uri=${CALLBACK}`
+// The Better Auth checks of scripts/check-production.cjs, with a fake fetch instead of the production site.
+const ID = 'https://id.example.test'
+const github = (origin = SITE) => `https://github.com/login/oauth/authorize?client_id=x&redirect_uri=${encodeURIComponent(`${origin}/api/auth/callback/github`)}`
+const sid = (origin = SITE) => `${ID}/authorize?client_id=x&redirect_uri=${encodeURIComponent(`${origin}/api/auth/callback/sid`)}`
 
-function fake({ session = 'null', providers = { sid: {}, github: {} }, location = GITHUB, status = 302 } = {}) {
-  return async (url, init = {}) => {
+function fake({ session = { status: 200, body: 'null' }, githubUrl = github(), sidUrl = sid(), start, old = 404, local = 404 } = {}) {
+  const seen = []
+  const send = async (url, init = {}) => {
     const path = new URL(url).pathname
-    const headers = new Headers()
-    if (path === '/api/auth/csrf') headers.append('set-cookie', 'authjs.csrf-token=abc%7Chash; Path=/; HttpOnly')
-    if (path === '/api/auth/signin/github' && location) headers.set('location', location)
-    const body = path === '/api/auth/session' ? session : path === '/api/auth/providers' ? JSON.stringify(providers)
-      : path === '/api/auth/csrf' ? JSON.stringify({ csrfToken: 'abc' }) : ''
-    return new Response(body, { status: path === '/api/auth/signin/github' ? status : 200, headers })
+    seen.push({ path, init })
+    if (path === '/api/auth/get-session') return new Response(session.body, { status: session.status })
+    if (path === '/api/auth/sign-in/social') {
+      const provider = JSON.parse(init.body).provider
+      if (start) return start(provider)
+      const target = provider === 'github' ? githubUrl : sidUrl
+      return new Response(JSON.stringify({ url: target, redirect: true }), { status: 200 })
+    }
+    if (path === '/api/auth/sign-in/local') return new Response('', { status: local })
+    return new Response('', { status: old })
   }
+  send.seen = seen
+  return send
 }
-const run = async options => (await authResults(SITE, fake(options))).map(r => r.ok)
+const run = async options => (await authResults(SITE, fake(options), ID)).map(r => r.ok)
+// get-session, GitHub, Sparklingstadt ID, the development login (404), then the removed /session, /providers and /csrf.
+const ALL_OK = [true, true, true, true, true, true, true]
 
-test('an anonymous session is null or has no user; one with a user is NG', async () => {
-  assert.deepEqual(await run({ session: 'null' }), [true, true, true, true])
-  assert.deepEqual(await run({ session: '{}' }), [true, true, true, true])
-  assert.equal((await run({ session: '{"user":{"id":"github:1"}}' }))[0], false)
+test('everything as Better Auth answers is OK', async () => {
+  assert.deepEqual(await run(), ALL_OK)
 })
 
-test('the providers must be Sparklingstadt ID and GitHub only', async () => {
-  assert.equal((await run({ providers: { sid: {}, github: {} } }))[1], true)
-  assert.equal((await run({ providers: { github: {} } }))[1], false)
-  assert.equal((await run({ providers: { sid: {} } }))[1], false)
-  // The ID and password login is gone: a production that still offers it is NG.
-  assert.equal((await run({ providers: { sid: {}, github: {}, password: {} } }))[1], false)
+test('an anonymous session must be null; one with a user, or a failure, is NG', async () => {
+  assert.equal((await run({ session: { status: 200, body: '{"user":{"id":"github:1"}}' } }))[0], false)
+  assert.equal((await run({ session: { status: 200, body: '{}' } }))[0], false)
+  assert.equal((await run({ session: { status: 500, body: 'null' } }))[0], false)
 })
 
-test('the GitHub sign-in is a 302 to GitHub with the production redirect_uri', async () => {
-  assert.equal((await run())[3], true)
-  assert.equal((await run({ location: 'https://github.com/login/oauth/authorize?redirect_uri=http%3A%2F%2Fother' }))[3], false)
-  assert.equal((await run({ location: `${SITE}/signin?error=Configuration` }))[3], false)
-  assert.equal((await run({ status: 200 }))[3], false)
+test('the GitHub login starts at GitHub with the production callback', async () => {
+  assert.equal((await run({ githubUrl: 'https://github.com/login/oauth/authorize?redirect_uri=http%3A%2F%2Fother' }))[1], false)
+  assert.equal((await run({ githubUrl: `${SITE}/signin?error=Configuration` }))[1], false)
+  assert.equal((await run({ start: () => new Response('{"message":"Provider not found"}', { status: 404 }) }))[1], false)
+})
+
+test('the Sparklingstadt ID login starts at the ID server with the production callback', async () => {
+  assert.equal((await run({ sidUrl: `https://other.example/authorize?redirect_uri=${encodeURIComponent(`${SITE}/api/auth/callback/sid`)}` }))[2], false)
+  assert.equal((await run({ sidUrl: `${ID}/authorize?redirect_uri=http%3A%2F%2Fother` }))[2], false)
+  // The provider is dropped when the ID server's discovery failed at startup: the start is then an error.
+  assert.equal((await run({ start: provider => provider === 'sid'
+    ? new Response('{"message":"Provider not found"}', { status: 404 }) : new Response(JSON.stringify({ url: github() }), { status: 200 }) }))[2], false)
+})
+
+test('a GitHub authorize URL must be at /login/oauth/authorize', async () => {
+  const wrong = `https://github.com/other?redirect_uri=${encodeURIComponent(`${SITE}/api/auth/callback/github`)}`
+  assert.equal((await run({ githubUrl: wrong }))[1], false)
+})
+
+test('the development login must be 404 in production', async () => {
+  assert.equal((await run({ local: 200 }))[3], false)
+  assert.equal((await run({ local: 401 }))[3], false)
+})
+
+test('a start is sent with the site origin as its Origin header', async () => {
+  const send = fake()
+  await authResults(SITE, send, ID)
+  const starts = send.seen.filter(request => request.path === '/api/auth/sign-in/social')
+  assert.equal(starts.length, 2)
+  for (const { init } of starts) assert.equal(init.headers.Origin, SITE)
+})
+
+test('Auth.js\'s endpoints must be gone', async () => {
+  assert.deepEqual(await run({ old: 200 }), [true, true, true, true, false, false, false])
 })

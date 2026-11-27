@@ -37,7 +37,7 @@ NS レコード（9）をホストゾーン（10）より先に消すのは、�
 シークレットは、画面から消すと最低7日の**削除の待機期間**に入ります。待たずにすぐ消すときは、CLI を使います。
 
 ```bash
-for name in DATABASE_URL APP_DB_PASSWORD AUTH_SECRET AUTH_GITHUB_SECRET; do
+for name in DATABASE_URL APP_DB_PASSWORD BETTER_AUTH_SECRET AUTH_GITHUB_SECRET; do
   aws secretsmanager delete-secret --profile typle --secret-id typle-lab/$name --force-delete-without-recovery
 done
 ```

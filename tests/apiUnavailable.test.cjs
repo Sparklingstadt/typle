@@ -1,10 +1,10 @@
 require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
-const { answerWorkspace, answerRecords } = require('../src/server/workspace.ts')
+const { answerWorkspace: answerWorkspaceWith, answerRecords: answerRecordsWith } = require('../src/server/workspace.ts')
 const { answerSignOutEverywhere } = require('../src/server/accountApi.ts')
 const { readLoginSettings } = require('../src/server/settings.ts')
-const { sealSession, newSession } = require('../src/server/session.ts')
+const { cookieFor, readTestSession } = require('./fakeSession.cjs')
 const { failingDb } = require('./fakeDb.cjs')
 
 // What the API answers when the database fails at each point it is used: a 503 with the same key for every cause, and
@@ -12,18 +12,18 @@ const { failingDb } = require('./fakeDb.cjs')
 // is needed: the databases here are made up (tests/fakeDb.cjs), and answer only the calls a test lets through.
 
 const origin = 'http://127.0.0.1:3104'
-const settings = readLoginSettings({ AUTH_SECRET: 'typle-unavailable-test-secret', AUTH_URL: origin })
+const settings = readLoginSettings({ AUTH_URL: origin })
 const withSettings = () => settings
-const NOT_REVOKED = { 'sessionRevocation.findUnique': null }
+const answerWorkspace = (request, open, settings) => answerWorkspaceWith(request, open, settings, readTestSession)
+const answerRecords = (request, open, settings) => answerRecordsWith(request, open, settings, readTestSession)
 /** Every use fails. */
 const down = () => failingDb()
-/** The login is checked (it was never revoked), and every later use fails. */
-const afterLogin = () => failingDb(NOT_REVOKED)
+/** The login is read from the cookie, as the session is made up: every use of the database fails all the same. */
+const afterLogin = () => failingDb()
 /** No database at all, as when DATABASE_URL is not set. */
 const none = () => { throw new Error('DATABASE_URL is not set') }
 
-const cookieOf = sub => `typle-session=${sealSession(settings.sessionKey, newSession(sub, 'N', '', Math.floor(Date.now() / 1000) - 60))}`
-const github = cookieOf('github:5')
+const github = cookieFor('github:5')
 
 function request(path, method, body, cookie) {
   return new Request(`${origin}${path}`, {
@@ -89,9 +89,18 @@ test('/api/workspace/records is 503 when there is no pool or the record cannot b
     'workspaceSaveFailed', 'DELETE /api/workspace/records: record.delete')
 })
 
-test('signing out of every device is 503 databaseUnavailable when there is no pool or the revocation cannot be written', async () => {
-  for (const open of [none, afterLogin]) {
-    await expectUnavailable(() => answerSignOutEverywhere(request('/api/account/signout-everywhere', 'POST', undefined, github), open, withSettings),
-      'databaseUnavailable', 'POST /api/account/signout-everywhere: session.revoke')
-  }
+test('signing out of every device is 503 databaseUnavailable when the session cannot be read or the sessions cannot be deleted', async () => {
+  const signOut = () => request('/api/account/signout-everywhere', 'POST', undefined, github)
+  const unreadable = async () => { throw new Error('the database is down') }
+  await expectUnavailable(() => answerSignOutEverywhere(signOut(), withSettings, unreadable),
+    'databaseUnavailable', 'POST /api/account/signout-everywhere: session.check')
+  const end = { revokeAll: async () => { throw new Error('the database is down') }, loginCookies: async () => [] }
+  await expectUnavailable(() => answerSignOutEverywhere(signOut(), withSettings, readTestSession, end),
+    'databaseUnavailable', 'POST /api/account/signout-everywhere: session.revoke')
+})
+
+test('the session cannot be read: any workspace request is 503 databaseUnavailable', async () => {
+  const unreadable = async () => { throw new Error('the database is down') }
+  await expectUnavailable(() => answerWorkspaceWith(request('/api/workspace', 'GET', undefined, github), () => failingDb(), withSettings, unreadable),
+    'databaseUnavailable', 'GET /api/workspace: session.check')
 })

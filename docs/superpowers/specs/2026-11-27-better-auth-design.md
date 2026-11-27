@@ -20,7 +20,7 @@ typle-r のログイン（今は Auth.js、next-auth v5 beta）を Better Auth �
 - 持ち主のデータ（ワークスペースと記録）が、切り替えのあとも同じアカウントで読めること。データの持ち主の ID（`github:219588180` など）は変えません。
 - 「すべての端末からログアウト」を Better Auth のセッションの削除で行い、専用の表 `typle_session_revocations` と自前の Cookie のコード（`src/server/session.ts`・`authJwt.ts`・`authOptions.ts` の大部分）をなくす。
 - Sparklingstadt ID のひも付け（`typle_sid_links`）を、Better Auth の「1 人のユーザーに複数のログイン方法（account）」に移す。持ち主のアカウントには、GitHub と Sparklingstadt ID の 2 つのログインがつく。
-- callback は Better Auth の標準の URL を使う（持ち主の決定。転送などの自前の仕組みを作らない）。GitHub は今と同じ `/api/auth/callback/github` なので、OAuth アプリは変えない。Sparklingstadt ID は `/api/auth/oauth2/callback/sid` に変わるので、切り替えの前に ID サーバーの登録へ新しい URL を足す（5 章）。
+- callback は Better Auth の標準の URL を使う（持ち主の決定。転送などの自前の仕組みを作らない）。GitHub は今と同じ `/api/auth/callback/github` なので、OAuth アプリは変えない。Sparklingstadt ID も実装では今と同じ `/api/auth/callback/sid` なので、ID サーバーの登録は変えない（訂正。下の 4.2 と 5 章）。
 
 **目標でないもの（今回は作らない）**
 
@@ -33,7 +33,7 @@ typle-r のログイン（今は Auth.js、next-auth v5 beta）を Better Auth �
 **失敗とみなすもの（動いていても）**
 
 - 切り替えのあとに持ち主がログインすると、データのない別のアカウント（新しい ID）になる。
-- GitHub の OAuth アプリの設定を変えないと、ログインできない（ID サーバーの登録に新しい callback の URL を足すのは、5 章の手順として行う）。
+- GitHub の OAuth アプリの設定を変えないと、ログインできない（訂正：Sparklingstadt ID の callback も今と同じ URL なので、ID サーバーの登録は変わらない）。
 - Sparklingstadt ID でログインしたときに、`email_verified` が true でない ID でも入れてしまう（今は断っています）。
 - ログアウトしたあと、次の Sparklingstadt ID のログインで、パスワードを聞かれずに ID サーバーから戻ってくる。今は Cookie `typle-sid-relogin` で `prompt=login` を付けています。
 - 本番で開発用のローカルログインが使えてしまう。
@@ -84,7 +84,7 @@ typle-r のログイン（今は Auth.js、next-auth v5 beta）を Better Auth �
 - `genericOAuth` プラグインで、provider id `sid` として登録する。
   - issuer は `AUTH_SID_ISSUER`（discovery を読む）、`AUTH_SID_ID`・`AUTH_SID_SECRET`。
   - scope は `openid email profile`。PKCE は S256。
-- **callback は `genericOAuth` の標準の `/api/auth/oauth2/callback/sid`（持ち主の決定）。** 今の `/api/auth/callback/sid` を転送する仕組みは作らない。ID サーバーの typle-r の登録（`OIDC_CLIENTS` の `redirectUris`）に、`https://typle.sparklingstadt.com/api/auth/oauth2/callback/sid` と `https://typle-r-six.vercel.app/api/auth/oauth2/callback/sid` を足す。古い URL は、切り替えを確かめるまで残す。
+- **callback は `/api/auth/callback/sid`（今と同じ）。** （訂正：Better Auth 1.7.28 の `genericOAuth` はログインを `POST /api/auth/sign-in/social`（provider `sid`）で始め、callback は `GET /api/auth/callback/sid` で、今と同じ URL。ID サーバーの登録は変わらない。実装で確かめた。）ログインの開始も GitHub と同じ `/sign-in/social`（provider `sid`）。当初の想定（標準の `/api/auth/oauth2/callback/sid` に変え、ID サーバーの登録へ足す）は、この確認で不要になった。転送する仕組みも作らない。
 - ID トークンの `email_verified` が true でなければ断る。`sub` の形の確かめ（今の `sidProfile`）も残す。
 - 表示名は今と同じ決め方にする（`name`、空ならアドレスの @ より前）。
 - **ログアウトのあとの再ログイン**：ログアウト（「すべての端末からログアウト」を含む）のあと、次の Sparklingstadt ID のログインで `prompt=login` を付ける。今の `typle-sid-relogin` の Cookie の仕組み（`src/server/sidLogin.ts`）を Better Auth のログアウトとログインにつなぎ直す。ログインが成功したら Cookie を消す。
@@ -164,11 +164,11 @@ typle-r のログイン（今は Auth.js、next-auth v5 beta）を Better Auth �
 
 typle-r は `docs/release-workflow.md` のとおり、PR → CI → マージで本番に出ます（マージ＝本番のデプロイ）。
 
-1. マージの前に、ID サーバーの typle-r の登録に新しい callback の URL を足す。`OIDC_CLIENTS` の typle-r の `redirectUris` に `…/api/auth/oauth2/callback/sid`（本番のドメインと `typle-r-six.vercel.app` の 2 つ）を足し、ID サーバーで `pnpm run import:clients` を実行する。Vercel の ID サーバーの `OIDC_CLIENTS` も同じに直す（後日の削除まで残すため）。
+1. ID サーバーの typle-r の登録は変えない（訂正：callback は今と同じ `/api/auth/callback/sid` のまま。`redirectUris` に足すものはない）。代わりにマージの前に、Vercel と AWS に新しい `BETTER_AUTH_SECRET` を足す。
 2. 新しい安定版のバージョン（`npm version`）を付けた PR を作り、`verify` を通す。持ち主の Mac でも `npm run verify` を通す。
 3. 持ち主の確認のあとでマージする。CI が、マイグレーション（表と取り込み）、Release、Vercel の本番デプロイ、`check:production` を行う。
 4. 持ち主は typle-r で GitHub と Sparklingstadt ID の両方でログインし、今までのデータが見えることを確かめる。
-5. 数日様子を見てから、別の PR で古い表（`typle_session_revocations`・`typle_sid_links`）と、使わなくなったコードを消す。ID サーバーの登録から古い callback の URL（`/api/auth/callback/sid`）も外す。
+5. 数日様子を見てから、別の PR で古い表（`typle_session_revocations`・`typle_sid_links`）と、使わなくなったコードを消す。ID サーバーの登録は変えていないので、外すものはない（訂正）。Vercel と AWS の `AUTH_SECRET` も、このときに消す。
 
 ## 6. 作る人に任せること
 
