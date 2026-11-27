@@ -10,7 +10,7 @@ Vercel MarketplaceでNeonを接続し、サーバー用の環境変数を設定�
 
 - `DATABASE_URL`: NeonのPostgreSQL接続URL（pooled接続可、`POSTGRES_URL`も代替として利用可能）
 - `DIRECT_URL`: マイグレーション用の直接接続URL（任意、未指定時はDATABASE_URL）。DATABASE_DRIVERは不要です。
-- `BETTER_AUTH_SECRET`: 暗号学的にランダムな秘密値（Better Auth が Cookie とトークンの署名・暗号化に使います。`openssl rand -base64 32` など）。v2.62.1 で `AUTH_SECRET` から替えました。`AUTH_SECRET` はもう読まないので、Vercel と AWS（Secrets Manager の `typle/AUTH_SECRET`）からは持ち主が後日消します
+- `BETTER_AUTH_SECRET`: 暗号学的にランダムな秘密値（Better Auth が Cookie とトークンの署名・暗号化に使います。`openssl rand -base64 32` など）。v2.62.1 で `AUTH_SECRET` から替えました。`AUTH_SECRET` はもう読みません。AWS の Secrets Manager の `typle/AUTH_SECRET` は v2.62.3 で CDK から外し、Vercel の `AUTH_SECRET`（Production・Preview）は v2.62.3 の公開のときに持ち主が手で消します
 - `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`: 本番用OAuth Appの認証情報
 - `AUTH_SID_ISSUER`, `AUTH_SID_ID`, `AUTH_SID_SECRET`: Sparklingstadt ID の issuer（`https://id.sparklingstadt.com`）、クライアント ID（`typle-r`）とシークレット。callback は `<本番URL>/api/auth/callback/sid`（Auth.js のときと同じなので、ID サーバーの登録は変わりません。起動時に ID サーバーの discovery を読み、失敗するとそのインスタンスは再起動まで Sparklingstadt ID でログインできません。`npm run check:production` で気づけます。[architecture.md](architecture.md) の「Sparklingstadt ID のひも付け」）
 - `AUTH_URL`: 本番URL。本番OAuth callbackは `<本番URL>/api/auth/callback/github`（v0.55.0 でも変わりません）。この値のオリジンだけを使います

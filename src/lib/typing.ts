@@ -1,3 +1,5 @@
+import { feedKana } from './romaji'
+
 export type TypingSession = {
   index: number
   input: string
@@ -13,6 +15,10 @@ export type TypingSession = {
   pendingSharpS?: boolean
   // Accepted Latin keys for the current Cyrillic letter; only complete letters enter input.
   pendingCyrillic?: string
+  // Romaji keys accepted for the current kana that do not make a whole kana yet; only complete kana enter input.
+  pendingKana?: string
+  // Every romaji key accepted for the current word, for the romaji guide. Cleared when the next word starts.
+  romajiTyped?: string
   // The answer of the current word was revealed (recall mode); cleared when the next word starts.
   revealed?: boolean
   // The words that went wrong in this run, in the order they were practised. Kept only for the result screen.
@@ -133,10 +139,30 @@ export function typeInput(current: TypingSession, words: { input: string }[], va
   // Typing always runs the clock, even if the input was not focused through the usual event.
   const resumed = resumeSession(current, now)
   let session: TypingSession = { ...resumed, startedAt: resumed.startedAt ?? now }
+  // Moves on to the next word, or finishes, once `input` is the whole word.
+  const advance = (next: TypingSession, target: string): TypingSession => {
+    if (next.input !== target) return next
+    return next.index === words.length - 1 ? { ...next, finishedAt: now }
+      : { ...next, index: next.index + 1, input: "", revealed: false, pendingKana: '', romajiTyped: '' }
+  }
   for (const char of inserted) {
     if (session.finishedAt !== null) break
     const target = words[session.index].input
-    const expected = Array.from(target)[Array.from(session.input).length]
+    const chars = Array.from(target)
+    const position = Array.from(session.input).length
+    const expected = chars[position]
+    // Kana are typed in romaji (or committed as kana through an input method, matched below like any character).
+    const kana = expected !== undefined && char !== expected ? feedKana(chars, position, session.pendingKana ?? '', char) : null
+    if (kana) {
+      const input = session.input + kana.committed
+      if (!kana.ok) {
+        const wordMistakes = noteMistake(session, { wrong: { position: Array.from(input).length, typed: char } })
+        session = { ...session, input, pendingKana: kana.pending, attempts: session.attempts + 1, mistakes: session.mistakes + 1, missed: true, wordMistakes }
+        continue
+      }
+      session = advance({ ...session, input, pendingKana: kana.pending, romajiTyped: (session.romajiTyped ?? '') + char.toLowerCase(), attempts: session.attempts + 1, missed: false }, target)
+      continue
+    }
     let cyrillicKey = false
     if (expected !== undefined && options.ignoreAccents && !matchesCharacter(char, expected, options)) {
       const candidate = (session.pendingCyrillic ?? '') + (options.ignoreCase ? char.toLowerCase() : char)
@@ -159,9 +185,7 @@ export function typeInput(current: TypingSession, words: { input: string }[], va
       continue
     }
     const input = session.input + expected
-    session = { ...session, input, attempts: session.attempts + 1, missed: false, pendingSharpS: false, pendingCyrillic: '' }
-    if (input !== target) continue
-    session = session.index === words.length - 1 ? { ...session, finishedAt: now } : { ...session, index: session.index + 1, input: "", revealed: false }
+    session = advance({ ...session, input, attempts: session.attempts + 1, missed: false, pendingSharpS: false, pendingCyrillic: '', pendingKana: '' }, target)
   }
   return session
 }

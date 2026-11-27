@@ -25,5 +25,13 @@
     "description": "Considère les majuscules et les minuscules, comme A et a, comme la même lettre. Taper avec ou sans Maj est accepté.",
     "label": "Ignorer les majuscules et minuscules",
     "hint": "Activée, les majuscules comme A et É sont acceptées si vous tapez a et é (et inversement)."
+  },
+  "romaji": {
+    "heading": "Saisie en rōmaji pour le japonais",
+    "description": "Les mots écrits en kana se tapent en rōmaji, méthode de saisie japonaise désactivée. Toutes les orthographes courantes sont acceptées, comme shi ou si pour し et sha ou sya pour しゃ. Les kana validés avec une méthode de saisie japonaise sont aussi acceptés. Une orthographe en rōmaji s’affiche sous le mot pendant l’entraînement.",
+    "kana": "Kana",
+    "keys": "Touches",
+    "syllabicN": "Devant une consonne autre que n et y, un seul n suffit (かんじ → kanji).",
+    "smallTsu": "Vous pouvez aussi doubler la consonne du kana suivant (きって → kitte, まっちゃ → maccha)."
   }
 }

@@ -12,6 +12,7 @@ export const WELCOME_PACKS: Readonly<Record<string, string>> = {
   'language/fr': 'pack-french-basics',
   'language/de': 'pack-german-basics',
   'language/cs': 'pack-czech-basics',
+  'language/ja': 'pack-japanese-romaji-beginner',
   'programming/go': 'pack-go-syntax-beginner',
   'programming/kotlin': 'pack-kotlin-syntax-beginner-1',
   'programming/java': 'pack-java-syntax-beginner',

@@ -11,7 +11,7 @@ function call(key, answers) {
 }
 
 /**
- * A Prisma Client whose every call fails, except the calls named in answers (`'sessionRevocation.findUnique': null`),
+ * A Prisma Client whose every call fails, except the calls named in answers (`'workspace.findUnique': null`),
  * which answer with their value.
  */
 function failingDb(answers = {}) {

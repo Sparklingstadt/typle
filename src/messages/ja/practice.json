@@ -39,7 +39,8 @@
     "resume": "クリックまたは任意のキーで再開",
     "inputLabel": "表示された文字を入力",
     "simpleKeys": "簡易入力",
-    "simpleKeysAll": "すべての対応表"
+    "simpleKeysAll": "すべての対応表",
+    "romaji": "ローマ字"
   },
   "recall": {
     "toggle": "思い出して打つ",
