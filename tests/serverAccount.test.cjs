@@ -144,3 +144,25 @@ test('the fresh read of Better Auth disables the cookie cache, so a revoked sess
   assert.equal(stolen.status, 401)
   assert.equal(await sessionsOf(user.id), 1)
 })
+
+test('the shared demo account cannot sign out of every device, which would sign every visitor out', database, async () => {
+  const id = 'demo:shared'
+  const made = await sql.query(`INSERT INTO typle_auth_users (id, name, email, email_verified, image) VALUES ($1, 'デモアカウント', $2, true, '')
+    ON CONFLICT (id) DO NOTHING`, [id, `${id}@users.invalid`])
+  if (made.rowCount === 1) users.push(id)
+  const token = randomBytes(24).toString('base64url')
+  await sql.query('INSERT INTO typle_auth_sessions (id, expires_at, token, user_id) VALUES ($1, now() + interval \'1 hour\', $2, $3)', [token.slice(0, 12), token, id])
+  const cookie = `better-auth.session_token=${encodeURIComponent(`${token}.${createHmac('sha256', secret).update(token).digest('base64')}`)}`
+  try {
+    const before = await sessionsOf(id)
+    const revoked = []
+    const end = { revokeAll: async userId => { revoked.push(userId) }, loginCookies: async () => [] }
+    const response = await answerSignOutEverywhere(signOut({ Cookie: cookie, Origin: origin }), login0, undefined, end)
+    assert.equal(response.status, 403)
+    assert.equal(await response.text(), '{"error":"demoAccount"}\n')
+    assert.deepEqual(revoked, [])
+    assert.equal(await sessionsOf(id), before)
+  } finally {
+    await sql.query('DELETE FROM typle_auth_sessions WHERE token = $1', [token])
+  }
+})

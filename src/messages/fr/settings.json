@@ -19,7 +19,8 @@
     "confirmDescription": "Tous les appareils et applications connectés, y compris ce navigateur, seront déconnectés. Reconnectez-vous sur les appareils que vous continuez à utiliser. Vos listes de mots et vos résultats d’entraînement ne sont pas supprimés.",
     "confirm": "Se déconnecter",
     "signingOut": "Déconnexion…",
-    "failed": "Impossible de se déconnecter. Veuillez réessayer."
+    "failed": "Impossible de se déconnecter. Veuillez réessayer.",
+    "demoUnavailable": "Le compte de démonstration est partagé par tous les visiteurs : il ne peut pas se déconnecter de tous les appareils."
   },
   "languages": {
     "ja": "japonais",
