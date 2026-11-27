@@ -60,7 +60,13 @@ typle-r のログイン（今は Auth.js、next-auth v5 beta）を Better Auth �
   - 細かい名前は作る人が決める。
 - **ユーザーの ID**：Better Auth の `user.id` を、今のアカウント ID（`github:<番号>`・`sid:<sub>`・`password:<UUID>`・`ffpf:<sub>`）そのものにする。ワークスペースと記録の `owner_id` はこの ID なので、データの表は変えない。
   - 新しいユーザーを作るときの ID は、ログインの方法で決める。GitHub は `github:<GitHub のユーザー番号>`、Sparklingstadt ID は `sid:<sub>`、開発用は `github:0`。今と同じです。
-  - Better Auth の ID 生成をそのまま使わず、ユーザー作成のフック（`databaseHooks.user.create.before` か、プロバイダーごとの `mapProfileToUser`）で決める。
+  - Better Auth の ID 生成をそのまま使わず、ユーザー作成のフック（`databaseHooks.user.create.before` か、プロバイダーごとの `mapProfileToUser`）で決める。`create.before` の戻り値は `forceAllowId` で保存される（Better Auth 1.7.28 で確認済み）。
+- **ユーザーのメールアドレス（持ち主の決定）**：Better Auth はユーザーごとにメールアドレスを必須・一意で持つ。typle-r は本物のアドレスを持たず、アカウント ID から作った仮のアドレスを入れる。
+  - 形は `<アカウント ID>@users.invalid`（例 `github:219588180@users.invalid`。`.invalid` は届かないと決まっている名前）。`emailVerified` は true にする。
+  - GitHub と Sparklingstadt ID の本物のアドレスは、プロフィールから写さない（`mapProfileToUser` で上書きする）。
+  - そのため、GitHub のログインは今と同じく scope なしでよい。GitHub でアドレスを非公開にしていても入れる。
+  - 理由：typle-r はメールを送らない。持ち主の個人情報を新しく持たない。本物のアドレスだと、Better Auth が「同じアドレスのユーザーにつなぐ」判断をして、ひも付けていない ID を断る問題が生まれる。仮のアドレスはアカウント ID ごとに違うので、この判断が起きない。
+  - Better Auth の GitHub provider が、アドレスがないとログインを断る動き（`email_not_found`）を、`mapProfileToUser`（か `getUserInfo` の上書き）で仮のアドレスを返すことで避ける。scope なし・アドレス非公開の GitHub アカウントでログインできることを、テストで確かめる。
 
 ### 4.2 ログインの方法
 
@@ -124,7 +130,7 @@ typle-r のログイン（今は Auth.js、next-auth v5 beta）を Better Auth �
 
 1. Better Auth の表を足すマイグレーション（`npm run db:migrate`。本番は CI の deploy の前に、今と同じ仕組みで当たる。`docs/release-workflow.md` を確かめる）。
 2. **データの取り込み**（マイグレーションの SQL の中で行う。手で実行するスクリプトにしない。Claude の判断。typle-r は CI がマージで本番に出すので、手作業の順番に頼らないため）。
-   - `typle_workspaces` と `typle_records` にデータがあるアカウント ID ごとに、Better Auth の user を同じ ID で作る。名前は空でよい。次のログインで更新する。
+   - `typle_workspaces` と `typle_records` にデータがあるアカウント ID ごとに、Better Auth の user を同じ ID で作る。メールアドレスは 4.1 の仮のアドレス、`emailVerified` は true。名前は空でよい。表示名と画像は、ログインのたびにプロフィールから写す（`overrideUserInfoOnSignIn` を使うか、フックで更新する。メールアドレスは写さない）。
    - `github:<番号>` のユーザーには、`providerId: "github"`・`accountId: <番号>` の account を作る。
    - `typle_sid_links` の各行について、ひも付け先のユーザーに `providerId: "sid"`・`accountId: <sub>` の account を作る。
    - `sid:<sub>` のユーザー（ひも付けのない ID）には、`providerId: "sid"`・`accountId: <sub>` の account を作る。
