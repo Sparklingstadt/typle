@@ -5,6 +5,7 @@ import { prisma } from './database'
 import { accountEmail, accountIdFromEmail, betterAuthSettings, githubUser } from './authUser'
 import { authPaths } from './authPaths'
 import { demoLogin } from './demoLogin'
+import { resetDemoWorkspace } from './demoReset'
 import { localLogin } from './localLogin'
 import { readLoginSettings } from './settings'
 import { SID_PROVIDER_ID, sidAccountInfo, sidRelogin } from './sidLogin'
@@ -108,7 +109,8 @@ export const auth = betterAuth({
     authPaths(localLoginOn, demoLoginOn),
     sidRelogin(secure),
     localLogin(localLoginOn),
-    demoLogin(demoLoginOn),
+    // The demo account gets its sample when it is first made, without waiting for the day's reset.
+    demoLogin(demoLoginOn, () => resetDemoWorkspace(prisma())),
     // Not while building: its discovery document is fetched when the instance starts.
     ...(sidConfigured() && !building ? [sidProvider()] : []),
   ],
