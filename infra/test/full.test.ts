@@ -44,7 +44,7 @@ test('the app and the migration run the images they were given, on ARM64', () =>
   assert.equal(migrate.ContainerDefinitions[0].WorkingDirectory, '/app/migrate')
 })
 
-test('the app gets its settings and its four secrets', () => {
+test('the app gets its settings and its five secrets', () => {
   const container = taskDefinition('typle-app').ContainerDefinitions[0]
   const environment = Object.fromEntries(container.Environment.map((e: { Name: string, Value: string }) => [e.Name, e.Value]))
   assert.deepEqual(environment, {

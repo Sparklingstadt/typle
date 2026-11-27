@@ -154,6 +154,7 @@ model AuthAccount {
 
   user AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([providerId, accountId])
   @@index([userId], map: "typle_auth_accounts_user_id_idx")
   @@map("typle_auth_accounts")
 }

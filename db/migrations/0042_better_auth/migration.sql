@@ -43,6 +43,9 @@ CREATE TABLE "typle_auth_accounts" (
 
 CREATE INDEX "typle_auth_accounts_user_id_idx" ON "typle_auth_accounts" ("user_id");
 
+-- One row per login method and its ID there: the same GitHub or Sparklingstadt ID cannot belong to two users.
+CREATE UNIQUE INDEX "typle_auth_accounts_provider_id_account_id_key" ON "typle_auth_accounts" ("provider_id", "account_id");
+
 CREATE TABLE "typle_auth_verifications" (
   "id" text PRIMARY KEY,
   "identifier" text NOT NULL,
