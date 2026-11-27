@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
 import InputSettings from '@/components/Settings/InputSettings'
 import SimpleInputTable from '@/components/Settings/SimpleInputTable'
+import RomajiInputTable from '@/components/Settings/RomajiInputTable'
 import { PageMain } from '@/components/ui/page-layout'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,6 +21,7 @@ export default async function Input() {
       <InputSettings setting="simpleSpecial" />
       <InputSettings setting="ignoreCase" />
       <SimpleInputTable />
+      <RomajiInputTable />
     </div>
   </PageMain>
 }
