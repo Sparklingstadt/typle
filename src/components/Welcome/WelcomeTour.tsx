@@ -163,7 +163,7 @@ export default function WelcomeTour() {
                     const name = names(`children.${option.id as 'language'}.${item.id.split('/')[1] as 'zh'}`)
                     const native = NATIVE_LANGUAGE_NAMES[item.id]
                     return <KeyToggle key={item.id} checked={chosen.includes(item.id)} accessibleName={name}
-                      label={native ?? name} sub={native ? name : undefined} mono={!native}
+                      label={native ?? name} sub={native && native !== name ? name : undefined} mono={!native}
                       onChange={() => setChosen(current => toggleWelcomeInterest(current, item.id))} />
                   })}
                 </div>

@@ -56,6 +56,7 @@ export const NATIVE_LANGUAGE_NAMES: Readonly<Record<string, string>> = {
   'language/fr': 'Français',
   'language/de': 'Deutsch',
   'language/cs': 'Čeština',
+  'language/ja': '日本語', // i18n-ignore
 }
 
 // The tour shows parents as headings: picking a child picks its parent, and dropping the last child drops the parent.
