@@ -17,7 +17,7 @@ const SID_PROVIDER = 'sid'
 
 /** The form of a Sparklingstadt ID sub, as src/server/authUser.ts accepts sid:<sub>. */
 const SUB = /^[a-z0-9]{1,64}$/
-/** The accounts of the other logins that a link may point at: GitHub, and the ID-and-password and FFPF accounts imported in v2.62.0. */
+/** The accounts of the other logins that a link may point at: GitHub, and the ID-and-password and FFPF accounts imported in v2.62.1. */
 const OTHER_ACCOUNT = /^(github:\d+|password:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|ffpf:[a-z0-9]{1,64})$/
 
 /** The sub of text, with or without sid:, or null when it is not one. */

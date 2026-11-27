@@ -22,7 +22,7 @@ v2.43.2 まであったプラグインの層（`src/plugins`）と、ファイ�
 
 v2.46.11 まではバックエンドの一部が Go（`server/`、Vercel の Go の関数 `api/index.go`）でした。v2.46.10 で `/api` のすべてのパスを Next.js の Route Handler に移し、v2.47.0 で Go のコードを消しました（設計は `docs/superpowers/specs/2026-11-16-go-backend-to-ts-design.md`。Go と違うところもそこにあります）。
 
-ログインは Better Auth（v1.7.28）で、v2.62.0 で Auth.js（next-auth v5）と自前の Cookie（`typle-session`）をなくして替えました（設計は `docs/superpowers/specs/2026-11-27-better-auth-design.md`）。
+ログインは Better Auth（v1.7.28）で、v2.62.1 で Auth.js（next-auth v5）と自前の Cookie（`typle-session`）をなくして替えました（設計は `docs/superpowers/specs/2026-11-27-better-auth-design.md`）。
 
 ### ログインのしくみ（Better Auth）
 
