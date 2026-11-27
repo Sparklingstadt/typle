@@ -19,23 +19,31 @@
     "next": "Next",
     "interests": {
       "title": "Choose your interests",
-      "text": "Choose the languages and topics you want to practise. You can change them later in Interests."
+      "text": "Each choice adds your first practice on the right. You can change them later in Interests.",
+      "heading": "What do you want to type?"
     },
     "packs": {
       "title": "Follow packs",
-      "text": "Official packs that fit your interests. The checked packs will be followed.",
       "follow": "Follow",
       "following": "Following…",
       "more": "<catalog>See more in the catalog</catalog>",
       "select": "Select {name}",
       "stats": "{lists, plural, one {# list} other {# lists}} · {words, plural, one {# word} other {# words}}",
       "first": "First list: {list}",
-      "retryInterests": "Save interests again"
+      "retryInterests": "Save interests again",
+      "heading": "{count, plural, =1 {Start with this one} other {Start with these #}}",
+      "keys": "<key>1</key>–<key>{last}</key> to toggle, <key>←</key> to go back to interests",
+      "back": "Back"
     },
     "start": {
       "title": "Start practice",
-      "text": "You now follow “{pack}”. Start with its first list. You can choose your other packs on the Practice screen.",
-      "button": "Start practice"
+      "text": "Try typing the first word of “{pack}”. You can choose your other packs on the Practice screen.",
+      "button": "Start practice",
+      "heading": "You’re all set"
+    },
+    "panel": {
+      "title": "Your first practice",
+      "empty": "Choose interests and your practice appears here."
     }
   }
 }

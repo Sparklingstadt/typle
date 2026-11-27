@@ -369,3 +369,31 @@ test('the sign-in page looks the same in English', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   await expect(page).toHaveScreenshot('en-signin.png', masks(page))
 })
+
+// The tour, with reduced motion so that the typed headings and the typing demo hold still.
+async function openTour(page: Page, colorScheme: 'light' | 'dark' = 'light') {
+  await page.emulateMedia({ colorScheme, reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/welcome')
+  await page.evaluate(() => document.fonts.ready)
+  await page.getByRole('checkbox', { name: '中国語', exact: true }).check()
+  await page.getByRole('checkbox', { name: 'Go', exact: true }).check()
+}
+
+test('the tour looks the same', async ({ page }) => {
+  await openTour(page)
+  await expect(page).toHaveScreenshot('welcome-interests.png', masks(page))
+  await page.getByRole('button', { name: '次へ', exact: true }).click()
+  await expect(page.getByRole('region', { name: 'パックをフォローする' })).toBeVisible()
+  await expect(page).toHaveScreenshot('welcome-packs.png', masks(page))
+  await page.getByRole('button', { name: 'フォローする', exact: true }).click()
+  await expect(page.getByRole('region', { name: '練習を始める' })).toBeVisible()
+  await expect(page).toHaveScreenshot('welcome-start.png', masks(page))
+})
+
+test('the tour looks the same in dark mode', async ({ page }) => {
+  await openTour(page, 'dark')
+  await page.getByRole('button', { name: '次へ', exact: true }).click()
+  await expect(page.getByRole('region', { name: 'パックをフォローする' })).toBeVisible()
+  await expect(page).toHaveScreenshot('welcome-packs-dark.png', masks(page))
+})

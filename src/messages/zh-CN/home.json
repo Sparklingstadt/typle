@@ -19,23 +19,31 @@
     "next": "下一步",
     "interests": {
       "title": "选择兴趣",
-      "text": "请选择想练习的语言和领域。之后可以在“兴趣”中更改。"
+      "text": "每选择一项，右侧就会出现你的第一个练习。之后可以在“兴趣”中更改。",
+      "heading": "你想学会打什么？"
     },
     "packs": {
       "title": "关注单词包",
-      "text": "这些官方单词包符合你选择的兴趣。将关注已勾选的单词包。",
       "follow": "关注",
       "following": "正在关注…",
       "more": "<catalog>在目录中查看更多</catalog>",
       "select": "选择 {name}",
       "stats": "{lists, plural, other {# 个列表}} · {words, plural, other {# 个单词}}",
       "first": "第一个列表：{list}",
-      "retryInterests": "重新保存兴趣"
+      "retryInterests": "重新保存兴趣",
+      "heading": "{count, plural, other {从这 # 个开始吧}}",
+      "keys": "按 <key>1</key>–<key>{last}</key> 切换，按 <key>←</key> 返回兴趣",
+      "back": "返回"
     },
     "start": {
       "title": "开始练习",
-      "text": "已关注“{pack}”。从第一个列表开始练习吧。其他单词包可以在“开始练习”页面中选择。",
-      "button": "开始练习"
+      "text": "试着输入“{pack}”的第一个单词吧。其他单词包可以在“开始练习”页面中选择。",
+      "button": "开始练习",
+      "heading": "准备好了"
+    },
+    "panel": {
+      "title": "你的第一个练习",
+      "empty": "选择兴趣后，练习会显示在这里。"
     }
   }
 }
