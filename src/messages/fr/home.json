@@ -7,7 +7,18 @@
     "navLabel": "Pour commencer",
     "play": "S’entraîner",
     "create": "Créer une liste de mots",
-    "records": "Voir les résultats"
+    "records": "Voir les résultats",
+    "help": {
+      "title": "Première visite",
+      "guide": {
+        "title": "Mode d’emploi",
+        "text": "Commencer un entraînement, créer des listes de mots, lire vos résultats"
+      },
+      "about": {
+        "title": "À propos de Typle",
+        "text": "Ce que permet l’app, où sont gardées vos données, la version"
+      }
+    }
   },
   "storage": "Toutes les fonctions d’entraînement et de modification sont disponibles sans vous connecter. Les listes de mots, l’historique et les appareils sont enregistrés dans ce navigateur. En vous connectant (avec Sparklingstadt ID ou GitHub), vous passez à un autre emplacement, votre compte, synchronisé entre vos appareils. Les données du navigateur ne sont pas transférées automatiquement.",
   "storageAccount": "Vous êtes connecté : vos listes de mots, votre historique et vos appareils sont enregistrés dans votre compte et synchronisés avec les autres appareils et navigateurs connectés au même compte. Ils sont conservés séparément des données enregistrées dans ce navigateur sans connexion.",

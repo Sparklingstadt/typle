@@ -7,7 +7,18 @@
     "navLabel": "Get started",
     "play": "Practice",
     "create": "Create a word list",
-    "records": "View records"
+    "records": "View records",
+    "help": {
+      "title": "New to Typle",
+      "guide": {
+        "title": "How to use",
+        "text": "Starting a practice, making word lists, reading your records"
+      },
+      "about": {
+        "title": "About Typle",
+        "text": "What it does, where your data is kept, the version"
+      }
+    }
   },
   "storage": "You can use every practice and editing feature without signing in. Word lists, practice history, and devices are saved in this browser. Signing in (with Sparklingstadt ID or GitHub) switches to a separate storage location, your account, which syncs across devices. Data in the browser is not moved automatically.",
   "storageAccount": "You are signed in, so your word lists, practice history, and devices are saved to your account and synced with other devices and browsers signed in to the same account. They are kept separately from data saved in this browser without signing in.",
