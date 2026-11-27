@@ -19,23 +19,31 @@
     "next": "Suivant",
     "interests": {
       "title": "Choisir vos centres d’intérêt",
-      "text": "Choisissez les langues et les domaines sur lesquels vous voulez vous entraîner. Vous pourrez les modifier plus tard dans « Centres d’intérêt »."
+      "text": "Chaque choix ajoute votre premier entraînement à droite. Vous pourrez les modifier plus tard dans « Centres d’intérêt ».",
+      "heading": "Qu’aimeriez-vous savoir taper ?"
     },
     "packs": {
       "title": "Suivre des packs",
-      "text": "Les packs officiels qui correspondent à vos centres d’intérêt. Les packs cochés seront suivis.",
       "follow": "Suivre",
       "following": "Suivi en cours…",
       "more": "<catalog>Voir plus dans le catalogue</catalog>",
       "select": "Sélectionner {name}",
       "stats": "{lists, plural, one {# liste} other {# listes}} · {words, plural, one {# mot} other {# mots}}",
       "first": "Première liste : {list}",
-      "retryInterests": "Enregistrer à nouveau les centres d’intérêt"
+      "retryInterests": "Enregistrer à nouveau les centres d’intérêt",
+      "heading": "{count, plural, =1 {Commencez par celui-ci} other {Commencez par ces #}}",
+      "keys": "<key>1</key>–<key>{last}</key> pour cocher, <key>←</key> pour revenir aux centres d’intérêt",
+      "back": "Retour"
     },
     "start": {
       "title": "Commencer l’entraînement",
-      "text": "Vous suivez maintenant « {pack} ». Commencez par sa première liste. Vous pourrez choisir vos autres packs sur l’écran « S’entraîner ».",
-      "button": "Commencer l’entraînement"
+      "text": "Essayez de taper le premier mot de « {pack} ». Vous pourrez choisir vos autres packs sur l’écran « S’entraîner ».",
+      "button": "Commencer l’entraînement",
+      "heading": "Tout est prêt"
+    },
+    "panel": {
+      "title": "Votre premier entraînement",
+      "empty": "Choisissez des centres d’intérêt pour voir votre entraînement ici."
     }
   }
 }

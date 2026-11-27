@@ -5,17 +5,16 @@ import { skipWelcome } from './welcome'
 
 const key = 'typle-r:guest-workspace:v1'
 const firstStep = (page: Page) => page.getByRole('region', { name: '関心を選ぶ' })
-const chip = (page: Page, name: string) => page.getByRole('button', { name, exact: true })
+const chip = (page: Page, name: string) => page.getByRole('checkbox', { name, exact: true })
 
 /** Picks 中国語 and Go on the first step and moves on to the packs. */
 async function pickInterests(page: Page) {
   const next = page.getByRole('button', { name: '次へ', exact: true })
   await expect(next).toBeDisabled()
-  await chip(page, '語学').click()
-  await expect(next).toBeDisabled()
-  await chip(page, '中国語').click()
-  await chip(page, 'プログラミング').click()
-  await chip(page, 'Go').click()
+  await chip(page, '中国語').check()
+  await chip(page, 'Go').check()
+  // The panel beside the keys fills in as they are picked.
+  await expect(page.getByRole('complementary', { name: 'あなたの最初の練習' }).getByText('Go構文')).toBeVisible()
   await expect(next).toBeEnabled()
   await next.click()
   await expect(page.getByRole('region', { name: 'パックをフォローする' })).toBeVisible()
@@ -60,7 +59,7 @@ test('a new guest picks interests, follows and starts practice', async ({ page }
   await expect(page).toHaveURL(/\/welcome$/)
   await expect(page.getByText('ステップ 1 / 3')).toBeVisible()
   await pickInterests(page)
-  await expect(page.getByRole('region', { name: 'パックをフォローする' }).getByRole('checkbox')).toHaveCount(2)
+  await expect(page.getByRole('complementary', { name: 'あなたの最初の練習' }).getByRole('checkbox')).toHaveCount(2)
   const chinese = page.getByRole('checkbox', { name: '中国語：基礎単語・基礎構文 を選ぶ', exact: true })
   const go = page.getByRole('checkbox', { name: 'Go構文 を選ぶ', exact: true })
   await expect(chinese).toBeChecked()
@@ -72,7 +71,7 @@ test('a new guest picks interests, follows and starts practice', async ({ page }
   const start = page.getByRole('region', { name: '練習を始める' })
   await expect(start).toBeVisible()
   await expect(start.getByText('最初のリスト：中国語：基礎単語・基礎構文')).toBeVisible()
-  await expect(start.getByText('我是学生。')).toBeVisible()
+  await expect(start.getByText('我是学生。').first()).toBeVisible()
   await start.getByRole('button', { name: '練習を始める', exact: true }).click()
   await expect(page).toHaveURL(/\/play\?list=/)
   await expect(page.getByRole('textbox', { name: '表示された文字を入力', exact: true })).toBeVisible()
@@ -133,4 +132,85 @@ test('a new account is toured too, and a failed interests save can be retried', 
   } finally {
     await deleteWorkspace(accountId)
   }
+})
+
+test('the tour can be done with the keyboard', async ({ page }) => {
+  await page.goto('/welcome')
+  await expect(firstStep(page)).toBeVisible()
+  await chip(page, '中国語').focus()
+  await page.keyboard.press('Space')
+  await chip(page, 'Go').focus()
+  await page.keyboard.press('Space')
+  await page.keyboard.press('Enter')
+  const packs = page.getByRole('region', { name: 'パックをフォローする' })
+  await expect(packs).toBeVisible()
+  await page.keyboard.press('ArrowLeft')
+  await expect(firstStep(page)).toBeVisible()
+  await expect(chip(page, '中国語')).toBeChecked()
+  await page.keyboard.press('Enter')
+  await expect(packs).toBeVisible()
+  await page.keyboard.press('2')
+  await expect(page.getByRole('checkbox', { name: 'Go構文 を選ぶ', exact: true })).not.toBeChecked()
+  await expect(page.getByRole('checkbox', { name: '中国語：基礎単語・基礎構文 を選ぶ', exact: true })).toBeChecked()
+  await page.keyboard.press('Enter')
+  const start = page.getByRole('region', { name: '練習を始める' })
+  await expect(start).toBeVisible()
+  // Once followed there is no going back, and the number keys do nothing.
+  await page.keyboard.press('ArrowLeft')
+  await page.keyboard.press('1')
+  await expect(start).toBeVisible()
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/\/play\?list=/)
+})
+
+test('Enter on the catalog link follows the link', async ({ page }) => {
+  await page.goto('/welcome')
+  await chip(page, '中国語').check()
+  await page.getByRole('button', { name: '次へ', exact: true }).click()
+  await page.getByRole('link', { name: 'カタログでもっと見る', exact: true }).focus()
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/\/packs\/catalog$/)
+})
+
+test('Escape leaves the tour like later', async ({ page }) => {
+  await page.goto('/welcome')
+  await expect(firstStep(page)).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page).toHaveURL(/\/home$/)
+  await page.goto('/home')
+  await expect(page.getByRole('heading', { name: '自分の単語で、タイピング練習。' })).toBeVisible()
+  await expect(page).toHaveURL(/\/home$/)
+})
+
+test('on a phone the next button stays on screen', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 })
+  await page.goto('/welcome')
+  for (const name of ['中国語', 'ロシア語', '韓国語', '英語', 'Go', 'TypeScript']) await chip(page, name).check()
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect(page.getByRole('button', { name: '次へ', exact: true })).toBeInViewport()
+})
+
+test('on a phone the next button can be pressed over the keys', async ({ page }) => {
+  // Short enough that the sticky row sits over the keys.
+  await page.setViewportSize({ width: 375, height: 480 })
+  await page.goto('/welcome')
+  for (const name of ['中国語', 'ロシア語', '韓国語', '英語', 'Go', 'TypeScript']) await chip(page, name).check()
+  // Here the last row of keys passes under the sticky row.
+  await page.evaluate(() => window.scrollTo(0, 150))
+  // A tap where the button is (locator.click would scroll until nothing covers it).
+  const box = await page.getByRole('button', { name: '次へ', exact: true }).boundingBox()
+  await page.mouse.click(box!.x + box!.width / 2, box!.y + box!.height / 2)
+  await expect(page.getByRole('region', { name: 'パックをフォローする' })).toBeVisible()
+})
+
+test('Escape that closes the menu leaves the tour open', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 667 })
+  await page.goto('/welcome')
+  await expect(firstStep(page)).toBeVisible()
+  await page.getByRole('button', { name: 'メニューを開く', exact: true }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).toBeHidden()
+  await expect(page).toHaveURL(/\/welcome$/)
+  await expect(firstStep(page)).toBeVisible()
 })
