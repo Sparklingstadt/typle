@@ -3,7 +3,7 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { returnPath } = require('../src/lib/returnPath.ts')
 
-// The page a login comes back to (?returnTo=, Auth.js's ?callbackUrl=) is a path of this site and nothing else:
+// The page a login comes back to (?returnTo=) is a path of this site and nothing else:
 // browsers drop tabs and line breaks from a URL and read "\" as "/", so a value that only looks like a path can go to
 // another site.
 

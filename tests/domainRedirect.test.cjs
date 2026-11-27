@@ -35,20 +35,10 @@ test('pages move to the custom domain for good', () => {
   }
 })
 
-test('the apps keep calling the API at the Vercel domain, and Auth.js answers there too', () => {
+test('the apps keep calling the API at the Vercel domain, and the login API answers there too', () => {
   for (const api of ['/api/workspace', '/api/workspace/records', '/api/health', '/api/account/signout-everywhere',
-    '/api/auth/session', '/api/auth/csrf', '/api/auth/providers', '/api/auth/signin/github', '/api/auth/callback/github',
-    '/api/auth/signout']) {
+    '/api/auth/get-session', '/api/auth/sign-in/social', '/api/auth/callback/github', '/api/auth/callback/sid',
+    '/api/auth/sign-out']) {
     assert.equal(redirectOf(api), undefined, api)
   }
-})
-
-// Auth.js's own sign-in page (GET /api/auth/signin), where a login may start: at the Vercel domain it moves to the custom
-// domain, so that the login's cookies and GitHub's callback (AUTH_URL's) share a host.
-test('a login started at the Vercel domain moves to the custom domain, so its cookie and the callback share a host', () => {
-  const rule = redirectOf('/api/auth/signin')
-  assert.ok(rule)
-  assert.equal(rule.destination, `${SITE}/api/auth/signin`)
-  // Temporary: an app may start its login at the Vercel domain again after a later change.
-  assert.equal(rule.permanent, false)
 })
