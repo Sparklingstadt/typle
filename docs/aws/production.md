@@ -156,7 +156,7 @@ put() {
 |---|---|
 | `APP_DB_PASSWORD` | `openssl rand -hex 24` で作る（英数字だけ） |
 | `DATABASE_URL` | `postgresql://typle_app:<APP_DB_PASSWORD>@<出力の DatabaseEndpoint>:5432/typle?sslmode=verify-full&sslrootcert=/app/certs/rds-global-bundle.pem` |
-| `BETTER_AUTH_SECRET` | **Vercel の本番と同じ値**（下を参照。v2.62.0 から。以前の `AUTH_SECRET` はもう読みません） |
+| `BETTER_AUTH_SECRET` | **Vercel の本番と同じ値**（下を参照。v2.62.1 から。以前の `AUTH_SECRET` はもう読みません） |
 | `AUTH_GITHUB_SECRET` | 本番の GitHub OAuth App で **Generate a new client secret** した新しい値（Vercel のものはそのまま使い続けられる） |
 | `RESEND_API_KEY` | Resend のダッシュボードで AWS 用に新しく作ったキー |
 

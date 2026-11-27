@@ -1,6 +1,6 @@
 # ログイン
 
-ログインは Better Auth（v1.7.28。v2.62.0 から。それまでは Auth.js）で、Sparklingstadt ID（OpenID Connect、v2.58.0 から）と GitHub（OAuth App）の2つです（開発用の `local` が手元だけにあります）。FFPF ID のログインは v2.54.0 で、iPad・Mac のアプリのログイン（`/api/auth/token`・アプリのトークン）は v2.55.0 で、ID とパスワードのログインは v2.59.0 でなくしました。ログイン後のリクエストの扱いは [認証](./README.md#認証) を見てください。
+ログインは Better Auth（v1.7.28。v2.62.1 から。それまでは Auth.js）で、Sparklingstadt ID（OpenID Connect、v2.58.0 から）と GitHub（OAuth App）の2つです（開発用の `local` が手元だけにあります）。FFPF ID のログインは v2.54.0 で、iPad・Mac のアプリのログイン（`/api/auth/token`・アプリのトークン）は v2.55.0 で、ID とパスワードのログインは v2.59.0 でなくしました。ログイン後のリクエストの扱いは [認証](./README.md#認証) を見てください。
 
 ## Better Auth の経路（`/api/auth/*`）
 
