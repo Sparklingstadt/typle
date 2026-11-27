@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
+import TypingDemo from '@/components/SignIn/TypingDemo'
 import { PageMain } from '@/components/ui/page-layout'
 import { demoConfigured } from '@/lib/demoLogin'
 import { githubConfigured } from '@/lib/githubLogin'
@@ -20,7 +21,11 @@ export default async function SignIn({ searchParams }: { searchParams: Promise<{
   const github = githubConfigured()
   const sid = sidConfigured()
   const demo = demoConfigured()
+  const words = (['word1', 'word2', 'word3'] as const).map(key => ({
+    input: t(`typingDemo.${key}.input`), meaning: t(`typingDemo.${key}.meaning`),
+  }))
   return <PageMain width="narrow">
+    <TypingDemo words={words} />
     <header className="mb-6 space-y-1">
       <h1 className="text-2xl font-bold">{t('signIn')}</h1>
       {/* It names both logins, so it is shown only when both are offered. */}

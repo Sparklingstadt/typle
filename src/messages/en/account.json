@@ -24,5 +24,19 @@
     "description": "Start practising with the names of 193 countries. Lists and practice records are saved in this Mac’s own database.",
     "start": "Start practising",
     "failed": "Could not sign in. Please try again."
+  },
+  "typingDemo": {
+    "word1": {
+      "input": "welcome",
+      "meaning": "Glad you're here"
+    },
+    "word2": {
+      "input": "practice",
+      "meaning": "A little every day"
+    },
+    "word3": {
+      "input": "keyboard",
+      "meaning": "Ten fingers, one rhythm"
+    }
   }
 }
