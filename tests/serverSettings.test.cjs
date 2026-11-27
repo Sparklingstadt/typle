@@ -25,3 +25,12 @@ test('the local login is on only for plain http to this machine, never on Vercel
   assert.equal(on({ AUTH_URL: 'https://typle.sparklingstadt.com', NODE_ENV: 'production' }), false)
   assert.equal(on({ AUTH_URL: 'http://127.0.0.1:3101', LOCAL_DEVELOPMENT_LOGIN: '0' }), false)
 })
+
+// The shared demo account of the portfolio, on wherever DEMO_LOGIN is 1 (production included).
+test('the demo login is on only when DEMO_LOGIN is 1', () => {
+  const on = (env) => readLoginSettings({ AUTH_URL: 'https://typle.example', ...env }).demoLogin
+  assert.equal(on({ DEMO_LOGIN: '1' }), true)
+  assert.equal(on({ DEMO_LOGIN: '1', VERCEL: '1' }), true)
+  assert.equal(on({}), false)
+  for (const value of ['0', 'true', ' 1', '']) assert.equal(on({ DEMO_LOGIN: value }), false, value)
+})

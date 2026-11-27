@@ -75,6 +75,13 @@ test('the development login is answered only when it is on', () => {
   assert.equal(authPathAllowed('POST', '/api/auth/sign-in/local', { localLogin: true }), true)
   assert.equal(authPathAllowed('GET', '/api/auth/sign-in/local', { localLogin: true }), false)
   assert.equal(authPathAllowed('POST', '/api/auth/sign-in/local', { localLogin: false }), false)
+})
+
+test('the demo login is answered only while it is on, and only by POST', () => {
+  assert.equal(authPathAllowed('POST', '/api/auth/sign-in/demo', { localLogin: false, demoLogin: true }), true)
+  assert.equal(authPathAllowed('GET', '/api/auth/sign-in/demo', { localLogin: false, demoLogin: true }), false)
+  assert.equal(authPathAllowed('POST', '/api/auth/sign-in/demo', { localLogin: true, demoLogin: false }), false)
+  assert.equal(authPathAllowed('POST', '/api/auth/sign-in/demo', { localLogin: true }), false)
   assert.deepEqual(LOCAL_USER, { id: 'github:0', name: 'ローカル練習用', image: '' })
 })
 

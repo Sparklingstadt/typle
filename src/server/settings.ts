@@ -5,6 +5,8 @@ export type LoginSettings = {
   origin: string,
   /** Whether the made-up login for development on this machine is on. */
   localLogin: boolean,
+  /** Whether the shared demo account's login is on (DEMO_LOGIN=1), in production as anywhere else. */
+  demoLogin: boolean,
   /** Whether AUTH_URL is HTTPS, which names the login cookie __Host-. */
   secure: boolean,
 }
@@ -24,6 +26,7 @@ export function readLoginSettings(env: Record<string, string | undefined> = proc
   return {
     origin: base.origin,
     localLogin: env.VERCEL !== '1' && localLoginAllowed(env, base),
+    demoLogin: env.DEMO_LOGIN === '1',
     secure: base.protocol === 'https:',
   }
 }

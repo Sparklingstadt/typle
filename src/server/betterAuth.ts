@@ -4,6 +4,7 @@ import { genericOAuth } from 'better-auth/plugins/generic-oauth'
 import { prisma } from './database'
 import { accountEmail, accountIdFromEmail, betterAuthSettings, githubUser } from './authUser'
 import { authPaths } from './authPaths'
+import { demoLogin } from './demoLogin'
 import { localLogin } from './localLogin'
 import { readLoginSettings } from './settings'
 import { SID_PROVIDER_ID, sidAccountInfo, sidRelogin } from './sidLogin'
@@ -36,6 +37,8 @@ const origin = settings ? new URL(settings.baseURL).origin : ''
 const secure = origin.startsWith('https:')
 /** Whether the development login is on, read on every request as Auth.js's Credentials provider did. */
 const localLoginOn = () => readLoginSettings()?.localLogin === true
+/** Whether the shared demo account's login is on (DEMO_LOGIN=1), read on every request. */
+const demoLoginOn = () => readLoginSettings()?.demoLogin === true
 
 /**
  * Sparklingstadt ID, an OpenID Connect provider read from its discovery document: the authorization code with PKCE
@@ -83,7 +86,9 @@ export const auth = betterAuth({
   // The screens read /get-session on every page load and focus, and the default of 100 per 10 s is kept per IP and path:
   // users behind one address (a school, a NAT) share it, and a 429 makes the screen fall back to signed out. The read
   // checks no secret and the cookie cache answers most of them without the database, so its limit is only a high ceiling.
-  rateLimit: { customRules: { '/sign-in/social': { window: 60, max: 100 }, '/get-session': { window: 10, max: 1000 } } },
+  // The demo login makes a session row on each request: 20 a minute per address is plenty for a person, and keeps a
+  // script from filling the table.
+  rateLimit: { customRules: { '/sign-in/social': { window: 60, max: 100 }, '/sign-in/demo': { window: 60, max: 20 }, '/get-session': { window: 10, max: 1000 } } },
   socialProviders: githubConfigured() ? {
     github: {
       clientId: process.env.AUTH_GITHUB_ID ?? '',
@@ -100,9 +105,10 @@ export const auth = betterAuth({
   } : {},
   plugins: [
     // First, so that no other plugin answers a path it refuses.
-    authPaths(localLoginOn),
+    authPaths(localLoginOn, demoLoginOn),
     sidRelogin(secure),
     localLogin(localLoginOn),
+    demoLogin(demoLoginOn),
     // Not while building: its discovery document is fetched when the instance starts.
     ...(sidConfigured() && !building ? [sidProvider()] : []),
   ],

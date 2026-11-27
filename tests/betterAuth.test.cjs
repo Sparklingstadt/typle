@@ -82,4 +82,5 @@ test('the session read has a high rate limit, since every page of a shared addre
   const rules = require('../src/server/betterAuth.ts').auth.options.rateLimit.customRules
   assert.deepEqual(rules['/get-session'], { window: 10, max: 1000 })
   assert.deepEqual(rules['/sign-in/social'], { window: 60, max: 100 })
+  assert.deepEqual(rules['/sign-in/demo'], { window: 60, max: 20 })
 })
