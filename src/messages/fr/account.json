@@ -1,8 +1,10 @@
 {
   "checking": "Vérification de la connexion",
   "signIn": "Se connecter",
+  "signInIntro": "Connectez-vous avec un compte <b>Sparklingstadt ID</b> ou <b>GitHub</b>. Sparklingstadt ID est un compte unique, utilisable dans tous les services Sparklingstadt.",
   "signInWithSid": "Se connecter avec Sparklingstadt ID",
   "signInWithGitHub": "Se connecter avec GitHub",
+  "signInNote": "Vos listes et vos résultats d’entraînement sont enregistrés dans le compte utilisé pour vous connecter. La prochaine fois, connectez-vous de la même façon.",
   "signInFailed": "Connexion impossible. Veuillez réessayer.",
   "githubUser": "Utilisateur GitHub",
   "ffpfUser": "Utilisateur FFPF ID",
