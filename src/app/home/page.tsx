@@ -9,6 +9,27 @@ import { useWordLists } from "@/hooks/useWordLists"
 import { useWelcomeRedirect } from "@/hooks/useWelcomeRedirect"
 import Dashboard from "@/components/Dashboard/Dashboard"
 import HelpCards from "@/components/Home/HelpCards"
+import { useId, useState } from "react"
+import { startOfWeek } from "@/lib/dates"
+import { sampleLists } from "@/lib/sampleLists"
+
+// Before the first record, the home screen as it reads with a week of practice, from sample lists. It is inert: its
+// links and charts are only to look at.
+function Preview() {
+  const t = useTranslations("home.preview")
+  const id = useId()
+  const [lists] = useState(() => { const now = new Date(); return sampleLists(now, startOfWeek(now).getTime()) })
+  return <section aria-labelledby={id} className="mt-12 flex flex-col gap-4">
+    <div className="space-y-1">
+      <h2 id={id} className="flex flex-wrap items-center gap-2 text-xl">{t("title")}<Badge variant="outline">{t("badge")}</Badge></h2>
+      <p className="text-sm text-muted-foreground">{t("text")}</p>
+    </div>
+    {/* Screen readers already skip what is inert; aria-hidden says so to tools that do not. */}
+    <div inert aria-hidden="true" className="select-none rounded-2xl border border-dashed p-4 sm:p-6">
+      <Dashboard lists={lists} preview />
+    </div>
+  </section>
+}
 
 export default function Home() {
   const t = useTranslations("home")
@@ -28,6 +49,7 @@ export default function Home() {
         <Button asChild variant="link"><Link href="/records">{t("welcome.records")}</Link></Button>
       </nav>
       <HelpCards />
+      <Preview />
     </>}
     <p className="mt-8">{t(storage === "account" ? "storageAccount" : "storage")}</p>
     {count > 0 && <p className="mt-4">{t.rich("links", {
