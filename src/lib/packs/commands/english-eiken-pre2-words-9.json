@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-9",
+  "name": "英検準2級レベル（単語9）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語9"
+  ],
+  "words": [
+    {
+      "display": "silent",
+      "input": "silent",
+      "annotation": "silent / 黙った",
+      "input_type": "word"
+    },
+    {
+      "display": "similar",
+      "input": "similar",
+      "annotation": "similar / 似ている",
+      "input_type": "word"
+    },
+    {
+      "display": "skill",
+      "input": "skill",
+      "annotation": "skill / 技術",
+      "input_type": "word"
+    },
+    {
+      "display": "smell",
+      "input": "smell",
+      "annotation": "smell / におい",
+      "input_type": "word"
+    },
+    {
+      "display": "society",
+      "input": "society",
+      "annotation": "society / 社会",
+      "input_type": "word"
+    },
+    {
+      "display": "soil",
+      "input": "soil",
+      "annotation": "soil / 土",
+      "input_type": "word"
+    },
+    {
+      "display": "soldier",
+      "input": "soldier",
+      "annotation": "soldier / 兵士",
+      "input_type": "word"
+    },
+    {
+      "display": "solve",
+      "input": "solve",
+      "annotation": "solve / 解決する",
+      "input_type": "word"
+    },
+    {
+      "display": "source",
+      "input": "source",
+      "annotation": "source / 源",
+      "input_type": "word"
+    },
+    {
+      "display": "spread",
+      "input": "spread",
+      "annotation": "spread / 広げる",
+      "input_type": "word"
+    },
+    {
+      "display": "staff",
+      "input": "staff",
+      "annotation": "staff / 職員",
+      "input_type": "word"
+    },
+    {
+      "display": "stage",
+      "input": "stage",
+      "annotation": "stage / 舞台、段階",
+      "input_type": "word"
+    },
+    {
+      "display": "standard",
+      "input": "standard",
+      "annotation": "standard / 基準",
+      "input_type": "word"
+    },
+    {
+      "display": "state",
+      "input": "state",
+      "annotation": "state / 状態、州",
+      "input_type": "word"
+    },
+    {
+      "display": "steal",
+      "input": "steal",
+      "annotation": "steal / 盗む",
+      "input_type": "word"
+    },
+    {
+      "display": "step",
+      "input": "step",
+      "annotation": "step / 段階",
+      "input_type": "word"
+    },
+    {
+      "display": "stomach",
+      "input": "stomach",
+      "annotation": "stomach / 胃",
+      "input_type": "word"
+    },
+    {
+      "display": "strange",
+      "input": "strange",
+      "annotation": "strange / 奇妙な",
+      "input_type": "word"
+    },
+    {
+      "display": "stranger",
+      "input": "stranger",
+      "annotation": "stranger / 見知らぬ人",
+      "input_type": "word"
+    },
+    {
+      "display": "strength",
+      "input": "strength",
+      "annotation": "strength / 強さ",
+      "input_type": "word"
+    },
+    {
+      "display": "stress",
+      "input": "stress",
+      "annotation": "stress / ストレス",
+      "input_type": "word"
+    },
+    {
+      "display": "strict",
+      "input": "strict",
+      "annotation": "strict / 厳しい",
+      "input_type": "word"
+    },
+    {
+      "display": "structure",
+      "input": "structure",
+      "annotation": "structure / 構造",
+      "input_type": "word"
+    },
+    {
+      "display": "style",
+      "input": "style",
+      "annotation": "style / 様式",
+      "input_type": "word"
+    },
+    {
+      "display": "succeed",
+      "input": "succeed",
+      "annotation": "succeed / 成功する",
+      "input_type": "word"
+    },
+    {
+      "display": "success",
+      "input": "success",
+      "annotation": "success / 成功",
+      "input_type": "word"
+    },
+    {
+      "display": "sudden",
+      "input": "sudden",
+      "annotation": "sudden / 突然の",
+      "input_type": "word"
+    },
+    {
+      "display": "suffer",
+      "input": "suffer",
+      "annotation": "suffer / 苦しむ",
+      "input_type": "word"
+    },
+    {
+      "display": "supply",
+      "input": "supply",
+      "annotation": "supply / 供給する",
+      "input_type": "word"
+    },
+    {
+      "display": "support",
+      "input": "support",
+      "annotation": "support / 支える",
+      "input_type": "word"
+    },
+    {
+      "display": "suppose",
+      "input": "suppose",
+      "annotation": "suppose / 思う",
+      "input_type": "word"
+    },
+    {
+      "display": "surface",
+      "input": "surface",
+      "annotation": "surface / 表面",
+      "input_type": "word"
+    },
+    {
+      "display": "surprise",
+      "input": "surprise",
+      "annotation": "surprise / 驚かせる",
+      "input_type": "word"
+    },
+    {
+      "display": "survive",
+      "input": "survive",
+      "annotation": "survive / 生き残る",
+      "input_type": "word"
+    },
+    {
+      "display": "system",
+      "input": "system",
+      "annotation": "system / 仕組み",
+      "input_type": "word"
+    },
+    {
+      "display": "talent",
+      "input": "talent",
+      "annotation": "talent / 才能",
+      "input_type": "word"
+    },
+    {
+      "display": "task",
+      "input": "task",
+      "annotation": "task / 仕事",
+      "input_type": "word"
+    },
+    {
+      "display": "technology",
+      "input": "technology",
+      "annotation": "technology / 科学技術",
+      "input_type": "word"
+    },
+    {
+      "display": "temperature",
+      "input": "temperature",
+      "annotation": "temperature / 温度",
+      "input_type": "word"
+    },
+    {
+      "display": "terrible",
+      "input": "terrible",
+      "annotation": "terrible / ひどい",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

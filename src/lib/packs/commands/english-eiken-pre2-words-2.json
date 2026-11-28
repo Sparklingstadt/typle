@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-2",
+  "name": "英検準2級レベル（単語2）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語2"
+  ],
+  "words": [
+    {
+      "display": "brave",
+      "input": "brave",
+      "annotation": "brave / 勇敢な",
+      "input_type": "word"
+    },
+    {
+      "display": "breath",
+      "input": "breath",
+      "annotation": "breath / 息",
+      "input_type": "word"
+    },
+    {
+      "display": "bright",
+      "input": "bright",
+      "annotation": "bright / 明るい",
+      "input_type": "word"
+    },
+    {
+      "display": "broadcast",
+      "input": "broadcast",
+      "annotation": "broadcast / 放送する",
+      "input_type": "word"
+    },
+    {
+      "display": "budget",
+      "input": "budget",
+      "annotation": "budget / 予算",
+      "input_type": "word"
+    },
+    {
+      "display": "burn",
+      "input": "burn",
+      "annotation": "burn / 燃やす",
+      "input_type": "word"
+    },
+    {
+      "display": "calm",
+      "input": "calm",
+      "annotation": "calm / 落ち着いた",
+      "input_type": "word"
+    },
+    {
+      "display": "cancel",
+      "input": "cancel",
+      "annotation": "cancel / 取り消す",
+      "input_type": "word"
+    },
+    {
+      "display": "career",
+      "input": "career",
+      "annotation": "career / 職業、経歴",
+      "input_type": "word"
+    },
+    {
+      "display": "cash",
+      "input": "cash",
+      "annotation": "cash / 現金",
+      "input_type": "word"
+    },
+    {
+      "display": "cause",
+      "input": "cause",
+      "annotation": "cause / 原因",
+      "input_type": "word"
+    },
+    {
+      "display": "celebrate",
+      "input": "celebrate",
+      "annotation": "celebrate / 祝う",
+      "input_type": "word"
+    },
+    {
+      "display": "century",
+      "input": "century",
+      "annotation": "century / 世紀",
+      "input_type": "word"
+    },
+    {
+      "display": "ceremony",
+      "input": "ceremony",
+      "annotation": "ceremony / 式典",
+      "input_type": "word"
+    },
+    {
+      "display": "certain",
+      "input": "certain",
+      "annotation": "certain / 確かな",
+      "input_type": "word"
+    },
+    {
+      "display": "chance",
+      "input": "chance",
+      "annotation": "chance / 機会",
+      "input_type": "word"
+    },
+    {
+      "display": "character",
+      "input": "character",
+      "annotation": "character / 性格、登場人物",
+      "input_type": "word"
+    },
+    {
+      "display": "charge",
+      "input": "charge",
+      "annotation": "charge / 料金",
+      "input_type": "word"
+    },
+    {
+      "display": "chemical",
+      "input": "chemical",
+      "annotation": "chemical / 化学の",
+      "input_type": "word"
+    },
+    {
+      "display": "choice",
+      "input": "choice",
+      "annotation": "choice / 選択",
+      "input_type": "word"
+    },
+    {
+      "display": "citizen",
+      "input": "citizen",
+      "annotation": "citizen / 市民",
+      "input_type": "word"
+    },
+    {
+      "display": "clerk",
+      "input": "clerk",
+      "annotation": "clerk / 店員",
+      "input_type": "word"
+    },
+    {
+      "display": "climate",
+      "input": "climate",
+      "annotation": "climate / 気候",
+      "input_type": "word"
+    },
+    {
+      "display": "climb",
+      "input": "climb",
+      "annotation": "climb / 登る",
+      "input_type": "word"
+    },
+    {
+      "display": "coast",
+      "input": "coast",
+      "annotation": "coast / 海岸",
+      "input_type": "word"
+    },
+    {
+      "display": "collect",
+      "input": "collect",
+      "annotation": "collect / 集める",
+      "input_type": "word"
+    },
+    {
+      "display": "comfortable",
+      "input": "comfortable",
+      "annotation": "comfortable / 快適な",
+      "input_type": "word"
+    },
+    {
+      "display": "common",
+      "input": "common",
+      "annotation": "common / 共通の、よくある",
+      "input_type": "word"
+    },
+    {
+      "display": "communicate",
+      "input": "communicate",
+      "annotation": "communicate / 意思を伝え合う",
+      "input_type": "word"
+    },
+    {
+      "display": "community",
+      "input": "community",
+      "annotation": "community / 地域社会",
+      "input_type": "word"
+    },
+    {
+      "display": "complain",
+      "input": "complain",
+      "annotation": "complain / 不満を言う",
+      "input_type": "word"
+    },
+    {
+      "display": "complete",
+      "input": "complete",
+      "annotation": "complete / 完成させる",
+      "input_type": "word"
+    },
+    {
+      "display": "condition",
+      "input": "condition",
+      "annotation": "condition / 状態",
+      "input_type": "word"
+    },
+    {
+      "display": "connect",
+      "input": "connect",
+      "annotation": "connect / つなぐ",
+      "input_type": "word"
+    },
+    {
+      "display": "contact",
+      "input": "contact",
+      "annotation": "contact / 連絡する",
+      "input_type": "word"
+    },
+    {
+      "display": "contest",
+      "input": "contest",
+      "annotation": "contest / コンテスト",
+      "input_type": "word"
+    },
+    {
+      "display": "continue",
+      "input": "continue",
+      "annotation": "continue / 続ける",
+      "input_type": "word"
+    },
+    {
+      "display": "control",
+      "input": "control",
+      "annotation": "control / 管理する",
+      "input_type": "word"
+    },
+    {
+      "display": "cost",
+      "input": "cost",
+      "annotation": "cost / 費用",
+      "input_type": "word"
+    },
+    {
+      "display": "cough",
+      "input": "cough",
+      "annotation": "cough / せき",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

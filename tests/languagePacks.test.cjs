@@ -224,3 +224,26 @@ test('the Japanese romaji pack has three lists of kana words, each typed by foll
     }
   }
 })
+
+test('the Eiken Pre-2 and Grade 2 packs each hold ten lists of 40 English words, sharing no word with each other or the other English lists', () => {
+  const { officialLibrary } = require('../src/lib/packs/index.ts')
+  const eiken = []
+  for (const [slug, label] of [['pre2', '英検準2級'], ['2', '英検2級']]) {
+    const pack = officialLibrary.packs.find(item => item.name === `英語：${label}レベル単語`)
+    assert.ok(pack, label)
+    assert.equal(pack.category, '語学')
+    assert.deepEqual(pack.tags, ['英語'])
+    const lists = officialLibrary.lists.filter(list => list.packId === pack.id)
+    assert.deepEqual(lists.map(list => list.id), Array.from({ length: 10 }, (_, i) => `english-eiken-${slug}-words-${i + 1}`))
+    assert.deepEqual(lists.map(list => list.levels), Array.from({ length: 10 }, (_, i) => [`単語${i + 1}`]))
+    const words = lists.flatMap(list => list.words)
+    assert.ok(lists.every(list => list.words.length === 40), label)
+    // Each pack runs in alphabetical order, typed as shown, with a Japanese meaning after the word.
+    assert.deepEqual(words.map(word => word.input), words.map(word => word.input).sort(), label)
+    assert.ok(words.every(word => word.input_type === 'word' && /^[a-z]+$/.test(word.input) && word.display === word.input && /^[a-z]+ \/ \S/.test(word.annotation)), label)
+    eiken.push(...words)
+  }
+  assert.equal(new Set(eiken.map(word => word.input)).size, 800)
+  const others = officialLibrary.lists.filter(list => /^english-(basic|intermediate)-words$/.test(list.id)).flatMap(list => list.words.map(word => word.input))
+  assert.ok(others.length > 0 && others.every(input => !eiken.some(word => word.input === input)))
+})

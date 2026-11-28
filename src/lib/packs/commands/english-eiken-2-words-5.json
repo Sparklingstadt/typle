@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-5",
+  "name": "英検2級レベル（単語5）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語5"
+  ],
+  "words": [
+    {
+      "display": "estimate",
+      "input": "estimate",
+      "annotation": "estimate / 見積もる",
+      "input_type": "word"
+    },
+    {
+      "display": "evaluate",
+      "input": "evaluate",
+      "annotation": "evaluate / 評価する",
+      "input_type": "word"
+    },
+    {
+      "display": "evidence",
+      "input": "evidence",
+      "annotation": "evidence / 証拠",
+      "input_type": "word"
+    },
+    {
+      "display": "evolve",
+      "input": "evolve",
+      "annotation": "evolve / 進化する",
+      "input_type": "word"
+    },
+    {
+      "display": "examine",
+      "input": "examine",
+      "annotation": "examine / 調べる",
+      "input_type": "word"
+    },
+    {
+      "display": "exceed",
+      "input": "exceed",
+      "annotation": "exceed / 超える",
+      "input_type": "word"
+    },
+    {
+      "display": "exhaust",
+      "input": "exhaust",
+      "annotation": "exhaust / 疲れさせる",
+      "input_type": "word"
+    },
+    {
+      "display": "expand",
+      "input": "expand",
+      "annotation": "expand / 拡大する",
+      "input_type": "word"
+    },
+    {
+      "display": "expectation",
+      "input": "expectation",
+      "annotation": "expectation / 期待",
+      "input_type": "word"
+    },
+    {
+      "display": "expense",
+      "input": "expense",
+      "annotation": "expense / 費用",
+      "input_type": "word"
+    },
+    {
+      "display": "explore",
+      "input": "explore",
+      "annotation": "explore / 探検する",
+      "input_type": "word"
+    },
+    {
+      "display": "export",
+      "input": "export",
+      "annotation": "export / 輸出する",
+      "input_type": "word"
+    },
+    {
+      "display": "expose",
+      "input": "expose",
+      "annotation": "expose / さらす",
+      "input_type": "word"
+    },
+    {
+      "display": "extend",
+      "input": "extend",
+      "annotation": "extend / 延長する",
+      "input_type": "word"
+    },
+    {
+      "display": "extinct",
+      "input": "extinct",
+      "annotation": "extinct / 絶滅した",
+      "input_type": "word"
+    },
+    {
+      "display": "extreme",
+      "input": "extreme",
+      "annotation": "extreme / 極端な",
+      "input_type": "word"
+    },
+    {
+      "display": "facility",
+      "input": "facility",
+      "annotation": "facility / 施設",
+      "input_type": "word"
+    },
+    {
+      "display": "factor",
+      "input": "factor",
+      "annotation": "factor / 要因",
+      "input_type": "word"
+    },
+    {
+      "display": "fade",
+      "input": "fade",
+      "annotation": "fade / 薄れる",
+      "input_type": "word"
+    },
+    {
+      "display": "faith",
+      "input": "faith",
+      "annotation": "faith / 信頼",
+      "input_type": "word"
+    },
+    {
+      "display": "fatigue",
+      "input": "fatigue",
+      "annotation": "fatigue / 疲労",
+      "input_type": "word"
+    },
+    {
+      "display": "feature",
+      "input": "feature",
+      "annotation": "feature / 特徴",
+      "input_type": "word"
+    },
+    {
+      "display": "finance",
+      "input": "finance",
+      "annotation": "finance / 財政",
+      "input_type": "word"
+    },
+    {
+      "display": "flexible",
+      "input": "flexible",
+      "annotation": "flexible / 柔軟な",
+      "input_type": "word"
+    },
+    {
+      "display": "fluent",
+      "input": "fluent",
+      "annotation": "fluent / 流暢な",
+      "input_type": "word"
+    },
+    {
+      "display": "focus",
+      "input": "focus",
+      "annotation": "focus / 集中する",
+      "input_type": "word"
+    },
+    {
+      "display": "forbid",
+      "input": "forbid",
+      "annotation": "forbid / 禁じる",
+      "input_type": "word"
+    },
+    {
+      "display": "forecast",
+      "input": "forecast",
+      "annotation": "forecast / 予報",
+      "input_type": "word"
+    },
+    {
+      "display": "former",
+      "input": "former",
+      "annotation": "former / 前の",
+      "input_type": "word"
+    },
+    {
+      "display": "fortune",
+      "input": "fortune",
+      "annotation": "fortune / 財産、運",
+      "input_type": "word"
+    },
+    {
+      "display": "fossil",
+      "input": "fossil",
+      "annotation": "fossil / 化石",
+      "input_type": "word"
+    },
+    {
+      "display": "found",
+      "input": "found",
+      "annotation": "found / 設立する",
+      "input_type": "word"
+    },
+    {
+      "display": "frequent",
+      "input": "frequent",
+      "annotation": "frequent / 頻繁な",
+      "input_type": "word"
+    },
+    {
+      "display": "frustrate",
+      "input": "frustrate",
+      "annotation": "frustrate / いらだたせる",
+      "input_type": "word"
+    },
+    {
+      "display": "function",
+      "input": "function",
+      "annotation": "function / 機能",
+      "input_type": "word"
+    },
+    {
+      "display": "fund",
+      "input": "fund",
+      "annotation": "fund / 資金",
+      "input_type": "word"
+    },
+    {
+      "display": "fundamental",
+      "input": "fundamental",
+      "annotation": "fundamental / 基本的な",
+      "input_type": "word"
+    },
+    {
+      "display": "generate",
+      "input": "generate",
+      "annotation": "generate / 生み出す",
+      "input_type": "word"
+    },
+    {
+      "display": "generous",
+      "input": "generous",
+      "annotation": "generous / 気前のよい",
+      "input_type": "word"
+    },
+    {
+      "display": "genuine",
+      "input": "genuine",
+      "annotation": "genuine / 本物の",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

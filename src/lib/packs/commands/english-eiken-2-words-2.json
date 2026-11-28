@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-2",
+  "name": "英検2級レベル（単語2）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語2"
+  ],
+  "words": [
+    {
+      "display": "arrange",
+      "input": "arrange",
+      "annotation": "arrange / 手配する",
+      "input_type": "word"
+    },
+    {
+      "display": "arrest",
+      "input": "arrest",
+      "annotation": "arrest / 逮捕する",
+      "input_type": "word"
+    },
+    {
+      "display": "artificial",
+      "input": "artificial",
+      "annotation": "artificial / 人工の",
+      "input_type": "word"
+    },
+    {
+      "display": "aspect",
+      "input": "aspect",
+      "annotation": "aspect / 側面",
+      "input_type": "word"
+    },
+    {
+      "display": "assist",
+      "input": "assist",
+      "annotation": "assist / 手伝う",
+      "input_type": "word"
+    },
+    {
+      "display": "assume",
+      "input": "assume",
+      "annotation": "assume / 仮定する",
+      "input_type": "word"
+    },
+    {
+      "display": "atmosphere",
+      "input": "atmosphere",
+      "annotation": "atmosphere / 雰囲気、大気",
+      "input_type": "word"
+    },
+    {
+      "display": "attach",
+      "input": "attach",
+      "annotation": "attach / 取り付ける",
+      "input_type": "word"
+    },
+    {
+      "display": "attempt",
+      "input": "attempt",
+      "annotation": "attempt / 試み",
+      "input_type": "word"
+    },
+    {
+      "display": "attitude",
+      "input": "attitude",
+      "annotation": "attitude / 態度",
+      "input_type": "word"
+    },
+    {
+      "display": "attract",
+      "input": "attract",
+      "annotation": "attract / 引きつける",
+      "input_type": "word"
+    },
+    {
+      "display": "authority",
+      "input": "authority",
+      "annotation": "authority / 権威、当局",
+      "input_type": "word"
+    },
+    {
+      "display": "automatic",
+      "input": "automatic",
+      "annotation": "automatic / 自動の",
+      "input_type": "word"
+    },
+    {
+      "display": "background",
+      "input": "background",
+      "annotation": "background / 背景",
+      "input_type": "word"
+    },
+    {
+      "display": "ban",
+      "input": "ban",
+      "annotation": "ban / 禁止する",
+      "input_type": "word"
+    },
+    {
+      "display": "basis",
+      "input": "basis",
+      "annotation": "basis / 基礎",
+      "input_type": "word"
+    },
+    {
+      "display": "benefit",
+      "input": "benefit",
+      "annotation": "benefit / 利益",
+      "input_type": "word"
+    },
+    {
+      "display": "biology",
+      "input": "biology",
+      "annotation": "biology / 生物学",
+      "input_type": "word"
+    },
+    {
+      "display": "blame",
+      "input": "blame",
+      "annotation": "blame / 責める",
+      "input_type": "word"
+    },
+    {
+      "display": "boost",
+      "input": "boost",
+      "annotation": "boost / 押し上げる",
+      "input_type": "word"
+    },
+    {
+      "display": "bother",
+      "input": "bother",
+      "annotation": "bother / 悩ませる",
+      "input_type": "word"
+    },
+    {
+      "display": "brief",
+      "input": "brief",
+      "annotation": "brief / 短い",
+      "input_type": "word"
+    },
+    {
+      "display": "brilliant",
+      "input": "brilliant",
+      "annotation": "brilliant / 素晴らしい",
+      "input_type": "word"
+    },
+    {
+      "display": "burden",
+      "input": "burden",
+      "annotation": "burden / 負担",
+      "input_type": "word"
+    },
+    {
+      "display": "capable",
+      "input": "capable",
+      "annotation": "capable / 能力がある",
+      "input_type": "word"
+    },
+    {
+      "display": "capture",
+      "input": "capture",
+      "annotation": "capture / 捕らえる",
+      "input_type": "word"
+    },
+    {
+      "display": "carbon",
+      "input": "carbon",
+      "annotation": "carbon / 炭素",
+      "input_type": "word"
+    },
+    {
+      "display": "cell",
+      "input": "cell",
+      "annotation": "cell / 細胞",
+      "input_type": "word"
+    },
+    {
+      "display": "chart",
+      "input": "chart",
+      "annotation": "chart / 図表",
+      "input_type": "word"
+    },
+    {
+      "display": "civil",
+      "input": "civil",
+      "annotation": "civil / 市民の",
+      "input_type": "word"
+    },
+    {
+      "display": "claim",
+      "input": "claim",
+      "annotation": "claim / 主張する",
+      "input_type": "word"
+    },
+    {
+      "display": "classic",
+      "input": "classic",
+      "annotation": "classic / 古典的な",
+      "input_type": "word"
+    },
+    {
+      "display": "colleague",
+      "input": "colleague",
+      "annotation": "colleague / 同僚",
+      "input_type": "word"
+    },
+    {
+      "display": "combine",
+      "input": "combine",
+      "annotation": "combine / 組み合わせる",
+      "input_type": "word"
+    },
+    {
+      "display": "comment",
+      "input": "comment",
+      "annotation": "comment / 意見",
+      "input_type": "word"
+    },
+    {
+      "display": "commercial",
+      "input": "commercial",
+      "annotation": "commercial / 商業の",
+      "input_type": "word"
+    },
+    {
+      "display": "commit",
+      "input": "commit",
+      "annotation": "commit / 犯す、約束する",
+      "input_type": "word"
+    },
+    {
+      "display": "compete",
+      "input": "compete",
+      "annotation": "compete / 競争する",
+      "input_type": "word"
+    },
+    {
+      "display": "complex",
+      "input": "complex",
+      "annotation": "complex / 複雑な",
+      "input_type": "word"
+    },
+    {
+      "display": "concentrate",
+      "input": "concentrate",
+      "annotation": "concentrate / 集中する",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-3",
+  "name": "英検準2級レベル（単語3）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語3"
+  ],
+  "words": [
+    {
+      "display": "count",
+      "input": "count",
+      "annotation": "count / 数える",
+      "input_type": "word"
+    },
+    {
+      "display": "couple",
+      "input": "couple",
+      "annotation": "couple / 夫婦、2つ",
+      "input_type": "word"
+    },
+    {
+      "display": "courage",
+      "input": "courage",
+      "annotation": "courage / 勇気",
+      "input_type": "word"
+    },
+    {
+      "display": "cover",
+      "input": "cover",
+      "annotation": "cover / 覆う",
+      "input_type": "word"
+    },
+    {
+      "display": "crowded",
+      "input": "crowded",
+      "annotation": "crowded / 混雑した",
+      "input_type": "word"
+    },
+    {
+      "display": "culture",
+      "input": "culture",
+      "annotation": "culture / 文化",
+      "input_type": "word"
+    },
+    {
+      "display": "cure",
+      "input": "cure",
+      "annotation": "cure / 治す",
+      "input_type": "word"
+    },
+    {
+      "display": "curious",
+      "input": "curious",
+      "annotation": "curious / 好奇心の強い",
+      "input_type": "word"
+    },
+    {
+      "display": "customer",
+      "input": "customer",
+      "annotation": "customer / 客",
+      "input_type": "word"
+    },
+    {
+      "display": "damage",
+      "input": "damage",
+      "annotation": "damage / 損害",
+      "input_type": "word"
+    },
+    {
+      "display": "danger",
+      "input": "danger",
+      "annotation": "danger / 危険",
+      "input_type": "word"
+    },
+    {
+      "display": "deal",
+      "input": "deal",
+      "annotation": "deal / 取引",
+      "input_type": "word"
+    },
+    {
+      "display": "death",
+      "input": "death",
+      "annotation": "death / 死",
+      "input_type": "word"
+    },
+    {
+      "display": "degree",
+      "input": "degree",
+      "annotation": "degree / 程度、度",
+      "input_type": "word"
+    },
+    {
+      "display": "deliver",
+      "input": "deliver",
+      "annotation": "deliver / 配達する",
+      "input_type": "word"
+    },
+    {
+      "display": "department",
+      "input": "department",
+      "annotation": "department / 部門",
+      "input_type": "word"
+    },
+    {
+      "display": "depend",
+      "input": "depend",
+      "annotation": "depend / 頼る",
+      "input_type": "word"
+    },
+    {
+      "display": "describe",
+      "input": "describe",
+      "annotation": "describe / 説明する",
+      "input_type": "word"
+    },
+    {
+      "display": "desert",
+      "input": "desert",
+      "annotation": "desert / 砂漠",
+      "input_type": "word"
+    },
+    {
+      "display": "design",
+      "input": "design",
+      "annotation": "design / 設計",
+      "input_type": "word"
+    },
+    {
+      "display": "destroy",
+      "input": "destroy",
+      "annotation": "destroy / 破壊する",
+      "input_type": "word"
+    },
+    {
+      "display": "detail",
+      "input": "detail",
+      "annotation": "detail / 詳細",
+      "input_type": "word"
+    },
+    {
+      "display": "diet",
+      "input": "diet",
+      "annotation": "diet / 食事、ダイエット",
+      "input_type": "word"
+    },
+    {
+      "display": "difference",
+      "input": "difference",
+      "annotation": "difference / 違い",
+      "input_type": "word"
+    },
+    {
+      "display": "direction",
+      "input": "direction",
+      "annotation": "direction / 方向",
+      "input_type": "word"
+    },
+    {
+      "display": "disappear",
+      "input": "disappear",
+      "annotation": "disappear / 消える",
+      "input_type": "word"
+    },
+    {
+      "display": "discover",
+      "input": "discover",
+      "annotation": "discover / 発見する",
+      "input_type": "word"
+    },
+    {
+      "display": "discuss",
+      "input": "discuss",
+      "annotation": "discuss / 話し合う",
+      "input_type": "word"
+    },
+    {
+      "display": "disease",
+      "input": "disease",
+      "annotation": "disease / 病気",
+      "input_type": "word"
+    },
+    {
+      "display": "distance",
+      "input": "distance",
+      "annotation": "distance / 距離",
+      "input_type": "word"
+    },
+    {
+      "display": "donate",
+      "input": "donate",
+      "annotation": "donate / 寄付する",
+      "input_type": "word"
+    },
+    {
+      "display": "double",
+      "input": "double",
+      "annotation": "double / 二倍の",
+      "input_type": "word"
+    },
+    {
+      "display": "download",
+      "input": "download",
+      "annotation": "download / ダウンロードする",
+      "input_type": "word"
+    },
+    {
+      "display": "drop",
+      "input": "drop",
+      "annotation": "drop / 落とす",
+      "input_type": "word"
+    },
+    {
+      "display": "earn",
+      "input": "earn",
+      "annotation": "earn / 稼ぐ",
+      "input_type": "word"
+    },
+    {
+      "display": "earthquake",
+      "input": "earthquake",
+      "annotation": "earthquake / 地震",
+      "input_type": "word"
+    },
+    {
+      "display": "education",
+      "input": "education",
+      "annotation": "education / 教育",
+      "input_type": "word"
+    },
+    {
+      "display": "effect",
+      "input": "effect",
+      "annotation": "effect / 効果",
+      "input_type": "word"
+    },
+    {
+      "display": "effort",
+      "input": "effort",
+      "annotation": "effort / 努力",
+      "input_type": "word"
+    },
+    {
+      "display": "elderly",
+      "input": "elderly",
+      "annotation": "elderly / 年配の",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

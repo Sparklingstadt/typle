@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-7",
+  "name": "英検2級レベル（単語7）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語7"
+  ],
+  "words": [
+    {
+      "display": "landscape",
+      "input": "landscape",
+      "annotation": "landscape / 風景",
+      "input_type": "word"
+    },
+    {
+      "display": "latest",
+      "input": "latest",
+      "annotation": "latest / 最新の",
+      "input_type": "word"
+    },
+    {
+      "display": "launch",
+      "input": "launch",
+      "annotation": "launch / 開始する",
+      "input_type": "word"
+    },
+    {
+      "display": "lecture",
+      "input": "lecture",
+      "annotation": "lecture / 講義",
+      "input_type": "word"
+    },
+    {
+      "display": "legal",
+      "input": "legal",
+      "annotation": "legal / 法律の",
+      "input_type": "word"
+    },
+    {
+      "display": "license",
+      "input": "license",
+      "annotation": "license / 免許",
+      "input_type": "word"
+    },
+    {
+      "display": "literature",
+      "input": "literature",
+      "annotation": "literature / 文学",
+      "input_type": "word"
+    },
+    {
+      "display": "loan",
+      "input": "loan",
+      "annotation": "loan / 貸付金",
+      "input_type": "word"
+    },
+    {
+      "display": "locate",
+      "input": "locate",
+      "annotation": "locate / 位置する",
+      "input_type": "word"
+    },
+    {
+      "display": "logical",
+      "input": "logical",
+      "annotation": "logical / 論理的な",
+      "input_type": "word"
+    },
+    {
+      "display": "maintain",
+      "input": "maintain",
+      "annotation": "maintain / 維持する",
+      "input_type": "word"
+    },
+    {
+      "display": "majority",
+      "input": "majority",
+      "annotation": "majority / 大多数",
+      "input_type": "word"
+    },
+    {
+      "display": "manufacture",
+      "input": "manufacture",
+      "annotation": "manufacture / 製造する",
+      "input_type": "word"
+    },
+    {
+      "display": "mature",
+      "input": "mature",
+      "annotation": "mature / 成熟した",
+      "input_type": "word"
+    },
+    {
+      "display": "maximum",
+      "input": "maximum",
+      "annotation": "maximum / 最大の",
+      "input_type": "word"
+    },
+    {
+      "display": "medical",
+      "input": "medical",
+      "annotation": "medical / 医療の",
+      "input_type": "word"
+    },
+    {
+      "display": "mental",
+      "input": "mental",
+      "annotation": "mental / 精神の",
+      "input_type": "word"
+    },
+    {
+      "display": "minimum",
+      "input": "minimum",
+      "annotation": "minimum / 最小の",
+      "input_type": "word"
+    },
+    {
+      "display": "minority",
+      "input": "minority",
+      "annotation": "minority / 少数派",
+      "input_type": "word"
+    },
+    {
+      "display": "modify",
+      "input": "modify",
+      "annotation": "modify / 修正する",
+      "input_type": "word"
+    },
+    {
+      "display": "monitor",
+      "input": "monitor",
+      "annotation": "monitor / 監視する",
+      "input_type": "word"
+    },
+    {
+      "display": "moral",
+      "input": "moral",
+      "annotation": "moral / 道徳的な",
+      "input_type": "word"
+    },
+    {
+      "display": "motivate",
+      "input": "motivate",
+      "annotation": "motivate / 動機を与える",
+      "input_type": "word"
+    },
+    {
+      "display": "negative",
+      "input": "negative",
+      "annotation": "negative / 否定的な",
+      "input_type": "word"
+    },
+    {
+      "display": "neglect",
+      "input": "neglect",
+      "annotation": "neglect / 怠る",
+      "input_type": "word"
+    },
+    {
+      "display": "negotiate",
+      "input": "negotiate",
+      "annotation": "negotiate / 交渉する",
+      "input_type": "word"
+    },
+    {
+      "display": "nevertheless",
+      "input": "nevertheless",
+      "annotation": "nevertheless / それにもかかわらず",
+      "input_type": "word"
+    },
+    {
+      "display": "nutrition",
+      "input": "nutrition",
+      "annotation": "nutrition / 栄養",
+      "input_type": "word"
+    },
+    {
+      "display": "obey",
+      "input": "obey",
+      "annotation": "obey / 従う",
+      "input_type": "word"
+    },
+    {
+      "display": "observe",
+      "input": "observe",
+      "annotation": "observe / 観察する",
+      "input_type": "word"
+    },
+    {
+      "display": "obtain",
+      "input": "obtain",
+      "annotation": "obtain / 得る",
+      "input_type": "word"
+    },
+    {
+      "display": "occasion",
+      "input": "occasion",
+      "annotation": "occasion / 機会",
+      "input_type": "word"
+    },
+    {
+      "display": "occupy",
+      "input": "occupy",
+      "annotation": "occupy / 占める",
+      "input_type": "word"
+    },
+    {
+      "display": "occur",
+      "input": "occur",
+      "annotation": "occur / 起こる",
+      "input_type": "word"
+    },
+    {
+      "display": "odd",
+      "input": "odd",
+      "annotation": "odd / 奇妙な",
+      "input_type": "word"
+    },
+    {
+      "display": "operate",
+      "input": "operate",
+      "annotation": "operate / 操作する",
+      "input_type": "word"
+    },
+    {
+      "display": "oppose",
+      "input": "oppose",
+      "annotation": "oppose / 反対する",
+      "input_type": "word"
+    },
+    {
+      "display": "option",
+      "input": "option",
+      "annotation": "option / 選択肢",
+      "input_type": "word"
+    },
+    {
+      "display": "organic",
+      "input": "organic",
+      "annotation": "organic / 有機の",
+      "input_type": "word"
+    },
+    {
+      "display": "otherwise",
+      "input": "otherwise",
+      "annotation": "otherwise / さもなければ",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-7",
+  "name": "英検準2級レベル（単語7）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語7"
+  ],
+  "words": [
+    {
+      "display": "passenger",
+      "input": "passenger",
+      "annotation": "passenger / 乗客",
+      "input_type": "word"
+    },
+    {
+      "display": "patient",
+      "input": "patient",
+      "annotation": "patient / 患者",
+      "input_type": "word"
+    },
+    {
+      "display": "peace",
+      "input": "peace",
+      "annotation": "peace / 平和",
+      "input_type": "word"
+    },
+    {
+      "display": "perform",
+      "input": "perform",
+      "annotation": "perform / 演じる",
+      "input_type": "word"
+    },
+    {
+      "display": "perhaps",
+      "input": "perhaps",
+      "annotation": "perhaps / たぶん",
+      "input_type": "word"
+    },
+    {
+      "display": "period",
+      "input": "period",
+      "annotation": "period / 期間",
+      "input_type": "word"
+    },
+    {
+      "display": "permission",
+      "input": "permission",
+      "annotation": "permission / 許可",
+      "input_type": "word"
+    },
+    {
+      "display": "personal",
+      "input": "personal",
+      "annotation": "personal / 個人の",
+      "input_type": "word"
+    },
+    {
+      "display": "planet",
+      "input": "planet",
+      "annotation": "planet / 惑星",
+      "input_type": "word"
+    },
+    {
+      "display": "pleasure",
+      "input": "pleasure",
+      "annotation": "pleasure / 喜び",
+      "input_type": "word"
+    },
+    {
+      "display": "plenty",
+      "input": "plenty",
+      "annotation": "plenty / たくさん",
+      "input_type": "word"
+    },
+    {
+      "display": "poem",
+      "input": "poem",
+      "annotation": "poem / 詩",
+      "input_type": "word"
+    },
+    {
+      "display": "pollution",
+      "input": "pollution",
+      "annotation": "pollution / 汚染",
+      "input_type": "word"
+    },
+    {
+      "display": "population",
+      "input": "population",
+      "annotation": "population / 人口",
+      "input_type": "word"
+    },
+    {
+      "display": "positive",
+      "input": "positive",
+      "annotation": "positive / 前向きな",
+      "input_type": "word"
+    },
+    {
+      "display": "power",
+      "input": "power",
+      "annotation": "power / 力",
+      "input_type": "word"
+    },
+    {
+      "display": "praise",
+      "input": "praise",
+      "annotation": "praise / ほめる",
+      "input_type": "word"
+    },
+    {
+      "display": "prepare",
+      "input": "prepare",
+      "annotation": "prepare / 準備する",
+      "input_type": "word"
+    },
+    {
+      "display": "president",
+      "input": "president",
+      "annotation": "president / 大統領、社長",
+      "input_type": "word"
+    },
+    {
+      "display": "pressure",
+      "input": "pressure",
+      "annotation": "pressure / 圧力",
+      "input_type": "word"
+    },
+    {
+      "display": "prevent",
+      "input": "prevent",
+      "annotation": "prevent / 防ぐ",
+      "input_type": "word"
+    },
+    {
+      "display": "process",
+      "input": "process",
+      "annotation": "process / 過程",
+      "input_type": "word"
+    },
+    {
+      "display": "produce",
+      "input": "produce",
+      "annotation": "produce / 生産する",
+      "input_type": "word"
+    },
+    {
+      "display": "product",
+      "input": "product",
+      "annotation": "product / 製品",
+      "input_type": "word"
+    },
+    {
+      "display": "professional",
+      "input": "professional",
+      "annotation": "professional / 専門の",
+      "input_type": "word"
+    },
+    {
+      "display": "project",
+      "input": "project",
+      "annotation": "project / 計画",
+      "input_type": "word"
+    },
+    {
+      "display": "promise",
+      "input": "promise",
+      "annotation": "promise / 約束する",
+      "input_type": "word"
+    },
+    {
+      "display": "protect",
+      "input": "protect",
+      "annotation": "protect / 守る",
+      "input_type": "word"
+    },
+    {
+      "display": "proud",
+      "input": "proud",
+      "annotation": "proud / 誇りに思う",
+      "input_type": "word"
+    },
+    {
+      "display": "provide",
+      "input": "provide",
+      "annotation": "provide / 提供する",
+      "input_type": "word"
+    },
+    {
+      "display": "public",
+      "input": "public",
+      "annotation": "public / 公共の",
+      "input_type": "word"
+    },
+    {
+      "display": "publish",
+      "input": "publish",
+      "annotation": "publish / 出版する",
+      "input_type": "word"
+    },
+    {
+      "display": "raise",
+      "input": "raise",
+      "annotation": "raise / 上げる、育てる",
+      "input_type": "word"
+    },
+    {
+      "display": "rare",
+      "input": "rare",
+      "annotation": "rare / まれな",
+      "input_type": "word"
+    },
+    {
+      "display": "rather",
+      "input": "rather",
+      "annotation": "rather / むしろ",
+      "input_type": "word"
+    },
+    {
+      "display": "reach",
+      "input": "reach",
+      "annotation": "reach / 届く",
+      "input_type": "word"
+    },
+    {
+      "display": "reason",
+      "input": "reason",
+      "annotation": "reason / 理由",
+      "input_type": "word"
+    },
+    {
+      "display": "receive",
+      "input": "receive",
+      "annotation": "receive / 受け取る",
+      "input_type": "word"
+    },
+    {
+      "display": "recent",
+      "input": "recent",
+      "annotation": "recent / 最近の",
+      "input_type": "word"
+    },
+    {
+      "display": "recipe",
+      "input": "recipe",
+      "annotation": "recipe / 料理法",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

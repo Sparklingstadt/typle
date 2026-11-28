@@ -169,6 +169,7 @@ test('the initial lists decode in Typle with their own ids and names', () => {
     ['chinese-hsk6-handwriting-25-words-1', [15]], ['chinese-hsk6-handwriting-25-words-2', [15]], ['chinese-hsk6-handwriting-25-words-3', [15]],
     ['chinese-hsk6-handwriting-25-words-4', [15]], ['chinese-hsk6-handwriting-25-words-5', [15]], ['chinese-hsk6-handwriting-25-words-6', [15]],
     ['japanese-romaji', [40, 40, 40]],
+    ['english-eiken-pre2-words-1', [40]], ['english-eiken-pre2-words-2', [40]], ['english-eiken-pre2-words-3', [40]], ['english-eiken-pre2-words-4', [40]], ['english-eiken-pre2-words-5', [40]], ['english-eiken-pre2-words-6', [40]], ['english-eiken-pre2-words-7', [40]], ['english-eiken-pre2-words-8', [40]], ['english-eiken-pre2-words-9', [40]], ['english-eiken-pre2-words-10', [40]], ['english-eiken-2-words-1', [40]], ['english-eiken-2-words-2', [40]], ['english-eiken-2-words-3', [40]], ['english-eiken-2-words-4', [40]], ['english-eiken-2-words-5', [40]], ['english-eiken-2-words-6', [40]], ['english-eiken-2-words-7', [40]], ['english-eiken-2-words-8', [40]], ['english-eiken-2-words-9', [40]], ['english-eiken-2-words-10', [40]],
   ])
   assert.equal(lists.length, commands.length)
   const { initialLists } = require('../src/lib/packs/index.ts')

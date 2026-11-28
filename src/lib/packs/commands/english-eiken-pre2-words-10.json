@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-10",
+  "name": "英検準2級レベル（単語10）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語10"
+  ],
+  "words": [
+    {
+      "display": "theater",
+      "input": "theater",
+      "annotation": "theater / 劇場",
+      "input_type": "word"
+    },
+    {
+      "display": "therefore",
+      "input": "therefore",
+      "annotation": "therefore / それゆえ",
+      "input_type": "word"
+    },
+    {
+      "display": "thick",
+      "input": "thick",
+      "annotation": "thick / 厚い",
+      "input_type": "word"
+    },
+    {
+      "display": "thin",
+      "input": "thin",
+      "annotation": "thin / 薄い",
+      "input_type": "word"
+    },
+    {
+      "display": "throw",
+      "input": "throw",
+      "annotation": "throw / 投げる",
+      "input_type": "word"
+    },
+    {
+      "display": "tidy",
+      "input": "tidy",
+      "annotation": "tidy / きちんとした",
+      "input_type": "word"
+    },
+    {
+      "display": "tiny",
+      "input": "tiny",
+      "annotation": "tiny / とても小さい",
+      "input_type": "word"
+    },
+    {
+      "display": "tour",
+      "input": "tour",
+      "annotation": "tour / 旅行",
+      "input_type": "word"
+    },
+    {
+      "display": "tourist",
+      "input": "tourist",
+      "annotation": "tourist / 観光客",
+      "input_type": "word"
+    },
+    {
+      "display": "trade",
+      "input": "trade",
+      "annotation": "trade / 貿易",
+      "input_type": "word"
+    },
+    {
+      "display": "tradition",
+      "input": "tradition",
+      "annotation": "tradition / 伝統",
+      "input_type": "word"
+    },
+    {
+      "display": "traffic",
+      "input": "traffic",
+      "annotation": "traffic / 交通",
+      "input_type": "word"
+    },
+    {
+      "display": "translate",
+      "input": "translate",
+      "annotation": "translate / 翻訳する",
+      "input_type": "word"
+    },
+    {
+      "display": "transportation",
+      "input": "transportation",
+      "annotation": "transportation / 輸送",
+      "input_type": "word"
+    },
+    {
+      "display": "trash",
+      "input": "trash",
+      "annotation": "trash / ごみ",
+      "input_type": "word"
+    },
+    {
+      "display": "treat",
+      "input": "treat",
+      "annotation": "treat / 扱う",
+      "input_type": "word"
+    },
+    {
+      "display": "trouble",
+      "input": "trouble",
+      "annotation": "trouble / 困難",
+      "input_type": "word"
+    },
+    {
+      "display": "trust",
+      "input": "trust",
+      "annotation": "trust / 信頼する",
+      "input_type": "word"
+    },
+    {
+      "display": "truth",
+      "input": "truth",
+      "annotation": "truth / 真実",
+      "input_type": "word"
+    },
+    {
+      "display": "unique",
+      "input": "unique",
+      "annotation": "unique / 独特の",
+      "input_type": "word"
+    },
+    {
+      "display": "universe",
+      "input": "universe",
+      "annotation": "universe / 宇宙",
+      "input_type": "word"
+    },
+    {
+      "display": "unless",
+      "input": "unless",
+      "annotation": "unless / 〜でない限り",
+      "input_type": "word"
+    },
+    {
+      "display": "upset",
+      "input": "upset",
+      "annotation": "upset / 動揺した",
+      "input_type": "word"
+    },
+    {
+      "display": "valley",
+      "input": "valley",
+      "annotation": "valley / 谷",
+      "input_type": "word"
+    },
+    {
+      "display": "value",
+      "input": "value",
+      "annotation": "value / 価値",
+      "input_type": "word"
+    },
+    {
+      "display": "various",
+      "input": "various",
+      "annotation": "various / さまざまな",
+      "input_type": "word"
+    },
+    {
+      "display": "victory",
+      "input": "victory",
+      "annotation": "victory / 勝利",
+      "input_type": "word"
+    },
+    {
+      "display": "volunteer",
+      "input": "volunteer",
+      "annotation": "volunteer / ボランティア",
+      "input_type": "word"
+    },
+    {
+      "display": "vote",
+      "input": "vote",
+      "annotation": "vote / 投票する",
+      "input_type": "word"
+    },
+    {
+      "display": "wallet",
+      "input": "wallet",
+      "annotation": "wallet / 財布",
+      "input_type": "word"
+    },
+    {
+      "display": "war",
+      "input": "war",
+      "annotation": "war / 戦争",
+      "input_type": "word"
+    },
+    {
+      "display": "waste",
+      "input": "waste",
+      "annotation": "waste / 無駄にする",
+      "input_type": "word"
+    },
+    {
+      "display": "wealth",
+      "input": "wealth",
+      "annotation": "wealth / 富",
+      "input_type": "word"
+    },
+    {
+      "display": "weight",
+      "input": "weight",
+      "annotation": "weight / 重さ",
+      "input_type": "word"
+    },
+    {
+      "display": "whole",
+      "input": "whole",
+      "annotation": "whole / 全体の",
+      "input_type": "word"
+    },
+    {
+      "display": "wild",
+      "input": "wild",
+      "annotation": "wild / 野生の",
+      "input_type": "word"
+    },
+    {
+      "display": "within",
+      "input": "within",
+      "annotation": "within / 〜以内に",
+      "input_type": "word"
+    },
+    {
+      "display": "wonder",
+      "input": "wonder",
+      "annotation": "wonder / 不思議に思う",
+      "input_type": "word"
+    },
+    {
+      "display": "worth",
+      "input": "worth",
+      "annotation": "worth / 価値がある",
+      "input_type": "word"
+    },
+    {
+      "display": "youth",
+      "input": "youth",
+      "annotation": "youth / 若さ",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

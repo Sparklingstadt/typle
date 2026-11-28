@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-10",
+  "name": "英検2級レベル（単語10）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語10"
+  ],
+  "words": [
+    {
+      "display": "shortage",
+      "input": "shortage",
+      "annotation": "shortage / 不足",
+      "input_type": "word"
+    },
+    {
+      "display": "significant",
+      "input": "significant",
+      "annotation": "significant / 重要な",
+      "input_type": "word"
+    },
+    {
+      "display": "sincere",
+      "input": "sincere",
+      "annotation": "sincere / 誠実な",
+      "input_type": "word"
+    },
+    {
+      "display": "species",
+      "input": "species",
+      "annotation": "species / 種",
+      "input_type": "word"
+    },
+    {
+      "display": "specific",
+      "input": "specific",
+      "annotation": "specific / 特定の",
+      "input_type": "word"
+    },
+    {
+      "display": "stable",
+      "input": "stable",
+      "annotation": "stable / 安定した",
+      "input_type": "word"
+    },
+    {
+      "display": "status",
+      "input": "status",
+      "annotation": "status / 地位",
+      "input_type": "word"
+    },
+    {
+      "display": "steady",
+      "input": "steady",
+      "annotation": "steady / 安定した",
+      "input_type": "word"
+    },
+    {
+      "display": "stimulate",
+      "input": "stimulate",
+      "annotation": "stimulate / 刺激する",
+      "input_type": "word"
+    },
+    {
+      "display": "strategy",
+      "input": "strategy",
+      "annotation": "strategy / 戦略",
+      "input_type": "word"
+    },
+    {
+      "display": "substitute",
+      "input": "substitute",
+      "annotation": "substitute / 代用品",
+      "input_type": "word"
+    },
+    {
+      "display": "suburb",
+      "input": "suburb",
+      "annotation": "suburb / 郊外",
+      "input_type": "word"
+    },
+    {
+      "display": "sufficient",
+      "input": "sufficient",
+      "annotation": "sufficient / 十分な",
+      "input_type": "word"
+    },
+    {
+      "display": "summarize",
+      "input": "summarize",
+      "annotation": "summarize / 要約する",
+      "input_type": "word"
+    },
+    {
+      "display": "superior",
+      "input": "superior",
+      "annotation": "superior / 優れた",
+      "input_type": "word"
+    },
+    {
+      "display": "surgery",
+      "input": "surgery",
+      "annotation": "surgery / 手術",
+      "input_type": "word"
+    },
+    {
+      "display": "surround",
+      "input": "surround",
+      "annotation": "surround / 囲む",
+      "input_type": "word"
+    },
+    {
+      "display": "survey",
+      "input": "survey",
+      "annotation": "survey / 調査",
+      "input_type": "word"
+    },
+    {
+      "display": "suspect",
+      "input": "suspect",
+      "annotation": "suspect / 疑う",
+      "input_type": "word"
+    },
+    {
+      "display": "sustainable",
+      "input": "sustainable",
+      "annotation": "sustainable / 持続可能な",
+      "input_type": "word"
+    },
+    {
+      "display": "symptom",
+      "input": "symptom",
+      "annotation": "symptom / 症状",
+      "input_type": "word"
+    },
+    {
+      "display": "tend",
+      "input": "tend",
+      "annotation": "tend / 傾向がある",
+      "input_type": "word"
+    },
+    {
+      "display": "tension",
+      "input": "tension",
+      "annotation": "tension / 緊張",
+      "input_type": "word"
+    },
+    {
+      "display": "theory",
+      "input": "theory",
+      "annotation": "theory / 理論",
+      "input_type": "word"
+    },
+    {
+      "display": "threat",
+      "input": "threat",
+      "annotation": "threat / 脅威",
+      "input_type": "word"
+    },
+    {
+      "display": "transfer",
+      "input": "transfer",
+      "annotation": "transfer / 移す",
+      "input_type": "word"
+    },
+    {
+      "display": "transform",
+      "input": "transform",
+      "annotation": "transform / 変える",
+      "input_type": "word"
+    },
+    {
+      "display": "trend",
+      "input": "trend",
+      "annotation": "trend / 傾向",
+      "input_type": "word"
+    },
+    {
+      "display": "typical",
+      "input": "typical",
+      "annotation": "typical / 典型的な",
+      "input_type": "word"
+    },
+    {
+      "display": "unemployment",
+      "input": "unemployment",
+      "annotation": "unemployment / 失業",
+      "input_type": "word"
+    },
+    {
+      "display": "urban",
+      "input": "urban",
+      "annotation": "urban / 都市の",
+      "input_type": "word"
+    },
+    {
+      "display": "urgent",
+      "input": "urgent",
+      "annotation": "urgent / 緊急の",
+      "input_type": "word"
+    },
+    {
+      "display": "vary",
+      "input": "vary",
+      "annotation": "vary / 異なる",
+      "input_type": "word"
+    },
+    {
+      "display": "vehicle",
+      "input": "vehicle",
+      "annotation": "vehicle / 乗り物",
+      "input_type": "word"
+    },
+    {
+      "display": "vital",
+      "input": "vital",
+      "annotation": "vital / 極めて重要な",
+      "input_type": "word"
+    },
+    {
+      "display": "vivid",
+      "input": "vivid",
+      "annotation": "vivid / 鮮やかな",
+      "input_type": "word"
+    },
+    {
+      "display": "welfare",
+      "input": "welfare",
+      "annotation": "welfare / 福祉",
+      "input_type": "word"
+    },
+    {
+      "display": "widespread",
+      "input": "widespread",
+      "annotation": "widespread / 広く行き渡った",
+      "input_type": "word"
+    },
+    {
+      "display": "withdraw",
+      "input": "withdraw",
+      "annotation": "withdraw / 引き出す",
+      "input_type": "word"
+    },
+    {
+      "display": "witness",
+      "input": "witness",
+      "annotation": "witness / 目撃者",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

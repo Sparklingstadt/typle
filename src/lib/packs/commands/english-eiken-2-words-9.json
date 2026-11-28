@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-9",
+  "name": "英検2級レベル（単語9）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語9"
+  ],
+  "words": [
+    {
+      "display": "recognize",
+      "input": "recognize",
+      "annotation": "recognize / 認識する",
+      "input_type": "word"
+    },
+    {
+      "display": "recover",
+      "input": "recover",
+      "annotation": "recover / 回復する",
+      "input_type": "word"
+    },
+    {
+      "display": "reflect",
+      "input": "reflect",
+      "annotation": "reflect / 反映する",
+      "input_type": "word"
+    },
+    {
+      "display": "reform",
+      "input": "reform",
+      "annotation": "reform / 改革する",
+      "input_type": "word"
+    },
+    {
+      "display": "register",
+      "input": "register",
+      "annotation": "register / 登録する",
+      "input_type": "word"
+    },
+    {
+      "display": "regret",
+      "input": "regret",
+      "annotation": "regret / 後悔する",
+      "input_type": "word"
+    },
+    {
+      "display": "reject",
+      "input": "reject",
+      "annotation": "reject / 拒絶する",
+      "input_type": "word"
+    },
+    {
+      "display": "release",
+      "input": "release",
+      "annotation": "release / 放出する",
+      "input_type": "word"
+    },
+    {
+      "display": "relevant",
+      "input": "relevant",
+      "annotation": "relevant / 関連のある",
+      "input_type": "word"
+    },
+    {
+      "display": "relieve",
+      "input": "relieve",
+      "annotation": "relieve / 和らげる",
+      "input_type": "word"
+    },
+    {
+      "display": "religion",
+      "input": "religion",
+      "annotation": "religion / 宗教",
+      "input_type": "word"
+    },
+    {
+      "display": "reluctant",
+      "input": "reluctant",
+      "annotation": "reluctant / 気が進まない",
+      "input_type": "word"
+    },
+    {
+      "display": "rely",
+      "input": "rely",
+      "annotation": "rely / 頼る",
+      "input_type": "word"
+    },
+    {
+      "display": "remarkable",
+      "input": "remarkable",
+      "annotation": "remarkable / 注目すべき",
+      "input_type": "word"
+    },
+    {
+      "display": "remote",
+      "input": "remote",
+      "annotation": "remote / 遠く離れた",
+      "input_type": "word"
+    },
+    {
+      "display": "represent",
+      "input": "represent",
+      "annotation": "represent / 代表する",
+      "input_type": "word"
+    },
+    {
+      "display": "reputation",
+      "input": "reputation",
+      "annotation": "reputation / 評判",
+      "input_type": "word"
+    },
+    {
+      "display": "request",
+      "input": "request",
+      "annotation": "request / 要請",
+      "input_type": "word"
+    },
+    {
+      "display": "rescue",
+      "input": "rescue",
+      "annotation": "rescue / 救助する",
+      "input_type": "word"
+    },
+    {
+      "display": "resemble",
+      "input": "resemble",
+      "annotation": "resemble / 似ている",
+      "input_type": "word"
+    },
+    {
+      "display": "reserve",
+      "input": "reserve",
+      "annotation": "reserve / 予約する",
+      "input_type": "word"
+    },
+    {
+      "display": "resident",
+      "input": "resident",
+      "annotation": "resident / 住民",
+      "input_type": "word"
+    },
+    {
+      "display": "resist",
+      "input": "resist",
+      "annotation": "resist / 抵抗する",
+      "input_type": "word"
+    },
+    {
+      "display": "resolve",
+      "input": "resolve",
+      "annotation": "resolve / 解決する",
+      "input_type": "word"
+    },
+    {
+      "display": "resource",
+      "input": "resource",
+      "annotation": "resource / 資源",
+      "input_type": "word"
+    },
+    {
+      "display": "respond",
+      "input": "respond",
+      "annotation": "respond / 反応する",
+      "input_type": "word"
+    },
+    {
+      "display": "restore",
+      "input": "restore",
+      "annotation": "restore / 回復させる",
+      "input_type": "word"
+    },
+    {
+      "display": "restrict",
+      "input": "restrict",
+      "annotation": "restrict / 制限する",
+      "input_type": "word"
+    },
+    {
+      "display": "retire",
+      "input": "retire",
+      "annotation": "retire / 退職する",
+      "input_type": "word"
+    },
+    {
+      "display": "reveal",
+      "input": "reveal",
+      "annotation": "reveal / 明らかにする",
+      "input_type": "word"
+    },
+    {
+      "display": "reverse",
+      "input": "reverse",
+      "annotation": "reverse / 逆にする",
+      "input_type": "word"
+    },
+    {
+      "display": "revolution",
+      "input": "revolution",
+      "annotation": "revolution / 革命",
+      "input_type": "word"
+    },
+    {
+      "display": "rural",
+      "input": "rural",
+      "annotation": "rural / 田舎の",
+      "input_type": "word"
+    },
+    {
+      "display": "satisfy",
+      "input": "satisfy",
+      "annotation": "satisfy / 満足させる",
+      "input_type": "word"
+    },
+    {
+      "display": "secure",
+      "input": "secure",
+      "annotation": "secure / 安全な",
+      "input_type": "word"
+    },
+    {
+      "display": "seek",
+      "input": "seek",
+      "annotation": "seek / 求める",
+      "input_type": "word"
+    },
+    {
+      "display": "select",
+      "input": "select",
+      "annotation": "select / 選ぶ",
+      "input_type": "word"
+    },
+    {
+      "display": "sensitive",
+      "input": "sensitive",
+      "annotation": "sensitive / 敏感な",
+      "input_type": "word"
+    },
+    {
+      "display": "settle",
+      "input": "settle",
+      "annotation": "settle / 解決する、定住する",
+      "input_type": "word"
+    },
+    {
+      "display": "severe",
+      "input": "severe",
+      "annotation": "severe / 深刻な",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

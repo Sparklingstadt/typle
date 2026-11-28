@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-5",
+  "name": "英検準2級レベル（単語5）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語5"
+  ],
+  "words": [
+    {
+      "display": "forest",
+      "input": "forest",
+      "annotation": "forest / 森",
+      "input_type": "word"
+    },
+    {
+      "display": "forever",
+      "input": "forever",
+      "annotation": "forever / 永遠に",
+      "input_type": "word"
+    },
+    {
+      "display": "forgive",
+      "input": "forgive",
+      "annotation": "forgive / 許す",
+      "input_type": "word"
+    },
+    {
+      "display": "form",
+      "input": "form",
+      "annotation": "form / 形",
+      "input_type": "word"
+    },
+    {
+      "display": "freedom",
+      "input": "freedom",
+      "annotation": "freedom / 自由",
+      "input_type": "word"
+    },
+    {
+      "display": "freeze",
+      "input": "freeze",
+      "annotation": "freeze / 凍る",
+      "input_type": "word"
+    },
+    {
+      "display": "fuel",
+      "input": "fuel",
+      "annotation": "fuel / 燃料",
+      "input_type": "word"
+    },
+    {
+      "display": "furniture",
+      "input": "furniture",
+      "annotation": "furniture / 家具",
+      "input_type": "word"
+    },
+    {
+      "display": "gather",
+      "input": "gather",
+      "annotation": "gather / 集める",
+      "input_type": "word"
+    },
+    {
+      "display": "general",
+      "input": "general",
+      "annotation": "general / 一般的な",
+      "input_type": "word"
+    },
+    {
+      "display": "global",
+      "input": "global",
+      "annotation": "global / 世界的な",
+      "input_type": "word"
+    },
+    {
+      "display": "goal",
+      "input": "goal",
+      "annotation": "goal / 目標",
+      "input_type": "word"
+    },
+    {
+      "display": "grade",
+      "input": "grade",
+      "annotation": "grade / 学年、成績",
+      "input_type": "word"
+    },
+    {
+      "display": "graduate",
+      "input": "graduate",
+      "annotation": "graduate / 卒業する",
+      "input_type": "word"
+    },
+    {
+      "display": "guess",
+      "input": "guess",
+      "annotation": "guess / 推測する",
+      "input_type": "word"
+    },
+    {
+      "display": "guide",
+      "input": "guide",
+      "annotation": "guide / 案内する",
+      "input_type": "word"
+    },
+    {
+      "display": "habit",
+      "input": "habit",
+      "annotation": "habit / 習慣",
+      "input_type": "word"
+    },
+    {
+      "display": "handle",
+      "input": "handle",
+      "annotation": "handle / 扱う",
+      "input_type": "word"
+    },
+    {
+      "display": "harm",
+      "input": "harm",
+      "annotation": "harm / 害",
+      "input_type": "word"
+    },
+    {
+      "display": "heat",
+      "input": "heat",
+      "annotation": "heat / 熱",
+      "input_type": "word"
+    },
+    {
+      "display": "height",
+      "input": "height",
+      "annotation": "height / 高さ",
+      "input_type": "word"
+    },
+    {
+      "display": "hire",
+      "input": "hire",
+      "annotation": "hire / 雇う",
+      "input_type": "word"
+    },
+    {
+      "display": "honest",
+      "input": "honest",
+      "annotation": "honest / 正直な",
+      "input_type": "word"
+    },
+    {
+      "display": "host",
+      "input": "host",
+      "annotation": "host / 主催者",
+      "input_type": "word"
+    },
+    {
+      "display": "hunt",
+      "input": "hunt",
+      "annotation": "hunt / 狩る",
+      "input_type": "word"
+    },
+    {
+      "display": "hurt",
+      "input": "hurt",
+      "annotation": "hurt / 傷つける",
+      "input_type": "word"
+    },
+    {
+      "display": "imagine",
+      "input": "imagine",
+      "annotation": "imagine / 想像する",
+      "input_type": "word"
+    },
+    {
+      "display": "importance",
+      "input": "importance",
+      "annotation": "importance / 重要性",
+      "input_type": "word"
+    },
+    {
+      "display": "impossible",
+      "input": "impossible",
+      "annotation": "impossible / 不可能な",
+      "input_type": "word"
+    },
+    {
+      "display": "include",
+      "input": "include",
+      "annotation": "include / 含む",
+      "input_type": "word"
+    },
+    {
+      "display": "income",
+      "input": "income",
+      "annotation": "income / 収入",
+      "input_type": "word"
+    },
+    {
+      "display": "industry",
+      "input": "industry",
+      "annotation": "industry / 産業",
+      "input_type": "word"
+    },
+    {
+      "display": "injure",
+      "input": "injure",
+      "annotation": "injure / けがをさせる",
+      "input_type": "word"
+    },
+    {
+      "display": "insect",
+      "input": "insect",
+      "annotation": "insect / 昆虫",
+      "input_type": "word"
+    },
+    {
+      "display": "instead",
+      "input": "instead",
+      "annotation": "instead / 代わりに",
+      "input_type": "word"
+    },
+    {
+      "display": "interview",
+      "input": "interview",
+      "annotation": "interview / 面接",
+      "input_type": "word"
+    },
+    {
+      "display": "invent",
+      "input": "invent",
+      "annotation": "invent / 発明する",
+      "input_type": "word"
+    },
+    {
+      "display": "item",
+      "input": "item",
+      "annotation": "item / 品物",
+      "input_type": "word"
+    },
+    {
+      "display": "journey",
+      "input": "journey",
+      "annotation": "journey / 旅",
+      "input_type": "word"
+    },
+    {
+      "display": "judge",
+      "input": "judge",
+      "annotation": "judge / 判断する",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

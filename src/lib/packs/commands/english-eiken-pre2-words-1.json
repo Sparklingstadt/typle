@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-1",
+  "name": "英検準2級レベル（単語1）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語1"
+  ],
+  "words": [
+    {
+      "display": "absent",
+      "input": "absent",
+      "annotation": "absent / 欠席の",
+      "input_type": "word"
+    },
+    {
+      "display": "accept",
+      "input": "accept",
+      "annotation": "accept / 受け入れる",
+      "input_type": "word"
+    },
+    {
+      "display": "accident",
+      "input": "accident",
+      "annotation": "accident / 事故",
+      "input_type": "word"
+    },
+    {
+      "display": "active",
+      "input": "active",
+      "annotation": "active / 活動的な",
+      "input_type": "word"
+    },
+    {
+      "display": "actually",
+      "input": "actually",
+      "annotation": "actually / 実際は",
+      "input_type": "word"
+    },
+    {
+      "display": "admire",
+      "input": "admire",
+      "annotation": "admire / 感心する",
+      "input_type": "word"
+    },
+    {
+      "display": "adult",
+      "input": "adult",
+      "annotation": "adult / 大人",
+      "input_type": "word"
+    },
+    {
+      "display": "advice",
+      "input": "advice",
+      "annotation": "advice / 助言",
+      "input_type": "word"
+    },
+    {
+      "display": "against",
+      "input": "against",
+      "annotation": "against / 反対して",
+      "input_type": "word"
+    },
+    {
+      "display": "ahead",
+      "input": "ahead",
+      "annotation": "ahead / 前方に",
+      "input_type": "word"
+    },
+    {
+      "display": "alive",
+      "input": "alive",
+      "annotation": "alive / 生きている",
+      "input_type": "word"
+    },
+    {
+      "display": "allow",
+      "input": "allow",
+      "annotation": "allow / 許す",
+      "input_type": "word"
+    },
+    {
+      "display": "amazing",
+      "input": "amazing",
+      "annotation": "amazing / 驚くべき",
+      "input_type": "word"
+    },
+    {
+      "display": "amount",
+      "input": "amount",
+      "annotation": "amount / 量",
+      "input_type": "word"
+    },
+    {
+      "display": "ancient",
+      "input": "ancient",
+      "annotation": "ancient / 古代の",
+      "input_type": "word"
+    },
+    {
+      "display": "announce",
+      "input": "announce",
+      "annotation": "announce / 発表する",
+      "input_type": "word"
+    },
+    {
+      "display": "anyway",
+      "input": "anyway",
+      "annotation": "anyway / とにかく",
+      "input_type": "word"
+    },
+    {
+      "display": "apartment",
+      "input": "apartment",
+      "annotation": "apartment / アパート",
+      "input_type": "word"
+    },
+    {
+      "display": "appear",
+      "input": "appear",
+      "annotation": "appear / 現れる",
+      "input_type": "word"
+    },
+    {
+      "display": "article",
+      "input": "article",
+      "annotation": "article / 記事",
+      "input_type": "word"
+    },
+    {
+      "display": "asleep",
+      "input": "asleep",
+      "annotation": "asleep / 眠って",
+      "input_type": "word"
+    },
+    {
+      "display": "attend",
+      "input": "attend",
+      "annotation": "attend / 出席する",
+      "input_type": "word"
+    },
+    {
+      "display": "audience",
+      "input": "audience",
+      "annotation": "audience / 観客",
+      "input_type": "word"
+    },
+    {
+      "display": "author",
+      "input": "author",
+      "annotation": "author / 著者",
+      "input_type": "word"
+    },
+    {
+      "display": "award",
+      "input": "award",
+      "annotation": "award / 賞",
+      "input_type": "word"
+    },
+    {
+      "display": "aware",
+      "input": "aware",
+      "annotation": "aware / 気づいて",
+      "input_type": "word"
+    },
+    {
+      "display": "battery",
+      "input": "battery",
+      "annotation": "battery / 電池",
+      "input_type": "word"
+    },
+    {
+      "display": "beat",
+      "input": "beat",
+      "annotation": "beat / 打ち負かす",
+      "input_type": "word"
+    },
+    {
+      "display": "beauty",
+      "input": "beauty",
+      "annotation": "beauty / 美しさ",
+      "input_type": "word"
+    },
+    {
+      "display": "belong",
+      "input": "belong",
+      "annotation": "belong / 属する",
+      "input_type": "word"
+    },
+    {
+      "display": "besides",
+      "input": "besides",
+      "annotation": "besides / その上",
+      "input_type": "word"
+    },
+    {
+      "display": "bill",
+      "input": "bill",
+      "annotation": "bill / 請求書",
+      "input_type": "word"
+    },
+    {
+      "display": "birth",
+      "input": "birth",
+      "annotation": "birth / 誕生",
+      "input_type": "word"
+    },
+    {
+      "display": "blanket",
+      "input": "blanket",
+      "annotation": "blanket / 毛布",
+      "input_type": "word"
+    },
+    {
+      "display": "boil",
+      "input": "boil",
+      "annotation": "boil / 沸かす",
+      "input_type": "word"
+    },
+    {
+      "display": "border",
+      "input": "border",
+      "annotation": "border / 国境",
+      "input_type": "word"
+    },
+    {
+      "display": "borrow",
+      "input": "borrow",
+      "annotation": "borrow / 借りる",
+      "input_type": "word"
+    },
+    {
+      "display": "bottom",
+      "input": "bottom",
+      "annotation": "bottom / 底",
+      "input_type": "word"
+    },
+    {
+      "display": "brain",
+      "input": "brain",
+      "annotation": "brain / 脳",
+      "input_type": "word"
+    },
+    {
+      "display": "branch",
+      "input": "branch",
+      "annotation": "branch / 枝、支店",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

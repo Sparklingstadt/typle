@@ -6244,5 +6244,363 @@
     ]
    }
   ]
+ },
+ {
+  "catalogId": "pack-english-eiken-pre2-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-english-eiken-pre2-words-1",
+   "name": "英語：英検準2級レベル単語",
+   "category": "語学",
+   "tags": [
+    "英語"
+   ],
+   "createdAt": "2026-11-28T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-english-eiken-pre2-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "english-eiken-pre2-words-1",
+    "name": "英検準2級レベル（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "absent",
+     "accept",
+     "accident"
+    ]
+   },
+   {
+    "id": "english-eiken-pre2-words-2",
+    "name": "英検準2級レベル（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "brave",
+     "breath",
+     "bright"
+    ]
+   },
+   {
+    "id": "english-eiken-pre2-words-3",
+    "name": "英検準2級レベル（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "count",
+     "couple",
+     "courage"
+    ]
+   },
+   {
+    "id": "english-eiken-pre2-words-4",
+    "name": "英検準2級レベル（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "electricity",
+     "emergency",
+     "employee"
+    ]
+   },
+   {
+    "id": "english-eiken-pre2-words-5",
+    "name": "英検準2級レベル（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "forest",
+     "forever",
+     "forgive"
+    ]
+   },
+   {
+    "id": "english-eiken-pre2-words-6",
+    "name": "英検準2級レベル（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "lack",
+     "land",
+     "law"
+    ]
+   },
+   {
+    "id": "english-eiken-pre2-words-7",
+    "name": "英検準2級レベル（単語7）",
+    "levels": [
+     "単語7"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "passenger",
+     "patient",
+     "peace"
+    ]
+   },
+   {
+    "id": "english-eiken-pre2-words-8",
+    "name": "英検準2級レベル（単語8）",
+    "levels": [
+     "単語8"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "recommend",
+     "recycle",
+     "refuse"
+    ]
+   },
+   {
+    "id": "english-eiken-pre2-words-9",
+    "name": "英検準2級レベル（単語9）",
+    "levels": [
+     "単語9"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "silent",
+     "similar",
+     "skill"
+    ]
+   },
+   {
+    "id": "english-eiken-pre2-words-10",
+    "name": "英検準2級レベル（単語10）",
+    "levels": [
+     "単語10"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-pre2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "theater",
+     "therefore",
+     "thick"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-english-eiken-2-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-english-eiken-2-words-1",
+   "name": "英語：英検2級レベル単語",
+   "category": "語学",
+   "tags": [
+    "英語"
+   ],
+   "createdAt": "2026-11-28T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-english-eiken-2-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "english-eiken-2-words-1",
+    "name": "英検2級レベル（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "abandon",
+     "ability",
+     "abroad"
+    ]
+   },
+   {
+    "id": "english-eiken-2-words-2",
+    "name": "英検2級レベル（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "arrange",
+     "arrest",
+     "artificial"
+    ]
+   },
+   {
+    "id": "english-eiken-2-words-3",
+    "name": "英検2級レベル（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "concern",
+     "conclude",
+     "conduct"
+    ]
+   },
+   {
+    "id": "english-eiken-2-words-4",
+    "name": "英検2級レベル（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "deserve",
+     "desire",
+     "despite"
+    ]
+   },
+   {
+    "id": "english-eiken-2-words-5",
+    "name": "英検2級レベル（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "estimate",
+     "evaluate",
+     "evidence"
+    ]
+   },
+   {
+    "id": "english-eiken-2-words-6",
+    "name": "英検2級レベル（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "grant",
+     "gravity",
+     "guarantee"
+    ]
+   },
+   {
+    "id": "english-eiken-2-words-7",
+    "name": "英検2級レベル（単語7）",
+    "levels": [
+     "単語7"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "landscape",
+     "latest",
+     "launch"
+    ]
+   },
+   {
+    "id": "english-eiken-2-words-8",
+    "name": "英検2級レベル（単語8）",
+    "levels": [
+     "単語8"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "outcome",
+     "overall",
+     "overcome"
+    ]
+   },
+   {
+    "id": "english-eiken-2-words-9",
+    "name": "英検2級レベル（単語9）",
+    "levels": [
+     "単語9"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "recognize",
+     "recover",
+     "reflect"
+    ]
+   },
+   {
+    "id": "english-eiken-2-words-10",
+    "name": "英検2級レベル（単語10）",
+    "levels": [
+     "単語10"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-english-eiken-2-words-1",
+    "wordCount": 40,
+    "sample": [
+     "shortage",
+     "significant",
+     "sincere"
+    ]
+   }
+  ]
  }
 ]
