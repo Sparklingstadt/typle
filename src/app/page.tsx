@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server"
 import { Code, Eye, Keyboard, Languages, Library, ListPlus, TrendingUp, type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import TryWord from "@/components/Landing/TryWord"
+import ClientMessages from "@/i18n/ClientMessages"
 import { officialListCounts, wordMeaning } from "@/lib/landing"
 import { initialLists } from "@/lib/packs"
 import { officialPackPage } from "@/lib/packs/pages"
@@ -60,7 +61,7 @@ export default async function Landing() {
           <Link href="/home" className="text-sm text-primary underline underline-offset-3">{t("hero.home")}</Link>
         </div>
       </div>
-      {tryEntry && tryList && tryWords.length > 0 && <TryWord catalogId={tryEntry.catalogId} packName={tryList.name} total={tryList.words.length} words={tryWords} />}
+      {tryEntry && tryList && tryWords.length > 0 && <ClientMessages namespaces={["landing"]}><TryWord catalogId={tryEntry.catalogId} packName={tryList.name} total={tryList.words.length} words={tryWords} /></ClientMessages>}
     </header>
 
     <div className="space-y-12">
