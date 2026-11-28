@@ -1,13 +1,8 @@
-// The official packs that have a page of their own (/packs/<slug>) for people who find them through a search.
-// The description is written by hand for each, in the language the packs' words are explained in.
-import pages from './pages.json'
+// The pages of the official packs (pageList.ts) with their packs, for the server: this file reads the whole catalog.
 import { officialPacks, type OfficialPack } from './catalog'
+import { OFFICIAL_PACK_PAGES, type OfficialPackPage } from './pageList'
 
-// A pack whose words are the same as another's (the same words split by level) names that page as `canonical`:
-// search engines are pointed to that page, and the sitemap leaves this one out.
-export type OfficialPackPage = { slug: string; catalogId: string; description: string; canonical?: string }
-
-export const OFFICIAL_PACK_PAGES: readonly OfficialPackPage[] = pages
+export { OFFICIAL_PACK_PAGES, type OfficialPackPage }
 
 export type OfficialPackPageEntry = OfficialPackPage & { entry: OfficialPack }
 

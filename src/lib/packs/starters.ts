@@ -1,4 +1,4 @@
-import { officialPacks, type OfficialPack } from './catalog'
+import { packSummaries, type PackSummary } from './officialCatalog'
 
 /**
  * The official packs /play offers to someone with no pack yet, in this order: a language pack and a programming pack
@@ -10,6 +10,6 @@ export const STARTER_CATALOG_IDS: readonly string[] = [
   'pack-chinese-hsk5-words-1',
 ]
 
-export function starterPacks(): OfficialPack[] {
-  return STARTER_CATALOG_IDS.flatMap(catalogId => officialPacks().filter(entry => entry.catalogId === catalogId))
+export function starterPacks(): PackSummary[] {
+  return STARTER_CATALOG_IDS.flatMap(catalogId => packSummaries().filter(entry => entry.catalogId === catalogId))
 }

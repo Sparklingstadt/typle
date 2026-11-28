@@ -2,7 +2,13 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { normalizeLibrary } = require('../src/lib/wordPacks.ts')
-const { readGuestWorkspace, writeGuestWorkspace, addGuestRecord, deleteGuestRecord } = require('../src/lib/storage/guest.ts')
+const guest = require('../src/lib/storage/guest.ts')
+// guest.ts is given the catalog to follow: here the whole one, as the server has it (the app loads the packs followed).
+const official = require('../src/lib/packs/catalog.ts').officialPacks()
+const readGuestWorkspace = store => guest.readGuestWorkspace(official, store)
+const writeGuestWorkspace = (request, store) => guest.writeGuestWorkspace(request, official, store)
+const addGuestRecord = (request, store) => guest.addGuestRecord(request, official, store)
+const deleteGuestRecord = (request, store) => guest.deleteGuestRecord(request, official, store)
 const { GUEST_STORAGE_KEY } = require('../src/lib/storage/guestAccount.ts')
 const { storage } = require('./helpers.cjs')
 const list = { id: 'l', name: 'Local', packId: 'pack-l', createdAt: '2026-09-27', words: [{ display: 'a', input: 'a', annotation: '' }], records: [{ time: 1, date: '2026-09-27' }] }
@@ -172,12 +178,16 @@ test('the guest saves followed packs without their words, and reads them back wi
   assert.deepEqual(saved.lists.map(list => list.words.length), entry.lists.map(list => list.words.length))
   assert.deepEqual(readGuestWorkspace(store).lists, saved.lists)
 })
-test('the guest store answers a first visit as a read of nothing saved does, and saves and reads through guest.ts', async t => {
-  const { guestStore } = require('../src/lib/storage/guestStore.ts')
-  const store = storage()
+const withLocalStorage = (t, store) => {
   const previous = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
   Object.defineProperty(globalThis, 'localStorage', { value: store, configurable: true })
   t.after(() => previous ? Object.defineProperty(globalThis, 'localStorage', previous) : delete globalThis.localStorage)
+}
+test('the guest store reads, saves and keeps records as guest.ts does, with the words of the packs followed', async t => {
+  const { guestStore } = require('../src/lib/storage/guestStore.ts')
+  const { followOfficialPack, officialPacks } = require('../src/lib/packs/catalog.ts')
+  const store = storage()
+  withLocalStorage(t, store)
   const first = await guestStore.read()
   assert.deepEqual(first, readGuestWorkspace(storage()))
   const saved = await guestStore.write({ ...first, lists: [list], packs: [pack] })
@@ -186,26 +196,44 @@ test('the guest store answers a first visit as a read of nothing saved does, and
   const record = { id: 'r1', time: 2, date: '2026-10-01T00:00:00.000Z', mistakes: 0, accuracy: 100, wordCount: 1 }
   assert.equal((await guestStore.addRecord({ accountId: 'guest:local', listId: 'l', record })).lists[0].records.length, 2)
   assert.equal((await guestStore.deleteRecord({ accountId: 'guest:local', listId: 'l', recordId: 'r1' })).lists[0].records.length, 1)
+  // Following a pack: saved without its words, read back with them, as the whole catalog gives them.
+  const entry = officialPacks()[0]
+  const now = await guestStore.read()
+  const library = followOfficialPack({ lists: now.lists, packs: now.packs }, entry.catalogId, { pack: 'p1', lists: entry.lists.map((_, n) => `p1-${n}`) })
+  const followed = await guestStore.write({ ...now, ...library })
+  assert.deepEqual(followed, readGuestWorkspace(store))
+  assert.deepEqual(followed.lists.filter(item => item.packId === 'p1').map(item => item.words), entry.lists.map(item => item.words))
+  assert.deepEqual(await guestStore.read(), followed)
 })
-// The official packs' words are about 1 MB of script; before v2.66.1 every page loaded them with the root layout.
-test('what every page loads (the stores, the welcome redirect, starting a pack) does not load the official packs', () => {
+// The official packs' words are about 1 MB of script; before v2.66.1 every page loaded them with the root layout, and
+// until v2.66.3 a workspace that followed one pack loaded those of all.
+test('what every page loads (the stores, the welcome redirect) does not load the official packs', () => {
   const { execFileSync } = require('node:child_process')
   const loaded = execFileSync(process.execPath, ['-e', `
     require('./tests/register.cjs')
     for (const file of ['storage/index.ts', 'welcome.ts', 'wordPacks.ts']) require('./src/lib/' + file)
-    console.log(JSON.stringify(Object.keys(require.cache).filter(file => /src\\/lib\\/(packs|storage\\/guest\\.ts)/.test(file))))
+    console.log(JSON.stringify(Object.keys(require.cache).filter(file => file.includes('/src/lib/packs/'))))
   `], { cwd: require('node:path').join(__dirname, '..'), encoding: 'utf8' })
   assert.deepEqual(JSON.parse(loaded), [])
 })
-test('a browser with a saved guest workspace starts loading guest.ts with the store, and one without does not', () => {
+test('a guest workspace that follows one pack loads the words of that pack only, and one without packs loads no catalog', () => {
   const { execFileSync } = require('node:child_process')
+  const { followOfficialPack, officialPacks } = require('../src/lib/packs/catalog.ts')
+  const { withoutFollowedWords } = require('../src/lib/followedPacks.ts')
+  const entry = officialPacks()[0]
+  const library = withoutFollowedWords(followOfficialPack({ lists: [], packs: [] }, entry.catalogId, { pack: 'p1', lists: entry.lists.map((_, n) => `p1-${n}`) }))
   const run = saved => JSON.parse(execFileSync(process.execPath, ['-e', `
     require('./tests/register.cjs')
-    const { GUEST_STORAGE_KEY } = require('./src/lib/storage/guestAccount.ts')
-    globalThis.window = { localStorage: { getItem: key => key === GUEST_STORAGE_KEY && ${saved} ? '{}' : null } }
-    require('./src/lib/storage/guestStore.ts')
-    setImmediate(() => console.log(Object.keys(require.cache).some(file => file.endsWith('/storage/guest.ts'))))
+    const saved = ${JSON.stringify(saved)}
+    globalThis.localStorage = { getItem: () => saved }
+    require('./src/lib/storage/guestStore.ts').guestStore.read().then(read => console.log(JSON.stringify({
+      words: read.lists.map(list => list.words.length),
+      files: Object.keys(require.cache).filter(file => file.includes('/src/lib/packs/')).map(file => file.split('/src/lib/packs/')[1]).sort(),
+    })))
   `], { cwd: require('node:path').join(__dirname, '..'), encoding: 'utf8' }))
-  assert.equal(run(true), true)
-  assert.equal(run(false), false)
+  assert.deepEqual(run(null), { words: [], files: [] })
+  const read = run(JSON.stringify({ version: 1, accountId: 'guest:local', revision: 1, ...library, devices: [] }))
+  assert.deepEqual(read.words, entry.lists.map(item => item.words.length))
+  assert.equal(read.files.filter(file => file.startsWith('commands/')).length, entry.lists.length)
+  assert.deepEqual(read.files.filter(file => !file.startsWith('commands/')), ['loaders.ts', 'officialCatalog.ts', 'summary.json'])
 })
