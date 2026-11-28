@@ -3,7 +3,6 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useWordLists } from "@/hooks/useWordLists"
 import { randomId } from "@/lib/randomId"
-import { followOfficialPack, officialPacks } from "@/lib/packs/catalog"
 import { practicePath } from "@/lib/routes"
 
 /**
@@ -24,6 +23,8 @@ export function useOfficialPackStart() {
       router.push(first ? practicePath(first.id) : "/play")
       return
     }
+    // The catalog's words are loaded when a pack is first followed, not with the page.
+    const { followOfficialPack, officialPacks } = await import("@/lib/packs/catalog")
     const entry = officialPacks().find(item => item.catalogId === catalogId)
     const ids = { pack: randomId(), lists: entry ? entry.lists.map(() => randomId()) : [] }
     const saved = entry && await updateLibrary(library => followOfficialPack(library, catalogId, ids))
