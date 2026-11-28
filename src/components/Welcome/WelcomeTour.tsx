@@ -16,7 +16,7 @@ import StartStep from '@/components/Welcome/StartStep'
 import StepDots from '@/components/Welcome/StepDots'
 import TypedHeading from '@/components/Welcome/TypedHeading'
 import { INTEREST_OPTIONS, normalizeInterests } from '@/lib/interests'
-import { applyCatalogChoices } from '@/lib/packs/catalog'
+import { applyCatalogChoices, officialPacks } from '@/lib/packs/catalog'
 import { randomId } from '@/lib/randomId'
 import { practicePath } from '@/lib/routes'
 import { NATIVE_LANGUAGE_NAMES, carryChecks, dismissWelcome, hasChildInterest, toggleWelcomeInterest, welcomeKey, welcomePacks, type WelcomeKey, type WelcomeStep } from '@/lib/welcome'
@@ -64,7 +64,7 @@ export default function WelcomeTour() {
     document.getElementById(`welcome-${step}`)?.focus()
   }, [step])
 
-  const entries = welcomePacks(chosen)
+  const entries = welcomePacks(chosen, officialPacks())
   const entryIds = entries.map(entry => entry.catalogId)
   const checkedCount = entries.filter(entry => checked.has(entry.catalogId)).length
   const followed = packs.find(pack => pack.origin?.catalogId === followedCatalogId)

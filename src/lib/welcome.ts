@@ -1,5 +1,5 @@
 import { INTEREST_OPTIONS, normalizeInterests } from './interests'
-import { officialPacks, type OfficialPack } from './packs/catalog'
+import type { OfficialPack } from './packs/catalog'
 
 // Child interest id -> the catalog pack that is easiest to start with.
 // A unit test checks that every child has one, that it exists and that it fits the interest.
@@ -29,8 +29,9 @@ export const WELCOME_PACKS: Readonly<Record<string, string>> = {
   'programming/cloud': 'pack-ef974a4b-3c7a-4eeb-9979-6721a0a1c81a',
 }
 
-// Packs for the chosen child interests, in INTEREST_OPTIONS order, without duplicates.
-export function welcomePacks(interests: string[]): OfficialPack[] {
+// Packs for the chosen child interests among the catalog's `entries`, in INTEREST_OPTIONS order, without duplicates.
+// The caller passes the catalog, so that this file, which every workspace page reads, does not bring its words along.
+export function welcomePacks(interests: string[], entries: OfficialPack[]): OfficialPack[] {
   const wanted: string[] = []
   for (const option of INTEREST_OPTIONS) {
     for (const child of option.children) {
@@ -38,7 +39,6 @@ export function welcomePacks(interests: string[]): OfficialPack[] {
       if (interests.includes(child.id) && catalogId && !wanted.includes(catalogId)) wanted.push(catalogId)
     }
   }
-  const entries = officialPacks()
   return wanted.flatMap(catalogId => entries.find(entry => entry.catalogId === catalogId) ?? [])
 }
 

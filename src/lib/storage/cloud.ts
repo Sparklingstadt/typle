@@ -2,13 +2,17 @@ import { AppError, type ErrorKey } from '../appError'
 import { ApiError, api } from '../api'
 import { withoutFollowedWords } from '../followedPacks'
 import { decodeDocument } from '../workspaceDocument'
-import { followed } from '../packs/catalog'
 import { WorkspaceError, type RecordAdd, type RecordDelete, type WorkspaceState, type WorkspaceStore, type WorkspaceWrite } from '../workspaceStore'
 
 type Saved = { lists?: unknown; packs?: unknown; devices?: unknown; interests?: unknown; revision?: unknown; accountId?: unknown }
 
 /** Sends a request to /api/workspace or /api/workspace/records and reads the workspace it answers with. */
 async function requestWorkspace(path: string, method: 'GET' | 'PUT' | 'POST' | 'DELETE', body?: unknown): Promise<WorkspaceState> {
+  // Followed packs are saved without their words: the catalog gives them back. Its words are too large for every
+  // page's scripts, so it is loaded here, alongside the request rather than after it. A load that fails is thrown
+  // where it is awaited below; this handler only keeps a failed request from leaving it unhandled.
+  const catalog = import('../packs/catalog')
+  catalog.catch(() => {})
   let saved: Saved | null
   try {
     saved = await api<Saved | null>(path, { method, body })
@@ -22,8 +26,9 @@ async function requestWorkspace(path: string, method: 'GET' | 'PUT' | 'POST' | '
   }
   // `packs` is null for an account that has saved nothing.
   const { lists, packs, devices, interests } = decodeDocument({ lists: saved.lists, packs: saved.packs, devices: saved.devices, interests: saved.interests })
-  // Followed packs are saved without their words: the catalog gives them back.
-  return followed({ accountId: saved.accountId, revision: saved.revision as number, lists, packs, devices, interests })
+  const state = { accountId: saved.accountId, revision: saved.revision as number, lists, packs, devices, interests }
+  // An empty library follows nothing, so it does not wait for the catalog.
+  return packs.length || lists.length ? (await catalog).followed(state) : state
 }
 
 export function readWorkspace() {
