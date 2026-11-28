@@ -27,7 +27,7 @@ Web 版の画面ごとの動作です。開発の手順は [development.md](deve
 
 サイドバーの「設定 › 一般」で、表示言語を日本語・English・简体中文・繁體中文・Русский・Français から選べます。選ぶとその場で画面全体が切り替わり、選択はCookie（`NEXT_LOCALE`、1年）としてこのブラウザーに保存されます。未設定のときは日本語です。URLは言語によらず同じで、単語リストや記録の内容は翻訳しません。
 
-多言語化には [next-intl](https://next-intl.dev/) を使い、ロケールのルーティングは行いません（`src/i18n/request.ts` がCookieから言語を決めます）。画面の文言は `src/messages/<言語>/<領域>.json` にあり、コードに直接書きません。
+多言語化には [next-intl](https://next-intl.dev/) を使い、ロケールのルーティングは行いません（`src/i18n/request.ts` がCookieから言語を決めます）。画面の文言は `src/messages/<言語>/<領域>.json` にあり、コードに直接書きません。ブラウザーで読む文言は HTML に入れて送るので、ページの枠が読む領域（`SHELL_NAMESPACES`：`account`・`common`・`errors`・`format`・`nav`）と、そのルートのクライアントコンポーネントが読む領域だけを送ります（v2.66.2 から。それまではほぼ全領域を全ページに送っていました）。ルートの `layout.tsx` が `<ClientMessages namespaces={[…]}>`（`src/i18n/ClientMessages.tsx`）で領域を挙げます。クライアントコンポーネントで新しい領域を `useTranslations` したら、そのルートの `namespaces` に足します。足し忘れと余分は単体テスト（`tests/clientMessages.test.cjs`）が見つけます。
 
 - 文言はICU MessageFormatです。件数は `{count, plural, ...}` で各言語の複数形に合わせます。アポストロフィはICUの特殊文字のため、`’` を使います。
 - 日本語のファイルが基準で、型（`src/i18n/next-intl.d.ts`）にもなります。キーを追加したら6言語すべてに追加してください。

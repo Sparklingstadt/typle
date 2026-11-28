@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { pageMetadata } from "@/lib/pageMetadata"
+import ClientMessages from "@/i18n/ClientMessages"
 
 // The page is a client component, so its title and description are set here.
 export async function generateMetadata(): Promise<Metadata> {
@@ -7,5 +8,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children
+  return <ClientMessages namespaces={["wordLists"]}>{children}</ClientMessages>
 }

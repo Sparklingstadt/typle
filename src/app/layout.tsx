@@ -1,9 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Noto_Sans_JP } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
 import { headers } from "next/headers";
-import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import Navbar from "@/components/Navbar/Navbar";
 import WebAnalytics from "@/components/WebAnalytics";
@@ -11,7 +10,7 @@ import AuthProvider from "@/components/AuthProvider";
 import { WorkspaceProvider } from "@/hooks/useWordLists";
 import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme/bootstrap";
 import { openGraphLocales } from "@/i18n/config";
-import { clientMessages, type Messages } from "@/i18n/messages";
+import ClientMessages from "@/i18n/ClientMessages";
 import { siteUrl } from "@/lib/siteUrl";
 
 // Vercel serves the analytics script at /_vercel/insights; anywhere else (local builds, CI) it would 404.
@@ -72,7 +71,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <script id="theme-bootstrap" nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
       </head>
       <body className="bg-muted/40 font-sans text-foreground antialiased">
-      <NextIntlClientProvider messages={clientMessages(await getMessages() as Messages)}>
+      <ClientMessages>
       <AuthProvider>
       <WorkspaceProvider>
       <Navbar />
@@ -84,7 +83,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       </div>
       </WorkspaceProvider>
       </AuthProvider>
-      </NextIntlClientProvider>
+      </ClientMessages>
       {onVercel && <WebAnalytics />}
       </body>
     </html>
