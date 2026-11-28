@@ -62,11 +62,11 @@
   "licenses": {
     "meta": {
       "title": "许可证 | Typle",
-      "description": "Typle 使用的开源软件、字体和模型及其许可证。"
+      "description": "Typle 使用的开源软件和模型及其许可证。"
     },
     "back": "关于 Typle",
     "title": "开源许可证",
-    "intro": "Typle 使用了以下开源软件、字体和模型。点击名称可打开项目页面。完整的许可证文本汇总在“全部许可证文本”中。",
+    "intro": "Typle 使用了以下开源软件和模型。点击名称可打开项目页面。完整的许可证文本汇总在“全部许可证文本”中。",
     "fullText": "全部许可证文本",
     "filter": "按名称或许可证筛选",
     "count": "{total} 项中的 {shown} 项",

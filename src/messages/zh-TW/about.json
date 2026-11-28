@@ -62,11 +62,11 @@
   "licenses": {
     "meta": {
       "title": "授權 | Typle",
-      "description": "Typle 使用的開放原始碼軟體、字型和模型及其授權。"
+      "description": "Typle 使用的開放原始碼軟體和模型及其授權。"
     },
     "back": "關於 Typle",
     "title": "開放原始碼授權",
-    "intro": "Typle 使用了以下開放原始碼軟體、字型和模型。點選名稱可開啟專案頁面。完整的授權文字彙整在「全部授權文字」中。",
+    "intro": "Typle 使用了以下開放原始碼軟體和模型。點選名稱可開啟專案頁面。完整的授權文字彙整在「全部授權文字」中。",
     "fullText": "全部授權文字",
     "filter": "依名稱或授權篩選",
     "count": "{total} 項中的 {shown} 項",

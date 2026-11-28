@@ -1,6 +1,5 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Noto_Sans_JP } from "next/font/google";
 import { headers } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
 import Sidebar from "@/components/Sidebar/Sidebar";
@@ -18,11 +17,6 @@ const onVercel = process.env.VERCEL === "1";
 
 const GOOGLE_SITE_VERIFICATION = "9AxSaSJWX-s1vpCQI0DDHzhVq9Aq8poWc7q4YX-Js-I";
 
-const notoSans = Noto_Sans_JP({
-  subsets: ["latin"],
-  variable: "--font-noto-sans",
-  display: "swap",
-});
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -66,7 +60,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const nonce = (await headers()).get("x-nonce") ?? undefined;
   return (
     // The class on <html> must not change with the language: the theme script adds `dark` there.
-    <html lang={locale} suppressHydrationWarning className={`${notoSans.variable} font-sans`}>
+    <html lang={locale} suppressHydrationWarning className="font-sans">
       <head>
         <script id="theme-bootstrap" nonce={nonce} dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
       </head>

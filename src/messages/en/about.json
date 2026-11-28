@@ -62,11 +62,11 @@
   "licenses": {
     "meta": {
       "title": "Licenses | Typle",
-      "description": "The open-source software, fonts and models Typle uses, and their licenses."
+      "description": "The open-source software and models Typle uses, and their licenses."
     },
     "back": "About Typle",
     "title": "Open-source licenses",
-    "intro": "Typle uses the following open-source software, fonts and models. Each name opens the project's page. The full license texts are collected in “All license texts”.",
+    "intro": "Typle uses the following open-source software and models. Each name opens the project's page. The full license texts are collected in “All license texts”.",
     "fullText": "All license texts",
     "filter": "Filter by name or license",
     "count": "{shown} of {total}",

@@ -8,12 +8,9 @@ const path = require('node:path')
 
 const root = path.join(__dirname, '..')
 
-// Shipped files that are not npm packages: the font next/font downloads at build time, and the handwriting model.
+// Shipped files that are not npm packages: the handwriting model. (Until v2.67.0 also the font Noto Sans JP, which
+// next/font downloaded at build time; the text is now set in the fonts of the device.)
 const EXTRAS = [
-  {
-    name: 'Noto Sans JP', version: '', license: 'OFL-1.1', url: 'https://fonts.google.com/noto/specimen/Noto+Sans+JP',
-    text: 'scripts/third-party/noto-sans-jp-OFL-1.1.txt',
-  },
   {
     name: 'PaddleOCR korean_PP-OCRv5_mobile_rec (ONNX)', version: '', license: 'Apache-2.0',
     url: 'https://github.com/PT-Perkasa-Pilar-Utama/ppu-paddle-ocr-models', text: 'public/handwriting/LICENSE-models.txt',
