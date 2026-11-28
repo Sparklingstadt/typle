@@ -8,10 +8,11 @@ type Saved = { lists?: unknown; packs?: unknown; devices?: unknown; interests?: 
 
 /** Sends a request to /api/workspace or /api/workspace/records and reads the workspace it answers with. */
 async function requestWorkspace(path: string, method: 'GET' | 'PUT' | 'POST' | 'DELETE', body?: unknown): Promise<WorkspaceState> {
-  // Followed packs are saved without their words: the catalog gives them back. Its words are too large for every
-  // page's scripts, so it is loaded here, alongside the request rather than after it. A load that fails is thrown
-  // where it is awaited below; this handler only keeps a failed request from leaving it unhandled.
-  const catalog = import('../packs/catalog')
+  // Followed packs are saved without their words: the catalog gives them back. It is kept out of every page's
+  // scripts and loaded here, alongside the request rather than after it; the words of the packs the answer follows are
+  // loaded once it is read. A load that fails is thrown where it is awaited below; this handler only keeps a failed
+  // request from leaving it unhandled.
+  const catalog = import('../packs/officialCatalog')
   catalog.catch(() => {})
   let saved: Saved | null
   try {

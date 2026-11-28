@@ -1,5 +1,4 @@
 import { INTEREST_OPTIONS, normalizeInterests } from './interests'
-import type { OfficialPack } from './packs/catalog'
 
 // Child interest id -> the catalog pack that is easiest to start with.
 // A unit test checks that every child has one, that it exists and that it fits the interest.
@@ -31,7 +30,7 @@ export const WELCOME_PACKS: Readonly<Record<string, string>> = {
 
 // Packs for the chosen child interests among the catalog's `entries`, in INTEREST_OPTIONS order, without duplicates.
 // The caller passes the catalog, so that this file, which every workspace page reads, does not bring its words along.
-export function welcomePacks(interests: string[], entries: OfficialPack[]): OfficialPack[] {
+export function welcomePacks<T extends { catalogId: string }>(interests: string[], entries: readonly T[]): T[] {
   const wanted: string[] = []
   for (const option of INTEREST_OPTIONS) {
     for (const child of option.children) {

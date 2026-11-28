@@ -1,14 +1,13 @@
 "use client"
 import { AnimatePresence, m } from 'motion/react'
-import type { OfficialPack } from '@/lib/packs/catalog'
+import type { PackSummary } from '@/lib/packs/officialCatalog'
 import { cn } from '@/lib/utils'
 import KeyToggle from './KeyToggle'
 
-const SAMPLE_WORDS = 3
 const MAX_SHORTCUTS = 9
 
 type Props = {
-  entries: OfficialPack[]
+  entries: PackSummary[]
   mode: 'preview' | 'choose'
   checked: ReadonlySet<string>
   onCheck: (catalogId: string, value: boolean) => void
@@ -30,8 +29,8 @@ export default function PracticePanel({ entries, mode, checked, onCheck, disable
       <AnimatePresence initial={false}>
         {entries.map((entry, index) => {
           const on = checked.has(entry.catalogId)
-          const words = entry.lists.reduce((total, list) => total + list.words.length, 0)
-          const sample = entry.lists[0]?.words.slice(0, SAMPLE_WORDS).map(word => word.display).join(' · ')
+          const words = entry.lists.reduce((total, list) => total + list.wordCount, 0)
+          const sample = entry.lists[0]?.sample.join(' · ')
           return <m.li key={entry.catalogId} layoutId={entry.catalogId} data-catalog-id={entry.catalogId}
             initial={{ opacity: 0, x: 16 }} animate={{ opacity: choosing && !on ? 0.45 : 1, x: 0 }} exit={{ opacity: 0, x: 16 }}
             transition={{ type: 'spring', stiffness: 420, damping: 34 }}

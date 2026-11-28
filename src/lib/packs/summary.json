@@ -1,0 +1,6248 @@
+[
+ {
+  "catalogId": "pack-8f3cf116-1f9f-4579-a071-e600094b104d",
+  "version": 1,
+  "pack": {
+   "id": "pack-8f3cf116-1f9f-4579-a071-e600094b104d",
+   "name": "macOSターミナル（zsh）コマンド",
+   "category": "プログラミング",
+   "tags": [
+    "macOS",
+    "シェル"
+   ],
+   "createdAt": "2026-10-23T04:08:05.342Z",
+   "origin": {
+    "catalogId": "pack-8f3cf116-1f9f-4579-a071-e600094b104d",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "8f3cf116-1f9f-4579-a071-e600094b104d",
+    "name": "macOSターミナル（zsh）コマンド",
+    "records": [],
+    "createdAt": "2026-10-23T04:08:05.342Z",
+    "packId": "pack-8f3cf116-1f9f-4579-a071-e600094b104d",
+    "wordCount": 90,
+    "sample": [
+     "pwd",
+     "ls",
+     "ls -la"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-ef974a4b-3c7a-4eeb-9979-6721a0a1c81a",
+  "version": 1,
+  "pack": {
+   "id": "pack-ef974a4b-3c7a-4eeb-9979-6721a0a1c81a",
+   "name": "AWS CLIコマンド",
+   "category": "プログラミング",
+   "tags": [
+    "AWS",
+    "クラウド"
+   ],
+   "createdAt": "2026-10-23T04:08:16.112Z",
+   "origin": {
+    "catalogId": "pack-ef974a4b-3c7a-4eeb-9979-6721a0a1c81a",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "ef974a4b-3c7a-4eeb-9979-6721a0a1c81a",
+    "name": "AWS CLIコマンド",
+    "records": [],
+    "createdAt": "2026-10-23T04:08:16.112Z",
+    "packId": "pack-ef974a4b-3c7a-4eeb-9979-6721a0a1c81a",
+    "wordCount": 46,
+    "sample": [
+     "aws --version",
+     "aws ec2 describe-instances help",
+     "aws configure sso --profile development"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-d6a056c2-9f2b-48ba-b4e6-1d851cc45f41",
+  "version": 1,
+  "pack": {
+   "id": "pack-d6a056c2-9f2b-48ba-b4e6-1d851cc45f41",
+   "name": "Google Cloud CLI（gcloud）コマンド",
+   "category": "プログラミング",
+   "tags": [
+    "Google Cloud",
+    "クラウド"
+   ],
+   "createdAt": "2026-10-23T04:08:26.400Z",
+   "origin": {
+    "catalogId": "pack-d6a056c2-9f2b-48ba-b4e6-1d851cc45f41",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "d6a056c2-9f2b-48ba-b4e6-1d851cc45f41",
+    "name": "Google Cloud CLI（gcloud）コマンド",
+    "records": [],
+    "createdAt": "2026-10-23T04:08:26.400Z",
+    "packId": "pack-d6a056c2-9f2b-48ba-b4e6-1d851cc45f41",
+    "wordCount": 35,
+    "sample": [
+     "gcloud init",
+     "gcloud auth login",
+     "gcloud auth list"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-04450fbe-2974-417c-9350-39802a5c650c",
+  "version": 1,
+  "pack": {
+   "id": "pack-04450fbe-2974-417c-9350-39802a5c650c",
+   "name": "Linux：システムの仕組み",
+   "category": "プログラミング",
+   "tags": [
+    "Linux"
+   ],
+   "createdAt": "2026-10-23T04:08:36.929Z",
+   "origin": {
+    "catalogId": "pack-04450fbe-2974-417c-9350-39802a5c650c",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "04450fbe-2974-417c-9350-39802a5c650c",
+    "name": "Linux：システムの仕組み",
+    "records": [],
+    "createdAt": "2026-10-23T04:08:36.929Z",
+    "packId": "pack-04450fbe-2974-417c-9350-39802a5c650c",
+    "wordCount": 140,
+    "sample": [
+     "/",
+     "/bin",
+     "/sbin"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-d3638812-0c0a-4f37-a413-d17404344c32",
+  "version": 1,
+  "pack": {
+   "id": "pack-d3638812-0c0a-4f37-a413-d17404344c32",
+   "name": "Linux：シェルとBash",
+   "category": "プログラミング",
+   "tags": [
+    "Linux",
+    "シェル",
+    "Bash"
+   ],
+   "createdAt": "2026-10-23T04:08:47.008Z",
+   "origin": {
+    "catalogId": "pack-d3638812-0c0a-4f37-a413-d17404344c32",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "d3638812-0c0a-4f37-a413-d17404344c32",
+    "name": "Linux：シェルとBash",
+    "records": [],
+    "createdAt": "2026-10-23T04:08:47.008Z",
+    "packId": "pack-d3638812-0c0a-4f37-a413-d17404344c32",
+    "wordCount": 76,
+    "sample": [
+     "$$",
+     "$!",
+     "$?"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-3099bf52-7790-49b0-841d-5230d7d3dd68",
+  "version": 1,
+  "pack": {
+   "id": "pack-3099bf52-7790-49b0-841d-5230d7d3dd68",
+   "name": "Linuxコマンド：応用",
+   "category": "プログラミング",
+   "tags": [
+    "Linux",
+    "シェル"
+   ],
+   "createdAt": "2026-10-23T04:09:07.105Z",
+   "origin": {
+    "catalogId": "pack-3099bf52-7790-49b0-841d-5230d7d3dd68",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "3099bf52-7790-49b0-841d-5230d7d3dd68",
+    "name": "Linuxコマンド：応用",
+    "records": [],
+    "createdAt": "2026-10-23T04:09:07.105Z",
+    "packId": "pack-3099bf52-7790-49b0-841d-5230d7d3dd68",
+    "wordCount": 131,
+    "sample": [
+     "lsblk -f",
+     "sudo blkid",
+     "mount /dev/sdb1 /mnt"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-78aaf407-fd11-4b12-92bd-2f0bffaf3779",
+  "version": 1,
+  "pack": {
+   "id": "pack-78aaf407-fd11-4b12-92bd-2f0bffaf3779",
+   "name": "Linuxコマンド：オプション",
+   "category": "プログラミング",
+   "tags": [
+    "Linux",
+    "シェル"
+   ],
+   "createdAt": "2026-10-23T04:09:16.243Z",
+   "origin": {
+    "catalogId": "pack-78aaf407-fd11-4b12-92bd-2f0bffaf3779",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "78aaf407-fd11-4b12-92bd-2f0bffaf3779",
+    "name": "Linuxコマンド：オプション",
+    "records": [],
+    "createdAt": "2026-10-23T04:09:16.243Z",
+    "packId": "pack-78aaf407-fd11-4b12-92bd-2f0bffaf3779",
+    "wordCount": 146,
+    "sample": [
+     "ls -l",
+     "ls -a",
+     "ls -h"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-0b27f311-38aa-40aa-9c29-ea17e374e1fe",
+  "version": 1,
+  "pack": {
+   "id": "pack-0b27f311-38aa-40aa-9c29-ea17e374e1fe",
+   "name": "Linuxコマンド：基本",
+   "category": "プログラミング",
+   "tags": [
+    "Linux",
+    "シェル"
+   ],
+   "createdAt": "2026-10-23T04:09:25.523Z",
+   "origin": {
+    "catalogId": "pack-0b27f311-38aa-40aa-9c29-ea17e374e1fe",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "0b27f311-38aa-40aa-9c29-ea17e374e1fe",
+    "name": "Linuxコマンド：基本",
+    "records": [],
+    "createdAt": "2026-10-23T04:09:25.523Z",
+    "packId": "pack-0b27f311-38aa-40aa-9c29-ea17e374e1fe",
+    "wordCount": 118,
+    "sample": [
+     "pwd",
+     "ls -la",
+     "cd /home"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-eba3ec64-7d45-4f41-9de1-200ba5e957d5",
+  "version": 1,
+  "pack": {
+   "id": "pack-eba3ec64-7d45-4f41-9de1-200ba5e957d5",
+   "name": "Vercel CLIコマンド",
+   "category": "プログラミング",
+   "tags": [
+    "Vercel",
+    "クラウド"
+   ],
+   "createdAt": "2026-10-23T04:33:09.521Z",
+   "origin": {
+    "catalogId": "pack-eba3ec64-7d45-4f41-9de1-200ba5e957d5",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "eba3ec64-7d45-4f41-9de1-200ba5e957d5",
+    "name": "Vercel CLIコマンド",
+    "records": [],
+    "createdAt": "2026-10-23T04:33:09.521Z",
+    "packId": "pack-eba3ec64-7d45-4f41-9de1-200ba5e957d5",
+    "wordCount": 34,
+    "sample": [
+     "vercel login",
+     "vercel switch",
+     "vercel link"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-arch-linux",
+  "version": 1,
+  "pack": {
+   "id": "pack-arch-linux",
+   "name": "Arch Linuxコマンド",
+   "category": "プログラミング",
+   "tags": [
+    "Arch Linux",
+    "Linux",
+    "シェル"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-arch-linux",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "arch-linux",
+    "name": "Arch Linuxコマンド",
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-arch-linux",
+    "wordCount": 96,
+    "sample": [
+     "pwd",
+     "ls -lah",
+     "cd ~/Downloads"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-arch-linux-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-arch-linux-beginner",
+   "name": "Arch Linuxコマンド（2）",
+   "category": "プログラミング",
+   "tags": [
+    "Arch Linux",
+    "Linux",
+    "シェル"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-arch-linux-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "arch-linux-beginner",
+    "name": "Arch Linuxコマンド（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-arch-linux-beginner",
+    "wordCount": 32,
+    "sample": [
+     "pwd",
+     "ls -lah",
+     "cd .."
+    ]
+   },
+   {
+    "id": "arch-linux-intermediate",
+    "name": "Arch Linuxコマンド（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-arch-linux-beginner",
+    "wordCount": 32,
+    "sample": [
+     "cd ~/Downloads",
+     "mkdir -p project/src",
+     "cp -r src backup"
+    ]
+   },
+   {
+    "id": "arch-linux-advanced",
+    "name": "Arch Linuxコマンド（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-arch-linux-beginner",
+    "wordCount": 32,
+    "sample": [
+     "cp memo.txt backup.txt",
+     "ln -s ~/Documents/docs docs-link",
+     "find . -name \"*.log\""
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-vim",
+  "version": 1,
+  "pack": {
+   "id": "pack-vim",
+   "name": "Vimコマンド",
+   "category": "プログラミング",
+   "tags": [
+    "Vim"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-vim",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "vim",
+    "name": "Vimコマンド",
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-vim",
+    "wordCount": 112,
+    "sample": [
+     "i",
+     "a",
+     "I"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-vim-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-vim-beginner",
+   "name": "Vimコマンド（2）",
+   "category": "プログラミング",
+   "tags": [
+    "Vim"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-vim-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "vim-beginner",
+    "name": "Vimコマンド（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-vim-beginner",
+    "wordCount": 38,
+    "sample": [
+     "i",
+     "a",
+     "I"
+    ]
+   },
+   {
+    "id": "vim-intermediate",
+    "name": "Vimコマンド（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-vim-beginner",
+    "wordCount": 37,
+    "sample": [
+     ":w",
+     ":q",
+     ":wq"
+    ]
+   },
+   {
+    "id": "vim-advanced",
+    "name": "Vimコマンド（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-vim-beginner",
+    "wordCount": 37,
+    "sample": [
+     ":w 名前",
+     ":qa!",
+     ":wqa"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-go-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-go-syntax-beginner",
+   "name": "Go構文",
+   "category": "プログラミング",
+   "tags": [
+    "Go"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-go-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "go-syntax-beginner",
+    "name": "Go構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-go-syntax-beginner",
+    "wordCount": 37,
+    "sample": [
+     "package main",
+     "import \"fmt\"",
+     "// コメント"
+    ]
+   },
+   {
+    "id": "go-syntax-intermediate",
+    "name": "Go構文（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-go-syntax-beginner",
+    "wordCount": 36,
+    "sample": [
+     "import (\n  \"fmt\";\n  \"errors\"\n)",
+     "/* 複数行の コメント */",
+     "if true {\n  fmt.Println(\"OK\")\n}"
+    ]
+   },
+   {
+    "id": "go-syntax-advanced",
+    "name": "Go構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-go-syntax-beginner",
+    "wordCount": 36,
+    "sample": [
+     "func main() {\n  fmt.Println(\"Hello, Go!\")\n}",
+     "var label string;\nif age >= 20 {\n  label = \"成人\"\n} else {\n  label = \"未成年\"\n}",
+     "if age >= 20 {\n  fmt.Println(\"成人\")\n} else {\n  fmt.Println(\"未成年\")\n}"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-java-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-java-syntax-beginner",
+   "name": "Java構文",
+   "category": "プログラミング",
+   "tags": [
+    "Java"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-java-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "java-syntax-beginner",
+    "name": "Java構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-java-syntax-beginner",
+    "wordCount": 33,
+    "sample": [
+     "public class Main {\n  public static void main(String[] args) {\n    System.out.println(\"Hello, Java!\");\n  }\n}",
+     "public class Main {\n}",
+     "static int count = 0;"
+    ]
+   },
+   {
+    "id": "java-syntax-intermediate-1",
+    "name": "Java構文（中級1）",
+    "levels": [
+     "中級1"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-java-syntax-beginner",
+    "wordCount": 33,
+    "sample": [
+     "System.out.println(\"Hello\");",
+     "/* 複数行の コメント */",
+     "/** 利用者を表します。 */"
+    ]
+   },
+   {
+    "id": "java-syntax-intermediate-2",
+    "name": "Java構文（中級2）",
+    "levels": [
+     "中級2"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-java-syntax-beginner",
+    "wordCount": 32,
+    "sample": [
+     "public static void main(String[] args) {\n}",
+     "if (true) {\n  System.out.println(\"OK\");\n}",
+     "int n;\nn = 1;\nSystem.out.println(n);"
+    ]
+   },
+   {
+    "id": "java-syntax-advanced",
+    "name": "Java構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-java-syntax-beginner",
+    "wordCount": 32,
+    "sample": [
+     "String label = age >= 20 ? \"成人\" : \"未成年\";",
+     "if (age >= 20) {\n  System.out.println(\"成人\");\n} else if (age >= 18) {\n  System.out.println(\"18歳以上\");\n} else {\n  System.out.println(\"18歳未満\");\n}",
+     "switch (role) {\n  case \"admin\":\n    System.out.println(\"管理者\");\n    break;\n  default:\n    System.out.println(\"一般利用者\");\n}"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-kotlin-syntax-beginner-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-kotlin-syntax-beginner-1",
+   "name": "Kotlin構文",
+   "category": "プログラミング",
+   "tags": [
+    "Kotlin"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-kotlin-syntax-beginner-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "kotlin-syntax-beginner-1",
+    "name": "Kotlin構文（初級1）",
+    "levels": [
+     "初級1"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-kotlin-syntax-beginner-1",
+    "wordCount": 33,
+    "sample": [
+     "fun main() {\n  println(\"Hello, Kotlin!\")\n}",
+     "fun greet() {\n}",
+     "println(\"Hello\")"
+    ]
+   },
+   {
+    "id": "kotlin-syntax-beginner-2",
+    "name": "Kotlin構文（初級2）",
+    "levels": [
+     "初級2"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-kotlin-syntax-beginner-1",
+    "wordCount": 33,
+    "sample": [
+     "import kotlin.math.sqrt",
+     "/** 利用者の情報。 */",
+     "val n = 1;\nprintln(n)"
+    ]
+   },
+   {
+    "id": "kotlin-syntax-intermediate",
+    "name": "Kotlin構文（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-kotlin-syntax-beginner-1",
+    "wordCount": 33,
+    "sample": [
+     "val n = \"abc\".toIntOrNull()",
+     "val n: Int;\nn = 1;\nprintln(n)",
+     "val message = \"こんにちは、$name\""
+    ]
+   },
+   {
+    "id": "kotlin-syntax-advanced-1",
+    "name": "Kotlin構文（上級1）",
+    "levels": [
+     "上級1"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-kotlin-syntax-beginner-1",
+    "wordCount": 32,
+    "sample": [
+     "fun greet(): Unit {\n  println(\"Hello\")\n}",
+     "val detail = \"長さは${name.length}です\"",
+     "for (item in items) {\n  println(item)\n}"
+    ]
+   },
+   {
+    "id": "kotlin-syntax-advanced-2",
+    "name": "Kotlin構文（上級2）",
+    "levels": [
+     "上級2"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-kotlin-syntax-beginner-1",
+    "wordCount": 32,
+    "sample": [
+     "fun fail(): Nothing = throw IllegalStateException(\"失敗\")",
+     "val label = if (age >= 20) {\n  \"成人\"\n} else {\n  \"未成年\"\n}",
+     "val label = when (role) {\n  \"admin\" -> \"管理者\";\n  \"member\", \"guest\" -> \"一般利用者\";\n  else -> \"不明\"\n}"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-un-member-states-chinese-193-lowercase",
+  "version": 1,
+  "pack": {
+   "id": "pack-un-member-states-chinese-193-lowercase",
+   "name": "国名：中国語・国連加盟193か国（小文字）",
+   "category": "語学",
+   "tags": [
+    "中国語",
+    "国名"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-un-member-states-chinese-193-lowercase",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "un-member-states-chinese-193-lowercase",
+    "name": "国名：中国語・国連加盟193か国（小文字）",
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-un-member-states-chinese-193-lowercase",
+    "wordCount": 193,
+    "sample": [
+     "阿富汗",
+     "阿尔巴尼亚",
+     "阿尔及利亚"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-un-member-states-chinese-193-lowercase-beginner-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-un-member-states-chinese-193-lowercase-beginner-1",
+   "name": "国名：中国語・国連加盟国（小文字）",
+   "category": "語学",
+   "tags": [
+    "中国語",
+    "国名"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-un-member-states-chinese-193-lowercase-beginner-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "un-member-states-chinese-193-lowercase-beginner-1",
+    "name": "国名：中国語・国連加盟国（小文字・初級1）",
+    "levels": [
+     "初級1"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-un-member-states-chinese-193-lowercase-beginner-1",
+    "wordCount": 39,
+    "sample": [
+     "阿富汗",
+     "安哥拉",
+     "奥地利"
+    ]
+   },
+   {
+    "id": "un-member-states-chinese-193-lowercase-beginner-2",
+    "name": "国名：中国語・国連加盟国（小文字・初級2）",
+    "levels": [
+     "初級2"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-un-member-states-chinese-193-lowercase-beginner-1",
+    "wordCount": 39,
+    "sample": [
+     "安道尔",
+     "比利时",
+     "贝宁"
+    ]
+   },
+   {
+    "id": "un-member-states-chinese-193-lowercase-intermediate",
+    "name": "国名：中国語・国連加盟国（小文字・中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-un-member-states-chinese-193-lowercase-beginner-1",
+    "wordCount": 39,
+    "sample": [
+     "阿尔巴尼亚",
+     "阿尔及利亚",
+     "阿根廷"
+    ]
+   },
+   {
+    "id": "un-member-states-chinese-193-lowercase-advanced-1",
+    "name": "国名：中国語・国連加盟国（小文字・上級1）",
+    "levels": [
+     "上級1"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-un-member-states-chinese-193-lowercase-beginner-1",
+    "wordCount": 38,
+    "sample": [
+     "阿塞拜疆",
+     "孟加拉国",
+     "保加利亚"
+    ]
+   },
+   {
+    "id": "un-member-states-chinese-193-lowercase-advanced-2",
+    "name": "国名：中国語・国連加盟国（小文字・上級2）",
+    "levels": [
+     "上級2"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-un-member-states-chinese-193-lowercase-beginner-1",
+    "wordCount": 38,
+    "sample": [
+     "安提瓜和巴布达",
+     "多民族玻利维亚国",
+     "波斯尼亚和黑塞哥维那"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-postgresql-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-postgresql-syntax-beginner",
+   "name": "PostgreSQL構文",
+   "category": "プログラミング",
+   "tags": [
+    "PostgreSQL",
+    "SQL"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-postgresql-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "postgresql-syntax-beginner",
+    "name": "PostgreSQL構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-postgresql-syntax-beginner",
+    "wordCount": 38,
+    "sample": [
+     "SHOW server_version;",
+     "SELECT 1;\nSELECT 2;",
+     "SELECT 'Pomo';"
+    ]
+   },
+   {
+    "id": "postgresql-syntax-intermediate-1",
+    "name": "PostgreSQL構文（中級1）",
+    "levels": [
+     "中級1"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-postgresql-syntax-beginner",
+    "wordCount": 38,
+    "sample": [
+     "SELECT name AS display_name FROM users AS u;",
+     "SELECT * FROM users WHERE id IN (1, 2, 3);",
+     "SELECT * FROM users WHERE id NOT IN (1, 2);"
+    ]
+   },
+   {
+    "id": "postgresql-syntax-intermediate-2",
+    "name": "PostgreSQL構文（中級2）",
+    "levels": [
+     "中級2"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-postgresql-syntax-beginner",
+    "wordCount": 38,
+    "sample": [
+     "/* 1行コメント */ SELECT /* ブロックコメント */ 1;",
+     "SELECT * FROM users WHERE active AND (age >= 20 OR age IS NULL);",
+     "SELECT * FROM users ORDER BY created_at DESC, id DESC;"
+    ]
+   },
+   {
+    "id": "postgresql-syntax-advanced",
+    "name": "PostgreSQL構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-postgresql-syntax-beginner",
+    "wordCount": 38,
+    "sample": [
+     "CREATE TABLE users (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  name text NOT NULL,\n  email text UNIQUE,\n  age integer CHECK (age >= 0),\n  active boolean NOT NULL DEFAULT true,\n  department_id bigint,\n  created_at timestamptz NOT NULL DEFAULT now(),\n  profile jsonb NOT NULL DEFAULT '{}'::jsonb,\n  tags text[] NOT NULL DEFAULT '{}'\n);\nCREATE TABLE orders (\n  id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,\n  user_id bigint REFERENCES users(id),\n  amount numeric(12, 2) NOT NULL,\n  status text NOT NULL DEFAULT 'pending',\n  created_at timestamptz NOT NULL DEFAULT now()\n);",
+     "PREPARE find_user(bigint) AS SELECT *\nFROM users\nWHERE id = $1;\nEXECUTE find_user(1);\nDEALLOCATE find_user;",
+     "SELECT DISTINCT ON (department_id) department_id, id, created_at\nFROM users\nORDER BY department_id, created_at DESC, id DESC;"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-prisma-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-prisma-syntax-beginner",
+   "name": "Prisma構文",
+   "category": "プログラミング",
+   "tags": [
+    "Prisma",
+    "TypeScript"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-prisma-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "prisma-syntax-beginner",
+    "name": "Prisma構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-prisma-syntax-beginner",
+    "wordCount": 32,
+    "sample": [
+     "// Prisma ORM 7 / TypeScript / PostgreSQL",
+     "await prisma.$disconnect();",
+     "datasource db {\n  provider = \"postgresql\"\n}"
+    ]
+   },
+   {
+    "id": "prisma-syntax-advanced",
+    "name": "Prisma構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-prisma-syntax-beginner",
+    "wordCount": 32,
+    "sample": [
+     "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id        Int      @id @default(autoincrement())\n  email     String   @unique\n  name      String?\n  age       Int?\n  active    Boolean  @default(true)\n  createdAt DateTime @default(now())\n  tags      String[]\n  profile   Json?\n  posts     Post[]\n}\n\nmodel Post {\n  id        Int     @id @default(autoincrement())\n  title     String\n  published Boolean @default(false)\n  authorId  Int\n  author    User    @relation(fields: [authorId], references: [id])\n}",
+     "import \"dotenv/config\";\nimport { defineConfig, env } from \"prisma/config\";\nexport default defineConfig({\n  schema: \"prisma/schema.prisma\",\n  migrations: { path: \"prisma/migrations\" },\n  datasource: { url: env(\"DATABASE_URL\") }\n});",
+     "import \"dotenv/config\";\nimport { PrismaClient } from \"./generated/prisma/client\";\nimport { PrismaPg } from \"@prisma/adapter-pg\";\nconst connectionString = process.env.DATABASE_URL;\nif (!connectionString)\n  throw new Error(\"DATABASE_URL is required\");\nconst adapter = new PrismaPg({ connectionString });\nconst prisma = new PrismaClient({ adapter });"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-jest-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-jest-syntax-beginner",
+   "name": "Jest構文",
+   "category": "プログラミング",
+   "tags": [
+    "Jest",
+    "テスト"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-jest-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "jest-syntax-beginner",
+    "name": "Jest構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-jest-syntax-beginner",
+    "wordCount": 34,
+    "sample": [
+     "// Jest 30 / JavaScript・TypeScript",
+     "test.skip('未対応', () => {});",
+     "test.only('調査中', () => {});"
+    ]
+   },
+   {
+    "id": "jest-syntax-advanced",
+    "name": "Jest構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-jest-syntax-beginner",
+    "wordCount": 33,
+    "sample": [
+     "import { describe, test, expect, jest, beforeEach, afterEach, beforeAll, afterAll } from '@jest/globals';",
+     "test('足し算', () => {\n  expect(1 + 2).toBe(3);\n});",
+     "describe('add', () => {\n  test('正の数', () => expect(1 + 2).toBe(3));\n});"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-playwright-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-playwright-syntax-beginner",
+   "name": "Playwright構文",
+   "category": "プログラミング",
+   "tags": [
+    "Playwright",
+    "テスト"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-playwright-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "playwright-syntax-beginner",
+    "name": "Playwright構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-playwright-syntax-beginner",
+    "wordCount": 35,
+    "sample": [
+     "// Playwright Test / TypeScript",
+     "import { test, expect } from '@playwright/test';",
+     "test.only('調査中', async ({ page }) => {});"
+    ]
+   },
+   {
+    "id": "playwright-syntax-advanced",
+    "name": "Playwright構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-playwright-syntax-beginner",
+    "wordCount": 35,
+    "sample": [
+     "test('トップページ', async ({ page }) => {\n  await page.goto('/');\n  await expect(page.getByRole('heading', { name: 'ホーム' })).toBeVisible();\n});",
+     "test.describe('ログイン', () => {\n  test('フォーム表示', async ({ page }) => {\n    await page.goto('/login');\n    await expect(page.getByLabel('メール')).toBeVisible();\n  });\n});",
+     "test.beforeEach(async ({ page }) => {\n  await page.goto('/');\n});"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-typescript-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-typescript-syntax-beginner",
+   "name": "TypeScript構文",
+   "category": "プログラミング",
+   "tags": [
+    "TypeScript"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-typescript-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "typescript-syntax-beginner",
+    "name": "TypeScript構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-typescript-syntax-beginner",
+    "wordCount": 18,
+    "sample": [
+     "// TypeScript 7.0 / strictを想定",
+     "const name = 'Pomo';\nlet count = 0;\ncount += 1;",
+     "const age: number = 20;\nconst enabled = true;\nconst text: string = 'Hello';"
+    ]
+   },
+   {
+    "id": "typescript-syntax-intermediate",
+    "name": "TypeScript構文（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-typescript-syntax-beginner",
+    "wordCount": 18,
+    "sample": [
+     "let name: string | null = null;\nconst missing: undefined = undefined;\nconst n: bigint = 1n;",
+     "function fail(message: string): never { throw new Error(message) }\nfunction log(): void { console.log('Hello') }",
+     "const user: {\n  name?: string\n} | null = Math.random() > 0.5 ? {} : null;\nconst name = user?.name ?? 'Guest';"
+    ]
+   },
+   {
+    "id": "typescript-syntax-advanced",
+    "name": "TypeScript構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-typescript-syntax-beginner",
+    "wordCount": 18,
+    "sample": [
+     "const value: unknown = JSON.parse('{\"id\":1}');\nif (typeof value === 'object' && value !== null) {\n  console.log(value)\n}",
+     "const nums: number[] = [1, 2];\nconst pair: [string, number] = ['Pomo', 20];\nconst fixed: readonly number[] = [1, 2];",
+     "function greet(name = 'Guest', suffix?: string) {\n  return name + (suffix ?? '')\n}\nfunction sum(...nums: number[]) {\n  return nums.reduce((a, b) => a + b, 0)\n}"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-hono-methods-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-hono-methods-beginner",
+   "name": "Honoメソッド",
+   "category": "プログラミング",
+   "tags": [
+    "Hono",
+    "TypeScript"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-hono-methods-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "hono-methods-beginner",
+    "name": "Honoメソッド（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-hono-methods-beginner",
+    "wordCount": 12,
+    "sample": [
+     "import { Hono } from 'hono';\nconst app = new Hono();",
+     "app.get('/', c => c.text('Hello, Hono!'));",
+     "app.post('/users', c => c.json({ id: 1 }, 201));"
+    ]
+   },
+   {
+    "id": "hono-methods-intermediate",
+    "name": "Honoメソッド（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-hono-methods-beginner",
+    "wordCount": 12,
+    "sample": [
+     "app.get('/search', c => c.json({\n  q: c.req.query('q'),\n  tags: c.req.queries('tag')\n}));",
+     "const users = new Hono();\nusers.get('/', c => c.json([]));\napp.route('/users', users);",
+     "const api = new Hono().basePath('/api');\napi.get('/health', c => c.json({ ok: true }));"
+    ]
+   },
+   {
+    "id": "hono-methods-advanced",
+    "name": "Honoメソッド（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-hono-methods-beginner",
+    "wordCount": 12,
+    "sample": [
+     "app.post('/form', async c => {\n  const body = await c.req.parseBody();\n  return c.json({\n    name: typeof body.name === 'string' ? body.name : ''\n  });\n});",
+     "import { validator } from 'hono/validator';\napp.post('/users', validator('json', (value, c) => {\n  if (!value || typeof value.name !== 'string')\n    return c.json({ error: 'invalid name' }, 400);\n  return { name: value.name };\n}), c => c.json(c.req.valid('json'), 201));",
+     "import { z } from 'zod';\nimport { zValidator } from '@hono/zod-validator';\napp.post(\n  '/users',\n  zValidator('json', z.object({ name: z.string().min(1) })),\n  c => c.json(c.req.valid('json'), 201)\n);"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-php-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-php-syntax-beginner",
+   "name": "PHP構文",
+   "category": "プログラミング",
+   "tags": [
+    "PHP"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-php-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "php-syntax-beginner",
+    "name": "PHP構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-php-syntax-beginner",
+    "wordCount": 14,
+    "sample": [
+     "<?php declare(strict_types = 1);\necho \"Hello\\n\";",
+     "$age = 20;\nconst MAX_COUNT = 100;",
+     "$name = 'Pomo';\n$enabled = true;\n$n = (int)'123';"
+    ]
+   },
+   {
+    "id": "php-syntax-intermediate",
+    "name": "PHP構文（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-php-syntax-beginner",
+    "wordCount": 14,
+    "sample": [
+     "switch ($role) {\n  case 'admin':\n    echo '管理者';\n    break;\n  default:\n    echo '一般';\n}",
+     "for ($i = 0; $i < 3; $i++) {\n  echo $i;\n}\nwhile (false) {\n  break;\n}",
+     "foreach (['a' => 1, 'b' => 2] as $key => $value) {\n  echo \"$key:$value\\n\";\n}"
+    ]
+   },
+   {
+    "id": "php-syntax-advanced",
+    "name": "PHP構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-php-syntax-beginner",
+    "wordCount": 13,
+    "sample": [
+     "if ($age >= 20) {\n  echo '成人';\n} elseif ($age >= 18) {\n  echo '18歳以上';\n} else {\n  echo 'その他';\n}",
+     "$role = 'admin';\n$label = match ($role) {\n  'admin' => '管理者',\n  'member', 'guest' => '一般',\n  default => '不明'\n};",
+     "var_dump(in_array('1', [1, 2], true));\nvar_dump(array_key_exists('name', ['name' => null]));"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-rails-methods-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-rails-methods-beginner",
+   "name": "Railsメソッド",
+   "category": "プログラミング",
+   "tags": [
+    "Ruby on Rails",
+    "Ruby"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-rails-methods-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "rails-methods-beginner",
+    "name": "Railsメソッド（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-rails-methods-beginner",
+    "wordCount": 15,
+    "sample": [
+     "class User < ApplicationRecord;\nend",
+     "params.require(:user).permit(:name, :email)",
+     "render json: { id: 1 }, status: :created"
+    ]
+   },
+   {
+    "id": "rails-methods-intermediate",
+    "name": "Railsメソッド（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-rails-methods-beginner",
+    "wordCount": 15,
+    "sample": [
+     "Rails.application.routes.draw do;\n  resources :users;\nend",
+     "root 'home#index';\nget '/health', to: 'health#show'",
+     "def user_params;\n  params.expect(user: [:name, :email]);\nend"
+    ]
+   },
+   {
+    "id": "rails-methods-advanced",
+    "name": "Railsメソッド（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-rails-methods-beginner",
+    "wordCount": 14,
+    "sample": [
+     "resources :users, only: [:index, :show] do;\n  resources :posts, only: [:index, :create];\nend",
+     "class UsersController < ApplicationController;\n  def show;\n    @user = User.find(params[:id]);\n    render json: @user.as_json(only: [:id, :name]);\n  end;\nend",
+     "before_action :set_user, only: [:show, :update];\nprivate;\ndef set_user;\n  @user = User.find(params[:id]);\nend"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-express-methods-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-express-methods-beginner",
+   "name": "Expressメソッド",
+   "category": "プログラミング",
+   "tags": [
+    "Express",
+    "Node.js"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-express-methods-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "express-methods-beginner",
+    "name": "Expressメソッド（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-express-methods-beginner",
+    "wordCount": 12,
+    "sample": [
+     "import express from 'express';\nconst app = express();",
+     "app.get('/health', (_req, res) => {\n  res.json({ ok: true })\n});",
+     "app.post('/users', (_req, res) => {\n  res.status(201).json({ id: 1 })\n});"
+    ]
+   },
+   {
+    "id": "express-methods-intermediate",
+    "name": "Expressメソッド（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-express-methods-beginner",
+    "wordCount": 12,
+    "sample": [
+     "const server = app.listen(3000, () => console.log('http://localhost:3000'));",
+     "app.get('/users/:id', (req, res) => {\n  res.json({ id: req.params.id })\n});",
+     "app.route('/items').get((_req, res) => {\n  res.json([])\n}).post((_req, res) => {\n  res.sendStatus(201)\n});"
+    ]
+   },
+   {
+    "id": "express-methods-advanced",
+    "name": "Expressメソッド（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-express-methods-beginner",
+    "wordCount": 11,
+    "sample": [
+     "app.get('/search', (req, res) => {\n  const q = req.query.q;\n  if (typeof q !== 'string') {\n    res.status(400).json({ error: 'q required' });\n    return;\n  }\n  res.json({ q });\n});",
+     "const router = express.Router();\nrouter.get('/', (_req, res) => {\n  res.json([])\n});\napp.use('/users', router);",
+     "app.post('/users', (req, res) => {\n  const name = req.body?.name;\n  if (typeof name !== 'string' || !name.trim()) {\n    res.status(400).json({ error: 'name required' });\n    return;\n  }\n  res.status(201).json({ name });\n});"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-oracle-plsql-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-oracle-plsql-syntax-beginner",
+   "name": "Oracle PL/SQL構文",
+   "category": "プログラミング",
+   "tags": [
+    "Oracle",
+    "PL/SQL",
+    "SQL"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-oracle-plsql-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "oracle-plsql-syntax-beginner",
+    "name": "Oracle PL/SQL構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-oracle-plsql-syntax-beginner",
+    "wordCount": 13,
+    "sample": [
+     "-- SQL/PLはOracleのPL/SQLとして整理",
+     "SET SERVEROUTPUT ON",
+     "DECLARE\n  v_name users.name%TYPE;\nBEGIN\n  NULL;\nEND;"
+    ]
+   },
+   {
+    "id": "oracle-plsql-syntax-intermediate",
+    "name": "Oracle PL/SQL構文（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-oracle-plsql-syntax-beginner",
+    "wordCount": 12,
+    "sample": [
+     "DECLARE\n  v_name VARCHAR2(100) := 'Pomo';\nBEGIN\n  DBMS_OUTPUT.PUT_LINE(v_name);\nEND;",
+     "BEGIN\n  IF 2 > 1 THEN\n    DBMS_OUTPUT.PUT_LINE('yes');\n  ELSIF 2 = 1 THEN\n    NULL;\n  ELSE\n    NULL;\n  END IF;\nEND;",
+     "BEGIN\n  FOR i IN 1..3 LOOP\n    CONTINUE WHEN i = 2;\n    DBMS_OUTPUT.PUT_LINE(i);\n  END LOOP;\nEND;"
+    ]
+   },
+   {
+    "id": "oracle-plsql-syntax-advanced",
+    "name": "Oracle PL/SQL構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-oracle-plsql-syntax-beginner",
+    "wordCount": 12,
+    "sample": [
+     "DECLARE\n  v_age PLS_INTEGER := 20;\n  c_limit CONSTANT PLS_INTEGER := 100;\nBEGIN\n  v_age := 21;\n  DBMS_OUTPUT.PUT_LINE(v_age);\nEND;",
+     "DECLARE\n  v_amount NUMBER(12, 2) := 123.45;\n  v_ok BOOLEAN := TRUE;\nBEGIN\n  IF v_ok THEN\n    DBMS_OUTPUT.PUT_LINE(v_amount);\n  END IF;\nEND;",
+     "DECLARE\n  v_role VARCHAR2(20) := 'admin';\nBEGIN\n  CASE v_role\n  WHEN 'admin' THEN\n    DBMS_OUTPUT.PUT_LINE('管理者');\n  ELSE\n    DBMS_OUTPUT.PUT_LINE('その他');\n  END CASE;\nEND;"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-sql-server-tsql-syntax-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-sql-server-tsql-syntax-beginner",
+   "name": "SQL Server T-SQL構文",
+   "category": "プログラミング",
+   "tags": [
+    "SQL Server",
+    "T-SQL",
+    "SQL"
+   ],
+   "createdAt": "2026-10-23T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-sql-server-tsql-syntax-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "sql-server-tsql-syntax-beginner",
+    "name": "SQL Server T-SQL構文（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-sql-server-tsql-syntax-beginner",
+    "wordCount": 15,
+    "sample": [
+     "SELECT @@VERSION;",
+     "SELECT 1;",
+     "GO"
+    ]
+   },
+   {
+    "id": "sql-server-tsql-syntax-intermediate",
+    "name": "SQL Server T-SQL構文（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-sql-server-tsql-syntax-beginner",
+    "wordCount": 15,
+    "sample": [
+     "SELECT * FROM dbo.Users ORDER BY Id OFFSET 20 ROWS FETCH NEXT 10 ROWS ONLY;",
+     "SELECT * FROM dbo.Users WHERE Active = 1 AND Age BETWEEN 20 AND 29 AND Id IN (1, 2, 3);",
+     "SELECT u.Name, o.Amount FROM dbo.Users u LEFT JOIN dbo.Orders o ON o.UserId = u.Id;"
+    ]
+   },
+   {
+    "id": "sql-server-tsql-syntax-advanced",
+    "name": "SQL Server T-SQL構文（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-10-23T00:00:00.000Z",
+    "packId": "pack-sql-server-tsql-syntax-beginner",
+    "wordCount": 15,
+    "sample": [
+     "CREATE TABLE dbo.Users (\n  Id int IDENTITY(1, 1) PRIMARY KEY,\n  Name nvarchar(100) NOT NULL,\n  Email nvarchar(255) UNIQUE,\n  Age int NULL,\n  Active bit NOT NULL DEFAULT 1,\n  CreatedAt datetime2 NOT NULL DEFAULT SYSUTCDATETIME()\n);\nCREATE TABLE dbo.Orders (\n  Id int IDENTITY(1, 1) PRIMARY KEY,\n  UserId int REFERENCES dbo.Users(Id),\n  Amount decimal(12, 2) NOT NULL\n);",
+     "SELECT u.Id, recent.Amount\nFROM dbo.Users u\nOUTER APPLY (\n  SELECT TOP (1) Amount\n  FROM dbo.Orders o\n  WHERE o.UserId = u.Id\n  ORDER BY o.Id DESC\n) recent;",
+     "SELECT COUNT(*) AS CountAll, SUM(Amount) AS Total, AVG(Amount) AS Average\nFROM dbo.Orders;"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-korean-basics",
+  "version": 1,
+  "pack": {
+   "id": "pack-korean-basics",
+   "name": "韓国語：基礎単語・基礎構文",
+   "category": "語学",
+   "tags": [
+    "韓国語"
+   ],
+   "createdAt": "2026-10-28T13:45:45.842Z",
+   "origin": {
+    "catalogId": "pack-korean-basics",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "korean-basics",
+    "name": "韓国語：基礎単語・基礎構文",
+    "records": [],
+    "createdAt": "2026-10-28T13:45:45.842Z",
+    "packId": "pack-korean-basics",
+    "wordCount": 80,
+    "sample": [
+     "저는 학생이에요.",
+     "이것은 책이에요.",
+     "이것은 제 책이 아니에요."
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-french-basics",
+  "version": 1,
+  "pack": {
+   "id": "pack-french-basics",
+   "name": "フランス語：基礎単語・基礎構文",
+   "category": "語学",
+   "tags": [
+    "フランス語"
+   ],
+   "createdAt": "2026-10-28T13:45:45.843Z",
+   "origin": {
+    "catalogId": "pack-french-basics",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "french-basics",
+    "name": "フランス語：基礎単語・基礎構文",
+    "records": [],
+    "createdAt": "2026-10-28T13:45:45.843Z",
+    "packId": "pack-french-basics",
+    "wordCount": 80,
+    "sample": [
+     "Je suis étudiant / étudiante.",
+     "C'est un livre.",
+     "Ce n'est pas mon livre."
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-czech-basics",
+  "version": 1,
+  "pack": {
+   "id": "pack-czech-basics",
+   "name": "チェコ語：基礎単語・基礎構文",
+   "category": "語学",
+   "tags": [
+    "チェコ語"
+   ],
+   "createdAt": "2026-10-28T13:45:45.844Z",
+   "origin": {
+    "catalogId": "pack-czech-basics",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "czech-basics",
+    "name": "チェコ語：基礎単語・基礎構文",
+    "records": [],
+    "createdAt": "2026-10-28T13:45:45.844Z",
+    "packId": "pack-czech-basics",
+    "wordCount": 80,
+    "sample": [
+     "Jsem student / studentka.",
+     "To je kniha.",
+     "To není moje kniha."
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-german-basics",
+  "version": 1,
+  "pack": {
+   "id": "pack-german-basics",
+   "name": "ドイツ語：基礎単語・基礎構文",
+   "category": "語学",
+   "tags": [
+    "ドイツ語"
+   ],
+   "createdAt": "2026-10-28T13:45:45.844Z",
+   "origin": {
+    "catalogId": "pack-german-basics",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "german-basics",
+    "name": "ドイツ語：基礎単語・基礎構文",
+    "records": [],
+    "createdAt": "2026-10-28T13:45:45.844Z",
+    "packId": "pack-german-basics",
+    "wordCount": 80,
+    "sample": [
+     "Ich bin Student / Studentin.",
+     "Das ist ein Buch.",
+     "Das ist nicht mein Buch."
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-spanish-basics",
+  "version": 1,
+  "pack": {
+   "id": "pack-spanish-basics",
+   "name": "スペイン語：基礎単語・基礎構文",
+   "category": "語学",
+   "tags": [
+    "スペイン語"
+   ],
+   "createdAt": "2026-10-28T13:45:45.844Z",
+   "origin": {
+    "catalogId": "pack-spanish-basics",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "spanish-basics",
+    "name": "スペイン語：基礎単語・基礎構文",
+    "records": [],
+    "createdAt": "2026-10-28T13:45:45.844Z",
+    "packId": "pack-spanish-basics",
+    "wordCount": 80,
+    "sample": [
+     "Soy estudiante.",
+     "Esto es un libro.",
+     "Este no es mi libro."
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-basics",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-basics",
+   "name": "中国語：基礎単語・基礎構文",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-10-28T13:45:45.845Z",
+   "origin": {
+    "catalogId": "pack-chinese-basics",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-basics",
+    "name": "中国語：基礎単語・基礎構文",
+    "records": [],
+    "createdAt": "2026-10-28T13:45:45.845Z",
+    "packId": "pack-chinese-basics",
+    "wordCount": 80,
+    "sample": [
+     "我是学生。",
+     "这是一本书。",
+     "这不是我的书。"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-english-basic-words",
+  "version": 1,
+  "pack": {
+   "id": "pack-english-basic-words",
+   "name": "英語：基礎・中級",
+   "category": "語学",
+   "tags": [
+    "英語"
+   ],
+   "createdAt": "2026-10-29T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-english-basic-words",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "english-basic-words",
+    "name": "英語（基礎単語）",
+    "levels": [
+     "基礎単語"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-english-basic-words",
+    "wordCount": 40,
+    "sample": [
+     "apple",
+     "water",
+     "book"
+    ]
+   },
+   {
+    "id": "english-basic-syntax",
+    "name": "英語（基礎構文）",
+    "levels": [
+     "基礎構文"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-english-basic-words",
+    "wordCount": 40,
+    "sample": [
+     "I am a student.",
+     "This is a book.",
+     "That is not my bag."
+    ]
+   },
+   {
+    "id": "english-intermediate-words",
+    "name": "英語（中級単語）",
+    "levels": [
+     "中級単語"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-english-basic-words",
+    "wordCount": 40,
+    "sample": [
+     "experience",
+     "opinion",
+     "decision"
+    ]
+   },
+   {
+    "id": "english-intermediate-syntax",
+    "name": "英語（中級構文）",
+    "levels": [
+     "中級構文"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-english-basic-words",
+    "wordCount": 40,
+    "sample": [
+     "I have lived here for five years.",
+     "Have you ever been to London?",
+     "I have just finished my homework."
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-russian-basic-words",
+  "version": 1,
+  "pack": {
+   "id": "pack-russian-basic-words",
+   "name": "ロシア語：基礎・中級",
+   "category": "語学",
+   "tags": [
+    "ロシア語"
+   ],
+   "createdAt": "2026-10-29T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-russian-basic-words",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "russian-basic-words",
+    "name": "ロシア語（基礎単語）",
+    "levels": [
+     "基礎単語"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-russian-basic-words",
+    "wordCount": 40,
+    "sample": [
+     "вода",
+     "хлеб",
+     "книга"
+    ]
+   },
+   {
+    "id": "russian-basic-syntax",
+    "name": "ロシア語（基礎構文）",
+    "levels": [
+     "基礎構文"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-russian-basic-words",
+    "wordCount": 40,
+    "sample": [
+     "Я студент.",
+     "Я студентка.",
+     "Это книга."
+    ]
+   },
+   {
+    "id": "russian-intermediate-words",
+    "name": "ロシア語（中級単語）",
+    "levels": [
+     "中級単語"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-russian-basic-words",
+    "wordCount": 40,
+    "sample": [
+     "опыт",
+     "мнение",
+     "решение"
+    ]
+   },
+   {
+    "id": "russian-intermediate-syntax",
+    "name": "ロシア語（中級構文）",
+    "levels": [
+     "中級構文"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-russian-basic-words",
+    "wordCount": 40,
+    "sample": [
+     "Я живу здесь уже пять лет.",
+     "Вы когда-нибудь были в Москве?",
+     "Я только что сделал домашнее задание."
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-czech-intermediate-words",
+  "version": 1,
+  "pack": {
+   "id": "pack-czech-intermediate-words",
+   "name": "チェコ語：中級",
+   "category": "語学",
+   "tags": [
+    "チェコ語"
+   ],
+   "createdAt": "2026-10-29T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-czech-intermediate-words",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "czech-intermediate-words",
+    "name": "チェコ語（中級単語）",
+    "levels": [
+     "中級単語"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-czech-intermediate-words",
+    "wordCount": 40,
+    "sample": [
+     "zkušenost",
+     "názor",
+     "rozhodnutí"
+    ]
+   },
+   {
+    "id": "czech-intermediate-syntax",
+    "name": "チェコ語（中級構文）",
+    "levels": [
+     "中級構文"
+    ],
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-czech-intermediate-words",
+    "wordCount": 40,
+    "sample": [
+     "Bydlím tady už pět let.",
+     "Byl jsi někdy v Praze?",
+     "Právě jsem dodělal úkol."
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk5-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk5-words-1",
+   "name": "中国語：HSK5級レベル単語",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-10-29T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk5-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk5-words-1",
+    "name": "中国語HSK5級（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-chinese-hsk5-words-1",
+    "wordCount": 40,
+    "sample": [
+     "爱护",
+     "安慰",
+     "把握"
+    ]
+   },
+   {
+    "id": "chinese-hsk5-words-2",
+    "name": "中国語HSK5級（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-chinese-hsk5-words-1",
+    "wordCount": 40,
+    "sample": [
+     "经典",
+     "具体",
+     "夸张"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-words-1",
+   "name": "中国語：HSK6級レベル単語",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-10-29T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-words-1",
+    "name": "中国語HSK6級（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-words-1",
+    "wordCount": 40,
+    "sample": [
+     "安置",
+     "把关",
+     "颁布"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-words-2",
+    "name": "中国語HSK6級（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-10-29T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-words-1",
+    "wordCount": 40,
+    "sample": [
+     "衡量",
+     "忽略",
+     "呼吁"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-postgresql-error-codes-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-postgresql-error-codes-beginner",
+   "name": "PostgreSQLエラーコード",
+   "category": "プログラミング",
+   "tags": [
+    "PostgreSQL",
+    "SQL"
+   ],
+   "createdAt": "2026-11-01T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-postgresql-error-codes-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "postgresql-error-codes-beginner",
+    "name": "PostgreSQLエラーコード（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-11-01T00:00:00.000Z",
+    "packId": "pack-postgresql-error-codes-beginner",
+    "wordCount": 40,
+    "sample": [
+     "warning",
+     "no_data",
+     "io_error"
+    ]
+   },
+   {
+    "id": "postgresql-error-codes-intermediate",
+    "name": "PostgreSQLエラーコード（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-11-01T00:00:00.000Z",
+    "packId": "pack-postgresql-error-codes-beginner",
+    "wordCount": 40,
+    "sample": [
+     "generated_always",
+     "duplicate_schema",
+     "database_dropped"
+    ]
+   },
+   {
+    "id": "postgresql-error-codes-advanced",
+    "name": "PostgreSQLエラーコード（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-11-01T00:00:00.000Z",
+    "packId": "pack-postgresql-error-codes-beginner",
+    "wordCount": 40,
+    "sample": [
+     "array_subscript_error",
+     "foreign_key_violation",
+     "insufficient_privilege"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-1-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-1-words-1",
+   "name": "中国語：HSK6級 手書き単語1",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-1-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-1-words-1",
+    "name": "中国語HSK6級 手書き1（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-1-words-1",
+    "wordCount": 15,
+    "sample": [
+     "癌症",
+     "爱戴",
+     "安宁"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-1-words-2",
+    "name": "中国語HSK6級 手書き1（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-1-words-1",
+    "wordCount": 15,
+    "sample": [
+     "保重",
+     "报答",
+     "报销"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-1-words-3",
+    "name": "中国語HSK6級 手書き1（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-1-words-1",
+    "wordCount": 15,
+    "sample": [
+     "边疆",
+     "边缘",
+     "鞭策"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-1-words-4",
+    "name": "中国語HSK6級 手書き1（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-1-words-1",
+    "wordCount": 15,
+    "sample": [
+     "伯母",
+     "搏斗",
+     "补偿"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-1-words-5",
+    "name": "中国語HSK6級 手書き1（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-1-words-1",
+    "wordCount": 15,
+    "sample": [
+     "裁判",
+     "采购",
+     "参谋"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-1-words-6",
+    "name": "中国語HSK6級 手書き1（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-1-words-1",
+    "wordCount": 15,
+    "sample": [
+     "尝试",
+     "常务",
+     "场面"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-2-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-2-words-1",
+   "name": "中国語：HSK6級 手書き単語2",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-2-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-2-words-1",
+    "name": "中国語HSK6級 手書き2（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "承包",
+     "城堡",
+     "吃苦"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-2-words-2",
+    "name": "中国語HSK6級 手書き2（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "储蓄",
+     "穿越",
+     "传授"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-2-words-3",
+    "name": "中国語HSK6級 手書き2（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "打架",
+     "打仗",
+     "大臣"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-2-words-4",
+    "name": "中国語HSK6級 手書き2（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "盗窃",
+     "得不偿失",
+     "得天独厚"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-2-words-5",
+    "name": "中国語HSK6級 手書き2（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "动机",
+     "动力",
+     "动手"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-2-words-6",
+    "name": "中国語HSK6級 手書き2（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "发布",
+     "发动",
+     "发射"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-3-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-3-words-1",
+   "name": "中国語：HSK6級 手書き単語3",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-3-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-3-words-1",
+    "name": "中国語HSK6級 手書き3（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "放大",
+     "飞禽走兽",
+     "飞跃"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-3-words-2",
+    "name": "中国語HSK6級 手書き3（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "封闭",
+     "封锁",
+     "否决"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-3-words-3",
+    "name": "中国語HSK6級 手書き3（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "干扰",
+     "感慨",
+     "干劲"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-3-words-4",
+    "name": "中国語HSK6級 手書き3（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "公道",
+     "公关",
+     "公然"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-3-words-5",
+    "name": "中国語HSK6級 手書き3（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "故乡",
+     "顾虑",
+     "拐杖"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-3-words-6",
+    "name": "中国語HSK6級 手書き3（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "过于",
+     "含义",
+     "罕见"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-4-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-4-words-1",
+   "name": "中国語：HSK6級 手書き単語4",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-4-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-4-words-1",
+    "name": "中国語HSK6級 手書き4（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-4-words-1",
+    "wordCount": 15,
+    "sample": [
+     "花瓣",
+     "华丽",
+     "化肥"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-4-words-2",
+    "name": "中国語HSK6級 手書き4（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-4-words-1",
+    "wordCount": 15,
+    "sample": [
+     "混淆",
+     "活该",
+     "火焰"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-4-words-3",
+    "name": "中国語HSK6級 手書き4（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-4-words-1",
+    "wordCount": 15,
+    "sample": [
+     "计较",
+     "纪要",
+     "忌讳"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-4-words-4",
+    "name": "中国語HSK6級 手書き4（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-4-words-1",
+    "wordCount": 15,
+    "sample": [
+     "见多识广",
+     "见义勇为",
+     "间隔"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-4-words-5",
+    "name": "中国語HSK6級 手書き4（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-4-words-1",
+    "wordCount": 15,
+    "sample": [
+     "杰出",
+     "结局",
+     "截至"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-4-words-6",
+    "name": "中国語HSK6級 手書き4（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-4-words-1",
+    "wordCount": 15,
+    "sample": [
+     "精心",
+     "颈椎",
+     "警惕"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-5-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-5-words-1",
+   "name": "中国語：HSK6級 手書き単語5",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-5-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-5-words-1",
+    "name": "中国語HSK6級 手書き5（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-5-words-1",
+    "wordCount": 15,
+    "sample": [
+     "君子",
+     "开采",
+     "开阔"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-5-words-2",
+    "name": "中国語HSK6級 手書き5（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-5-words-1",
+    "wordCount": 15,
+    "sample": [
+     "空白",
+     "口气",
+     "口音"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-5-words-3",
+    "name": "中国語HSK6級 手書き5（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-5-words-1",
+    "wordCount": 15,
+    "sample": [
+     "乐趣",
+     "类似",
+     "冷落"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-5-words-4",
+    "name": "中国語HSK6級 手書き5（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-5-words-1",
+    "wordCount": 15,
+    "sample": [
+     "列举",
+     "吝啬",
+     "灵感"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-5-words-5",
+    "name": "中国語HSK6級 手書き5（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-5-words-1",
+    "wordCount": 15,
+    "sample": [
+     "落成",
+     "麻痹",
+     "码头"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-5-words-6",
+    "name": "中国語HSK6級 手書き5（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-5-words-1",
+    "wordCount": 15,
+    "sample": [
+     "免得",
+     "勉强",
+     "面子"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-6-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-6-words-1",
+   "name": "中国語：HSK6級 手書き単語6",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-6-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-6-words-1",
+    "name": "中国語HSK6級 手書き6（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-6-words-1",
+    "wordCount": 15,
+    "sample": [
+     "爱不释手",
+     "暧昧",
+     "安详"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-6-words-2",
+    "name": "中国語HSK6級 手書き6（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-6-words-1",
+    "wordCount": 15,
+    "sample": [
+     "报仇",
+     "报复",
+     "抱怨"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-6-words-3",
+    "name": "中国語HSK6級 手書き6（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-6-words-1",
+    "wordCount": 15,
+    "sample": [
+     "边界",
+     "边境",
+     "贬低"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-6-words-4",
+    "name": "中国語HSK6級 手書き6（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-6-words-1",
+    "wordCount": 15,
+    "sample": [
+     "播种",
+     "博览会",
+     "补救"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-6-words-5",
+    "name": "中国語HSK6級 手書き6（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-6-words-1",
+    "wordCount": 15,
+    "sample": [
+     "裁缝",
+     "采集",
+     "彩票"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-6-words-6",
+    "name": "中国語HSK6級 手書き6（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-6-words-1",
+    "wordCount": 15,
+    "sample": [
+     "昌盛",
+     "常年",
+     "场合"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-7-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-7-words-1",
+   "name": "中国語：HSK6級 手書き単語7",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-7-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-7-words-1",
+    "name": "中国語HSK6級 手書き7（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-7-words-1",
+    "wordCount": 15,
+    "sample": [
+     "承办",
+     "承诺",
+     "惩罚"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-7-words-2",
+    "name": "中国語HSK6級 手書き7（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-7-words-1",
+    "wordCount": 15,
+    "sample": [
+     "储存",
+     "川流不息",
+     "传单"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-7-words-3",
+    "name": "中国語HSK6級 手書き7（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-7-words-1",
+    "wordCount": 15,
+    "sample": [
+     "打量",
+     "打猎",
+     "大肆"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-7-words-4",
+    "name": "中国語HSK6級 手書き7（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-7-words-1",
+    "wordCount": 15,
+    "sample": [
+     "稻谷",
+     "得力",
+     "灯笼"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-7-words-5",
+    "name": "中国語HSK6級 手書き7（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-7-words-1",
+    "wordCount": 15,
+    "sample": [
+     "动静",
+     "动身",
+     "动态"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-7-words-6",
+    "name": "中国語HSK6級 手書き7（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-7-words-1",
+    "wordCount": 15,
+    "sample": [
+     "发财",
+     "发觉",
+     "发誓"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-8-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-8-words-1",
+   "name": "中国語：HSK6級 手書き単語8",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-8-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-8-words-1",
+    "name": "中国語HSK6級 手書き8（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-8-words-1",
+    "wordCount": 15,
+    "sample": [
+     "放射",
+     "飞翔",
+     "非法"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-8-words-2",
+    "name": "中国語HSK6級 手書き8（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-8-words-1",
+    "wordCount": 15,
+    "sample": [
+     "锋利",
+     "奉献",
+     "敷衍"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-8-words-3",
+    "name": "中国語HSK6級 手書き8（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-8-words-1",
+    "wordCount": 15,
+    "sample": [
+     "干预",
+     "感染",
+     "岗位"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-8-words-4",
+    "name": "中国語HSK6級 手書き8（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-8-words-1",
+    "wordCount": 15,
+    "sample": [
+     "公告",
+     "公民",
+     "公正"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-8-words-5",
+    "name": "中国語HSK6級 手書き8（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-8-words-1",
+    "wordCount": 15,
+    "sample": [
+     "顾问",
+     "关怀",
+     "观光"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-8-words-6",
+    "name": "中国語HSK6級 手書き8（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-8-words-1",
+    "wordCount": 15,
+    "sample": [
+     "海滨",
+     "捍卫",
+     "航空"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-9-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-9-words-1",
+   "name": "中国語：HSK6級 手書き単語9",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-9-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-9-words-1",
+    "name": "中国語HSK6級 手書き9（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-9-words-1",
+    "wordCount": 15,
+    "sample": [
+     "华侨",
+     "化石",
+     "化验"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-9-words-2",
+    "name": "中国語HSK6級 手書き9（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-9-words-1",
+    "wordCount": 15,
+    "sample": [
+     "活力",
+     "火箭",
+     "讥笑"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-9-words-3",
+    "name": "中国語HSK6級 手書き9（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-9-words-1",
+    "wordCount": 15,
+    "sample": [
+     "记载",
+     "技巧",
+     "季军"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-9-words-4",
+    "name": "中国語HSK6級 手書き9（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-9-words-1",
+    "wordCount": 15,
+    "sample": [
+     "见闻",
+     "间谍",
+     "健全"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-9-words-5",
+    "name": "中国語HSK6級 手書き9（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-9-words-1",
+    "wordCount": 15,
+    "sample": [
+     "结晶",
+     "截止",
+     "解除"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-9-words-6",
+    "name": "中国語HSK6級 手書き9（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-9-words-1",
+    "wordCount": 15,
+    "sample": [
+     "精益求精",
+     "警告",
+     "竞赛"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-10-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-10-words-1",
+   "name": "中国語：HSK6級 手書き単語10",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-10-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-10-words-1",
+    "name": "中国語HSK6級 手書き10（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-10-words-1",
+    "wordCount": 15,
+    "sample": [
+     "开除",
+     "开朗",
+     "开明"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-10-words-2",
+    "name": "中国語HSK6級 手書き10（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-10-words-1",
+    "wordCount": 15,
+    "sample": [
+     "口腔",
+     "口头",
+     "哭泣"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-10-words-3",
+    "name": "中国語HSK6級 手書き10（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-10-words-1",
+    "wordCount": 15,
+    "sample": [
+     "雷达",
+     "冷酷",
+     "黎明"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-10-words-4",
+    "name": "中国語HSK6級 手書き10（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-10-words-1",
+    "wordCount": 15,
+    "sample": [
+     "临床",
+     "伶俐",
+     "灵敏"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-10-words-5",
+    "name": "中国語HSK6級 手書き10（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-10-words-1",
+    "wordCount": 15,
+    "sample": [
+     "落后",
+     "麻醉",
+     "蚂蚁"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-10-words-6",
+    "name": "中国語HSK6級 手書き10（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-10-words-1",
+    "wordCount": 15,
+    "sample": [
+     "免疫",
+     "面貌",
+     "描绘"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-11-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-11-words-1",
+   "name": "中国語：HSK6級 手書き単語11",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-11-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-11-words-1",
+    "name": "中国語HSK6級 手書き11（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-11-words-1",
+    "wordCount": 15,
+    "sample": [
+     "案件",
+     "奥秘",
+     "败坏"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-11-words-2",
+    "name": "中国語HSK6級 手書き11（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-11-words-1",
+    "wordCount": 15,
+    "sample": [
+     "薄弱",
+     "不禁",
+     "不时"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-11-words-3",
+    "name": "中国語HSK6級 手書き11（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-11-words-1",
+    "wordCount": 15,
+    "sample": [
+     "沉重",
+     "吃力",
+     "充当"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-11-words-4",
+    "name": "中国語HSK6級 手書き11（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-11-words-1",
+    "wordCount": 15,
+    "sample": [
+     "得罪",
+     "奠定",
+     "堤坝"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-11-words-5",
+    "name": "中国語HSK6級 手書き11（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-11-words-1",
+    "wordCount": 15,
+    "sample": [
+     "发行",
+     "肥沃",
+     "封建"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-11-words-6",
+    "name": "中国語HSK6級 手書き11（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-11-words-1",
+    "wordCount": 15,
+    "sample": [
+     "宫殿",
+     "公式",
+     "勾结"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-12-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-12-words-1",
+   "name": "中国語：HSK6級 手書き単語12",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-12-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-12-words-1",
+    "name": "中国語HSK6級 手書き12（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-12-words-1",
+    "wordCount": 15,
+    "sample": [
+     "花蕾",
+     "环节",
+     "悔恨"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-12-words-2",
+    "name": "中国語HSK6級 手書き12（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-12-words-1",
+    "wordCount": 15,
+    "sample": [
+     "解雇",
+     "结算",
+     "节制"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-12-words-3",
+    "name": "中国語HSK6級 手書き12（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-12-words-1",
+    "wordCount": 15,
+    "sample": [
+     "举足轻重",
+     "侃侃而谈",
+     "考验"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-12-words-4",
+    "name": "中国語HSK6級 手書き12（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-12-words-1",
+    "wordCount": 15,
+    "sample": [
+     "力所能及",
+     "留恋",
+     "流氓"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-12-words-5",
+    "name": "中国語HSK6級 手書き12（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-12-words-1",
+    "wordCount": 15,
+    "sample": [
+     "沐浴",
+     "耐用",
+     "难能可贵"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-12-words-6",
+    "name": "中国語HSK6級 手書き12（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-12-words-1",
+    "wordCount": 15,
+    "sample": [
+     "农历",
+     "奴隶",
+     "殴打"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-13-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-13-words-1",
+   "name": "中国語：HSK6級 手書き単語13",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-13-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-13-words-1",
+    "name": "中国語HSK6級 手書き13（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-13-words-1",
+    "wordCount": 15,
+    "sample": [
+     "盆地",
+     "烹饪",
+     "片断"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-13-words-2",
+    "name": "中国語HSK6級 手書き13（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-13-words-1",
+    "wordCount": 15,
+    "sample": [
+     "评论",
+     "屏幕",
+     "平坦"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-13-words-3",
+    "name": "中国語HSK6級 手書き13（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-13-words-1",
+    "wordCount": 15,
+    "sample": [
+     "牵扯",
+     "千方百计",
+     "抢救"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-13-words-4",
+    "name": "中国語HSK6級 手書き13（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-13-words-1",
+    "wordCount": 15,
+    "sample": [
+     "恰巧",
+     "器材",
+     "起草"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-13-words-5",
+    "name": "中国語HSK6級 手書き13（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-13-words-1",
+    "wordCount": 15,
+    "sample": [
+     "请柬",
+     "请教",
+     "清洁"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-13-words-6",
+    "name": "中国語HSK6級 手書き13（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-13-words-1",
+    "wordCount": 15,
+    "sample": [
+     "欺骗",
+     "齐全",
+     "气色"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-14-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-14-words-1",
+   "name": "中国語：HSK6級 手書き単語14",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-14-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-14-words-1",
+    "name": "中国語HSK6級 手書き14（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-14-words-1",
+    "wordCount": 15,
+    "sample": [
+     "拳头",
+     "权威",
+     "权益"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-14-words-2",
+    "name": "中国語HSK6級 手書き14（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-14-words-1",
+    "wordCount": 15,
+    "sample": [
+     "扰乱",
+     "饶恕",
+     "热泪盈眶"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-14-words-3",
+    "name": "中国語HSK6級 手書き14（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-14-words-1",
+    "wordCount": 15,
+    "sample": [
+     "人质",
+     "任重道远",
+     "日新月异"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-14-words-4",
+    "name": "中国語HSK6級 手書き14（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-14-words-1",
+    "wordCount": 15,
+    "sample": [
+     "骚扰",
+     "嫂子",
+     "筛选"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-14-words-5",
+    "name": "中国語HSK6級 手書き14（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-14-words-1",
+    "wordCount": 15,
+    "sample": [
+     "盛产",
+     "生存",
+     "胜负"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-14-words-6",
+    "name": "中国語HSK6級 手書き14（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-14-words-1",
+    "wordCount": 15,
+    "sample": [
+     "神气",
+     "深情厚谊",
+     "绅士"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-15-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-15-words-1",
+   "name": "中国語：HSK6級 手書き単語15",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-15-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-15-words-1",
+    "name": "中国語HSK6級 手書き15（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-15-words-1",
+    "wordCount": 15,
+    "sample": [
+     "是非",
+     "时光",
+     "实惠"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-15-words-2",
+    "name": "中国語HSK6級 手書き15（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-15-words-1",
+    "wordCount": 15,
+    "sample": [
+     "视线",
+     "事项",
+     "试验"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-15-words-3",
+    "name": "中国語HSK6級 手書き15（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-15-words-1",
+    "wordCount": 15,
+    "sample": [
+     "收益",
+     "授予",
+     "受罪"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-15-words-4",
+    "name": "中国語HSK6級 手書き15（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-15-words-1",
+    "wordCount": 15,
+    "sample": [
+     "司法",
+     "司空见惯",
+     "寺庙"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-15-words-5",
+    "name": "中国語HSK6級 手書き15（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-15-words-1",
+    "wordCount": 15,
+    "sample": [
+     "素食",
+     "苏醒",
+     "塑造"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-15-words-6",
+    "name": "中国語HSK6級 手書き15（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-15-words-1",
+    "wordCount": 15,
+    "sample": [
+     "天才",
+     "天赋",
+     "田径"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-16-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-16-words-1",
+   "name": "中国語：HSK6級 手書き単語16",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-16-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-16-words-1",
+    "name": "中国語HSK6級 手書き16（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-16-words-1",
+    "wordCount": 15,
+    "sample": [
+     "题材",
+     "体裁",
+     "体面"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-16-words-2",
+    "name": "中国語HSK6級 手書き16（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-16-words-1",
+    "wordCount": 15,
+    "sample": [
+     "通用",
+     "统治",
+     "投机"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-16-words-3",
+    "name": "中国語HSK6級 手書き16（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-16-words-1",
+    "wordCount": 15,
+    "sample": [
+     "脱离",
+     "唾弃",
+     "拖延"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-16-words-4",
+    "name": "中国語HSK6級 手書き16（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-16-words-1",
+    "wordCount": 15,
+    "sample": [
+     "妄想",
+     "挽救",
+     "玩弄"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-16-words-5",
+    "name": "中国語HSK6級 手書き16（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-16-words-1",
+    "wordCount": 15,
+    "sample": [
+     "委托",
+     "威望",
+     "威信"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-16-words-6",
+    "name": "中国語HSK6級 手書き16（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-16-words-1",
+    "wordCount": 15,
+    "sample": [
+     "无动于衷",
+     "乌黑",
+     "误解"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-17-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-17-words-1",
+   "name": "中国語：HSK6級 手書き単語17",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-17-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-17-words-1",
+    "name": "中国語HSK6級 手書き17（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-17-words-1",
+    "wordCount": 15,
+    "sample": [
+     "物资",
+     "峡谷",
+     "现成"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-17-words-2",
+    "name": "中国語HSK6級 手書き17（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-17-words-1",
+    "wordCount": 15,
+    "sample": [
+     "衔接",
+     "鲜明",
+     "掀起"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-17-words-3",
+    "name": "中国語HSK6級 手書き17（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-17-words-1",
+    "wordCount": 15,
+    "sample": [
+     "狭窄",
+     "细胞",
+     "携带"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-17-words-4",
+    "name": "中国語HSK6級 手書き17（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-17-words-1",
+    "wordCount": 15,
+    "sample": [
+     "兴隆",
+     "性命",
+     "刑事"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-17-words-5",
+    "name": "中国語HSK6級 手書き17（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-17-words-1",
+    "wordCount": 15,
+    "sample": [
+     "雄厚",
+     "胸怀",
+     "凶手"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-17-words-6",
+    "name": "中国語HSK6級 手書き17（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-17-words-1",
+    "wordCount": 15,
+    "sample": [
+     "旋律",
+     "悬念",
+     "选手"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-18-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-18-words-1",
+   "name": "中国語：HSK6級 手書き単語18",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-18-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-18-words-1",
+    "name": "中国語HSK6級 手書き18（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-18-words-1",
+    "wordCount": 15,
+    "sample": [
+     "熏陶",
+     "需求",
+     "虚荣"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-18-words-2",
+    "name": "中国語HSK6級 手書き18（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-18-words-1",
+    "wordCount": 15,
+    "sample": [
+     "严厉",
+     "言论",
+     "淹没"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-18-words-3",
+    "name": "中国語HSK6級 手書き18（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-18-words-1",
+    "wordCount": 15,
+    "sample": [
+     "遥控",
+     "要素",
+     "谣言"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-18-words-4",
+    "name": "中国語HSK6級 手書き18（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-18-words-1",
+    "wordCount": 15,
+    "sample": [
+     "一贯",
+     "疑惑",
+     "依据"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-18-words-5",
+    "name": "中国語HSK6級 手書き18（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-18-words-1",
+    "wordCount": 15,
+    "sample": [
+     "隐患",
+     "阴谋",
+     "引擎"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-18-words-6",
+    "name": "中国語HSK6級 手書き18（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-18-words-1",
+    "wordCount": 15,
+    "sample": [
+     "永恒",
+     "用户",
+     "庸俗"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-19-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-19-words-1",
+   "name": "中国語：HSK6級 手書き単語19",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-19-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-19-words-1",
+    "name": "中国語HSK6級 手書き19（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-19-words-1",
+    "wordCount": 15,
+    "sample": [
+     "原理",
+     "圆满",
+     "源泉"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-19-words-2",
+    "name": "中国語HSK6級 手書き19（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-19-words-1",
+    "wordCount": 15,
+    "sample": [
+     "孕育",
+     "预期",
+     "与日俱增"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-19-words-3",
+    "name": "中国語HSK6級 手書き19（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-19-words-1",
+    "wordCount": 15,
+    "sample": [
+     "遭殃",
+     "噪音",
+     "责怪"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-19-words-4",
+    "name": "中国語HSK6級 手書き19（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-19-words-1",
+    "wordCount": 15,
+    "sample": [
+     "瞻仰",
+     "招标",
+     "着迷"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-19-words-5",
+    "name": "中国語HSK6級 手書き19（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-19-words-1",
+    "wordCount": 15,
+    "sample": [
+     "正负",
+     "征服",
+     "正经"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-19-words-6",
+    "name": "中国語HSK6級 手書き19（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-19-words-1",
+    "wordCount": 15,
+    "sample": [
+     "真理",
+     "侦探",
+     "枕头"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-20-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-20-words-1",
+   "name": "中国語：HSK6級 手書き単語20",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-03T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-20-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-20-words-1",
+    "name": "中国語HSK6級 手書き20（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-20-words-1",
+    "wordCount": 15,
+    "sample": [
+     "指甲",
+     "直径",
+     "致力"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-20-words-2",
+    "name": "中国語HSK6級 手書き20（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-20-words-1",
+    "wordCount": 15,
+    "sample": [
+     "支援",
+     "指责",
+     "制止"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-20-words-3",
+    "name": "中国語HSK6級 手書き20（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-20-words-1",
+    "wordCount": 15,
+    "sample": [
+     "周边",
+     "周密",
+     "周期"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-20-words-4",
+    "name": "中国語HSK6級 手書き20（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-20-words-1",
+    "wordCount": 15,
+    "sample": [
+     "专题",
+     "转折",
+     "主办"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-20-words-5",
+    "name": "中国語HSK6級 手書き20（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-20-words-1",
+    "wordCount": 15,
+    "sample": [
+     "铸造",
+     "驻扎",
+     "住宅"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-20-words-6",
+    "name": "中国語HSK6級 手書き20（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-03T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-20-words-1",
+    "wordCount": 15,
+    "sample": [
+     "宗旨",
+     "走廊",
+     "走私"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-korean-handwriting-beginner-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-korean-handwriting-beginner-words-1",
+   "name": "韓国語：手書き初級単語",
+   "category": "語学",
+   "tags": [
+    "韓国語"
+   ],
+   "createdAt": "2026-11-04T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-korean-handwriting-beginner-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "korean-handwriting-beginner-words-1",
+    "name": "韓国語 手書き初級（家族・人）",
+    "levels": [
+     "家族・人"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-04T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-words-1",
+    "wordCount": 15,
+    "sample": [
+     "아버지",
+     "어머니",
+     "할아버지"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-words-2",
+    "name": "韓国語 手書き初級（食べ物・飲み物）",
+    "levels": [
+     "食べ物・飲み物"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-04T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-words-1",
+    "wordCount": 15,
+    "sample": [
+     "밥",
+     "김치",
+     "고기"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-words-3",
+    "name": "韓国語 手書き初級（場所・建物）",
+    "levels": [
+     "場所・建物"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-04T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-words-1",
+    "wordCount": 15,
+    "sample": [
+     "방",
+     "교실",
+     "역"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-words-4",
+    "name": "韓国語 手書き初級（時間・暦）",
+    "levels": [
+     "時間・暦"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-04T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-words-1",
+    "wordCount": 15,
+    "sample": [
+     "아침",
+     "점심",
+     "저녁"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-words-5",
+    "name": "韓国語 手書き初級（動詞）",
+    "levels": [
+     "動詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-04T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-words-1",
+    "wordCount": 15,
+    "sample": [
+     "오다",
+     "보다",
+     "사다"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-words-6",
+    "name": "韓国語 手書き初級（形容詞）",
+    "levels": [
+     "形容詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-04T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-words-1",
+    "wordCount": 15,
+    "sample": [
+     "싸다",
+     "많다",
+     "적다"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-korean-handwriting-intermediate-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-korean-handwriting-intermediate-words-1",
+   "name": "韓国語：手書き中級単語",
+   "category": "語学",
+   "tags": [
+    "韓国語"
+   ],
+   "createdAt": "2026-11-05T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-korean-handwriting-intermediate-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "korean-handwriting-intermediate-words-1",
+    "name": "韓国語 手書き中級（体・健康）",
+    "levels": [
+     "体・健康"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-intermediate-words-1",
+    "wordCount": 15,
+    "sample": [
+     "뼈",
+     "무릎",
+     "어깨"
+    ]
+   },
+   {
+    "id": "korean-handwriting-intermediate-words-2",
+    "name": "韓国語 手書き中級（交通・旅行）",
+    "levels": [
+     "交通・旅行"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-intermediate-words-1",
+    "wordCount": 15,
+    "sample": [
+     "짐",
+     "지도",
+     "기차"
+    ]
+   },
+   {
+    "id": "korean-handwriting-intermediate-words-3",
+    "name": "韓国語 手書き中級（自然・天気）",
+    "levels": [
+     "自然・天気"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-intermediate-words-1",
+    "wordCount": 15,
+    "sample": [
+     "숲",
+     "섬",
+     "하늘"
+    ]
+   },
+   {
+    "id": "korean-handwriting-intermediate-words-4",
+    "name": "韓国語 手書き中級（仕事・学校）",
+    "levels": [
+     "仕事・学校"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-intermediate-words-1",
+    "wordCount": 15,
+    "sample": [
+     "회의",
+     "월급",
+     "출근"
+    ]
+   },
+   {
+    "id": "korean-handwriting-intermediate-words-5",
+    "name": "韓国語 手書き中級（動詞）",
+    "levels": [
+     "動詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-intermediate-words-1",
+    "wordCount": 15,
+    "sample": [
+     "웃다",
+     "울다",
+     "씻다"
+    ]
+   },
+   {
+    "id": "korean-handwriting-intermediate-words-6",
+    "name": "韓国語 手書き中級（形容詞）",
+    "levels": [
+     "形容詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-intermediate-words-1",
+    "wordCount": 15,
+    "sample": [
+     "밝다",
+     "좁다",
+     "깊다"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-korean-handwriting-advanced-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-korean-handwriting-advanced-words-1",
+   "name": "韓国語：手書き上級単語",
+   "category": "語学",
+   "tags": [
+    "韓国語"
+   ],
+   "createdAt": "2026-11-05T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-korean-handwriting-advanced-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "korean-handwriting-advanced-words-1",
+    "name": "韓国語 手書き上級（社会・政治）",
+    "levels": [
+     "社会・政治"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-advanced-words-1",
+    "wordCount": 15,
+    "sample": [
+     "정부",
+     "국회",
+     "선거"
+    ]
+   },
+   {
+    "id": "korean-handwriting-advanced-words-2",
+    "name": "韓国語 手書き上級（経済・産業）",
+    "levels": [
+     "経済・産業"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-advanced-words-1",
+    "wordCount": 15,
+    "sample": [
+     "경제",
+     "물가",
+     "세금"
+    ]
+   },
+   {
+    "id": "korean-handwriting-advanced-words-3",
+    "name": "韓国語 手書き上級（科学・環境）",
+    "levels": [
+     "科学・環境"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-advanced-words-1",
+    "wordCount": 15,
+    "sample": [
+     "지구",
+     "우주",
+     "기후"
+    ]
+   },
+   {
+    "id": "korean-handwriting-advanced-words-4",
+    "name": "韓国語 手書き上級（文化・歴史）",
+    "levels": [
+     "文化・歴史"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-advanced-words-1",
+    "wordCount": 15,
+    "sample": [
+     "역사",
+     "전통",
+     "문화"
+    ]
+   },
+   {
+    "id": "korean-handwriting-advanced-words-5",
+    "name": "韓国語 手書き上級（動詞）",
+    "levels": [
+     "動詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-advanced-words-1",
+    "wordCount": 15,
+    "sample": [
+     "겪다",
+     "견디다",
+     "미루다"
+    ]
+   },
+   {
+    "id": "korean-handwriting-advanced-words-6",
+    "name": "韓国語 手書き上級（形容詞）",
+    "levels": [
+     "形容詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-advanced-words-1",
+    "wordCount": 15,
+    "sample": [
+     "외롭다",
+     "그립다",
+     "아쉽다"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-korean-handwriting-beginner-2-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-korean-handwriting-beginner-2-words-1",
+   "name": "韓国語：手書き初級単語2",
+   "category": "語学",
+   "tags": [
+    "韓国語"
+   ],
+   "createdAt": "2026-11-05T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-korean-handwriting-beginner-2-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "korean-handwriting-beginner-2-words-1",
+    "name": "韓国語 手書き初級2（体）",
+    "levels": [
+     "体"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "눈",
+     "코",
+     "입"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-2-words-2",
+    "name": "韓国語 手書き初級2（衣服・持ち物）",
+    "levels": [
+     "衣服・持ち物"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "옷",
+     "모자",
+     "바지"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-2-words-3",
+    "name": "韓国語 手書き初級2（動物）",
+    "levels": [
+     "動物"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "개",
+     "새",
+     "소"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-2-words-4",
+    "name": "韓国語 手書き初級2（数・色）",
+    "levels": [
+     "数・色"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "둘",
+     "셋",
+     "넷"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-2-words-5",
+    "name": "韓国語 手書き初級2（動詞）",
+    "levels": [
+     "動詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "열다",
+     "닫다",
+     "타다"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-2-words-6",
+    "name": "韓国語 手書き初級2（形容詞）",
+    "levels": [
+     "形容詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-2-words-1",
+    "wordCount": 15,
+    "sample": [
+     "같다",
+     "멀다",
+     "짜다"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-korean-handwriting-beginner-3-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-korean-handwriting-beginner-3-words-1",
+   "name": "韓国語：手書き初級単語3",
+   "category": "語学",
+   "tags": [
+    "韓国語"
+   ],
+   "createdAt": "2026-11-05T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-korean-handwriting-beginner-3-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "korean-handwriting-beginner-3-words-1",
+    "name": "韓国語 手書き初級3（家・家具）",
+    "levels": [
+     "家・家具"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "문",
+     "방석",
+     "창문"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-3-words-2",
+    "name": "韓国語 手書き初級3（趣味・スポーツ）",
+    "levels": [
+     "趣味・スポーツ"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "춤",
+     "노래",
+     "영화"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-3-words-3",
+    "name": "韓国語 手書き初級3（町・乗り物）",
+    "levels": [
+     "町・乗り物"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "길",
+     "버스",
+     "택시"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-3-words-4",
+    "name": "韓国語 手書き初級3（食事・料理）",
+    "levels": [
+     "食事・料理"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "컵",
+     "칼",
+     "쌀"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-3-words-5",
+    "name": "韓国語 手書き初級3（動詞）",
+    "levels": [
+     "動詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "닦다",
+     "끄다",
+     "켜다"
+    ]
+   },
+   {
+    "id": "korean-handwriting-beginner-3-words-6",
+    "name": "韓国語 手書き初級3（形容詞）",
+    "levels": [
+     "形容詞"
+    ],
+    "writing": {
+     "language": "ko"
+    },
+    "records": [],
+    "createdAt": "2026-11-05T00:00:00.000Z",
+    "packId": "pack-korean-handwriting-beginner-3-words-1",
+    "wordCount": 15,
+    "sample": [
+     "젊다",
+     "편하다",
+     "졸리다"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-21-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-21-words-1",
+   "name": "中国語：HSK6級 手書き単語21",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-06T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-21-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-21-words-1",
+    "name": "中国語HSK6級 手書き21（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-21-words-1",
+    "wordCount": 15,
+    "sample": [
+     "版本",
+     "颁发",
+     "半途而废"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-21-words-2",
+    "name": "中国語HSK6級 手書き21（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-21-words-1",
+    "wordCount": 15,
+    "sample": [
+     "病毒",
+     "比喻",
+     "哺乳"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-21-words-3",
+    "name": "中国語HSK6級 手書き21（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-21-words-1",
+    "wordCount": 15,
+    "sample": [
+     "逮捕",
+     "当代",
+     "搭配"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-21-words-4",
+    "name": "中国語HSK6級 手書き21（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-21-words-1",
+    "wordCount": 15,
+    "sample": [
+     "风气",
+     "风险",
+     "夫妇"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-21-words-5",
+    "name": "中国語HSK6級 手書き21（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-21-words-1",
+    "wordCount": 15,
+    "sample": [
+     "雇佣",
+     "航行",
+     "好客"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-21-words-6",
+    "name": "中国語HSK6級 手書き21（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-21-words-1",
+    "wordCount": 15,
+    "sample": [
+     "讲究",
+     "僵硬",
+     "检讨"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-22-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-22-words-1",
+   "name": "中国語：HSK6級 手書き単語22",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-06T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-22-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-22-words-1",
+    "name": "中国語HSK6級 手書き22（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-22-words-1",
+    "wordCount": 15,
+    "sample": [
+     "急于",
+     "具备",
+     "鞠躬"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-22-words-2",
+    "name": "中国語HSK6級 手書き22（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-22-words-1",
+    "wordCount": 15,
+    "sample": [
+     "滥用",
+     "乐意",
+     "两口子"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-22-words-3",
+    "name": "中国語HSK6級 手書き22（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-22-words-1",
+    "wordCount": 15,
+    "sample": [
+     "茂密",
+     "没辙",
+     "门诊"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-22-words-4",
+    "name": "中国語HSK6級 手書き22（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-22-words-1",
+    "wordCount": 15,
+    "sample": [
+     "排练",
+     "庞大",
+     "泡沫"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-22-words-5",
+    "name": "中国語HSK6級 手書き22（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-22-words-1",
+    "wordCount": 15,
+    "sample": [
+     "迫不及待",
+     "魄力",
+     "瀑布"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-22-words-6",
+    "name": "中国語HSK6級 手書き22（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-22-words-1",
+    "wordCount": 15,
+    "sample": [
+     "情报",
+     "清除",
+     "情节"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-23-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-23-words-1",
+   "name": "中国語：HSK6級 手書き単語23",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-06T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-23-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-23-words-1",
+    "name": "中国語HSK6級 手書き23（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-23-words-1",
+    "wordCount": 15,
+    "sample": [
+     "渠道",
+     "缺口",
+     "缺席"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-23-words-2",
+    "name": "中国語HSK6級 手書き23（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-23-words-1",
+    "wordCount": 15,
+    "sample": [
+     "融洽",
+     "柔和",
+     "若干"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-23-words-3",
+    "name": "中国語HSK6級 手書き23（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-23-words-1",
+    "wordCount": 15,
+    "sample": [
+     "盛行",
+     "声誉",
+     "神经"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-23-words-4",
+    "name": "中国語HSK6級 手書き23（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-23-words-1",
+    "wordCount": 15,
+    "sample": [
+     "试图",
+     "失误",
+     "实行"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-23-words-5",
+    "name": "中国語HSK6級 手書き23（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-23-words-1",
+    "wordCount": 15,
+    "sample": [
+     "司令",
+     "死亡",
+     "肆无忌惮"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-23-words-6",
+    "name": "中国語HSK6級 手書き23（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-23-words-1",
+    "wordCount": 15,
+    "sample": [
+     "调和",
+     "条款",
+     "挑剔"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-24-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-24-words-1",
+   "name": "中国語：HSK6級 手書き単語24",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-06T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-24-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-24-words-1",
+    "name": "中国語HSK6級 手書き24（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-24-words-1",
+    "wordCount": 15,
+    "sample": [
+     "妥当",
+     "妥善",
+     "托运"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-24-words-2",
+    "name": "中国語HSK6級 手書き24（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-24-words-1",
+    "wordCount": 15,
+    "sample": [
+     "委员",
+     "文凭",
+     "文献"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-24-words-3",
+    "name": "中国語HSK6級 手書き24（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-24-words-1",
+    "wordCount": 15,
+    "sample": [
+     "镶嵌",
+     "相应",
+     "闲话"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-24-words-4",
+    "name": "中国語HSK6級 手書き24（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-24-words-1",
+    "wordCount": 15,
+    "sample": [
+     "性能",
+     "兴旺",
+     "信赖"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-24-words-5",
+    "name": "中国語HSK6級 手書き24（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-24-words-1",
+    "wordCount": 15,
+    "sample": [
+     "旋转",
+     "学位",
+     "酗酒"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-24-words-6",
+    "name": "中国語HSK6級 手書き24（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-24-words-1",
+    "wordCount": 15,
+    "sample": [
+     "演绎",
+     "要点",
+     "要命"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-chinese-hsk6-handwriting-25-words-1",
+  "version": 1,
+  "pack": {
+   "id": "pack-chinese-hsk6-handwriting-25-words-1",
+   "name": "中国語：HSK6級 手書き単語25",
+   "category": "語学",
+   "tags": [
+    "中国語"
+   ],
+   "createdAt": "2026-11-06T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-chinese-hsk6-handwriting-25-words-1",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "chinese-hsk6-handwriting-25-words-1",
+    "name": "中国語HSK6級 手書き25（単語1）",
+    "levels": [
+     "単語1"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-25-words-1",
+    "wordCount": 15,
+    "sample": [
+     "隐私",
+     "隐约",
+     "一如既往"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-25-words-2",
+    "name": "中国語HSK6級 手書き25（単語2）",
+    "levels": [
+     "単語2"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-25-words-1",
+    "wordCount": 15,
+    "sample": [
+     "岳母",
+     "舆论",
+     "蕴藏"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-25-words-3",
+    "name": "中国語HSK6級 手書き25（単語3）",
+    "levels": [
+     "単語3"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-25-words-1",
+    "wordCount": 15,
+    "sample": [
+     "战略",
+     "展望",
+     "战役"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-25-words-4",
+    "name": "中国語HSK6級 手書き25（単語4）",
+    "levels": [
+     "単語4"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-25-words-1",
+    "wordCount": 15,
+    "sample": [
+     "珍稀",
+     "真挚",
+     "值班"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-25-words-5",
+    "name": "中国語HSK6級 手書き25（単語5）",
+    "levels": [
+     "単語5"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-25-words-1",
+    "wordCount": 15,
+    "sample": [
+     "忠诚",
+     "终究",
+     "终身"
+    ]
+   },
+   {
+    "id": "chinese-hsk6-handwriting-25-words-6",
+    "name": "中国語HSK6級 手書き25（単語6）",
+    "levels": [
+     "単語6"
+    ],
+    "writing": {
+     "language": "zh-Hans"
+    },
+    "records": [],
+    "createdAt": "2026-11-06T00:00:00.000Z",
+    "packId": "pack-chinese-hsk6-handwriting-25-words-1",
+    "wordCount": 15,
+    "sample": [
+     "卓越",
+     "注视",
+     "主义"
+    ]
+   }
+  ]
+ },
+ {
+  "catalogId": "pack-japanese-romaji-beginner",
+  "version": 1,
+  "pack": {
+   "id": "pack-japanese-romaji-beginner",
+   "name": "日本語：ローマ字入力の基礎",
+   "category": "語学",
+   "tags": [
+    "日本語",
+    "ローマ字"
+   ],
+   "createdAt": "2026-11-28T00:00:00.000Z",
+   "origin": {
+    "catalogId": "pack-japanese-romaji-beginner",
+    "version": 1
+   }
+  },
+  "lists": [
+   {
+    "id": "japanese-romaji-beginner",
+    "name": "日本語：ローマ字入力の基礎（初級）",
+    "levels": [
+     "初級"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-japanese-romaji-beginner",
+    "wordCount": 40,
+    "sample": [
+     "犬",
+     "猫",
+     "空"
+    ]
+   },
+   {
+    "id": "japanese-romaji-intermediate",
+    "name": "日本語：ローマ字入力の基礎（中級）",
+    "levels": [
+     "中級"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-japanese-romaji-beginner",
+    "wordCount": 40,
+    "sample": [
+     "魚",
+     "車",
+     "机"
+    ]
+   },
+   {
+    "id": "japanese-romaji-advanced",
+    "name": "日本語：ローマ字入力の基礎（上級）",
+    "levels": [
+     "上級"
+    ],
+    "records": [],
+    "createdAt": "2026-11-28T00:00:00.000Z",
+    "packId": "pack-japanese-romaji-beginner",
+    "wordCount": 40,
+    "sample": [
+     "写真",
+     "貯金",
+     "旅行"
+    ]
+   }
+  ]
+ }
+]

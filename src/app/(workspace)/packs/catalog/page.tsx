@@ -15,8 +15,8 @@ import { useWordLists } from "@/hooks/useWordLists"
 import { randomId } from "@/lib/randomId"
 import { followedPackCount, MAX_FOLLOWED_PACKS } from "@/lib/listOverview"
 import { matchesInterests } from "@/lib/interests"
-import { followOfficialPack, catalogEntries, type CatalogEntry } from "@/lib/packs/catalog"
-import { OFFICIAL_PACK_PAGES } from "@/lib/packs/pages"
+import { followOfficialPack, catalogEntries, loadOfficialPacks, type CatalogEntry } from "@/lib/packs/officialCatalog"
+import { OFFICIAL_PACK_PAGES } from "@/lib/packs/pageList"
 import { PageHeader, PageMain } from "@/components/ui/page-layout"
 import { CardList } from "@/components/ui/card"
 import { editPackPath } from "@/lib/routes"
@@ -61,7 +61,7 @@ export default function Catalog() {
       const next = followOfficialPack(library, entry.catalogId, ids)
       name = next.packs.find(pack => pack.id === ids.pack)?.name ?? entry.pack.name
       return next
-    })
+    }, undefined, () => loadOfficialPacks([entry.catalogId]))
     if (saved) {
       notify(t("followed", { name }))
       setFollowedNow(entry.catalogId)
@@ -73,7 +73,7 @@ export default function Catalog() {
     <CardList>
       {items.map(entry => {
         const owned = entry.followed ? ownedPack(entry) : undefined
-        const words = entry.lists.reduce((sum, list) => sum + list.words.length, 0)
+        const words = entry.lists.reduce((sum, list) => sum + list.wordCount, 0)
         return <li key={entry.catalogId} data-catalog-id={entry.catalogId} className="flex flex-wrap items-center gap-x-4 gap-y-3 px-5 py-4">
           <div className="min-w-0 flex-1 basis-64 space-y-1.5">
             <Name className="font-bold [overflow-wrap:anywhere]">{entry.pack.name}</Name>
