@@ -7,7 +7,18 @@
     "navLabel": "開始使用",
     "play": "開始練習",
     "create": "建立單字清單",
-    "records": "查看紀錄"
+    "records": "查看紀錄",
+    "help": {
+      "title": "初次使用",
+      "guide": {
+        "title": "使用說明",
+        "text": "如何開始練習、建立單字清單、查看紀錄"
+      },
+      "about": {
+        "title": "關於 Typle",
+        "text": "功能、資料儲存位置、版本"
+      }
+    }
   },
   "preview": {
     "title": "練習之後，這裡會顯示你的練習狀況",

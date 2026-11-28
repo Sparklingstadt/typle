@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { skipWelcome } from './welcome'
 
 test('the guide has a table of contents that jumps to each section below the top bar', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
@@ -50,4 +51,18 @@ test('on a phone the table of contents comes first and the page does not scroll 
   await contents.getByRole('link', { name: 'キーボード操作' }).click()
   await expect(page.getByRole('heading', { name: 'キーボード操作', level: 2 })).toBeInViewport()
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+})
+
+test('the first home leads to the guide and about pages with cards', async ({ page }) => {
+  await skipWelcome(page)
+  await page.goto('/home')
+  const help = page.getByRole('navigation', { name: 'はじめての方へ' })
+  const guide = help.getByRole('link', { name: /^使い方/ })
+  await guide.focus()
+  await expect(guide).toBeFocused()
+  await guide.click()
+  await expect(page).toHaveURL(/\/guide$/)
+  await page.goto('/home')
+  await help.getByRole('link', { name: /^Typleについて/ }).click()
+  await expect(page).toHaveURL(/\/about$/)
 })

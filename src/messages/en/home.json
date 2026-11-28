@@ -7,7 +7,18 @@
     "navLabel": "Get started",
     "play": "Practice",
     "create": "Create a word list",
-    "records": "View records"
+    "records": "View records",
+    "help": {
+      "title": "New to Typle",
+      "guide": {
+        "title": "How to use",
+        "text": "Starting a practice, making word lists, reading your records"
+      },
+      "about": {
+        "title": "About Typle",
+        "text": "What it does, where your data is kept, the version"
+      }
+    }
   },
   "preview": {
     "title": "As you practice, your progress appears here",
