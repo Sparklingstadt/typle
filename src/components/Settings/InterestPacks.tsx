@@ -11,7 +11,7 @@ import { matchesInterests } from '@/lib/interests'
 import { randomId } from '@/lib/randomId'
 import type { SavedWordList } from '@/lib/wordLists'
 import type { Library, WordPack } from '@/lib/wordPacks'
-import { applyCatalogChoices, catalogEntries, type CatalogChoice } from '@/lib/packs/catalog'
+import { applyCatalogChoices, catalogEntries, loadOfficialPacks, type CatalogChoice } from '@/lib/packs/officialCatalog'
 import { CardList } from '@/components/ui/card'
 
 type Props = {
@@ -19,7 +19,7 @@ type Props = {
   lists: SavedWordList[]
   interests: string[]
   saving: boolean
-  updateLibrary: (change: (library: Library) => Library) => Promise<boolean>
+  updateLibrary: (change: (library: Library) => Library, useDefaults?: boolean, before?: () => Promise<unknown>) => Promise<boolean>
 }
 
 // The official packs that fit the chosen interests, each with a switch: on for a followed pack, off for the others.
@@ -49,7 +49,8 @@ export default function InterestPacks({ packs, lists, interests, saving, updateL
 
   async function apply(change: CatalogChoice[]) {
     const saved = await updateLibrary(current =>
-      applyCatalogChoices(current, change, entry => ({ pack: randomId(), lists: entry.lists.map(() => randomId()) })))
+      applyCatalogChoices(current, change, entry => ({ pack: randomId(), lists: entry.lists.map(() => randomId()) })),
+      undefined, () => loadOfficialPacks(change.filter(choice => choice.follow).map(choice => choice.catalogId)))
     if (saved) {
       const followed = change.filter(choice => choice.follow).length
       notify(t('done', { followed, unfollowed: change.length - followed }))
@@ -85,7 +86,7 @@ export default function InterestPacks({ packs, lists, interests, saving, updateL
     {!entries.length ? <EmptyNote>{t('none')}</EmptyNote>
       : <CardList>
         {entries.map(entry => {
-          const words = entry.lists.reduce((sum, list) => sum + list.words.length, 0)
+          const words = entry.lists.reduce((sum, list) => sum + list.wordCount, 0)
           const id = `interest-pack-${entry.catalogId}`
           return <li key={entry.catalogId} data-catalog-id={entry.catalogId} className="flex items-center gap-4 px-5 py-4">
             <input type="checkbox" aria-label={t('select', { name: entry.pack.name })} disabled={saving}

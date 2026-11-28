@@ -9,8 +9,6 @@ import { useWordLists } from "@/hooks/useWordLists"
 import { useOfficialPackStart } from "@/hooks/useOfficialPackStart"
 import { starterPacks } from "@/lib/packs/starters"
 
-const SAMPLE_WORDS = 3
-
 // /play for someone with no pack yet: a few official packs to start with, each showing the words of its first list.
 // Choosing one follows it and starts its first list at once. The first pack is the suggested one.
 export default function StarterPacks({ error }: { error: string }) {
@@ -29,7 +27,7 @@ export default function StarterPacks({ error }: { error: string }) {
       <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {starterPacks().map((entry, index) => {
           const first = entry.lists[0]
-          const words = entry.lists.reduce((total, list) => total + list.words.length, 0)
+          const words = entry.lists.reduce((total, list) => total + list.wordCount, 0)
           const nameId = `starter-${entry.catalogId}`
           return <li key={entry.catalogId} data-catalog-id={entry.catalogId}>
             <Card className="h-full gap-3 px-5 py-5">
@@ -37,7 +35,7 @@ export default function StarterPacks({ error }: { error: string }) {
               <h2 id={nameId} className="text-lg font-bold">{entry.pack.name}</h2>
               <p className="text-[13px] text-muted-foreground">{t("first", { list: first?.name ?? "" })}</p>
               <ul className="space-y-1 font-mono text-[15px]">
-                {first?.words.slice(0, SAMPLE_WORDS).map((word, wordIndex) => <li key={wordIndex}>{word.display}</li>)}
+                {first?.sample.map((word, wordIndex) => <li key={wordIndex}>{word}</li>)}
               </ul>
               <Button className="mt-auto" variant={index === 0 ? "default" : "outline"} aria-describedby={nameId}
                 disabled={!ready || saving || starting !== null} onClick={() => void start(entry.catalogId)}>

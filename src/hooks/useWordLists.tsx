@@ -118,8 +118,12 @@ function useWorkspace() {
       : save(current => current.update(lists => removeRecord(lists, listId, record))),
     /** Replaces the interests; only they are saved. */
     updateInterests: (change: (current: string[]) => string[]) => save(current => current.updateInterests(change)),
-    /** Replaces the library in its saved shape; for pack edits. */
-    updateLibrary: (change: (current: Library) => Library, useDefaults?: boolean) => save(current => current.updateLibrary(change, useDefaults)),
+    /**
+     * Replaces the library in its saved shape; for pack edits. `before` is awaited first, to load what the change reads
+     * (the words of an official pack to follow): when it fails nothing is saved, and the failure is shown as a failed save.
+     */
+    updateLibrary: (change: (current: Library) => Library, useDefaults?: boolean, before?: () => Promise<unknown>) =>
+      save(async current => { await before?.(); return current.updateLibrary(change, useDefaults) }),
     ready: loaded, error, errorKey, saving,
   }
 }

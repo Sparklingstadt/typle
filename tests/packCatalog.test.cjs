@@ -3,7 +3,11 @@ const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { validateLibrary, convertLibrary } = require('../src/lib/wordPacks.ts')
 const { deletePack } = require('../src/lib/packEditing.ts')
-const { officialPacks, catalogEntries, followOfficialPack, applyCatalogChoices } = require('../src/lib/packs/catalog.ts')
+const { officialPacks, followOfficialPack } = require('../src/lib/packs/catalog.ts')
+const choices = require('../src/lib/catalogChoices.ts')
+// The catalog's screens work on a catalog given to them: here the whole one, as the server has it.
+const catalogEntries = library => choices.catalogEntries(library, officialPacks())
+const applyCatalogChoices = (library, chosen, ids, at) => choices.applyCatalogChoices(library, officialPacks(), chosen, ids, at)
 const { MAX_FOLLOWED_PACKS, MAX_LISTS } = require('../src/lib/listOverview.ts')
 const { officialLibrary, initialLists } = require('../src/lib/packs/index.ts')
 const { initialLibrary } = require('../src/lib/wordPacks.ts')
@@ -113,6 +117,7 @@ test('the starter packs of /play are official packs with words, in their order',
   assert.equal(new Set(STARTER_CATALOG_IDS).size, STARTER_CATALOG_IDS.length)
   for (const entry of starters) {
     assert.ok(entry.lists.length > 0, entry.catalogId)
-    assert.ok(entry.lists[0].words.length >= 3, entry.catalogId)
+    assert.ok(entry.lists[0].wordCount >= 3, entry.catalogId)
+    assert.equal(entry.lists[0].sample.length, 3, entry.catalogId)
   }
 })
