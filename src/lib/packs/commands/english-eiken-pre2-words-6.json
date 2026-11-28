@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-6",
+  "name": "英検準2級レベル（単語6）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語6"
+  ],
+  "words": [
+    {
+      "display": "lack",
+      "input": "lack",
+      "annotation": "lack / 不足",
+      "input_type": "word"
+    },
+    {
+      "display": "land",
+      "input": "land",
+      "annotation": "land / 陸地",
+      "input_type": "word"
+    },
+    {
+      "display": "law",
+      "input": "law",
+      "annotation": "law / 法律",
+      "input_type": "word"
+    },
+    {
+      "display": "lay",
+      "input": "lay",
+      "annotation": "lay / 置く",
+      "input_type": "word"
+    },
+    {
+      "display": "lead",
+      "input": "lead",
+      "annotation": "lead / 導く",
+      "input_type": "word"
+    },
+    {
+      "display": "leader",
+      "input": "leader",
+      "annotation": "leader / 指導者",
+      "input_type": "word"
+    },
+    {
+      "display": "lend",
+      "input": "lend",
+      "annotation": "lend / 貸す",
+      "input_type": "word"
+    },
+    {
+      "display": "level",
+      "input": "level",
+      "annotation": "level / 水準",
+      "input_type": "word"
+    },
+    {
+      "display": "limit",
+      "input": "limit",
+      "annotation": "limit / 制限",
+      "input_type": "word"
+    },
+    {
+      "display": "local",
+      "input": "local",
+      "annotation": "local / 地元の",
+      "input_type": "word"
+    },
+    {
+      "display": "lonely",
+      "input": "lonely",
+      "annotation": "lonely / 寂しい",
+      "input_type": "word"
+    },
+    {
+      "display": "loss",
+      "input": "loss",
+      "annotation": "loss / 損失",
+      "input_type": "word"
+    },
+    {
+      "display": "lucky",
+      "input": "lucky",
+      "annotation": "lucky / 幸運な",
+      "input_type": "word"
+    },
+    {
+      "display": "machine",
+      "input": "machine",
+      "annotation": "machine / 機械",
+      "input_type": "word"
+    },
+    {
+      "display": "material",
+      "input": "material",
+      "annotation": "material / 材料",
+      "input_type": "word"
+    },
+    {
+      "display": "matter",
+      "input": "matter",
+      "annotation": "matter / 問題",
+      "input_type": "word"
+    },
+    {
+      "display": "measure",
+      "input": "measure",
+      "annotation": "measure / 測る",
+      "input_type": "word"
+    },
+    {
+      "display": "memory",
+      "input": "memory",
+      "annotation": "memory / 記憶",
+      "input_type": "word"
+    },
+    {
+      "display": "mention",
+      "input": "mention",
+      "annotation": "mention / 言及する",
+      "input_type": "word"
+    },
+    {
+      "display": "method",
+      "input": "method",
+      "annotation": "method / 方法",
+      "input_type": "word"
+    },
+    {
+      "display": "mind",
+      "input": "mind",
+      "annotation": "mind / 心",
+      "input_type": "word"
+    },
+    {
+      "display": "modern",
+      "input": "modern",
+      "annotation": "modern / 現代の",
+      "input_type": "word"
+    },
+    {
+      "display": "moment",
+      "input": "moment",
+      "annotation": "moment / 瞬間",
+      "input_type": "word"
+    },
+    {
+      "display": "narrow",
+      "input": "narrow",
+      "annotation": "narrow / 狭い",
+      "input_type": "word"
+    },
+    {
+      "display": "national",
+      "input": "national",
+      "annotation": "national / 国の",
+      "input_type": "word"
+    },
+    {
+      "display": "nearly",
+      "input": "nearly",
+      "annotation": "nearly / ほとんど",
+      "input_type": "word"
+    },
+    {
+      "display": "neighbor",
+      "input": "neighbor",
+      "annotation": "neighbor / 隣人",
+      "input_type": "word"
+    },
+    {
+      "display": "nervous",
+      "input": "nervous",
+      "annotation": "nervous / 緊張した",
+      "input_type": "word"
+    },
+    {
+      "display": "noise",
+      "input": "noise",
+      "annotation": "noise / 騒音",
+      "input_type": "word"
+    },
+    {
+      "display": "notice",
+      "input": "notice",
+      "annotation": "notice / 気づく",
+      "input_type": "word"
+    },
+    {
+      "display": "novel",
+      "input": "novel",
+      "annotation": "novel / 小説",
+      "input_type": "word"
+    },
+    {
+      "display": "object",
+      "input": "object",
+      "annotation": "object / 物体",
+      "input_type": "word"
+    },
+    {
+      "display": "ocean",
+      "input": "ocean",
+      "annotation": "ocean / 海洋",
+      "input_type": "word"
+    },
+    {
+      "display": "offer",
+      "input": "offer",
+      "annotation": "offer / 申し出る",
+      "input_type": "word"
+    },
+    {
+      "display": "official",
+      "input": "official",
+      "annotation": "official / 公式の",
+      "input_type": "word"
+    },
+    {
+      "display": "operation",
+      "input": "operation",
+      "annotation": "operation / 手術、操作",
+      "input_type": "word"
+    },
+    {
+      "display": "ordinary",
+      "input": "ordinary",
+      "annotation": "ordinary / 普通の",
+      "input_type": "word"
+    },
+    {
+      "display": "organize",
+      "input": "organize",
+      "annotation": "organize / 準備する、組織する",
+      "input_type": "word"
+    },
+    {
+      "display": "original",
+      "input": "original",
+      "annotation": "original / 最初の、独創的な",
+      "input_type": "word"
+    },
+    {
+      "display": "pain",
+      "input": "pain",
+      "annotation": "pain / 痛み",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-4",
+  "name": "英検準2級レベル（単語4）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語4"
+  ],
+  "words": [
+    {
+      "display": "electricity",
+      "input": "electricity",
+      "annotation": "electricity / 電気",
+      "input_type": "word"
+    },
+    {
+      "display": "emergency",
+      "input": "emergency",
+      "annotation": "emergency / 緊急事態",
+      "input_type": "word"
+    },
+    {
+      "display": "employee",
+      "input": "employee",
+      "annotation": "employee / 従業員",
+      "input_type": "word"
+    },
+    {
+      "display": "empty",
+      "input": "empty",
+      "annotation": "empty / 空の",
+      "input_type": "word"
+    },
+    {
+      "display": "energy",
+      "input": "energy",
+      "annotation": "energy / エネルギー",
+      "input_type": "word"
+    },
+    {
+      "display": "engineer",
+      "input": "engineer",
+      "annotation": "engineer / 技術者",
+      "input_type": "word"
+    },
+    {
+      "display": "entrance",
+      "input": "entrance",
+      "annotation": "entrance / 入口",
+      "input_type": "word"
+    },
+    {
+      "display": "equal",
+      "input": "equal",
+      "annotation": "equal / 等しい",
+      "input_type": "word"
+    },
+    {
+      "display": "escape",
+      "input": "escape",
+      "annotation": "escape / 逃げる",
+      "input_type": "word"
+    },
+    {
+      "display": "event",
+      "input": "event",
+      "annotation": "event / 行事",
+      "input_type": "word"
+    },
+    {
+      "display": "exactly",
+      "input": "exactly",
+      "annotation": "exactly / 正確に",
+      "input_type": "word"
+    },
+    {
+      "display": "exchange",
+      "input": "exchange",
+      "annotation": "exchange / 交換する",
+      "input_type": "word"
+    },
+    {
+      "display": "excited",
+      "input": "excited",
+      "annotation": "excited / わくわくした",
+      "input_type": "word"
+    },
+    {
+      "display": "exhibition",
+      "input": "exhibition",
+      "annotation": "exhibition / 展示会",
+      "input_type": "word"
+    },
+    {
+      "display": "exist",
+      "input": "exist",
+      "annotation": "exist / 存在する",
+      "input_type": "word"
+    },
+    {
+      "display": "experiment",
+      "input": "experiment",
+      "annotation": "experiment / 実験",
+      "input_type": "word"
+    },
+    {
+      "display": "expert",
+      "input": "expert",
+      "annotation": "expert / 専門家",
+      "input_type": "word"
+    },
+    {
+      "display": "express",
+      "input": "express",
+      "annotation": "express / 表現する",
+      "input_type": "word"
+    },
+    {
+      "display": "factory",
+      "input": "factory",
+      "annotation": "factory / 工場",
+      "input_type": "word"
+    },
+    {
+      "display": "fail",
+      "input": "fail",
+      "annotation": "fail / 失敗する",
+      "input_type": "word"
+    },
+    {
+      "display": "fair",
+      "input": "fair",
+      "annotation": "fair / 公平な",
+      "input_type": "word"
+    },
+    {
+      "display": "false",
+      "input": "false",
+      "annotation": "false / 誤った",
+      "input_type": "word"
+    },
+    {
+      "display": "fashion",
+      "input": "fashion",
+      "annotation": "fashion / 流行",
+      "input_type": "word"
+    },
+    {
+      "display": "fear",
+      "input": "fear",
+      "annotation": "fear / 恐怖",
+      "input_type": "word"
+    },
+    {
+      "display": "fee",
+      "input": "fee",
+      "annotation": "fee / 料金",
+      "input_type": "word"
+    },
+    {
+      "display": "feeling",
+      "input": "feeling",
+      "annotation": "feeling / 感情",
+      "input_type": "word"
+    },
+    {
+      "display": "fever",
+      "input": "fever",
+      "annotation": "fever / 熱",
+      "input_type": "word"
+    },
+    {
+      "display": "field",
+      "input": "field",
+      "annotation": "field / 分野、野原",
+      "input_type": "word"
+    },
+    {
+      "display": "fight",
+      "input": "fight",
+      "annotation": "fight / 戦う",
+      "input_type": "word"
+    },
+    {
+      "display": "fill",
+      "input": "fill",
+      "annotation": "fill / 満たす",
+      "input_type": "word"
+    },
+    {
+      "display": "finally",
+      "input": "finally",
+      "annotation": "finally / ついに",
+      "input_type": "word"
+    },
+    {
+      "display": "financial",
+      "input": "financial",
+      "annotation": "financial / 財政の",
+      "input_type": "word"
+    },
+    {
+      "display": "fit",
+      "input": "fit",
+      "annotation": "fit / 合う",
+      "input_type": "word"
+    },
+    {
+      "display": "flavor",
+      "input": "flavor",
+      "annotation": "flavor / 風味",
+      "input_type": "word"
+    },
+    {
+      "display": "flight",
+      "input": "flight",
+      "annotation": "flight / 飛行便",
+      "input_type": "word"
+    },
+    {
+      "display": "float",
+      "input": "float",
+      "annotation": "float / 浮かぶ",
+      "input_type": "word"
+    },
+    {
+      "display": "flood",
+      "input": "flood",
+      "annotation": "flood / 洪水",
+      "input_type": "word"
+    },
+    {
+      "display": "following",
+      "input": "following",
+      "annotation": "following / 次の",
+      "input_type": "word"
+    },
+    {
+      "display": "force",
+      "input": "force",
+      "annotation": "force / 力",
+      "input_type": "word"
+    },
+    {
+      "display": "foreign",
+      "input": "foreign",
+      "annotation": "foreign / 外国の",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

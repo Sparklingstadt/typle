@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-pre2-words-8",
+  "name": "英検準2級レベル（単語8）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検準2級レベル単語",
+  "levels": [
+    "単語8"
+  ],
+  "words": [
+    {
+      "display": "recommend",
+      "input": "recommend",
+      "annotation": "recommend / 勧める",
+      "input_type": "word"
+    },
+    {
+      "display": "recycle",
+      "input": "recycle",
+      "annotation": "recycle / 再利用する",
+      "input_type": "word"
+    },
+    {
+      "display": "refuse",
+      "input": "refuse",
+      "annotation": "refuse / 断る",
+      "input_type": "word"
+    },
+    {
+      "display": "region",
+      "input": "region",
+      "annotation": "region / 地方",
+      "input_type": "word"
+    },
+    {
+      "display": "regular",
+      "input": "regular",
+      "annotation": "regular / 定期的な",
+      "input_type": "word"
+    },
+    {
+      "display": "relax",
+      "input": "relax",
+      "annotation": "relax / くつろぐ",
+      "input_type": "word"
+    },
+    {
+      "display": "remain",
+      "input": "remain",
+      "annotation": "remain / 残る",
+      "input_type": "word"
+    },
+    {
+      "display": "remove",
+      "input": "remove",
+      "annotation": "remove / 取り除く",
+      "input_type": "word"
+    },
+    {
+      "display": "rent",
+      "input": "rent",
+      "annotation": "rent / 賃借りする",
+      "input_type": "word"
+    },
+    {
+      "display": "repair",
+      "input": "repair",
+      "annotation": "repair / 修理する",
+      "input_type": "word"
+    },
+    {
+      "display": "repeat",
+      "input": "repeat",
+      "annotation": "repeat / 繰り返す",
+      "input_type": "word"
+    },
+    {
+      "display": "replace",
+      "input": "replace",
+      "annotation": "replace / 取り替える",
+      "input_type": "word"
+    },
+    {
+      "display": "report",
+      "input": "report",
+      "annotation": "report / 報告する",
+      "input_type": "word"
+    },
+    {
+      "display": "research",
+      "input": "research",
+      "annotation": "research / 研究",
+      "input_type": "word"
+    },
+    {
+      "display": "reservation",
+      "input": "reservation",
+      "annotation": "reservation / 予約",
+      "input_type": "word"
+    },
+    {
+      "display": "result",
+      "input": "result",
+      "annotation": "result / 結果",
+      "input_type": "word"
+    },
+    {
+      "display": "reward",
+      "input": "reward",
+      "annotation": "reward / 報酬",
+      "input_type": "word"
+    },
+    {
+      "display": "rise",
+      "input": "rise",
+      "annotation": "rise / 上がる",
+      "input_type": "word"
+    },
+    {
+      "display": "risk",
+      "input": "risk",
+      "annotation": "risk / 危険",
+      "input_type": "word"
+    },
+    {
+      "display": "role",
+      "input": "role",
+      "annotation": "role / 役割",
+      "input_type": "word"
+    },
+    {
+      "display": "rule",
+      "input": "rule",
+      "annotation": "rule / 規則",
+      "input_type": "word"
+    },
+    {
+      "display": "safety",
+      "input": "safety",
+      "annotation": "safety / 安全",
+      "input_type": "word"
+    },
+    {
+      "display": "salary",
+      "input": "salary",
+      "annotation": "salary / 給料",
+      "input_type": "word"
+    },
+    {
+      "display": "sale",
+      "input": "sale",
+      "annotation": "sale / 販売",
+      "input_type": "word"
+    },
+    {
+      "display": "save",
+      "input": "save",
+      "annotation": "save / 救う、節約する",
+      "input_type": "word"
+    },
+    {
+      "display": "scene",
+      "input": "scene",
+      "annotation": "scene / 場面",
+      "input_type": "word"
+    },
+    {
+      "display": "schedule",
+      "input": "schedule",
+      "annotation": "schedule / 予定",
+      "input_type": "word"
+    },
+    {
+      "display": "scientist",
+      "input": "scientist",
+      "annotation": "scientist / 科学者",
+      "input_type": "word"
+    },
+    {
+      "display": "search",
+      "input": "search",
+      "annotation": "search / 探す",
+      "input_type": "word"
+    },
+    {
+      "display": "secret",
+      "input": "secret",
+      "annotation": "secret / 秘密",
+      "input_type": "word"
+    },
+    {
+      "display": "section",
+      "input": "section",
+      "annotation": "section / 部分",
+      "input_type": "word"
+    },
+    {
+      "display": "seem",
+      "input": "seem",
+      "annotation": "seem / 〜のように見える",
+      "input_type": "word"
+    },
+    {
+      "display": "sense",
+      "input": "sense",
+      "annotation": "sense / 感覚",
+      "input_type": "word"
+    },
+    {
+      "display": "separate",
+      "input": "separate",
+      "annotation": "separate / 分ける",
+      "input_type": "word"
+    },
+    {
+      "display": "service",
+      "input": "service",
+      "annotation": "service / サービス",
+      "input_type": "word"
+    },
+    {
+      "display": "share",
+      "input": "share",
+      "annotation": "share / 共有する",
+      "input_type": "word"
+    },
+    {
+      "display": "shock",
+      "input": "shock",
+      "annotation": "shock / 衝撃",
+      "input_type": "word"
+    },
+    {
+      "display": "shoot",
+      "input": "shoot",
+      "annotation": "shoot / 撃つ",
+      "input_type": "word"
+    },
+    {
+      "display": "shortly",
+      "input": "shortly",
+      "annotation": "shortly / まもなく",
+      "input_type": "word"
+    },
+    {
+      "display": "sign",
+      "input": "sign",
+      "annotation": "sign / 標識、署名する",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

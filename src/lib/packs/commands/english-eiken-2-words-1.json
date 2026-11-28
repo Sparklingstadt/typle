@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-1",
+  "name": "英検2級レベル（単語1）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語1"
+  ],
+  "words": [
+    {
+      "display": "abandon",
+      "input": "abandon",
+      "annotation": "abandon / 見捨てる",
+      "input_type": "word"
+    },
+    {
+      "display": "ability",
+      "input": "ability",
+      "annotation": "ability / 能力",
+      "input_type": "word"
+    },
+    {
+      "display": "abroad",
+      "input": "abroad",
+      "annotation": "abroad / 海外に",
+      "input_type": "word"
+    },
+    {
+      "display": "absolutely",
+      "input": "absolutely",
+      "annotation": "absolutely / 完全に",
+      "input_type": "word"
+    },
+    {
+      "display": "absorb",
+      "input": "absorb",
+      "annotation": "absorb / 吸収する",
+      "input_type": "word"
+    },
+    {
+      "display": "academic",
+      "input": "academic",
+      "annotation": "academic / 学問の",
+      "input_type": "word"
+    },
+    {
+      "display": "access",
+      "input": "access",
+      "annotation": "access / 利用する権利",
+      "input_type": "word"
+    },
+    {
+      "display": "accompany",
+      "input": "accompany",
+      "annotation": "accompany / 同行する",
+      "input_type": "word"
+    },
+    {
+      "display": "accomplish",
+      "input": "accomplish",
+      "annotation": "accomplish / 成し遂げる",
+      "input_type": "word"
+    },
+    {
+      "display": "account",
+      "input": "account",
+      "annotation": "account / 口座、説明",
+      "input_type": "word"
+    },
+    {
+      "display": "accurate",
+      "input": "accurate",
+      "annotation": "accurate / 正確な",
+      "input_type": "word"
+    },
+    {
+      "display": "accuse",
+      "input": "accuse",
+      "annotation": "accuse / 非難する",
+      "input_type": "word"
+    },
+    {
+      "display": "acquire",
+      "input": "acquire",
+      "annotation": "acquire / 習得する",
+      "input_type": "word"
+    },
+    {
+      "display": "adapt",
+      "input": "adapt",
+      "annotation": "adapt / 適応する",
+      "input_type": "word"
+    },
+    {
+      "display": "adequate",
+      "input": "adequate",
+      "annotation": "adequate / 十分な",
+      "input_type": "word"
+    },
+    {
+      "display": "adjust",
+      "input": "adjust",
+      "annotation": "adjust / 調整する",
+      "input_type": "word"
+    },
+    {
+      "display": "admit",
+      "input": "admit",
+      "annotation": "admit / 認める",
+      "input_type": "word"
+    },
+    {
+      "display": "adopt",
+      "input": "adopt",
+      "annotation": "adopt / 採用する",
+      "input_type": "word"
+    },
+    {
+      "display": "advance",
+      "input": "advance",
+      "annotation": "advance / 進歩",
+      "input_type": "word"
+    },
+    {
+      "display": "advertise",
+      "input": "advertise",
+      "annotation": "advertise / 宣伝する",
+      "input_type": "word"
+    },
+    {
+      "display": "affect",
+      "input": "affect",
+      "annotation": "affect / 影響を与える",
+      "input_type": "word"
+    },
+    {
+      "display": "afford",
+      "input": "afford",
+      "annotation": "afford / 余裕がある",
+      "input_type": "word"
+    },
+    {
+      "display": "agriculture",
+      "input": "agriculture",
+      "annotation": "agriculture / 農業",
+      "input_type": "word"
+    },
+    {
+      "display": "aid",
+      "input": "aid",
+      "annotation": "aid / 援助",
+      "input_type": "word"
+    },
+    {
+      "display": "aim",
+      "input": "aim",
+      "annotation": "aim / 目指す",
+      "input_type": "word"
+    },
+    {
+      "display": "alarm",
+      "input": "alarm",
+      "annotation": "alarm / 警報",
+      "input_type": "word"
+    },
+    {
+      "display": "alternative",
+      "input": "alternative",
+      "annotation": "alternative / 代わりの",
+      "input_type": "word"
+    },
+    {
+      "display": "amateur",
+      "input": "amateur",
+      "annotation": "amateur / アマチュア",
+      "input_type": "word"
+    },
+    {
+      "display": "analyze",
+      "input": "analyze",
+      "annotation": "analyze / 分析する",
+      "input_type": "word"
+    },
+    {
+      "display": "anxious",
+      "input": "anxious",
+      "annotation": "anxious / 心配して",
+      "input_type": "word"
+    },
+    {
+      "display": "apparently",
+      "input": "apparently",
+      "annotation": "apparently / どうやら",
+      "input_type": "word"
+    },
+    {
+      "display": "appeal",
+      "input": "appeal",
+      "annotation": "appeal / 訴える",
+      "input_type": "word"
+    },
+    {
+      "display": "appliance",
+      "input": "appliance",
+      "annotation": "appliance / 電化製品",
+      "input_type": "word"
+    },
+    {
+      "display": "apply",
+      "input": "apply",
+      "annotation": "apply / 申し込む",
+      "input_type": "word"
+    },
+    {
+      "display": "appointment",
+      "input": "appointment",
+      "annotation": "appointment / 約束、予約",
+      "input_type": "word"
+    },
+    {
+      "display": "appreciate",
+      "input": "appreciate",
+      "annotation": "appreciate / 感謝する",
+      "input_type": "word"
+    },
+    {
+      "display": "approach",
+      "input": "approach",
+      "annotation": "approach / 近づく",
+      "input_type": "word"
+    },
+    {
+      "display": "appropriate",
+      "input": "appropriate",
+      "annotation": "appropriate / 適切な",
+      "input_type": "word"
+    },
+    {
+      "display": "approve",
+      "input": "approve",
+      "annotation": "approve / 承認する",
+      "input_type": "word"
+    },
+    {
+      "display": "argue",
+      "input": "argue",
+      "annotation": "argue / 主張する",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

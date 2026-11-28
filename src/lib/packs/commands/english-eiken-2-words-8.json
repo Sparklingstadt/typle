@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-8",
+  "name": "英検2級レベル（単語8）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語8"
+  ],
+  "words": [
+    {
+      "display": "outcome",
+      "input": "outcome",
+      "annotation": "outcome / 結果",
+      "input_type": "word"
+    },
+    {
+      "display": "overall",
+      "input": "overall",
+      "annotation": "overall / 全体的な",
+      "input_type": "word"
+    },
+    {
+      "display": "overcome",
+      "input": "overcome",
+      "annotation": "overcome / 克服する",
+      "input_type": "word"
+    },
+    {
+      "display": "overseas",
+      "input": "overseas",
+      "annotation": "overseas / 海外の",
+      "input_type": "word"
+    },
+    {
+      "display": "participate",
+      "input": "participate",
+      "annotation": "participate / 参加する",
+      "input_type": "word"
+    },
+    {
+      "display": "particular",
+      "input": "particular",
+      "annotation": "particular / 特定の",
+      "input_type": "word"
+    },
+    {
+      "display": "passion",
+      "input": "passion",
+      "annotation": "passion / 情熱",
+      "input_type": "word"
+    },
+    {
+      "display": "penalty",
+      "input": "penalty",
+      "annotation": "penalty / 罰",
+      "input_type": "word"
+    },
+    {
+      "display": "pension",
+      "input": "pension",
+      "annotation": "pension / 年金",
+      "input_type": "word"
+    },
+    {
+      "display": "permanent",
+      "input": "permanent",
+      "annotation": "permanent / 永続的な",
+      "input_type": "word"
+    },
+    {
+      "display": "persuade",
+      "input": "persuade",
+      "annotation": "persuade / 説得する",
+      "input_type": "word"
+    },
+    {
+      "display": "philosophy",
+      "input": "philosophy",
+      "annotation": "philosophy / 哲学",
+      "input_type": "word"
+    },
+    {
+      "display": "physical",
+      "input": "physical",
+      "annotation": "physical / 身体の",
+      "input_type": "word"
+    },
+    {
+      "display": "policy",
+      "input": "policy",
+      "annotation": "policy / 政策",
+      "input_type": "word"
+    },
+    {
+      "display": "portion",
+      "input": "portion",
+      "annotation": "portion / 部分",
+      "input_type": "word"
+    },
+    {
+      "display": "possess",
+      "input": "possess",
+      "annotation": "possess / 所有する",
+      "input_type": "word"
+    },
+    {
+      "display": "potential",
+      "input": "potential",
+      "annotation": "potential / 潜在的な",
+      "input_type": "word"
+    },
+    {
+      "display": "poverty",
+      "input": "poverty",
+      "annotation": "poverty / 貧困",
+      "input_type": "word"
+    },
+    {
+      "display": "precise",
+      "input": "precise",
+      "annotation": "precise / 正確な",
+      "input_type": "word"
+    },
+    {
+      "display": "predict",
+      "input": "predict",
+      "annotation": "predict / 予測する",
+      "input_type": "word"
+    },
+    {
+      "display": "preserve",
+      "input": "preserve",
+      "annotation": "preserve / 保存する",
+      "input_type": "word"
+    },
+    {
+      "display": "previous",
+      "input": "previous",
+      "annotation": "previous / 以前の",
+      "input_type": "word"
+    },
+    {
+      "display": "principle",
+      "input": "principle",
+      "annotation": "principle / 原理",
+      "input_type": "word"
+    },
+    {
+      "display": "priority",
+      "input": "priority",
+      "annotation": "priority / 優先事項",
+      "input_type": "word"
+    },
+    {
+      "display": "procedure",
+      "input": "procedure",
+      "annotation": "procedure / 手順",
+      "input_type": "word"
+    },
+    {
+      "display": "proceed",
+      "input": "proceed",
+      "annotation": "proceed / 進む",
+      "input_type": "word"
+    },
+    {
+      "display": "profit",
+      "input": "profit",
+      "annotation": "profit / 利益",
+      "input_type": "word"
+    },
+    {
+      "display": "prohibit",
+      "input": "prohibit",
+      "annotation": "prohibit / 禁止する",
+      "input_type": "word"
+    },
+    {
+      "display": "promote",
+      "input": "promote",
+      "annotation": "promote / 促進する",
+      "input_type": "word"
+    },
+    {
+      "display": "proper",
+      "input": "proper",
+      "annotation": "proper / 適切な",
+      "input_type": "word"
+    },
+    {
+      "display": "property",
+      "input": "property",
+      "annotation": "property / 財産",
+      "input_type": "word"
+    },
+    {
+      "display": "propose",
+      "input": "propose",
+      "annotation": "propose / 提案する",
+      "input_type": "word"
+    },
+    {
+      "display": "psychology",
+      "input": "psychology",
+      "annotation": "psychology / 心理学",
+      "input_type": "word"
+    },
+    {
+      "display": "pursue",
+      "input": "pursue",
+      "annotation": "pursue / 追求する",
+      "input_type": "word"
+    },
+    {
+      "display": "qualify",
+      "input": "qualify",
+      "annotation": "qualify / 資格を与える",
+      "input_type": "word"
+    },
+    {
+      "display": "quantity",
+      "input": "quantity",
+      "annotation": "quantity / 量",
+      "input_type": "word"
+    },
+    {
+      "display": "range",
+      "input": "range",
+      "annotation": "range / 範囲",
+      "input_type": "word"
+    },
+    {
+      "display": "rapid",
+      "input": "rapid",
+      "annotation": "rapid / 急速な",
+      "input_type": "word"
+    },
+    {
+      "display": "rate",
+      "input": "rate",
+      "annotation": "rate / 割合",
+      "input_type": "word"
+    },
+    {
+      "display": "react",
+      "input": "react",
+      "annotation": "react / 反応する",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

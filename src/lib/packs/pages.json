@@ -361,5 +361,15 @@
     "slug": "japanese-romaji",
     "catalogId": "pack-japanese-romaji-beginner",
     "description": "日本語をローマ字で打つ練習です。犬（いぬ）・猫（ねこ）など2文字の語から、しゃ・っ・ん・ー を含む語、ファ・ティ・ウィ などの外来語まで、初級・中級・上級の3つのリストで120語を打ちます。shi・si、tsu・tu のように、よく使うつづりはどれでも正解になります。"
+  },
+  {
+    "slug": "eiken-pre2-english-words",
+    "catalogId": "pack-english-eiken-pre2-words-1",
+    "description": "英検準2級レベルの英単語400個を、40語ずつ10のリストで打って覚えます。accident・borrow・celebrate など、3級の次に覚えたい語に日本語の意味が付いています。"
+  },
+  {
+    "slug": "eiken-2-english-words",
+    "catalogId": "pack-english-eiken-2-words-1",
+    "description": "英検2級レベルの英単語400個を、40語ずつ10のリストで打って覚えます。ability・benefit・encourage など、社会・科学・経済の話題で使う語に日本語の意味が付いています。"
   }
 ]

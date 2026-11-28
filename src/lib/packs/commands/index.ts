@@ -272,6 +272,26 @@ import list268 from './chinese-hsk6-handwriting-25-words-6.json'
 import list269 from './japanese-romaji-beginner.json'
 import list270 from './japanese-romaji-intermediate.json'
 import list271 from './japanese-romaji-advanced.json'
+import list272 from './english-eiken-pre2-words-1.json'
+import list273 from './english-eiken-pre2-words-2.json'
+import list274 from './english-eiken-pre2-words-3.json'
+import list275 from './english-eiken-pre2-words-4.json'
+import list276 from './english-eiken-pre2-words-5.json'
+import list277 from './english-eiken-pre2-words-6.json'
+import list278 from './english-eiken-pre2-words-7.json'
+import list279 from './english-eiken-pre2-words-8.json'
+import list280 from './english-eiken-pre2-words-9.json'
+import list281 from './english-eiken-pre2-words-10.json'
+import list282 from './english-eiken-2-words-1.json'
+import list283 from './english-eiken-2-words-2.json'
+import list284 from './english-eiken-2-words-3.json'
+import list285 from './english-eiken-2-words-4.json'
+import list286 from './english-eiken-2-words-5.json'
+import list287 from './english-eiken-2-words-6.json'
+import list288 from './english-eiken-2-words-7.json'
+import list289 from './english-eiken-2-words-8.json'
+import list290 from './english-eiken-2-words-9.json'
+import list291 from './english-eiken-2-words-10.json'
 
 const commands: SavedWordList[] = [
   list0,
@@ -546,6 +566,26 @@ const commands: SavedWordList[] = [
   list269,
   list270,
   list271,
+  list272,
+  list273,
+  list274,
+  list275,
+  list276,
+  list277,
+  list278,
+  list279,
+  list280,
+  list281,
+  list282,
+  list283,
+  list284,
+  list285,
+  list286,
+  list287,
+  list288,
+  list289,
+  list290,
+  list291,
 ].map(list => ({
   ...list,
   words: list.words.map(word => {

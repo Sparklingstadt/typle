@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-3",
+  "name": "英検2級レベル（単語3）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語3"
+  ],
+  "words": [
+    {
+      "display": "concern",
+      "input": "concern",
+      "annotation": "concern / 心配",
+      "input_type": "word"
+    },
+    {
+      "display": "conclude",
+      "input": "conclude",
+      "annotation": "conclude / 結論を下す",
+      "input_type": "word"
+    },
+    {
+      "display": "conduct",
+      "input": "conduct",
+      "annotation": "conduct / 行う",
+      "input_type": "word"
+    },
+    {
+      "display": "conference",
+      "input": "conference",
+      "annotation": "conference / 会議",
+      "input_type": "word"
+    },
+    {
+      "display": "confident",
+      "input": "confident",
+      "annotation": "confident / 自信がある",
+      "input_type": "word"
+    },
+    {
+      "display": "confirm",
+      "input": "confirm",
+      "annotation": "confirm / 確認する",
+      "input_type": "word"
+    },
+    {
+      "display": "conflict",
+      "input": "conflict",
+      "annotation": "conflict / 対立",
+      "input_type": "word"
+    },
+    {
+      "display": "confuse",
+      "input": "confuse",
+      "annotation": "confuse / 混乱させる",
+      "input_type": "word"
+    },
+    {
+      "display": "consequence",
+      "input": "consequence",
+      "annotation": "consequence / 結果",
+      "input_type": "word"
+    },
+    {
+      "display": "conserve",
+      "input": "conserve",
+      "annotation": "conserve / 保護する",
+      "input_type": "word"
+    },
+    {
+      "display": "consist",
+      "input": "consist",
+      "annotation": "consist / 成る",
+      "input_type": "word"
+    },
+    {
+      "display": "constant",
+      "input": "constant",
+      "annotation": "constant / 絶え間ない",
+      "input_type": "word"
+    },
+    {
+      "display": "construct",
+      "input": "construct",
+      "annotation": "construct / 建設する",
+      "input_type": "word"
+    },
+    {
+      "display": "consume",
+      "input": "consume",
+      "annotation": "consume / 消費する",
+      "input_type": "word"
+    },
+    {
+      "display": "contain",
+      "input": "contain",
+      "annotation": "contain / 含む",
+      "input_type": "word"
+    },
+    {
+      "display": "content",
+      "input": "content",
+      "annotation": "content / 内容",
+      "input_type": "word"
+    },
+    {
+      "display": "contract",
+      "input": "contract",
+      "annotation": "contract / 契約",
+      "input_type": "word"
+    },
+    {
+      "display": "contrast",
+      "input": "contrast",
+      "annotation": "contrast / 対照",
+      "input_type": "word"
+    },
+    {
+      "display": "contribute",
+      "input": "contribute",
+      "annotation": "contribute / 貢献する",
+      "input_type": "word"
+    },
+    {
+      "display": "convince",
+      "input": "convince",
+      "annotation": "convince / 納得させる",
+      "input_type": "word"
+    },
+    {
+      "display": "cooperate",
+      "input": "cooperate",
+      "annotation": "cooperate / 協力する",
+      "input_type": "word"
+    },
+    {
+      "display": "corporation",
+      "input": "corporation",
+      "annotation": "corporation / 企業",
+      "input_type": "word"
+    },
+    {
+      "display": "crash",
+      "input": "crash",
+      "annotation": "crash / 衝突",
+      "input_type": "word"
+    },
+    {
+      "display": "create",
+      "input": "create",
+      "annotation": "create / 創造する",
+      "input_type": "word"
+    },
+    {
+      "display": "creature",
+      "input": "creature",
+      "annotation": "creature / 生き物",
+      "input_type": "word"
+    },
+    {
+      "display": "crime",
+      "input": "crime",
+      "annotation": "crime / 犯罪",
+      "input_type": "word"
+    },
+    {
+      "display": "crisis",
+      "input": "crisis",
+      "annotation": "crisis / 危機",
+      "input_type": "word"
+    },
+    {
+      "display": "criticize",
+      "input": "criticize",
+      "annotation": "criticize / 批判する",
+      "input_type": "word"
+    },
+    {
+      "display": "crop",
+      "input": "crop",
+      "annotation": "crop / 作物",
+      "input_type": "word"
+    },
+    {
+      "display": "crucial",
+      "input": "crucial",
+      "annotation": "crucial / 重大な",
+      "input_type": "word"
+    },
+    {
+      "display": "currency",
+      "input": "currency",
+      "annotation": "currency / 通貨",
+      "input_type": "word"
+    },
+    {
+      "display": "current",
+      "input": "current",
+      "annotation": "current / 現在の",
+      "input_type": "word"
+    },
+    {
+      "display": "decline",
+      "input": "decline",
+      "annotation": "decline / 減少する、断る",
+      "input_type": "word"
+    },
+    {
+      "display": "decrease",
+      "input": "decrease",
+      "annotation": "decrease / 減少する",
+      "input_type": "word"
+    },
+    {
+      "display": "define",
+      "input": "define",
+      "annotation": "define / 定義する",
+      "input_type": "word"
+    },
+    {
+      "display": "delay",
+      "input": "delay",
+      "annotation": "delay / 遅らせる",
+      "input_type": "word"
+    },
+    {
+      "display": "demand",
+      "input": "demand",
+      "annotation": "demand / 需要",
+      "input_type": "word"
+    },
+    {
+      "display": "demonstrate",
+      "input": "demonstrate",
+      "annotation": "demonstrate / 実演する",
+      "input_type": "word"
+    },
+    {
+      "display": "deny",
+      "input": "deny",
+      "annotation": "deny / 否定する",
+      "input_type": "word"
+    },
+    {
+      "display": "deposit",
+      "input": "deposit",
+      "annotation": "deposit / 預金",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

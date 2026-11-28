@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-4",
+  "name": "英検2級レベル（単語4）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語4"
+  ],
+  "words": [
+    {
+      "display": "deserve",
+      "input": "deserve",
+      "annotation": "deserve / 値する",
+      "input_type": "word"
+    },
+    {
+      "display": "desire",
+      "input": "desire",
+      "annotation": "desire / 願望",
+      "input_type": "word"
+    },
+    {
+      "display": "despite",
+      "input": "despite",
+      "annotation": "despite / 〜にもかかわらず",
+      "input_type": "word"
+    },
+    {
+      "display": "determine",
+      "input": "determine",
+      "annotation": "determine / 決定する",
+      "input_type": "word"
+    },
+    {
+      "display": "device",
+      "input": "device",
+      "annotation": "device / 装置",
+      "input_type": "word"
+    },
+    {
+      "display": "devote",
+      "input": "devote",
+      "annotation": "devote / ささげる",
+      "input_type": "word"
+    },
+    {
+      "display": "digital",
+      "input": "digital",
+      "annotation": "digital / デジタルの",
+      "input_type": "word"
+    },
+    {
+      "display": "disaster",
+      "input": "disaster",
+      "annotation": "disaster / 災害",
+      "input_type": "word"
+    },
+    {
+      "display": "discount",
+      "input": "discount",
+      "annotation": "discount / 割引",
+      "input_type": "word"
+    },
+    {
+      "display": "display",
+      "input": "display",
+      "annotation": "display / 展示する",
+      "input_type": "word"
+    },
+    {
+      "display": "distribute",
+      "input": "distribute",
+      "annotation": "distribute / 配る",
+      "input_type": "word"
+    },
+    {
+      "display": "disturb",
+      "input": "disturb",
+      "annotation": "disturb / 邪魔する",
+      "input_type": "word"
+    },
+    {
+      "display": "diverse",
+      "input": "diverse",
+      "annotation": "diverse / 多様な",
+      "input_type": "word"
+    },
+    {
+      "display": "domestic",
+      "input": "domestic",
+      "annotation": "domestic / 国内の",
+      "input_type": "word"
+    },
+    {
+      "display": "dominate",
+      "input": "dominate",
+      "annotation": "dominate / 支配する",
+      "input_type": "word"
+    },
+    {
+      "display": "draft",
+      "input": "draft",
+      "annotation": "draft / 下書き",
+      "input_type": "word"
+    },
+    {
+      "display": "dramatic",
+      "input": "dramatic",
+      "annotation": "dramatic / 劇的な",
+      "input_type": "word"
+    },
+    {
+      "display": "due",
+      "input": "due",
+      "annotation": "due / 予定で",
+      "input_type": "word"
+    },
+    {
+      "display": "durable",
+      "input": "durable",
+      "annotation": "durable / 長持ちする",
+      "input_type": "word"
+    },
+    {
+      "display": "economy",
+      "input": "economy",
+      "annotation": "economy / 経済",
+      "input_type": "word"
+    },
+    {
+      "display": "edit",
+      "input": "edit",
+      "annotation": "edit / 編集する",
+      "input_type": "word"
+    },
+    {
+      "display": "effective",
+      "input": "effective",
+      "annotation": "effective / 効果的な",
+      "input_type": "word"
+    },
+    {
+      "display": "elect",
+      "input": "elect",
+      "annotation": "elect / 選ぶ",
+      "input_type": "word"
+    },
+    {
+      "display": "element",
+      "input": "element",
+      "annotation": "element / 要素",
+      "input_type": "word"
+    },
+    {
+      "display": "eliminate",
+      "input": "eliminate",
+      "annotation": "eliminate / 取り除く",
+      "input_type": "word"
+    },
+    {
+      "display": "emerge",
+      "input": "emerge",
+      "annotation": "emerge / 現れる",
+      "input_type": "word"
+    },
+    {
+      "display": "emotion",
+      "input": "emotion",
+      "annotation": "emotion / 感情",
+      "input_type": "word"
+    },
+    {
+      "display": "emphasize",
+      "input": "emphasize",
+      "annotation": "emphasize / 強調する",
+      "input_type": "word"
+    },
+    {
+      "display": "enable",
+      "input": "enable",
+      "annotation": "enable / 可能にする",
+      "input_type": "word"
+    },
+    {
+      "display": "encounter",
+      "input": "encounter",
+      "annotation": "encounter / 出会う",
+      "input_type": "word"
+    },
+    {
+      "display": "encourage",
+      "input": "encourage",
+      "annotation": "encourage / 励ます",
+      "input_type": "word"
+    },
+    {
+      "display": "endanger",
+      "input": "endanger",
+      "annotation": "endanger / 危険にさらす",
+      "input_type": "word"
+    },
+    {
+      "display": "enhance",
+      "input": "enhance",
+      "annotation": "enhance / 高める",
+      "input_type": "word"
+    },
+    {
+      "display": "enormous",
+      "input": "enormous",
+      "annotation": "enormous / 巨大な",
+      "input_type": "word"
+    },
+    {
+      "display": "ensure",
+      "input": "ensure",
+      "annotation": "ensure / 確実にする",
+      "input_type": "word"
+    },
+    {
+      "display": "entertain",
+      "input": "entertain",
+      "annotation": "entertain / 楽しませる",
+      "input_type": "word"
+    },
+    {
+      "display": "entire",
+      "input": "entire",
+      "annotation": "entire / 全体の",
+      "input_type": "word"
+    },
+    {
+      "display": "equipment",
+      "input": "equipment",
+      "annotation": "equipment / 設備",
+      "input_type": "word"
+    },
+    {
+      "display": "essential",
+      "input": "essential",
+      "annotation": "essential / 不可欠な",
+      "input_type": "word"
+    },
+    {
+      "display": "establish",
+      "input": "establish",
+      "annotation": "establish / 設立する",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}

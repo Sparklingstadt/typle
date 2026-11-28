@@ -1,0 +1,256 @@
+{
+  "id": "english-eiken-2-words-6",
+  "name": "英検2級レベル（単語6）",
+  "category": "語学",
+  "tags": [
+    "英語"
+  ],
+  "group": "英語：英検2級レベル単語",
+  "levels": [
+    "単語6"
+  ],
+  "words": [
+    {
+      "display": "grant",
+      "input": "grant",
+      "annotation": "grant / 与える",
+      "input_type": "word"
+    },
+    {
+      "display": "gravity",
+      "input": "gravity",
+      "annotation": "gravity / 重力",
+      "input_type": "word"
+    },
+    {
+      "display": "guarantee",
+      "input": "guarantee",
+      "annotation": "guarantee / 保証する",
+      "input_type": "word"
+    },
+    {
+      "display": "harvest",
+      "input": "harvest",
+      "annotation": "harvest / 収穫",
+      "input_type": "word"
+    },
+    {
+      "display": "hesitate",
+      "input": "hesitate",
+      "annotation": "hesitate / ためらう",
+      "input_type": "word"
+    },
+    {
+      "display": "highlight",
+      "input": "highlight",
+      "annotation": "highlight / 強調する",
+      "input_type": "word"
+    },
+    {
+      "display": "household",
+      "input": "household",
+      "annotation": "household / 家庭",
+      "input_type": "word"
+    },
+    {
+      "display": "ignore",
+      "input": "ignore",
+      "annotation": "ignore / 無視する",
+      "input_type": "word"
+    },
+    {
+      "display": "illegal",
+      "input": "illegal",
+      "annotation": "illegal / 違法な",
+      "input_type": "word"
+    },
+    {
+      "display": "illustrate",
+      "input": "illustrate",
+      "annotation": "illustrate / 説明する",
+      "input_type": "word"
+    },
+    {
+      "display": "immediate",
+      "input": "immediate",
+      "annotation": "immediate / 即座の",
+      "input_type": "word"
+    },
+    {
+      "display": "immigrant",
+      "input": "immigrant",
+      "annotation": "immigrant / 移民",
+      "input_type": "word"
+    },
+    {
+      "display": "impact",
+      "input": "impact",
+      "annotation": "impact / 影響",
+      "input_type": "word"
+    },
+    {
+      "display": "import",
+      "input": "import",
+      "annotation": "import / 輸入する",
+      "input_type": "word"
+    },
+    {
+      "display": "impress",
+      "input": "impress",
+      "annotation": "impress / 感動させる",
+      "input_type": "word"
+    },
+    {
+      "display": "incident",
+      "input": "incident",
+      "annotation": "incident / 出来事",
+      "input_type": "word"
+    },
+    {
+      "display": "indicate",
+      "input": "indicate",
+      "annotation": "indicate / 示す",
+      "input_type": "word"
+    },
+    {
+      "display": "individual",
+      "input": "individual",
+      "annotation": "individual / 個人",
+      "input_type": "word"
+    },
+    {
+      "display": "infant",
+      "input": "infant",
+      "annotation": "infant / 幼児",
+      "input_type": "word"
+    },
+    {
+      "display": "infection",
+      "input": "infection",
+      "annotation": "infection / 感染",
+      "input_type": "word"
+    },
+    {
+      "display": "inform",
+      "input": "inform",
+      "annotation": "inform / 知らせる",
+      "input_type": "word"
+    },
+    {
+      "display": "ingredient",
+      "input": "ingredient",
+      "annotation": "ingredient / 材料",
+      "input_type": "word"
+    },
+    {
+      "display": "inherit",
+      "input": "inherit",
+      "annotation": "inherit / 受け継ぐ",
+      "input_type": "word"
+    },
+    {
+      "display": "innovation",
+      "input": "innovation",
+      "annotation": "innovation / 革新",
+      "input_type": "word"
+    },
+    {
+      "display": "insist",
+      "input": "insist",
+      "annotation": "insist / 主張する",
+      "input_type": "word"
+    },
+    {
+      "display": "inspire",
+      "input": "inspire",
+      "annotation": "inspire / 奮い立たせる",
+      "input_type": "word"
+    },
+    {
+      "display": "install",
+      "input": "install",
+      "annotation": "install / 設置する",
+      "input_type": "word"
+    },
+    {
+      "display": "instruct",
+      "input": "instruct",
+      "annotation": "instruct / 指示する",
+      "input_type": "word"
+    },
+    {
+      "display": "insurance",
+      "input": "insurance",
+      "annotation": "insurance / 保険",
+      "input_type": "word"
+    },
+    {
+      "display": "intend",
+      "input": "intend",
+      "annotation": "intend / 意図する",
+      "input_type": "word"
+    },
+    {
+      "display": "intense",
+      "input": "intense",
+      "annotation": "intense / 激しい",
+      "input_type": "word"
+    },
+    {
+      "display": "interact",
+      "input": "interact",
+      "annotation": "interact / 交流する",
+      "input_type": "word"
+    },
+    {
+      "display": "interfere",
+      "input": "interfere",
+      "annotation": "interfere / 干渉する",
+      "input_type": "word"
+    },
+    {
+      "display": "interrupt",
+      "input": "interrupt",
+      "annotation": "interrupt / 妨げる",
+      "input_type": "word"
+    },
+    {
+      "display": "invest",
+      "input": "invest",
+      "annotation": "invest / 投資する",
+      "input_type": "word"
+    },
+    {
+      "display": "investigate",
+      "input": "investigate",
+      "annotation": "investigate / 調査する",
+      "input_type": "word"
+    },
+    {
+      "display": "involve",
+      "input": "involve",
+      "annotation": "involve / 関わらせる",
+      "input_type": "word"
+    },
+    {
+      "display": "isolate",
+      "input": "isolate",
+      "annotation": "isolate / 孤立させる",
+      "input_type": "word"
+    },
+    {
+      "display": "issue",
+      "input": "issue",
+      "annotation": "issue / 問題",
+      "input_type": "word"
+    },
+    {
+      "display": "labor",
+      "input": "labor",
+      "annotation": "labor / 労働",
+      "input_type": "word"
+    }
+  ],
+  "records": [],
+  "createdAt": "2026-11-28T00:00:00.000Z"
+}
