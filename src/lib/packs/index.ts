@@ -18,6 +18,3 @@ const converted = convertLibrary(initialLists)
  * official pack (see catalog.ts): its catalog id is its own id, at version 1. Accounts follow these; they do not hold them.
  */
 export const officialLibrary: Library = { ...converted, packs: converted.packs.map(pack => ({ ...pack, origin: { catalogId: pack.id, version: 1 } })) }
-
-/** What a new account and the guest start with: nothing. Official packs are followed from the catalog. */
-export const initialLibrary: Library = { packs: [], lists: [] }

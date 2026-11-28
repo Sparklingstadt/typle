@@ -21,6 +21,9 @@ export type WordPack = {
 /** The saved shape: lists have a packId and no group, category or tags. */
 export type Library = { packs: WordPack[]; lists: SavedWordList[] }
 
+/** What a new account and the guest start with: nothing. Official packs are followed from the catalog. */
+export const initialLibrary: Library = { packs: [], lists: [] }
+
 const isString = (value: unknown): value is string => typeof value === 'string'
 export const nameKey = (name: string) => name.trim().toLocaleLowerCase()
 const numbered = (name: string) => (count: number) => fit(name, `（${count}）`)

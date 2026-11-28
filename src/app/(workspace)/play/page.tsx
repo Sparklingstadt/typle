@@ -1,18 +1,21 @@
 "use client"
 import { Suspense } from "react"
+import dynamic from "next/dynamic"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
 import { useWordLists } from "@/hooks/useWordLists"
 import { useWelcomeRedirect } from "@/hooks/useWelcomeRedirect"
 import { setWeakReview } from "@/lib/records"
 import PracticeScreen from "@/components/Practice/PracticeScreen"
-import StarterPacks from "@/components/Practice/StarterPacks"
 
 // The same frame as PracticeScreen's <main>, so the page does not shift when the practice appears.
 function Loading() {
   const common = useTranslations('common')
   return <main className="mx-auto my-6 w-11/12 max-w-7xl pb-12 sm:my-8"><p>{common('loading')}</p></main>
 }
+
+// Shown only to someone with no pack, and it reads the catalog, so it is loaded when shown.
+const StarterPacks = dynamic(() => import("@/components/Practice/StarterPacks"), { loading: () => <Loading /> })
 
 // `?list=<id>` preselects a list, e.g. from the home dashboard; with `&review=weak` only its weak words are practised.
 // Reading it needs a Suspense boundary for prerendering.

@@ -2,7 +2,6 @@ import { AppError, type ErrorKey } from '../appError'
 import { ApiError, api } from '../api'
 import { withoutFollowedWords } from '../followedPacks'
 import { decodeDocument } from '../workspaceDocument'
-import { followed } from '../packs/catalog'
 import { WorkspaceError, type RecordAdd, type RecordDelete, type WorkspaceState, type WorkspaceStore, type WorkspaceWrite } from '../workspaceStore'
 
 type Saved = { lists?: unknown; packs?: unknown; devices?: unknown; interests?: unknown; revision?: unknown; accountId?: unknown }
@@ -22,8 +21,10 @@ async function requestWorkspace(path: string, method: 'GET' | 'PUT' | 'POST' | '
   }
   // `packs` is null for an account that has saved nothing.
   const { lists, packs, devices, interests } = decodeDocument({ lists: saved.lists, packs: saved.packs, devices: saved.devices, interests: saved.interests })
-  // Followed packs are saved without their words: the catalog gives them back.
-  return followed({ accountId: saved.accountId, revision: saved.revision as number, lists, packs, devices, interests })
+  const state = { accountId: saved.accountId, revision: saved.revision as number, lists, packs, devices, interests }
+  // Followed packs are saved without their words: the catalog gives them back. Its words are too large for every
+  // page's scripts, so it is loaded here, and not at all for an empty library, which follows nothing.
+  return packs.length || lists.length ? (await import('../packs/catalog')).followed(state) : state
 }
 
 export function readWorkspace() {

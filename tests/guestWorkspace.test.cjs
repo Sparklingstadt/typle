@@ -2,7 +2,8 @@ require('./register.cjs')
 const { test } = require('node:test')
 const assert = require('node:assert/strict')
 const { normalizeLibrary } = require('../src/lib/wordPacks.ts')
-const { readGuestWorkspace, writeGuestWorkspace, addGuestRecord, deleteGuestRecord, GUEST_STORAGE_KEY } = require('../src/lib/storage/guest.ts')
+const { readGuestWorkspace, writeGuestWorkspace, addGuestRecord, deleteGuestRecord } = require('../src/lib/storage/guest.ts')
+const { GUEST_STORAGE_KEY } = require('../src/lib/storage/guestAccount.ts')
 const { storage } = require('./helpers.cjs')
 const list = { id: 'l', name: 'Local', packId: 'pack-l', createdAt: '2026-09-27', words: [{ display: 'a', input: 'a', annotation: '' }], records: [{ time: 1, date: '2026-09-27' }] }
 const pack = { id: 'pack-l', name: 'Local', createdAt: '2026-09-27' }
@@ -42,7 +43,7 @@ test('quota and oversized writes retain the previous data', () => {
 })
 test('each account uses its own store, says where it saves, and only the guest store follows other tabs', () => {
   const { workspaceStore } = require('../src/lib/storage/index.ts')
-  const { guestStore } = require('../src/lib/storage/guest.ts')
+  const { guestStore } = require('../src/lib/storage/guestStore.ts')
   const { cloudStore } = require('../src/lib/storage/cloud.ts')
   assert.equal(workspaceStore('guest:local'), guestStore)
   assert.equal(workspaceStore('github:1'), cloudStore)
@@ -77,7 +78,7 @@ test('lists saved without packs are each put in a pack of their own, and lists t
 })
 
 test('the guest starts with no packs', () => {
-  const { initialLibrary } = require('../src/lib/packs/index.ts')
+  const { initialLibrary } = require('../src/lib/wordPacks.ts')
   assert.deepEqual(initialLibrary, { packs: [], lists: [] })
   assert.deepEqual([readGuestWorkspace(storage()).packs, readGuestWorkspace(storage()).lists], [[], []])
 })
@@ -170,4 +171,29 @@ test('the guest saves followed packs without their words, and reads them back wi
   assert.ok(raw.lists.length > 0 && raw.lists.every(list => list.words.length === 0))
   assert.deepEqual(saved.lists.map(list => list.words.length), entry.lists.map(list => list.words.length))
   assert.deepEqual(readGuestWorkspace(store).lists, saved.lists)
+})
+test('the guest store answers a first visit as a read of nothing saved does, and saves and reads through guest.ts', async t => {
+  const { guestStore } = require('../src/lib/storage/guestStore.ts')
+  const store = storage()
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
+  Object.defineProperty(globalThis, 'localStorage', { value: store, configurable: true })
+  t.after(() => previous ? Object.defineProperty(globalThis, 'localStorage', previous) : delete globalThis.localStorage)
+  const first = await guestStore.read()
+  assert.deepEqual(first, readGuestWorkspace(storage()))
+  const saved = await guestStore.write({ ...first, lists: [list], packs: [pack] })
+  assert.equal(saved.revision, 1)
+  assert.deepEqual(await guestStore.read(), saved)
+  const record = { id: 'r1', time: 2, date: '2026-10-01T00:00:00.000Z', mistakes: 0, accuracy: 100, wordCount: 1 }
+  assert.equal((await guestStore.addRecord({ accountId: 'guest:local', listId: 'l', record })).lists[0].records.length, 2)
+  assert.equal((await guestStore.deleteRecord({ accountId: 'guest:local', listId: 'l', recordId: 'r1' })).lists[0].records.length, 1)
+})
+// The official packs' words are about 1 MB of script; before v2.66.1 every page loaded them with the root layout.
+test('what every page loads (the stores, the welcome redirect, starting a pack) does not load the official packs', () => {
+  const { execFileSync } = require('node:child_process')
+  const loaded = execFileSync(process.execPath, ['-e', `
+    require('./tests/register.cjs')
+    for (const file of ['storage/index.ts', 'welcome.ts', 'wordPacks.ts']) require('./src/lib/' + file)
+    console.log(JSON.stringify(Object.keys(require.cache).filter(file => /src\\/lib\\/(packs|storage\\/guest\\.ts)/.test(file))))
+  `], { cwd: require('node:path').join(__dirname, '..'), encoding: 'utf8' })
+  assert.deepEqual(JSON.parse(loaded), [])
 })
