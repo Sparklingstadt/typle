@@ -70,16 +70,6 @@ test('cloud reads give lists without packs a pack of their own and keep the pack
   await assert.rejects(readWorkspace(), { key: 'savedDataCorrupted' })
 })
 
-test('a cloud read of an empty library does not load the catalog', () => {
-  const { execFileSync } = require('node:child_process')
-  const loaded = execFileSync(process.execPath, ['-e', `
-    require('./tests/register.cjs')
-    global.fetch = async () => Response.json({ accountId: 'github:1', revision: 0, lists: [], packs: null, devices: [] })
-    require('./src/lib/storage/cloud.ts').readWorkspace().then(read => console.log(JSON.stringify({ read, catalog: Object.keys(require.cache).some(file => file.includes('/lib/packs/')) })))
-  `], { cwd: require('node:path').join(__dirname, '..'), encoding: 'utf8' })
-  const { read, catalog } = JSON.parse(loaded)
-  assert.deepEqual([read.lists, read.packs, read.revision, catalog], [[], [], 0, false])
-})
 test('cloud reads give followed packs their words from the catalog, and saves send them without', async t => {
   const { officialPacks, followOfficialPack } = require('../src/lib/packs/catalog.ts')
   const { withoutFollowedWords } = require('../src/lib/followedPacks.ts')

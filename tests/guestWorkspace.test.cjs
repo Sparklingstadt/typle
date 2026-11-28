@@ -197,3 +197,15 @@ test('what every page loads (the stores, the welcome redirect, starting a pack) 
   `], { cwd: require('node:path').join(__dirname, '..'), encoding: 'utf8' })
   assert.deepEqual(JSON.parse(loaded), [])
 })
+test('a browser with a saved guest workspace starts loading guest.ts with the store, and one without does not', () => {
+  const { execFileSync } = require('node:child_process')
+  const run = saved => JSON.parse(execFileSync(process.execPath, ['-e', `
+    require('./tests/register.cjs')
+    const { GUEST_STORAGE_KEY } = require('./src/lib/storage/guestAccount.ts')
+    globalThis.window = { localStorage: { getItem: key => key === GUEST_STORAGE_KEY && ${saved} ? '{}' : null } }
+    require('./src/lib/storage/guestStore.ts')
+    setImmediate(() => console.log(Object.keys(require.cache).some(file => file.endsWith('/storage/guest.ts'))))
+  `], { cwd: require('node:path').join(__dirname, '..'), encoding: 'utf8' }))
+  assert.equal(run(true), true)
+  assert.equal(run(false), false)
+})
