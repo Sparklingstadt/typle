@@ -151,7 +151,7 @@ test('the checked packs are followed and unfollowed at once from the bar', async
 
   // すべて選択 checks every pack, and unchecks them again.
   await all.check()
-  await expect(page.getByText('44個を選択中')).toBeVisible()
+  await expect(page.getByText('46個を選択中')).toBeVisible()
   await all.uncheck()
   await expect(page.getByText('0個を選択中')).toBeVisible()
 
@@ -177,7 +177,7 @@ test('the checked packs are followed and unfollowed at once from the bar', async
   await expect(dialog.getByText(`「${names[0]}」、「${names[1]}」のフォローを解除します。これらのパックの記録も消えます。`)).toBeVisible()
   await dialog.getByRole('button', { name: 'まとめて解除', exact: true }).click()
   await expect(page.getByText('2個のパックのフォローを解除しました。')).toBeVisible()
-  await expect(page.getByText('42個を選択中')).toBeVisible()
+  await expect(page.getByText('44個を選択中')).toBeVisible()
   for (const name of names) await expect(section.getByRole('switch', { name: `${name} をフォローする` })).not.toBeChecked()
   await page.goto('/edit')
   await expect(page.locator('li[data-pack-id]')).toHaveCount(0)
