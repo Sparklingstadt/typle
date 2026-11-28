@@ -23,11 +23,11 @@ export function useOfficialPackStart() {
       router.push(first ? practicePath(first.id) : "/play")
       return
     }
-    // The catalog's words are loaded when a pack is first followed, not with the page.
-    const { followOfficialPack, officialPacks } = await import("@/lib/packs/catalog")
-    const entry = officialPacks().find(item => item.catalogId === catalogId)
+    // The catalog is loaded when a pack is first followed, not with the page; then the words of this pack.
+    const { followOfficialPack, loadOfficialPacks, packSummaries } = await import("@/lib/packs/officialCatalog")
+    const entry = packSummaries().find(item => item.catalogId === catalogId)
     const ids = { pack: randomId(), lists: entry ? entry.lists.map(() => randomId()) : [] }
-    const saved = entry && await updateLibrary(library => followOfficialPack(library, catalogId, ids))
+    const saved = entry && await updateLibrary(library => followOfficialPack(library, catalogId, ids), undefined, () => loadOfficialPacks([catalogId]))
     if (!saved) { setStarting(null); return }
     router.push(practicePath(ids.lists[0]))
   }
