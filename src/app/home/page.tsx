@@ -8,6 +8,7 @@ import { PageMain } from "@/components/ui/page-layout"
 import { useWordLists } from "@/hooks/useWordLists"
 import { useWelcomeRedirect } from "@/hooks/useWelcomeRedirect"
 import Dashboard from "@/components/Dashboard/Dashboard"
+import HelpCards from "@/components/Home/HelpCards"
 import { useId, useState } from "react"
 import { startOfWeek } from "@/lib/dates"
 import { sampleLists } from "@/lib/sampleLists"
@@ -47,12 +48,13 @@ export default function Home() {
         <Button asChild variant="outline"><Link href="/create">{t("welcome.create")}</Link></Button>
         <Button asChild variant="link"><Link href="/records">{t("welcome.records")}</Link></Button>
       </nav>
+      <HelpCards />
       <Preview />
     </>}
     <p className="mt-8">{t(storage === "account" ? "storageAccount" : "storage")}</p>
-    <p className="mt-4">{t.rich("links", {
+    {count > 0 && <p className="mt-4">{t.rich("links", {
       guide: chunks => <Link className="underline" href="/guide">{chunks}</Link>,
       about: chunks => <Link className="underline" href="/about">{chunks}</Link>,
-    })}</p>
+    })}</p>}
   </PageMain>
 }

@@ -7,7 +7,18 @@
     "navLabel": "Pour commencer",
     "play": "S’entraîner",
     "create": "Créer une liste de mots",
-    "records": "Voir les résultats"
+    "records": "Voir les résultats",
+    "help": {
+      "title": "Première visite",
+      "guide": {
+        "title": "Mode d’emploi",
+        "text": "Commencer un entraînement, créer des listes de mots, lire vos résultats"
+      },
+      "about": {
+        "title": "À propos de Typle",
+        "text": "Ce que permet l’app, où sont gardées vos données, la version"
+      }
+    }
   },
   "preview": {
     "title": "Au fil de vos entraînements, votre progression s'affiche ici",
