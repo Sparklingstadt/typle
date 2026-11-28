@@ -14,10 +14,20 @@ export async function loadMessages(locale: Locale): Promise<Messages> {
     [namespace, (await import(`@/messages/${locale}/${namespace}.json`)).default]))) as Messages
 }
 
-// Messages only server components read stay off the client, which receives the rest with every page.
-// The 404 page (notFound) is a server component.
-// The landing page (/) and a shared result (/result) are server components, so their messages stay on the server too,
-// except the landing page's word to try (landing.try), which is typed in the browser.
-export function clientMessages({ guide: _guide, landing, sharedResult: _sharedResult, metadata: _metadata, globalError: _globalError, notFound: _notFound, ...messages }: Messages) {
-  return { ...messages, landing: { try: landing.try } }
+// Messages only server components read never go to the browser: the 404 page (notFound), the guide, a shared result
+// and the page titles (metadata) are server components. So is the landing page (/), except its word to try
+// (landing.try), which is typed in the browser.
+type ServerNamespace = 'guide' | 'sharedResult' | 'metadata' | 'globalError' | 'notFound'
+export type ClientNamespace = Exclude<keyof Messages, ServerNamespace>
+
+/** What the frame of every page reads in the browser: the navigation, the account menu, and the workspace's notices and errors. */
+export const SHELL_NAMESPACES = ['account', 'common', 'errors', 'format', 'nav'] as const satisfies readonly ClientNamespace[]
+
+/**
+ * The messages a part of the app reads in the browser: the frame's, and the areas named. They travel in the HTML of
+ * every page that part is on, so each route names only what its client components read (see ClientMessages.tsx).
+ */
+export function clientMessages(messages: Messages, namespaces: readonly ClientNamespace[] = []) {
+  return Object.fromEntries([...SHELL_NAMESPACES, ...namespaces].map(namespace =>
+    [namespace, namespace === 'landing' ? { try: messages.landing.try } : messages[namespace]]))
 }
