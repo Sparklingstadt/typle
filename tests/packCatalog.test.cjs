@@ -5,7 +5,8 @@ const { validateLibrary, convertLibrary } = require('../src/lib/wordPacks.ts')
 const { deletePack } = require('../src/lib/packEditing.ts')
 const { officialPacks, catalogEntries, followOfficialPack, applyCatalogChoices } = require('../src/lib/packs/catalog.ts')
 const { MAX_FOLLOWED_PACKS, MAX_LISTS } = require('../src/lib/listOverview.ts')
-const { initialLibrary, officialLibrary, initialLists } = require('../src/lib/packs/index.ts')
+const { officialLibrary, initialLists } = require('../src/lib/packs/index.ts')
+const { initialLibrary } = require('../src/lib/wordPacks.ts')
 
 const OFFICIAL_FIRST_TWO = ['pack-8f3cf116-1f9f-4579-a071-e600094b104d', 'pack-ef974a4b-3c7a-4eeb-9979-6721a0a1c81a']
 const now = new Date('2026-10-26T00:00:00Z')

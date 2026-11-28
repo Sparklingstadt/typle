@@ -28,7 +28,7 @@ test('the table is the spec table', () => {
 })
 
 test('welcomePacks: children in option order, parents ignored, no duplicates', () => {
-  const ids = interests => welcomePacks(interests).map(entry => entry.catalogId)
+  const ids = interests => welcomePacks(interests, officialPacks()).map(entry => entry.catalogId)
   assert.deepEqual(ids(['programming', 'programming/go', 'language', 'language/zh']), ['pack-chinese-basics', 'pack-go-syntax-beginner'])
   assert.deepEqual(ids(['language']), [])
   assert.deepEqual(ids([]), [])

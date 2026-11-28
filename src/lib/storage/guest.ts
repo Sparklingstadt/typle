@@ -4,11 +4,12 @@ import { MAX_WORKSPACE_BYTES, validateWorkspaceRequest } from '../workspaceReque
 import { withoutFollowedWords } from '../followedPacks'
 import { decodeInterests } from '../interests'
 import { followed } from '../packs/catalog'
+import { GUEST_ACCOUNT_ID, GUEST_STORAGE_KEY } from './guestAccount'
 import { addRecord, deleteRecord } from '../records'
-import { WorkspaceError, type RecordAdd, type RecordDelete, type WorkspaceState, type WorkspaceStore, type WorkspaceWrite } from '../workspaceStore'
+import { WorkspaceError, type RecordAdd, type RecordDelete, type WorkspaceState, type WorkspaceWrite } from '../workspaceStore'
 
-export const GUEST_ACCOUNT_ID = 'guest:local'
-export const GUEST_STORAGE_KEY = 'typle-r:guest-workspace:v1'
+// This file reads the catalog (followed), whose words are too large for every page's scripts: the app reaches it
+// through guestStore.ts, which loads it when a guest workspace is first read or written.
 // Larger than the account's limit, so that a save near it still fits with the rest of the workspace.
 const MAX_GUEST_BYTES = MAX_WORKSPACE_BYTES * 10
 
@@ -80,30 +81,4 @@ export function deleteGuestRecord(request: RecordDelete, storage: Storage = loca
   const { document, deleted } = deleteRecord(previous, request.listId, request.recordId)
   if (!deleted) return { ...previous, accountId: GUEST_ACCOUNT_ID }
   return followed(store(storage, { ...document, revision: previous.revision + 1 }))
-}
-
-// Serialize read/check/write across tabs where the Web Locks API is available.
-function locked<T>(action: () => T): Promise<T> {
-  if (typeof navigator !== 'undefined' && navigator.locks) return navigator.locks.request(GUEST_STORAGE_KEY, action)
-  return Promise.resolve(action())
-}
-
-export async function saveGuestWorkspace(request: WorkspaceWrite) {
-  return locked(() => writeGuestWorkspace(request))
-}
-
-/** The guest workspace in this browser's LocalStorage. */
-export const guestStore: WorkspaceStore = {
-  location: 'browser',
-  read: async () => readGuestWorkspace(localStorage),
-  write: saveGuestWorkspace,
-  addRecord: request => locked(() => addGuestRecord(request)),
-  deleteRecord: request => locked(() => deleteGuestRecord(request)),
-  staleReads: false,
-  subscribe(onChange) {
-    // `key` is null when another tab clears the whole storage.
-    const changed = (event: StorageEvent) => { if (event.key === GUEST_STORAGE_KEY || event.key === null) onChange() }
-    window.addEventListener('storage', changed)
-    return () => window.removeEventListener('storage', changed)
-  },
 }
