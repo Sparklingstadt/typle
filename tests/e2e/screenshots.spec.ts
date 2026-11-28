@@ -206,6 +206,8 @@ for (const { name, path, ready, dark, mask } of pages) {
 }
 
 test('home introduces the app before the first record', async ({ page }) => {
+  // The preview's sample records are dated from now: a fixed Saturday keeps its week, days and charts the same.
+  await page.clock.setFixedTime(new Date('2026-11-28T19:00:00+09:00'))
   await open(page, '/home')
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
   await expect(page).toHaveScreenshot('home-first.png', masks(page))
@@ -291,6 +293,8 @@ test.describe('signed in', () => {
   test.afterEach(() => deleteWorkspace(accountId))
 
   test('the top bar shows the account menu and where the data is saved', async ({ page }) => {
+    // The empty home's preview is dated from now (see 'home introduces the app before the first record').
+    await page.clock.setFixedTime(new Date('2026-11-28T19:00:00+09:00'))
     await open(page, '/home')
     // The account's workspace is read from the server after the page loads.
     await expect(page.getByRole('heading', { name: '自分の単語で、タイピング練習。', level: 1 })).toBeVisible()
