@@ -132,7 +132,7 @@ sitemap.xml では `/` の優先度を一番高くしています。
 
 ### オープンソースのライセンス（/about/licenses、v2.26.1 から）
 
-「バージョンと開発」の「ライセンス」から開きます。Typle が配布しているほかの人のソフトウェア（本番の npm の依存。`package-lock.json` で `dev`・`devOptional` の付いていないもののうち、その環境に入ったもの）と、npm から来ないもの（next/font がビルドで取り込むフォントの Noto Sans JP、手書きパッドの韓国語の認識モデル）の名前・版・ライセンスを一覧にし、名前・ライセンスで絞り込めます。名前からはそれぞれのプロジェクトのページを開きます。ライセンスの全文は「すべてのライセンス文」（`/licenses/third-party.txt`）にまとめています。
+「バージョンと開発」の「ライセンス」から開きます。Typle が配布しているほかの人のソフトウェア（本番の npm の依存。`package-lock.json` で `dev`・`devOptional` の付いていないもののうち、その環境に入ったもの）と、npm から来ないもの（手書きパッドの韓国語の認識モデル）の名前・版・ライセンスを一覧にし、名前・ライセンスで絞り込めます。名前からはそれぞれのプロジェクトのページを開きます。ライセンスの全文は「すべてのライセンス文」（`/licenses/third-party.txt`）にまとめています。
 
 一覧と全文は `scripts/generate-licenses.cjs` が、`npm install` とビルドのたびに各パッケージの `package.json` と LICENSE・COPYING・NOTICE のファイルから `public/licenses/` に作ります（コミットしません）。パッケージに LICENSE のファイルがない onnxruntime-web・onnxruntime-common は、リポジトリ（v1.31.1）の LICENSE を `scripts/third-party/` に置いて使います。ほかに LICENSE のファイルがないパッケージは、ライセンスの名前に「パッケージにライセンス文なし」を添えます。
 

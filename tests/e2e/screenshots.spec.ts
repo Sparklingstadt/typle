@@ -22,7 +22,7 @@ async function open(page: Page, path: string, colorScheme: 'light' | 'dark' = 'l
   await page.emulateMedia({ colorScheme, reducedMotion })
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto(path)
-  // Noto Sans JP comes from next/font; wait for it so that no image is taken with the fallback font.
+  // The text is set in the fonts of the device; a web font added later must have loaded before the image is taken.
   await page.evaluate(() => document.fonts.ready)
 }
 

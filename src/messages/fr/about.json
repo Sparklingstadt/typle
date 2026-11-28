@@ -62,11 +62,11 @@
   "licenses": {
     "meta": {
       "title": "Licences | Typle",
-      "description": "Les logiciels, polices et modèles open source utilisés par Typle, et leurs licences."
+      "description": "Les logiciels et modèles open source utilisés par Typle, et leurs licences."
     },
     "back": "À propos de Typle",
     "title": "Licences open source",
-    "intro": "Typle utilise les logiciels, polices et modèles open source suivants. Chaque nom ouvre la page du projet. Les textes complets des licences sont réunis dans « Tous les textes de licence ».",
+    "intro": "Typle utilise les logiciels et modèles open source suivants. Chaque nom ouvre la page du projet. Les textes complets des licences sont réunis dans « Tous les textes de licence ».",
     "fullText": "Tous les textes de licence",
     "filter": "Filtrer par nom ou licence",
     "count": "{shown} sur {total}",

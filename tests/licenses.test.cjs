@@ -32,8 +32,8 @@ test('onnxruntime-web gets the license text of its repository, as the package ha
   }
 })
 
-test('the font and the handwriting model are listed', () => {
-  assert.match(find('Noto Sans JP').text, /SIL Open Font License, Version 1\.1/)
+test('the handwriting model is listed, and no font is: the text is set in the fonts of the device', () => {
+  assert.equal(entries.some(entry => /Noto Sans/.test(entry.name)), false)
   assert.match(find('PaddleOCR korean_PP-OCRv5_mobile_rec (ONNX)').text, /Apache License/)
 })
 

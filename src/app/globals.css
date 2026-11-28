@@ -15,18 +15,24 @@
     /* Keep scrolled-to rows and focused fields clear of the sticky top bar. */
     @apply font-sans scroll-pt-18;
   }
-  /* Chinese needs its own glyph shapes. The system's Chinese fonts cost nothing to load, unlike web fonts. */
-  html:lang(zh-CN) body {
-    --font-noto-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC";
+  /* The text is set in the fonts of the device: they cost nothing to load. Until v2.67.0 it was Noto Sans JP as a web
+     font, about 480 KB of font files and 33 KB of render-blocking CSS on a first visit. The interface font of the
+     system comes first, for Latin and Cyrillic; kana and kanji, which it lacks, come from the Japanese fonts after it. */
+  html {
+    --font-system: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", "Meiryo", "Noto Sans CJK JP", "Noto Sans JP";
   }
-  html:lang(zh-TW) body {
-    --font-noto-sans: "PingFang TC", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC";
+  /* Chinese needs its own glyph shapes. */
+  html:lang(zh-CN) {
+    --font-system: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC";
+  }
+  html:lang(zh-TW) {
+    --font-system: "PingFang TC", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC";
   }
 }
 
 @theme inline {
-  --font-heading: var(--font-noto-sans), sans-serif;
-  --font-sans: var(--font-noto-sans), sans-serif;
+  --font-heading: var(--font-system), sans-serif;
+  --font-sans: var(--font-system), sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
